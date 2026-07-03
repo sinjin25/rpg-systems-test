@@ -1,28 +1,33 @@
-import { standardFilters } from '../../../feat/feats/index.ts'
-import { Weapon } from '../../../equipment-sheet/index.ts'
+import { createEquipment } from '../../../equipment-sheet/create-equipment.ts'
+import { DamageRollFunc } from '../../../equipment-sheet/index.ts'
 import roll from '../../../roll/index.ts'
+import { CharacterSheet, defaultCharacterSheet } from '../../../character-sheet/index.ts'
+import { calculateBaseMod } from '../../../stat-modifier/index.ts'
+import { FeatModRequiredData } from '../../../feat/core-types.ts'
 
-export const dagger: Weapon = {
-    contexts: ['finesse', 'dagger', 'melee'],
+export const dagger = createEquipment({
     displayName: 'dagger',
-    damage: () => roll(4)
-}
+    contexts: ['finesse', 'dagger', 'melee'],
+    damage: () => roll(4),
+})
 
-export const daggerPlusOne: Weapon = {
-    contexts: ['finesse'],
+export const daggerPlusOne = createEquipment({
     displayName: 'test + 1',
-    generateAdditionalContexts: {
-        attack: {
-            applies: standardFilters.noBlacklistAnyWhitelistFactory({
-                whitelist: ['finesse'],
-                blacklist: [],
-            }),
-            mod: () => {
-                return 1
-            }
-        },
+    contexts: ['finesse'],
+    damage: () => roll(4) + 1,
+    mods: {
+        attack: { whitelist: ['finesse'], mod: 1 },
     },
-    damage() {
-        return roll(4) + 1
-    }
-}
+})
+
+export const strDagger = createEquipment({
+    displayName: 'strength dagger',
+    contexts: ['finesse', 'dagger', 'melee'],
+    description: 'does more damage based on character strength, in addition to standard modifiers',
+    damage: (data?: Partial<FeatModRequiredData>) => {
+        if (!data || !data.characterSheet) return roll(4)
+
+        const str = calculateBaseMod(data.characterSheet.str)
+        return roll(4) + str
+    },
+})

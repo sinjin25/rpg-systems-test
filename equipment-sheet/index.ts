@@ -1,11 +1,14 @@
 import { ContextNames, BroadContexts, EquipmentContextNames } from "../contexts"
 import { dagger } from "../defaults/equipment"
-import { FeatAppliesFunction, FeatModFunction } from "../feat/core-types"
+import { FeatAppliesFunction, FeatModFunction, FeatModRequiredData } from "../feat/core-types"
+
+export { createEquipment } from "./create-equipment.ts"
+export type { CreateEquipmentInput } from "./create-equipment.ts"
 
 export type { EquipmentContextNames }
 export type EquipmentSlot = 'mainhand' | 'offhand' | 'twohanded' | 'armor' | 'ring' | 'amulet'
 
-export type DamageRollFunc = () => number
+export type DamageRollFunc = (data?: Partial<FeatModRequiredData>) => number
 
 export type BaseEquipment = {
     displayName: string,

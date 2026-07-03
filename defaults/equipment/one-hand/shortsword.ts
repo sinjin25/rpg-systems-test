@@ -1,8 +1,8 @@
-import { Weapon } from '../../../equipment-sheet/index.ts'
+import { createEquipment } from '../../../equipment-sheet/create-equipment.ts'
 import roll from '../../../roll/index.ts'
 
-export const shortsword: Weapon = {
-    contexts: ['shortsword', 'melee'],
+export const shortsword = createEquipment({
     displayName: 'shortsword',
+    contexts: ['shortsword', 'melee'],
     damage: () => roll(6),
-}
+})

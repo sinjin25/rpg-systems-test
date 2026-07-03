@@ -1,27 +1,10 @@
-import { standardFilters } from '../../../feat/feats/index.ts'
-import { BaseEquipment } from '../../../equipment-sheet/index.ts'
+import { createEquipment } from '../../../equipment-sheet/create-equipment.ts'
 
-export const RingPlusOneFinesseAttack: BaseEquipment = {
+export const RingPlusOneFinesseAttack = createEquipment({
     displayName: 'ring plus one finesse attack',
-    generateAdditionalContexts: {
-        attack: {
-            applies: standardFilters.noBlacklistAnyWhitelistFactory({
-                whitelist: ['finesse'],
-                blacklist: [],
-            }),
-            mod: () => {
-                return 1
-            }
-        },
-        damage: {
-            applies: standardFilters.noBlacklistAnyWhitelistFactory({
-                whitelist: ['finesse'],
-                blacklist: [],
-            }),
-            mod: () => {
-                return 1
-            }
-        },
+    contexts: [],
+    mods: {
+        attack: { whitelist: ['finesse'], mod: 1 },
+        damage: { whitelist: ['finesse'], mod: 1 },
     },
-    contexts: []
-}
+})

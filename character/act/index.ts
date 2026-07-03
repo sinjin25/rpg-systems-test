@@ -49,11 +49,11 @@ export const act = (data: ActRequiredData) => {
             })() + roll(20)
 
         const damageRoll = item.contexts.includes('finesse')
-            ? item.damage() + finesseDamageModifierFactory({
+            ? item.damage(data) + finesseDamageModifierFactory({
                 ...data,
                 weapon: item,
             })()
-            : item.damage() + standardDamageModifierFactory({
+            : item.damage(data) + standardDamageModifierFactory({
                 ...data,
                 weapon: item,
             })()

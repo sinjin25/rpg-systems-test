@@ -2,8 +2,9 @@ import { describe, test, assert, expect } from 'vitest'
 
 import standardDamageModifierFactory from './standard.ts'
 import { defaultFeatSheet, FeatSheet } from '../../feat/index.ts'
-import { shortsword } from '../../defaults/equipment/index.ts'
+import { shortsword, strDagger } from '../../defaults/equipment/index.ts'
 import { featMeleeWeaponFighting } from '../../feat/feats/index.ts'
+import { defaultEquipmentSheet } from '../../equipment-sheet/index.ts'
 
 describe('standard functionality', () => {
     test('produces a number', () => {

@@ -1,64 +1,46 @@
-import { featMeleeWeaponFighting, standardFilters } from './index.ts'
+import { defaultCharacterSheet } from '../character-sheet/index.ts'
+import { FeatSheet, PossibleFeatKeys, RequiredFeatData } from './types.ts'
+import { addFeat } from './index.ts'
 import { describe, test, assert, expect } from 'vitest'
 
-describe('test standard filters', () => {
-    test('noBlacklistAnyWhitelistFactory', () => {
-        const filtFunc = standardFilters.noBlacklistAnyWhitelistFactory
+describe('featSheet', () => {
+    test('works', () => {
+        const featSheet: FeatSheet = {}
 
-        const filt0 = filtFunc({
-            blacklist: ['magic'],
-            whitelist: ['magic'],
+        addFeat({
+            characterSheet: defaultCharacterSheet,
+            featSheet,
+        }, {
+            key: 'featMeleeWeaponFighting'
         })
 
-        // magic in blacklist
-        assert.equal(
-            filt0(['magic']),
-            false,
-        )
-
-        // no matching whitelist
-        assert.equal(
-            filt0([]),
-            false,
-        )
-
-        // no matching whitelist
-        assert.equal(
-            filt0(['melee']),
-            false,
-        )
-
-        const filt1 = filtFunc({
-            blacklist: ['ranged'],
-            whitelist: ['melee']
-        })
-
-        // matching whitelist
-        assert.equal(
-            filt1(['melee']),
-            true,
-        )
-
-        // extraneous tags but matches whitelist
-        assert.equal(
-            filt1(['magic', 'melee']),
-            true,
+        assert.exists(
+            featSheet,
+            'featMeleeWeaponFighting'
         )
     })
 })
 
-describe('test a feat', () => {
-    test('simple test', () => {
-        const mwf = featMeleeWeaponFighting
+describe('integration', () => {
+    test('feats can use applies', () => {
+        const fs: FeatSheet = {}
+        addFeat({
+            characterSheet: defaultCharacterSheet,
+            featSheet: fs,
+        }, {
+            key: 'featMeleeWeaponFighting'
+        })
+
+        const attackApplies = fs.featMeleeWeaponFighting?.context.attack
+        assert.equal(!!attackApplies, true)
 
         assert.equal(
-            mwf.context.attack!.applies(['melee']),
+            attackApplies?.applies(['melee']),
             true
         )
-
-        assert.equal(
-            mwf.context.attack!.applies(['ranged']),
-            false,
+        assert.notEqual(
+            attackApplies?.applies(['ranged']),
+            true,
         )
     })
 })

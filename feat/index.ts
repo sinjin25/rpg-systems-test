@@ -1,47 +1,15 @@
-type ContextNames = 'melee' | 'ranged' | 'magic'
+import { possibleFeats } from './feats'
+import { FeatSheet, PossibleFeatKeys, RequiredFeatData } from './types'
 
-type FeatAppliesContext = {
-    whitelist: ContextNames[],
-    blacklist: ContextNames[],
-}
-type FeatAppliesFunction = (activeContexts: ContextNames[]) => boolean
-
-interface FeatContext {
-    attack?: {
-        applies: FeatAppliesFunction,
-        mod: number,
+export const addFeat = (
+    data: RequiredFeatData,
+    data2: {
+        key: PossibleFeatKeys,
     }
+) => {
+    data.featSheet[data2.key] = possibleFeats[data2.key]
 }
 
-interface Feat {
-    displayName: string,
-    context: FeatContext,
-}
+export const defaultFeatSheet: FeatSheet = {}
 
-export const standardFilters = {
-    noBlacklistAnyWhitelistFactory: (contexts: FeatAppliesContext): FeatAppliesFunction => {
-        return (activeContexts: ContextNames[]) => {
-            const { blacklist, whitelist } = contexts
-            let passed = false
-            for (let cont of activeContexts) {
-                if (blacklist.includes(cont)) return false
-                if (whitelist.includes(cont)) passed = true
-            }
-            return passed
-        }
-    }
-}
-
-// examples
-export const featMeleeWeaponFighting: Feat = {
-    displayName: 'Melee Weapon Fighting',
-    context: {
-        attack: {
-            applies: standardFilters.noBlacklistAnyWhitelistFactory({
-                blacklist: ['ranged', 'magic'],
-                whitelist: ['melee'],
-            }),
-            mod: 1,
-        }
-    }
-}
+export { FeatSheet }

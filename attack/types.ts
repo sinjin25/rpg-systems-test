@@ -1,7 +1,7 @@
 import { CharacterSheet, DEFAULT_STAT } from "../character-sheet"
 import { EquipmentSheet, Weapon } from "../equipment-sheet"
 import { FeatSheet } from "../feat"
-import { ContextNames } from "../feat/feats"
+import { ContextNames } from "../contexts"
 import calculateBaseMod from "./base-mod"
 import calculateFeatMod from "./feat-mod"
 

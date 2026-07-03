@@ -1,5 +1,5 @@
-import { ContextNames, standardFilters } from '../../feat/feats/index.ts'
-import { Armor, BaseEquipment, EquipmentContextNames, Weapon, } from '../index.ts'
+import { standardFilters } from '../../feat/core-types'
+import { Armor, BaseEquipment, Weapon } from '../index'
 import roll from '../../roll/index.ts'
 
 export const dagger: Weapon = {

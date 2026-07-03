@@ -1,4 +1,4 @@
-import { ContextNames } from "../../feat/feats"
+import { ContextNames } from "../../contexts"
 import calculateBaseMod from "../base-mod"
 import calculateFeatMod from "../feat-mod"
 import { AttackModifierFuncFactory, AttackModifierRequiredData } from "../types"

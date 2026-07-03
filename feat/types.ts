@@ -1,8 +1,7 @@
 import { CharacterSheet } from '../character-sheet'
-import { featMeleeWeaponFighting, standardFilters, ContextNames, Feat, FeatAppliesContext, FeatAppliesFunction, FeatContext, possibleFeats, PossibleFeats } from './feats'
+import { possibleFeats, PossibleFeats } from './feats'
 
 export type FeatSheet = {
-    // partial
     [K in keyof PossibleFeats]?: PossibleFeats[K]
 }
 

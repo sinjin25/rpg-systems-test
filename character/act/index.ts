@@ -63,7 +63,7 @@ export const act = (data: ActRequiredData) => {
             ? item.damage() + calculateBaseMod(data.characterSheet.dex)
             : item.damage() + calculateBaseMod(data.characterSheet.str)
 
-        console.log('this ran a finesse attack?', item.contexts.includes('finesse'))
+        /* console.log('this ran a finesse attack?', item.contexts.includes('finesse')) */
         results.push({
             attackRoll,
             damageRoll,

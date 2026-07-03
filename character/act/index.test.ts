@@ -1,10 +1,10 @@
-import { dagger, daggerPlusOne, RingPlusOneFinesseAttack, shortsword } from "../../equipment-sheet/variants/dagger";
 import { CharacterSheet, defaultCharacterSheet } from "../../character-sheet";
 import { defaultFeatSheet, FeatSheet } from "../../feat";
 import { describe, test, assert, expect } from 'vitest'
 import { defaultEquipmentSheet, EquipmentSheet } from "../../equipment-sheet";
 import { act } from "./index.ts";
 import { featMeleeWeaponFighting } from "../../feat/feats/index.ts";
+import { daggerPlusOne, RingPlusOneFinesseAttack, shortsword } from "../../defaults/equipment/index.ts";
 
 describe('act works with attacks', () => {
     test('Simplest standard attack', () => {
@@ -77,7 +77,7 @@ describe('simulation: act works with feats', () => {
                 break;
             }
         }
-        console.log(outputs, 'unique outcomes', uniqueOutcomes)
+        /* console.log(outputs, 'unique outcomes', uniqueOutcomes) */
         assert.equal(pass, true)
     })
 })

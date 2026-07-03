@@ -1,12 +1,12 @@
 import { CharacterSheet, defaultCharacterSheet } from '../../character-sheet'
 import { defaultEquipmentSheet, EquipmentSheet } from '../../equipment-sheet'
-import { daggerPlusOne, RingPlusOneFinesseAttack, shortsword } from '../../equipment-sheet/variants/dagger'
 import { defaultFeatSheet, FeatSheet } from '../../feat'
 import { ContextNames } from '../../contexts'
 import { FeatAppliesContext, standardFilters } from '../../feat/core-types'
 import roll from '../../roll'
 import { CalculateEquipmentModRequiredData, calculateAttackEquipmentMod } from './index'
 import { describe, test, assert, expect } from 'vitest'
+import { daggerPlusOne, RingPlusOneFinesseAttack, shortsword } from '../../defaults/equipment'
 
 describe('Correctly filters', () => {
     test('correctly filters', () => {

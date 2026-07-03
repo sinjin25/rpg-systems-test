@@ -1,6 +1,6 @@
 import { ContextNames, BroadContexts, EquipmentContextNames } from "../contexts"
+import { dagger } from "../defaults/equipment"
 import { FeatAppliesFunction, FeatModFunction } from "../feat/core-types"
-import { dagger } from "./variants/dagger"
 
 export type { EquipmentContextNames }
 export type EquipmentSlot = 'mainhand' | 'offhand' | 'twohanded' | 'armor' | 'ring' | 'amulet'

@@ -2,13 +2,14 @@ import { default as finesseAttackModifierFactory } from './finesse'
 import { describe, test, assert, expect } from 'vitest'
 import { CharacterSheet, defaultCharacterSheet } from '../../character-sheet'
 import { addFeat, defaultFeatSheet, FeatSheet } from '../../feat'
-import { dagger } from '../../equipment-sheet/variants/dagger'
+import { dagger } from '../../defaults/equipment'
+import { defaultEquipmentSheet } from '../../equipment-sheet'
 
 describe('factory works', () => {
     test('default character sheet', () => {
         const myFunc = finesseAttackModifierFactory({
             characterSheet: defaultCharacterSheet,
-            equipmentSheet: {},
+            equipmentSheet: defaultEquipmentSheet,
             featSheet: defaultFeatSheet,
             statusSheet: {},
             weapon: dagger,
@@ -43,7 +44,7 @@ describe('factory works', () => {
         }
         const myFunc = finesseAttackModifierFactory({
             characterSheet: cs,
-            equipmentSheet: {},
+            equipmentSheet: defaultEquipmentSheet,
             featSheet: fs,
             statusSheet: {},
             weapon: dagger,

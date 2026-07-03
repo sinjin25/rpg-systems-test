@@ -18,7 +18,7 @@ export const finesseAttackModifierFactory: AttackModifierFuncFactory = (
 
         const BASE_CONTEXT = ['finesse', 'melee'] as ContextNames[]
         const EQUIPMENT_CONTEXT = [...weapon.contexts] as ContextNames[]
-        console.log('EQUIPMENT_CONTEXT', weapon.contexts)
+        /* console.log('EQUIPMENT_CONTEXT', weapon.contexts) */
 
         const bm = calculateBaseMod(characterSheet.dex)
         const fm = calculateFeatMod({

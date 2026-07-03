@@ -1,6 +1,6 @@
 const DEFAULT_STAT = 10
 
-const calculateBaseMod = (stat: number) => {
+export const calculateBaseMod = (stat: number) => {
     if (stat <= 0) return -5
 
     const baseMod = stat - DEFAULT_STAT

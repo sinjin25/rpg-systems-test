@@ -1,20 +1,5 @@
-import { CharacterSheet, DEFAULT_STAT } from "../character-sheet"
-
-export interface Attack {
-    // the base modifiers (before roll, enemy, circumstance, etc.)
-    calculateAttackModifier: AttackModifierFunc,
-}
-
-export type AttackModifierRequiredData = {
-    characterSheet: CharacterSheet,
-    featSheet: {},
-    equipmentSheet: {},
-    statusSheet: {},
-}
-
-export type AttackModifierFunc = () => number
-
-export type AttackModifierFuncFactory = (
-    data: AttackModifierRequiredData,
-) => AttackModifierFunc
-
+import { standardAttackModifierFactory } from './variants/standard'
+import { finesseAttackModifierFactory } from './variants/finesse'
+import { Attack, AttackModifierFunc, AttackModifierFuncFactory, AttackModifierRequiredData } from './types'
+import { default as calculateFeatMod, CalculateFeatModRequiredData } from './feat-mod'
+import { default as calculateBaseMod, } from './base-mod'

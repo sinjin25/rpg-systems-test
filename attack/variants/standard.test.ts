@@ -2,10 +2,10 @@ import standard from './standard.ts'
 import { describe, test, assert, expect } from 'vitest'
 
 import standardAttackModifierFactory, { default as defaultAttack } from './standard.ts'
-import { DEFAULT_STAT, defaultCharacterSheet } from '../../character-sheet/index.ts'
-import { defaultFeatSheet } from '../../feat/index.ts'
+import { DEFAULT_STAT } from '../../character-sheet/index.ts'
+import { defaultCharacterSheet, defaultFeatSheet } from '../../defaults/index.ts'
 import finesseAttackModifierFactory from './finesse.ts'
-import { shortsword } from '../../equipment-sheet/variants/dagger.ts'
+import { shortsword } from '../../defaults/equipment/index.ts'
 
 describe('standard functionality', () => {
     test('produces a number', () => {

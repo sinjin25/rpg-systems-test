@@ -1,4 +1,4 @@
-import { defaultCharacterSheet } from '../../character-sheet/index.ts'
+import { defaultCharacterSheet } from '../../defaults/index.ts'
 import { featMeleeWeaponFighting, standardFilters, possibleFeats, featDemoEvenOdd } from './index.ts'
 import { describe, test, assert, expect } from 'vitest'
 

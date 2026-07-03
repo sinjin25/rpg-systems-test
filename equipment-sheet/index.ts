@@ -12,7 +12,6 @@ type EquipmentSheet = {
 } */
 
 import { ContextNames, BroadContexts, FeatAppliesFunction, FeatModFunction } from "../feat/feats"
-import { dagger } from "./variants/dagger"
 
 export type EquipmentContextNames = 'dagger' | 'shortsword' | 'bow'
 export type EquipmentSlot = 'mainhand' | 'offhand' | 'twohanded' | 'armor' | 'ring' | 'amulet'
@@ -41,10 +40,6 @@ export type Armor = BaseEquipment & {
 
 export type EquipmentSheet = {
     [K in EquipmentSlot]?: BaseEquipment | Weapon | Armor
-}
-
-export const defaultEquipmentSheet: EquipmentSheet = {
-    mainhand: dagger,
 }
 
 export const equipmentIsWeapon = (d: BaseEquipment): d is Weapon => {

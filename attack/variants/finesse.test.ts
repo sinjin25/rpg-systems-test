@@ -1,8 +1,9 @@
 import { default as finesseAttackModifierFactory } from './finesse'
 import { describe, test, assert, expect } from 'vitest'
-import { CharacterSheet, defaultCharacterSheet } from '../../character-sheet'
-import { addFeat, defaultFeatSheet, FeatSheet } from '../../feat'
-import { dagger } from '../../equipment-sheet/variants/dagger'
+import { CharacterSheet } from '../../character-sheet'
+import { addFeat, FeatSheet } from '../../feat'
+import { defaultCharacterSheet, defaultFeatSheet } from '../../defaults'
+import { dagger } from '../../defaults/equipment'
 
 describe('factory works', () => {
     test('default character sheet', () => {

@@ -1,4 +1,5 @@
-import { CharacterSheet, UseCharacterSheet, DEFAULT_STAT, defaultUseCharacterSheet, defaultCharacterSheet, calculateModifier } from './index'
+import { CharacterSheet, UseCharacterSheet, DEFAULT_STAT, calculateModifier } from './index'
+import { defaultUseCharacterSheet, defaultCharacterSheet } from '../defaults'
 import { describe, test, assert, expect } from 'vitest'
 
 describe('Test defaults', () => {

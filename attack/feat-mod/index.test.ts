@@ -1,5 +1,5 @@
-import { defaultCharacterSheet } from '../../character-sheet'
 import { addFeat, FeatSheet } from '../../feat'
+import { defaultCharacterSheet } from '../../defaults'
 import { featConSaves, featFinesseWeaponFighting } from '../../feat/feats'
 import { default as featMod } from './index.ts'
 import { describe, test, assert, expect } from 'vitest'

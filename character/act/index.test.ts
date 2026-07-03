@@ -1,8 +1,9 @@
-import { dagger, daggerPlusOne, RingPlusOneFinesseAttack, shortsword } from "../../equipment-sheet/variants/dagger";
-import { CharacterSheet, defaultCharacterSheet } from "../../character-sheet";
-import { defaultFeatSheet, FeatSheet } from "../../feat";
+import { dagger, daggerPlusOne, RingPlusOneFinesseAttack, shortsword } from "../../defaults/equipment";
+import { CharacterSheet } from "../../character-sheet";
+import { FeatSheet } from "../../feat";
 import { describe, test, assert, expect } from 'vitest'
-import { defaultEquipmentSheet, EquipmentSheet } from "../../equipment-sheet";
+import { EquipmentSheet } from "../../equipment-sheet";
+import { defaultCharacterSheet, defaultFeatSheet, defaultEquipmentSheet } from "../../defaults";
 import { act } from "./index.ts";
 import { featMeleeWeaponFighting } from "../../feat/feats/index.ts";
 

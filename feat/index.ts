@@ -10,6 +10,4 @@ export const addFeat = (
     data.featSheet[data2.key] = possibleFeats[data2.key]
 }
 
-export const defaultFeatSheet: FeatSheet = {}
-
 export { FeatSheet }

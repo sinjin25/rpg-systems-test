@@ -1,4 +1,5 @@
-import { BroadContexts, ContextNames, FeatContext, } from "../../feat/feats";
+import { BroadContexts, ContextNames } from "../../contexts";
+import { FeatContext } from "../../feat/core-types";
 import { FeatSheet } from "../../feat";
 import { CharacterSheet } from "../../character-sheet";
 import { BaseEquipment, equipmentIsBaseEquipment, equipmentIsWeapon, EquipmentSheet, Weapon } from "../../equipment-sheet";

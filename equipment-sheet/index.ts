@@ -1,20 +1,8 @@
-/* import { ContextNames } from "../feat/feats"
-
-type Equipment = {
-
-}
-
-type EquipmentSheet = {
-    // equipment
-    primaryHand: {
-        contextTags: ContextNames[],
-    }
-} */
-
-import { ContextNames, BroadContexts, FeatAppliesFunction, FeatModFunction } from "../feat/feats"
+import { ContextNames, BroadContexts, EquipmentContextNames } from "../contexts"
+import { FeatAppliesFunction, FeatModFunction } from "../feat/core-types"
 import { dagger } from "./variants/dagger"
 
-export type EquipmentContextNames = 'dagger' | 'shortsword' | 'bow'
+export type { EquipmentContextNames }
 export type EquipmentSlot = 'mainhand' | 'offhand' | 'twohanded' | 'armor' | 'ring' | 'amulet'
 
 export type DamageRollFunc = () => number

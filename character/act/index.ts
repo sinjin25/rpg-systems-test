@@ -1,6 +1,4 @@
-import calculateBaseMod from "../../attack/base-mod"
-import finesseAttackModifierFactory from "../../attack/variants/finesse"
-import standardAttackModifierFactory from "../../attack/variants/standard"
+import { calculateBaseMod, finesseAttackModifierFactory, standardAttackModifierFactory } from "../../attack"
 import { CharacterSheet } from "../../character-sheet"
 import { equipmentIsWeapon, EquipmentSheet, Weapon } from "../../equipment-sheet"
 import { FeatSheet } from "../../feat"

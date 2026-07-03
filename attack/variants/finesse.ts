@@ -1,7 +1,7 @@
 import { Attack, AttackModifierFunc, AttackModifierFuncFactory, AttackModifierRequiredData } from '../types'
 import calculateBaseMod from '../base-mod'
 import calculateFeatMod from '../feat-mod'
-import { ContextNames } from '../../feat/feats'
+import { ContextNames } from '../../contexts'
 import { calculateAttackEquipmentMod } from '../equipment-mod'
 
 export const finesseAttackModifierFactory: AttackModifierFuncFactory = (

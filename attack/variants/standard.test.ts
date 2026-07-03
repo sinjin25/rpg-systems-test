@@ -4,6 +4,7 @@ import standardAttackModifierFactory, { default as defaultAttack } from './stand
 import { defaultFeatSheet } from '../../feat/index.ts'
 import { shortsword } from '../../defaults/equipment/index.ts'
 import { defaultEquipmentSheet } from '../../defaults/index.ts'
+import { featFinesseWeaponFighting } from '../../feat/feats/index.ts'
 
 describe('standard functionality', () => {
     test('produces a number', () => {
@@ -56,5 +57,23 @@ describe('Can be extended', () => {
 
         const result = standard()
         assert.equal(result, -1)
+    })
+    test('is not affected by finesse changes', () => {
+        const standard = standardAttackModifierFactory({
+            characterSheet: {
+                con: 10,
+                dex: 12,
+                str: 10,
+            },
+            equipmentSheet: defaultEquipmentSheet,
+            featSheet: {
+                ...defaultFeatSheet,
+                featFinesseWeaponFighting,
+            },
+            statusSheet: {},
+            weapon: shortsword,
+        })
+
+        assert.equal(standard(), 0)
     })
 })

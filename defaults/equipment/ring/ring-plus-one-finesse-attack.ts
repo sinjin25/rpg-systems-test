@@ -13,6 +13,15 @@ export const RingPlusOneFinesseAttack: BaseEquipment = {
                 return 1
             }
         },
+        damage: {
+            applies: standardFilters.noBlacklistAnyWhitelistFactory({
+                whitelist: ['finesse'],
+                blacklist: [],
+            }),
+            mod: () => {
+                return 1
+            }
+        },
     },
     contexts: []
 }

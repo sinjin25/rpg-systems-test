@@ -16,6 +16,15 @@ export const featMeleeWeaponFighting: Feat = {
             mod: (data = {}) => {
                 return 1
             },
+        },
+        damage: {
+            applies: standardFilters.noBlacklistAnyWhitelistFactory({
+                blacklist: ['ranged', 'magic'],
+                whitelist: ['melee'],
+            }),
+            mod: (data = {}) => {
+                return 1
+            },
         }
     }
 }

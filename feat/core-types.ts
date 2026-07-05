@@ -34,7 +34,9 @@ export const standardFilters = {
     noBlacklistAnyWhitelistFactory: (contexts: FeatAppliesContext): FeatAppliesFunction => {
         return (activeContexts: ContextNames[]) => {
             const { blacklist, whitelist } = contexts
-            let passed = false
+            // 'all' in the whitelist means "applies to everything not blacklisted";
+            // an empty whitelist never applies
+            let passed = whitelist.includes('all')
             for (let cont of activeContexts) {
                 if (blacklist.includes(cont)) return false
                 if (whitelist.includes(cont)) passed = true

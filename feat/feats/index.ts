@@ -65,7 +65,7 @@ export const featDemoEvenOdd: Feat = {
         attack: {
             applies: standardFilters.noBlacklistAnyWhitelistFactory({
                 blacklist: [],
-                whitelist: []
+                whitelist: ['all']
             }),
             mod: (data) => {
                 if (!data?.characterSheet) return 0

@@ -1,8 +1,8 @@
 import { BroadContexts, ContextNames } from "../../contexts";
-import applyContextMod from "../../contexts/apply-context-mod";
 import { FeatSheet } from "../../feat";
 import { CharacterSheet } from "../../character-sheet";
 import { equipmentIsWeapon, EquipmentSheet, Weapon } from "../../equipment-sheet";
+import calculateEquipmentMod from "../../equipment-sheet/equipment-mod";
 
 export type CalculateEquipmentModRequiredData = {
     characterSheet: CharacterSheet,
@@ -24,9 +24,8 @@ export const calculateAttackEquipmentMod = (
 
     const relevantEquipment = [...notWeaponEquipment, data.weapon]
 
-    return applyContextMod(
+    return calculateEquipmentMod(
         relevantEquipment,
-        equip => equip?.generateAdditionalContexts,
         data,
         context,
         broadContext,

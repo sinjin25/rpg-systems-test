@@ -6,6 +6,7 @@ export interface CharacterSheet {
     str: number,
     dex: number,
     con: number,
+    level: number,
 }
 
 export interface UseCharacterSheet {
@@ -17,6 +18,7 @@ export const defaultCharacterSheet: CharacterSheet = {
     con: 15,
     str: 15,
     dex: 15,
+    level: 1,
 }
 
 export const defaultUseCharacterSheet: UseCharacterSheet = {

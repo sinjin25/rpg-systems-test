@@ -7,12 +7,12 @@ import { RollModifierRequiredData } from "../roll-modifier/types"
 
 export const STANDARD_SPEED = 35 // average of 2d6 is 3.5
 
-type Speed = {
+export type Speed = {
     remainder: number,
     canAct: boolean, // expand to include things like "stunned" vs "dead"
 }
 
-type TurnData = {
+export type TurnData = {
     speed: Speed,
     owner: {
         cs: CharacterSheet,
@@ -22,7 +22,7 @@ type TurnData = {
     },
 }
 
-type Round = {
+export type Round = {
     participants: TurnData[],
     speedSum: number,
 }

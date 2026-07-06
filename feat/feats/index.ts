@@ -83,10 +83,26 @@ export const featDemoEvenOdd: Feat = {
     }
 }
 
+export const featAlert: Feat = {
+    displayName: 'DEMO Alert',
+    context: {
+        initiative: {
+            applies: standardFilters.noBlacklistAnyWhitelistFactory({
+                blacklist: [],
+                whitelist: ['all'],
+            }),
+            mod: (data) => {
+                return 4
+            },
+        }
+    }
+}
+
 export const possibleFeats = {
     featMeleeWeaponFighting,
     featFinesseWeaponFighting,
     featConSaves,
+    featAlert,
 }
 
 export type PossibleFeats = typeof possibleFeats

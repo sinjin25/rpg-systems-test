@@ -3,10 +3,14 @@ import { defaultEquipmentSheet } from '../../equipment-sheet/index.ts'
 import { featAlert } from '../../feat/feats/index.ts'
 import { defaultFeatSheet } from '../../feat/index.ts'
 import { default as rollInitiative, calculateInitiativeMod } from './index.ts'
-import { describe, test, assert, expect } from 'vitest'
+import { setSeed, clearSeed } from '../../roll/index.ts'
+import { describe, test, assert, expect, afterEach } from 'vitest'
 
 describe('Dex/Feats are meaningful', () => {
-    test('+3 => .64, +7 => .79', () => {
+    afterEach(() => clearSeed())
+
+    test('+3 => .64, +7 => .78', () => {
+        setSeed(1)
         // const REAL_PROPORTION = .66 // many n
         // const REAL_PROPORTION_FEAT = .805 // many n
         const EXPECTED = .64

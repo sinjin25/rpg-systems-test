@@ -12,12 +12,10 @@ export const dagger = createEquipment({
 })
 
 export const daggerPlusOne = createEquipment({
-    displayName: 'test + 1',
-    contexts: ['finesse'],
-    damage: () => roll(4) + 1,
-    mods: {
-        attack: { whitelist: ['finesse'], mod: 1 },
-    },
+    displayName: '+1 dagger',
+    contexts: ['finesse', 'dagger', 'melee'],
+    damage: () => roll(4), // pure base dice; the +1 comes from the enhancement
+    enhancement: 1,
 })
 
 export const strDagger = createEquipment({

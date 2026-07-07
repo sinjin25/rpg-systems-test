@@ -1,5 +1,5 @@
 # Overview
-Rough outline
+Rough loop
 - Roll a speed dice
     - See speed/index.ts
 - When the number hits negative, track the remainder

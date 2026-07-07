@@ -1,8 +1,8 @@
 import { Attack, AttackModifierFunc, AttackModifierFuncFactory, AttackModifierRequiredData } from '../types'
-import calculateBaseMod from '../base-mod'
-import calculateFeatMod from '../feat-mod'
+import { calculateBaseMod } from '../../stat-modifier'
+import calculateFeatMod from '../../roll-modifier/feat-mod'
 import { ContextNames } from '../../contexts'
-import { calculateAttackEquipmentMod } from '../equipment-mod'
+import { calculateWeaponEquipmentMod } from '../../roll-modifier/equipment-mod'
 import { extractContextsTags } from '../../equipment-sheet/extract'
 
 export const finesseAttackModifierFactory: AttackModifierFuncFactory = (
@@ -17,7 +17,7 @@ export const finesseAttackModifierFactory: AttackModifierFuncFactory = (
             weapon,
         } = data
 
-        const BASE_CONTEXT = ['finesse', 'melee'] as ContextNames[]
+        const BASE_CONTEXT = ['finesse'] as ContextNames[]
         const EQUIPMENT_CONTEXT = extractContextsTags(weapon)
         /* console.log('EQUIPMENT_CONTEXT', weapon.contexts) */
 
@@ -29,7 +29,7 @@ export const finesseAttackModifierFactory: AttackModifierFuncFactory = (
         }, [
             ...[...BASE_CONTEXT, ...EQUIPMENT_CONTEXT],
         ], 'attack')
-        const em = calculateAttackEquipmentMod(data, BASE_CONTEXT, 'attack')
+        const em = calculateWeaponEquipmentMod(data, BASE_CONTEXT, 'attack')
 
         /* console.table({
             bm,

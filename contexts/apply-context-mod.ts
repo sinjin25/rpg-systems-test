@@ -1,7 +1,8 @@
 import { BroadContexts, ContextNames } from "."
-import { FeatContext } from "../feat/core-types"
+import { FeatContext, FeatModRequiredData } from "../feat/core-types"
 
-export const applyContextMod = <T, D>(
+// for a given broad context, and a list of sources (from feats, equipment, etc., located if they have a key for the relevant broadContext and, if so, apply)
+export const applyContextMod = <T, D extends Partial<FeatModRequiredData>>(
     sources: T[],
     getContextMap: (source: T) => FeatContext | undefined,
     data: D,

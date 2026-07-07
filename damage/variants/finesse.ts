@@ -1,8 +1,8 @@
 import { RollModifierFuncFactory, RollModifierRequiredData } from "../../roll-modifier/types"
-import calculateBaseMod from "../../attack/base-mod"
-import calculateFeatMod from "../../attack/feat-mod"
+import { calculateBaseMod } from "../../stat-modifier"
+import calculateFeatMod from "../../roll-modifier/feat-mod"
 import { ContextNames } from "../../contexts"
-import { calculateAttackEquipmentMod } from "../../attack/equipment-mod"
+import { calculateWeaponEquipmentMod } from "../../roll-modifier/equipment-mod"
 
 export const finesseDamageModifierFactory: RollModifierFuncFactory = (
     data: RollModifierRequiredData,
@@ -26,7 +26,7 @@ export const finesseDamageModifierFactory: RollModifierFuncFactory = (
         }, [
             ...[...BASE_CONTEXT, ...EQUIPMENT_CONTEXT],
         ], 'damage')
-        const em = calculateAttackEquipmentMod(data, BASE_CONTEXT, 'damage')
+        const em = calculateWeaponEquipmentMod(data, BASE_CONTEXT, 'damage')
 
         return bm + fm + em
     }

@@ -92,16 +92,16 @@ describe('simulation: act works with feats', () => {
             ...defaultFeatSheet,
             featMeleeWeaponFighting
         }
-        // +1 (equipment mod from the ring)
+        // +2 (equipment mods: ring +1, dagger's +1 enhancement)
         const es: EquipmentSheet = {
             ...defaultEquipmentSheet,
             mainhand: daggerPlusOne,
             ring: RingPlusOneFinesseAttack,
         }
-        // bm(3) + fm(1) + em(1) = 5
-        const EXPECTED_BONUS = 5
-        // daggerPlusOne bakes a flat +1 onto its base d4 damage
-        const WEAPON_FLAT_BONUS = 1
+        // bm(3) + fm(1) + em(2) = 6
+        const EXPECTED_BONUS = 6
+        // daggerPlusOne rolls pure base dice; its +1 arrives via the equipment mod above
+        const WEAPON_FLAT_BONUS = 0
         const DAMAGE_DICE_SIDES = 4
         const canEndEarlyFailure = (result: number) => result < EXPECTED_BONUS + WEAPON_FLAT_BONUS + 1
         const canEndEarlyPass = (result: number) => result === EXPECTED_BONUS + WEAPON_FLAT_BONUS + DAMAGE_DICE_SIDES
@@ -150,7 +150,6 @@ describe('simulation: act works with feats', () => {
         }
         // +3 from str from str dagger
         const EXPECTED_BONUS = 3
-        // daggerPlusOne bakes a flat +1 onto its base d4 damage
         const DAMAGE_DICE_SIDES = 4
         // + 1 from min dice roll
         const canEndEarlyFailure = (result: number) => result < EXPECTED_BONUS + 1

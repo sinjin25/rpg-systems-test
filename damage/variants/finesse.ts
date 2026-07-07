@@ -10,20 +10,20 @@ export const finesseDamageModifierFactory: RollModifierFuncFactory = (
 ) => {
     return () => {
         const {
-            characterSheet,
-            equipmentSheet,
-            featSheet,
+            cs,
+            es,
+            fs,
             weapon,
         } = data
 
         const BASE_CONTEXT = ['finesse', 'melee'] as ContextNames[]
         const EQUIPMENT_CONTEXT = [...weapon.contexts] as ContextNames[]
 
-        const bm = namedMod('dex', calculateBaseMod(characterSheet.dex))
+        const bm = namedMod('dex', calculateBaseMod(cs.dex))
         const fm = calculateFeatMod({
-            characterSheet,
-            equipmentSheet,
-            featSheet,
+            cs,
+            es,
+            fs,
         }, [
             ...[...BASE_CONTEXT, ...EQUIPMENT_CONTEXT],
         ], 'damage')

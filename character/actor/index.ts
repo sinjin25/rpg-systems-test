@@ -11,7 +11,7 @@ type Health = {
     temporary: number,
 }
 
-type Owner = {
+export type Owner = {
     cs: CharacterSheet,
     fs: FeatSheet,
     es: EquipmentSheet,
@@ -20,7 +20,7 @@ type Owner = {
     },
 }
 
-type Actor = {
+export type Actor = {
     speed: Speed,
     health: Health,
     owner: Owner,

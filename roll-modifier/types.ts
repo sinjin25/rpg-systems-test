@@ -4,10 +4,10 @@ import { FeatSheet } from "../feat"
 import { ModGroup } from "../stat-modifier/log"
 
 export type RollModifierRequiredData = {
-    characterSheet: CharacterSheet,
-    featSheet: FeatSheet,
-    equipmentSheet: EquipmentSheet,
-    statusSheet: {},
+    cs: CharacterSheet,
+    fs: FeatSheet,
+    es: EquipmentSheet,
+    ss: {},
     weapon: Weapon,
 }
 

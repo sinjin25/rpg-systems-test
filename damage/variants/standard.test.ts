@@ -9,15 +9,15 @@ import { defaultEquipmentSheet } from '../../equipment-sheet/index.ts'
 describe('standard functionality', () => {
     test('produces a number', () => {
         const std = standardDamageModifierFactory({
-            characterSheet: {
+            cs: {
                 con: 10,
                 dex: 10,
                 str: 14,
                 level: 1,
             },
-            equipmentSheet: {},
-            featSheet: defaultFeatSheet,
-            statusSheet: {},
+            es: {},
+            fs: defaultFeatSheet,
+            ss: {},
             weapon: shortsword,
         })
 
@@ -27,15 +27,15 @@ describe('standard functionality', () => {
 
     test('scales off strength, not dex', () => {
         const standard = standardDamageModifierFactory({
-            characterSheet: {
+            cs: {
                 con: 10,
                 dex: 12,
                 str: 10,
                 level: 1,
             },
-            equipmentSheet: {},
-            featSheet: defaultFeatSheet,
-            statusSheet: {},
+            es: {},
+            fs: defaultFeatSheet,
+            ss: {},
             weapon: shortsword,
         })
 
@@ -51,15 +51,15 @@ describe('standard functionality', () => {
             featMeleeWeaponFighting,
         }
         const standard = standardDamageModifierFactory({
-            characterSheet: {
+            cs: {
                 con: 10,
                 dex: 10,
                 str: 14,
                 level: 1,
             },
-            equipmentSheet: {},
-            featSheet: fs,
-            statusSheet: {},
+            es: {},
+            fs,
+            ss: {},
             weapon: shortsword,
         })
 
@@ -70,15 +70,15 @@ describe('standard functionality', () => {
 
     test('weapon enhancement applies to damage through the equipment mod', () => {
         const standard = standardDamageModifierFactory({
-            characterSheet: {
+            cs: {
                 con: 10,
                 dex: 10,
                 str: 14,
                 level: 1,
             },
-            equipmentSheet: { mainhand: daggerPlusOne },
-            featSheet: defaultFeatSheet,
-            statusSheet: {},
+            es: { mainhand: daggerPlusOne },
+            fs: defaultFeatSheet,
+            ss: {},
             weapon: daggerPlusOne,
         })
 

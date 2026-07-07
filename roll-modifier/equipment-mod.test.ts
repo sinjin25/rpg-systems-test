@@ -29,9 +29,9 @@ describe('calculateWeaponEquipmentMod', () => {
 
     const run = (weapon: Weapon, contexts: Parameters<typeof calculateWeaponEquipmentMod>[1]) =>
         calculateWeaponEquipmentMod({
-            characterSheet: defaultCharacterSheet,
-            featSheet: defaultFeatSheet,
-            equipmentSheet: es,
+            cs: defaultCharacterSheet,
+            fs: defaultFeatSheet,
+            es,
             weapon,
         }, contexts, 'attack')
 

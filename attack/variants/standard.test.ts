@@ -9,15 +9,15 @@ import { featFinesseWeaponFighting } from '../../feat/feats/index.ts'
 describe('standard functionality', () => {
     test('produces a number', () => {
         const std = standardAttackModifierFactory({
-            characterSheet: {
+            cs: {
                 con: 10,
                 dex: 10,
                 str: 14,
                 level: 1,
             },
-            equipmentSheet: {},
-            featSheet: defaultFeatSheet,
-            statusSheet: {},
+            es: {},
+            fs: defaultFeatSheet,
+            ss: {},
             weapon: shortsword,
         })
 
@@ -29,15 +29,15 @@ describe('standard functionality', () => {
 describe('Can be extended', () => {
     test('scales off strength, not dex', () => {
         const standard = standardAttackModifierFactory({
-            characterSheet: {
+            cs: {
                 con: 10,
                 dex: 12,
                 str: 10,
                 level: 1,
             },
-            equipmentSheet: {},
-            featSheet: defaultFeatSheet,
-            statusSheet: {},
+            es: {},
+            fs: defaultFeatSheet,
+            ss: {},
             weapon: shortsword,
         })
 
@@ -46,15 +46,15 @@ describe('Can be extended', () => {
     })
     test('Can get a negative modifier', () => {
         const standard = standardAttackModifierFactory({
-            characterSheet: {
+            cs: {
                 con: 10,
                 dex: 12,
                 str: 8,
                 level: 1,
             },
-            equipmentSheet: defaultEquipmentSheet,
-            featSheet: defaultFeatSheet,
-            statusSheet: {},
+            es: defaultEquipmentSheet,
+            fs: defaultFeatSheet,
+            ss: {},
             weapon: shortsword,
         })
 
@@ -63,18 +63,18 @@ describe('Can be extended', () => {
     })
     test('is not affected by finesse changes', () => {
         const standard = standardAttackModifierFactory({
-            characterSheet: {
+            cs: {
                 con: 10,
                 dex: 12,
                 str: 10,
                 level: 1,
             },
-            equipmentSheet: defaultEquipmentSheet,
-            featSheet: {
+            es: defaultEquipmentSheet,
+            fs: {
                 ...defaultFeatSheet,
                 featFinesseWeaponFighting,
             },
-            statusSheet: {},
+            ss: {},
             weapon: shortsword,
         })
 

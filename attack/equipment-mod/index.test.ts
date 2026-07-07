@@ -20,9 +20,9 @@ describe('Correctly filters', () => {
         }
 
         const result = calculateAttackEquipmentMod({
-            characterSheet: cs,
-            equipmentSheet: es,
-            featSheet: fs,
+            cs,
+            es,
+            fs,
             weapon: es.mainhand!
         }, contexts, 'attack')
 
@@ -40,9 +40,9 @@ describe('Correctly filters', () => {
         }
 
         const result = calculateAttackEquipmentMod({
-            characterSheet: cs,
-            equipmentSheet: es,
-            featSheet: fs,
+            cs,
+            es,
+            fs,
             weapon: es.mainhand!
         }, contexts, 'attack')
 

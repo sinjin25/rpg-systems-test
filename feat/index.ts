@@ -7,7 +7,7 @@ export const addFeat = (
         key: PossibleFeatKeys,
     }
 ) => {
-    data.featSheet[data2.key] = possibleFeats[data2.key]
+    data.fs[data2.key] = possibleFeats[data2.key]
 }
 
 export const defaultFeatSheet: FeatSheet = {}

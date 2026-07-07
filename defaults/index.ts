@@ -11,7 +11,7 @@ export const defaultCharacterSheet: CharacterSheet = {
 }
 
 export const defaultUseCharacterSheet: UseCharacterSheet = {
-    characterSheet: defaultCharacterSheet,
+    cs: defaultCharacterSheet,
     calculateModifier,
 }
 

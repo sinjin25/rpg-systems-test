@@ -10,7 +10,7 @@ export interface CharacterSheet {
 }
 
 export interface UseCharacterSheet {
-    characterSheet: CharacterSheet,
+    cs: CharacterSheet,
     calculateModifier: (stat: number, bonuses?: number[]) => number,
 }
 
@@ -22,6 +22,6 @@ export const defaultCharacterSheet: CharacterSheet = {
 }
 
 export const defaultUseCharacterSheet: UseCharacterSheet = {
-    characterSheet: defaultCharacterSheet,
+    cs: defaultCharacterSheet,
     calculateModifier,
 }

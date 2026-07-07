@@ -11,21 +11,21 @@ export const finesseAttackModifierFactory: AttackModifierFuncFactory = (
 ) => {
     return () => {
         const {
-            characterSheet,
-            equipmentSheet,
-            featSheet,
-            statusSheet,
+            cs,
+            es,
+            fs,
+            ss,
             weapon,
         } = data
 
         const BASE_CONTEXT = ['finesse'] as ContextNames[]
         const EQUIPMENT_CONTEXT = extractContextsTags(weapon)
 
-        const bm = namedMod('dex', calculateBaseMod(characterSheet.dex))
+        const bm = namedMod('dex', calculateBaseMod(cs.dex))
         const fm = calculateFeatMod({
-            characterSheet,
-            equipmentSheet,
-            featSheet,
+            cs,
+            es,
+            fs,
         }, [
             ...[...BASE_CONTEXT, ...EQUIPMENT_CONTEXT],
         ], 'attack')

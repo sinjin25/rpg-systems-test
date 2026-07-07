@@ -77,14 +77,14 @@ describe('applyContextMod', () => {
             {
                 attack: {
                     applies: always,
-                    mod: (data) => data?.characterSheet ? 5 : 0,
+                    mod: (data) => data?.cs ? 5 : 0,
                 },
             },
         ]
 
         const withData = applyContextMod(
             sources, s => s, unnamed,
-            { characterSheet: defaultCharacterSheet },
+            { cs: defaultCharacterSheet },
             [], 'attack',
         )
         assert.equal(withData.total, 5)

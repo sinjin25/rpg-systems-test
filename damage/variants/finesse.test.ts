@@ -8,10 +8,10 @@ import { defaultEquipmentSheet, EquipmentSheet } from '../../equipment-sheet'
 describe('factory works', () => {
     test('default character sheet', () => {
         const myFunc = finesseDamageModifierFactory({
-            characterSheet: defaultCharacterSheet,
-            equipmentSheet: defaultEquipmentSheet,
-            featSheet: defaultFeatSheet,
-            statusSheet: {},
+            cs: defaultCharacterSheet,
+            es: defaultEquipmentSheet,
+            fs: defaultFeatSheet,
+            ss: {},
             weapon: dagger,
         })
 
@@ -20,15 +20,15 @@ describe('factory works', () => {
     })
     test('works with arbitrary sheets', () => {
         const myFunc = finesseDamageModifierFactory({
-            characterSheet: {
+            cs: {
                 con: 0,
                 dex: 0,
                 str: 0,
                 level: 1,
             },
-            equipmentSheet: {},
-            featSheet: defaultFeatSheet,
-            statusSheet: {},
+            es: {},
+            fs: defaultFeatSheet,
+            ss: {},
             weapon: dagger,
         })
 
@@ -44,10 +44,10 @@ describe('factory works', () => {
             dex: 16,
         }
         const myFunc = finesseDamageModifierFactory({
-            characterSheet: cs,
-            equipmentSheet: defaultEquipmentSheet,
-            featSheet: fs,
-            statusSheet: {},
+            cs,
+            es: defaultEquipmentSheet,
+            fs,
+            ss: {},
             weapon: dagger,
         })
 
@@ -55,8 +55,8 @@ describe('factory works', () => {
         assert.equal(beforeFeat.total, 3)
 
         addFeat({
-            characterSheet: cs,
-            featSheet: fs,
+            cs,
+            fs,
         }, {
             key: 'featMeleeWeaponFighting'
         })
@@ -81,10 +81,10 @@ describe('factory works', () => {
             ring: RingPlusOneFinesseAttack,
         }
         const myFunc = finesseDamageModifierFactory({
-            characterSheet: cs,
-            equipmentSheet: es,
-            featSheet: defaultFeatSheet,
-            statusSheet: {},
+            cs,
+            es,
+            fs: defaultFeatSheet,
+            ss: {},
             weapon: dagger,
         })
 

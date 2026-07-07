@@ -10,16 +10,16 @@ export const standardDamageModifierFactory: RollModifierFuncFactory = (
     data: RollModifierRequiredData,
 ) => {
     return () => {
-        const { characterSheet, equipmentSheet, featSheet, weapon } = data
+        const { cs, es, fs, weapon } = data
 
         const BASE_CONTEXT = [] as ContextNames[]
         const EQUIPMENT_CONTEXT = extractContextsTags(weapon)
 
-        const bm = namedMod('str', calculateBaseMod(characterSheet.str))
+        const bm = namedMod('str', calculateBaseMod(cs.str))
         const fm = calculateFeatMod({
-            characterSheet,
-            equipmentSheet,
-            featSheet,
+            cs,
+            es,
+            fs,
         }, [
             ...BASE_CONTEXT,
             ...EQUIPMENT_CONTEXT,

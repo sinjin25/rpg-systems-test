@@ -23,11 +23,7 @@ export const calculateInitiativeMod = (data: InitiativeData) => {
     const broadContextInitiative: BroadContexts = 'initiative'
 
     const allEquipment = Object.values(es)
-    const modData = {
-        characterSheet: cs,
-        equipmentSheet: es,
-        featSheet: fs,
-    }
+    const modData = { cs, es, fs }
 
     // calculate effective dex (base + bonuses)
     const dexBonusEquip = calculateEquipmentMod(allEquipment, modData, contextTags, broadContextStat)

@@ -13,9 +13,9 @@ describe('Correctly filters', () => {
 
         const runTheTest = () => {
             return featMod({
-                characterSheet: defaultCharacterSheet,
-                equipmentSheet: {},
-                featSheet: fs,
+                cs: defaultCharacterSheet,
+                es: {},
+                fs,
             }, ['finesse', 'melee'], 'attack')
         }
 
@@ -27,8 +27,8 @@ describe('Correctly filters', () => {
         )
 
         addFeat({
-            characterSheet: defaultCharacterSheet,
-            featSheet: fs,
+            cs: defaultCharacterSheet,
+            fs,
         }, {
             key: 'featMeleeWeaponFighting'
         })

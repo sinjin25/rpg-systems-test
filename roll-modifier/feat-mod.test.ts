@@ -13,9 +13,9 @@ describe('calculateFeatMod', () => {
 
         const run = (contexts: Parameters<typeof calculateFeatMod>[1], broad: Parameters<typeof calculateFeatMod>[2]) =>
             calculateFeatMod({
-                characterSheet: defaultCharacterSheet,
-                equipmentSheet: {},
-                featSheet: fs,
+                cs: defaultCharacterSheet,
+                es: {},
+                fs,
             }, contexts, broad)
 
         // melee weapon fighting grants +1 to both attack and damage in melee
@@ -35,9 +35,9 @@ describe('calculateFeatMod', () => {
 
     test('empty feat sheet contributes nothing', () => {
         const result = calculateFeatMod({
-            characterSheet: defaultCharacterSheet,
-            equipmentSheet: {},
-            featSheet: {},
+            cs: defaultCharacterSheet,
+            es: {},
+            fs: {},
         }, ['melee'], 'attack')
 
         assert.equal(result.total, 0)

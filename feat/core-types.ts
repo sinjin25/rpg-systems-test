@@ -8,12 +8,12 @@ export type FeatAppliesContext = {
 
 export type FeatAppliesFunction = (activeContexts: ContextNames[]) => boolean
 
-// featSheet typed as {} intentionally — FeatSheet is defined downstream of feat instances
+// fs typed as {} intentionally — FeatSheet is defined downstream of feat instances
 export type FeatModRequiredData = {
-    characterSheet: CharacterSheet,
-    featSheet: {},
-    equipmentSheet: {},
-    statusSheet: {},
+    cs: CharacterSheet,
+    fs: {},
+    es: {},
+    ss: {},
 }
 
 export type FeatModFunction = (data?: Partial<FeatModRequiredData>) => number

@@ -10,16 +10,16 @@ export const standardAttackModifierFactory: AttackModifierFuncFactory = (
     data: AttackModifierRequiredData,
 ) => {
     return () => {
-        const { characterSheet, equipmentSheet, featSheet, statusSheet, weapon } = data
+        const { cs, es, fs, ss, weapon } = data
 
         const BASE_CONTEXT = [] as ContextNames[]
         const EQUIPMENT_CONTEXT = extractContextsTags(weapon)
 
-        const bm = namedMod('str', calculateBaseMod(characterSheet.str))
+        const bm = namedMod('str', calculateBaseMod(cs.str))
         const fm = calculateFeatMod({
-            characterSheet,
-            equipmentSheet,
-            featSheet,
+            cs,
+            es,
+            fs,
         }, [
             ...BASE_CONTEXT,
             ...EQUIPMENT_CONTEXT,

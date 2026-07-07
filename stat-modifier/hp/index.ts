@@ -20,11 +20,7 @@ const calculateHp = (data: {
     const broadContextHealth: BroadContexts = 'health'
 
     const allEquipment = Object.values(es)
-    const modData = {
-        characterSheet: cs,
-        equipmentSheet: es,
-        featSheet: fs,
-    }
+    const modData = { cs, es, fs }
 
     // calculate effective con (base + bonuses)
     const conBonusEquip = calculateEquipmentMod(allEquipment, modData, contextTags, broadContextStat)

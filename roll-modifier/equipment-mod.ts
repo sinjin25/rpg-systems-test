@@ -5,9 +5,9 @@ import { equipmentIsWeapon, EquipmentSheet, Weapon } from "../equipment-sheet";
 import calculateEquipmentMod from "../equipment-sheet/equipment-mod";
 
 export type CalculateEquipmentModRequiredData = {
-    characterSheet: CharacterSheet,
-    featSheet: FeatSheet,
-    equipmentSheet: EquipmentSheet,
+    cs: CharacterSheet,
+    fs: FeatSheet,
+    es: EquipmentSheet,
     // only the relevant weapon is counted
     weapon: Weapon,
 }
@@ -17,7 +17,7 @@ export const calculateWeaponEquipmentMod = (
     context: ContextNames[],
     broadContext: BroadContexts,
 ) => {
-    const notWeaponEquipment = Object.values(data.equipmentSheet)
+    const notWeaponEquipment = Object.values(data.es)
         .filter(a => {
             return !(equipmentIsWeapon(a))
         })

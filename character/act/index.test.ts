@@ -9,13 +9,13 @@ import { daggerPlusOne, RingPlusOneFinesseAttack, shortsword, strDagger } from "
 describe('act works with attacks', () => {
     test('Simplest standard attack', () => {
         const result = act({
-            characterSheet: defaultCharacterSheet,
-            equipmentSheet: {
+            cs: defaultCharacterSheet,
+            es: {
                 ...defaultEquipmentSheet,
                 mainhand: shortsword
             },
-            featSheet: defaultFeatSheet,
-            statusSheet: {},
+            fs: defaultFeatSheet,
+            ss: {},
         })
 
         assert.equal(result.length, 1)
@@ -56,10 +56,10 @@ describe('simulation: act works with feats', () => {
         let uniqueOutcomes = 0
         for (let i = 0; i < 10000; i++) {
             const result = act({
-                characterSheet: cs,
-                equipmentSheet: es,
-                featSheet: fs,
-                statusSheet: {},
+                cs,
+                es,
+                fs,
+                ss: {},
             })
             assert.equal(result.length, 1)
 
@@ -112,10 +112,10 @@ describe('simulation: act works with feats', () => {
         let uniqueOutcomes = 0
         for (let i = 0; i < 10000; i++) {
             const result = act({
-                characterSheet: cs,
-                equipmentSheet: es,
-                featSheet: fs,
-                statusSheet: {},
+                cs,
+                es,
+                fs,
+                ss: {},
             })
             assert.equal(result.length, 1)
 
@@ -161,10 +161,10 @@ describe('simulation: act works with feats', () => {
         let uniqueOutcomes = 0
         for (let i = 0; i < 10000; i++) {
             const result = act({
-                characterSheet: cs,
-                equipmentSheet: es,
-                featSheet: fs,
-                statusSheet: {},
+                cs,
+                es,
+                fs,
+                ss: {},
             })
             assert.equal(result.length, 1)
 

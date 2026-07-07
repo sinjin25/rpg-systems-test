@@ -7,10 +7,10 @@ import roll from "../../roll"
 import ModifierLog, { ModLog } from "../../stat-modifier/log"
 
 type ActRequiredData = {
-    characterSheet: CharacterSheet,
-    featSheet: FeatSheet,
-    equipmentSheet: EquipmentSheet,
-    statusSheet: {},
+    cs: CharacterSheet,
+    fs: FeatSheet,
+    es: EquipmentSheet,
+    ss: {},
 }
 
 type StandardActionResult = {
@@ -29,10 +29,10 @@ export const act = (data: ActRequiredData) => {
 
     const actions: Weapon[] = []
 
-    if (weaponIsTwoHanded(data.equipmentSheet)) actions.push(data.equipmentSheet.twohanded as Weapon)
+    if (weaponIsTwoHanded(data.es)) actions.push(data.es.twohanded as Weapon)
     else {
-        if (weaponIsPrimary(data.equipmentSheet)) actions.push(data.equipmentSheet.mainhand as Weapon)
-        if (weaponIsOffhand(data.equipmentSheet)) actions.push(data.equipmentSheet.offhand as Weapon)
+        if (weaponIsPrimary(data.es)) actions.push(data.es.mainhand as Weapon)
+        if (weaponIsOffhand(data.es)) actions.push(data.es.offhand as Weapon)
     }
 
     // resolve actions

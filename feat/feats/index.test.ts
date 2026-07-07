@@ -127,6 +127,7 @@ describe('mod functions work', () => {
                 con: 15,
                 dex: 16,
                 str: 8,
+                level: 1,
             }
         })
 

@@ -24,6 +24,7 @@ describe('factory works', () => {
                 con: 0,
                 dex: 0,
                 str: 0,
+                level: 1,
             },
             equipmentSheet: {},
             featSheet: defaultFeatSheet,

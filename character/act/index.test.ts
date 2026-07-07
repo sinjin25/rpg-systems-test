@@ -4,7 +4,7 @@ import { describe, test, assert, expect } from 'vitest'
 import { defaultEquipmentSheet, EquipmentSheet } from "../../equipment-sheet";
 import { act } from "./index.ts";
 import { featMeleeWeaponFighting } from "../../feat/feats/index.ts";
-import { daggerPlusOne, RingPlusOneFinesseAttack, shortsword } from "../../defaults/equipment/index.ts";
+import { daggerPlusOne, RingPlusOneFinesseAttack, shortsword, strDagger } from "../../defaults/equipment/index.ts";
 
 describe('act works with attacks', () => {
     test('Simplest standard attack', () => {
@@ -78,6 +78,109 @@ describe('simulation: act works with feats', () => {
             }
         }
         /* console.log(outputs, 'unique outcomes', uniqueOutcomes) */
+        assert.equal(pass, true)
+    })
+
+    test('damage roll should be affected by: character, mods, feats, equipment', () => {
+        // +3 (dex mod)
+        const cs: CharacterSheet = {
+            ...defaultCharacterSheet,
+            dex: 16,
+        }
+        // +1 (melee weapon fighting also grants a damage bonus)
+        const fs: FeatSheet = {
+            ...defaultFeatSheet,
+            featMeleeWeaponFighting
+        }
+        // +2 (equipment mods: ring +1, dagger's +1 enhancement)
+        const es: EquipmentSheet = {
+            ...defaultEquipmentSheet,
+            mainhand: daggerPlusOne,
+            ring: RingPlusOneFinesseAttack,
+        }
+        // bm(3) + fm(1) + em(2) = 6
+        const EXPECTED_BONUS = 6
+        // daggerPlusOne rolls pure base dice; its +1 arrives via the equipment mod above
+        const WEAPON_FLAT_BONUS = 0
+        const DAMAGE_DICE_SIDES = 4
+        const canEndEarlyFailure = (result: number) => result < EXPECTED_BONUS + WEAPON_FLAT_BONUS + 1
+        const canEndEarlyPass = (result: number) => result === EXPECTED_BONUS + WEAPON_FLAT_BONUS + DAMAGE_DICE_SIDES
+        const hasEnoughUniqueOutcomes = (result: number) => result === DAMAGE_DICE_SIDES
+
+        let pass = false
+        const outputs: Record<number, number> = {}
+        let uniqueOutcomes = 0
+        for (let i = 0; i < 10000; i++) {
+            const result = act({
+                characterSheet: cs,
+                equipmentSheet: es,
+                featSheet: fs,
+                statusSheet: {},
+            })
+            assert.equal(result.length, 1)
+
+            const damageRoll = result[0].damageRoll
+            if (!outputs[damageRoll]) {
+                outputs[damageRoll] = 1
+                uniqueOutcomes++
+            }
+            else outputs[damageRoll]++
+
+            if (canEndEarlyFailure(damageRoll)) throw Error(`Unexpectedly low number (did not sum up all bonuses): ${damageRoll}`)
+            if (canEndEarlyPass(damageRoll) && hasEnoughUniqueOutcomes(uniqueOutcomes)) {
+                pass = true
+                break;
+            }
+        }
+        assert.equal(pass, true)
+    })
+
+    test('equipment damage can touch the character sheet', () => {
+        const cs: CharacterSheet = {
+            ...defaultCharacterSheet,
+            dex: 10,
+            str: 16
+        }
+        const fs: FeatSheet = {
+            ...defaultFeatSheet
+        }
+        const es: EquipmentSheet = {
+            ...defaultEquipmentSheet,
+            mainhand: strDagger,
+        }
+        // +3 from str from str dagger
+        const EXPECTED_BONUS = 3
+        const DAMAGE_DICE_SIDES = 4
+        // + 1 from min dice roll
+        const canEndEarlyFailure = (result: number) => result < EXPECTED_BONUS + 1
+        const canEndEarlyPass = (result: number) => result === EXPECTED_BONUS + DAMAGE_DICE_SIDES
+        const hasEnoughUniqueOutcomes = (result: number) => result === DAMAGE_DICE_SIDES
+
+        let pass = false
+        const outputs: Record<number, number> = {}
+        let uniqueOutcomes = 0
+        for (let i = 0; i < 10000; i++) {
+            const result = act({
+                characterSheet: cs,
+                equipmentSheet: es,
+                featSheet: fs,
+                statusSheet: {},
+            })
+            assert.equal(result.length, 1)
+
+            const damageRoll = result[0].damageRoll
+            if (!outputs[damageRoll]) {
+                outputs[damageRoll] = 1
+                uniqueOutcomes++
+            }
+            else outputs[damageRoll]++
+
+            if (canEndEarlyFailure(damageRoll)) throw Error(`Unexpectedly low number (did not sum up all bonuses): ${damageRoll}`)
+            if (canEndEarlyPass(damageRoll) && hasEnoughUniqueOutcomes(uniqueOutcomes)) {
+                pass = true
+                break;
+            }
+        }
         assert.equal(pass, true)
     })
 })

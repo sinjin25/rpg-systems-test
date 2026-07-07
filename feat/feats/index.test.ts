@@ -45,6 +45,44 @@ describe('test standard filters', () => {
             filt1(['magic', 'melee']),
             true,
         )
+
+        const filt2 = filtFunc({
+            blacklist: ['ranged'],
+            whitelist: [],
+        })
+
+        // empty whitelist never applies
+        assert.equal(
+            filt2([]),
+            false,
+        )
+
+        assert.equal(
+            filt2(['melee']),
+            false,
+        )
+
+        const filt3 = filtFunc({
+            blacklist: ['ranged'],
+            whitelist: ['all'],
+        })
+
+        // 'all' whitelist applies to everything
+        assert.equal(
+            filt3([]),
+            true,
+        )
+
+        assert.equal(
+            filt3(['melee']),
+            true,
+        )
+
+        // but blacklist still rejects
+        assert.equal(
+            filt3(['ranged']),
+            false,
+        )
     })
 })
 

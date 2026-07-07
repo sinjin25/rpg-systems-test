@@ -16,6 +16,15 @@ export const featMeleeWeaponFighting: Feat = {
             mod: (data = {}) => {
                 return 1
             },
+        },
+        damage: {
+            applies: standardFilters.noBlacklistAnyWhitelistFactory({
+                blacklist: ['ranged', 'magic'],
+                whitelist: ['melee'],
+            }),
+            mod: (data = {}) => {
+                return 1
+            },
         }
     }
 }
@@ -56,7 +65,7 @@ export const featDemoEvenOdd: Feat = {
         attack: {
             applies: standardFilters.noBlacklistAnyWhitelistFactory({
                 blacklist: [],
-                whitelist: []
+                whitelist: ['all']
             }),
             mod: (data) => {
                 if (!data?.characterSheet) return 0
@@ -74,10 +83,26 @@ export const featDemoEvenOdd: Feat = {
     }
 }
 
+export const featAlert: Feat = {
+    displayName: 'DEMO Alert',
+    context: {
+        initiative: {
+            applies: standardFilters.noBlacklistAnyWhitelistFactory({
+                blacklist: [],
+                whitelist: ['all'],
+            }),
+            mod: (data) => {
+                return 4
+            },
+        }
+    }
+}
+
 export const possibleFeats = {
     featMeleeWeaponFighting,
     featFinesseWeaponFighting,
     featConSaves,
+    featAlert,
 }
 
 export type PossibleFeats = typeof possibleFeats

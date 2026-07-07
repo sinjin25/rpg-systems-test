@@ -1,26 +1,13 @@
-import { CharacterSheet, DEFAULT_STAT } from "../character-sheet"
-import { EquipmentSheet, Weapon } from "../equipment-sheet"
-import { FeatSheet } from "../feat"
-import { ContextNames } from "../contexts"
-import calculateBaseMod from "./base-mod"
-import calculateFeatMod from "./feat-mod"
+import { RollModifierFunc, RollModifierFuncFactory, RollModifierRequiredData } from "../roll-modifier/types"
 
 export interface Attack {
     // the base modifiers (before roll, enemy, circumstance, etc.)
     calculateAttackModifier: AttackModifierFunc,
 }
 
-export type AttackModifierRequiredData = {
-    characterSheet: CharacterSheet,
-    featSheet: FeatSheet,
-    equipmentSheet: EquipmentSheet,
-    statusSheet: {},
-    weapon: Weapon,
-}
+export type AttackModifierRequiredData = RollModifierRequiredData
 
-export type AttackModifierFunc = () => number
+export type AttackModifierFunc = RollModifierFunc
 
-export type AttackModifierFuncFactory = (
-    data: AttackModifierRequiredData,
-) => AttackModifierFunc
+export type AttackModifierFuncFactory = RollModifierFuncFactory
 

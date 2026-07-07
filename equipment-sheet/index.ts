@@ -1,22 +1,22 @@
-import { ContextNames, BroadContexts, EquipmentContextNames } from "../contexts"
+import { ContextNames, EquipmentContextNames } from "../contexts"
 import { dagger } from "../defaults/equipment"
-import { FeatAppliesFunction, FeatModFunction } from "../feat/core-types"
+import { FeatContext, FeatModRequiredData } from "../feat/core-types"
+
+export { createEquipment } from "./create-equipment.ts"
+export type { CreateEquipmentInput } from "./create-equipment.ts"
 
 export type { EquipmentContextNames }
 export type EquipmentSlot = 'mainhand' | 'offhand' | 'twohanded' | 'armor' | 'ring' | 'amulet'
 
-export type DamageRollFunc = () => number
+export type DamageRollFunc = (data?: Partial<FeatModRequiredData>) => number
 
 export type BaseEquipment = {
     displayName: string,
     description?: string,
     contexts: Array<ContextNames | EquipmentContextNames>,
-    generateAdditionalContexts?: {
-        [K in BroadContexts]?: {
-            applies: FeatAppliesFunction,
-            mod: FeatModFunction,
-        }
-    }
+    // each entry is an independent mod source with an applies function key and a mod function key
+    // this has nothing to do with Feats specifically
+    generateAdditionalContexts?: FeatContext[],
 }
 
 export type Weapon = BaseEquipment & {

@@ -1,15 +1,15 @@
 import { ContextNames } from "../../contexts"
 import { extractContextsTags } from "../../equipment-sheet/extract"
 import { calculateBaseMod } from "../../stat-modifier"
-import { calculateWeaponEquipmentMod } from "../../roll-modifier/equipment-mod"
 import calculateFeatMod from "../../roll-modifier/feat-mod"
-import { AttackModifierFuncFactory, AttackModifierRequiredData } from "../types"
+import { calculateWeaponEquipmentMod } from "../../roll-modifier/equipment-mod"
+import { RollModifierFuncFactory, RollModifierRequiredData } from "../../roll-modifier/types"
 
-export const standardAttackModifierFactory: AttackModifierFuncFactory = (
-    data: AttackModifierRequiredData,
+export const standardDamageModifierFactory: RollModifierFuncFactory = (
+    data: RollModifierRequiredData,
 ) => {
     return () => {
-        const { characterSheet, equipmentSheet, featSheet, statusSheet, weapon } = data
+        const { characterSheet, equipmentSheet, featSheet, weapon } = data
 
         const BASE_CONTEXT = [] as ContextNames[]
         const EQUIPMENT_CONTEXT = extractContextsTags(weapon)
@@ -22,12 +22,12 @@ export const standardAttackModifierFactory: AttackModifierFuncFactory = (
         }, [
             ...BASE_CONTEXT,
             ...EQUIPMENT_CONTEXT,
-        ], 'attack')
+        ], 'damage')
 
-        const em = calculateWeaponEquipmentMod(data, BASE_CONTEXT, 'attack')
+        const em = calculateWeaponEquipmentMod(data, BASE_CONTEXT, 'damage')
 
         return bm + fm + em
     }
 }
 
-export default standardAttackModifierFactory
+export default standardDamageModifierFactory

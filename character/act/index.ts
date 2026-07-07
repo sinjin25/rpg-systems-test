@@ -1,4 +1,5 @@
-import { calculateBaseMod, finesseAttackModifierFactory, standardAttackModifierFactory } from "../../attack"
+import { finesseAttackModifierFactory, standardAttackModifierFactory } from "../../attack"
+import { finesseDamageModifierFactory, standardDamageModifierFactory } from "../../damage"
 import { CharacterSheet } from "../../character-sheet"
 import { equipmentIsWeapon, EquipmentSheet, Weapon } from "../../equipment-sheet"
 import { FeatSheet } from "../../feat"
@@ -16,31 +17,19 @@ type StandardActionResult = {
     damageRoll: number,
 }
 
-/* const standardAction = (data: ActRequiredData, relevantEquipment: Weapon) => {
-    if (relevantEquipment.contexts.includes('finesse')) return {
-        attack: finesseAttackModifierFactory(data),
-        damage: relevantEquipment.damage
-    }
-} */
+const weaponIsTwoHanded = (es: EquipmentSheet) => es.twohanded && equipmentIsWeapon(es.twohanded)
+const weaponIsPrimary = (es: EquipmentSheet) => es.mainhand && equipmentIsWeapon(es.mainhand)
+const weaponIsOffhand = (es: EquipmentSheet) => es.offhand && equipmentIsWeapon(es.offhand)
 
 export const act = (data: ActRequiredData) => {
     // you just attack right now
 
     const actions: Weapon[] = []
-    if (data.equipmentSheet.twohanded
-        && equipmentIsWeapon(data.equipmentSheet.twohanded)
-    ) {
-        actions.push(data.equipmentSheet.twohanded)
-    } else if (data.equipmentSheet.mainhand
-        && equipmentIsWeapon(data.equipmentSheet.mainhand)
-    ) {
-        actions.push(data.equipmentSheet.mainhand)
-    }
 
-    if (data.equipmentSheet.offhand
-        && equipmentIsWeapon(data.equipmentSheet.offhand)
-    ) {
-        actions.push(data.equipmentSheet.offhand)
+    if (weaponIsTwoHanded(data.equipmentSheet)) actions.push(data.equipmentSheet.twohanded as Weapon)
+    else {
+        if (weaponIsPrimary(data.equipmentSheet)) actions.push(data.equipmentSheet.mainhand as Weapon)
+        if (weaponIsOffhand(data.equipmentSheet)) actions.push(data.equipmentSheet.offhand as Weapon)
     }
 
     // resolve actions
@@ -60,10 +49,15 @@ export const act = (data: ActRequiredData) => {
             })() + roll(20)
 
         const damageRoll = item.contexts.includes('finesse')
-            ? item.damage() + calculateBaseMod(data.characterSheet.dex)
-            : item.damage() + calculateBaseMod(data.characterSheet.str)
+            ? item.damage(data) + finesseDamageModifierFactory({
+                ...data,
+                weapon: item,
+            })()
+            : item.damage(data) + standardDamageModifierFactory({
+                ...data,
+                weapon: item,
+            })()
 
-        /* console.log('this ran a finesse attack?', item.contexts.includes('finesse')) */
         results.push({
             attackRoll,
             damageRoll,

@@ -7,6 +7,7 @@ export const defaultCharacterSheet: CharacterSheet = {
     con: 15,
     str: 15,
     dex: 15,
+    level: 1,
 }
 
 export const defaultUseCharacterSheet: UseCharacterSheet = {

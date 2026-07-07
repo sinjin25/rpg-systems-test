@@ -48,21 +48,30 @@ describe('calculateInitiativeMod', () => {
         assert.equal(calc.total, 4)
     })
 
-    test('log records the initiative sources', () => {
-        const { log } = calculateInitiativeMod({
+    test('log records the initiative sources per group', () => {
+        const { log, total } = calculateInitiativeMod({
             cs: defaultCharacterSheet,
             es: { ring: RingPlusTwoDex },
             fs: { featAlert },
             ss: {},
         })
 
-        assert.equal(log.mods.length, 3)
+        assert.deepEqual(log.groups.map(g => g.displayName), ['dexterity', 'feats', 'equipment'])
 
-        assert.isTrue(log.mods.some(findDisplayName('dexterity')))
-        assert.isTrue(log.mods.some(findDisplayName('feats')))
-        assert.isTrue(log.mods.some(findDisplayName('equipment')))
+        // the individual feat shows up by name inside the feats group
+        const featGroup = log.groups.find(g => g.displayName === 'feats')!
+        assert.deepEqual(featGroup.entries, [
+            { displayName: featAlert.displayName, amount: 4 },
+        ])
 
-        assert.isTrue(typeof log.finalResult().total === 'number')
+        // the ring's +2 dex is halved inside the dex modifier, so it appears
+        // as detail on the dexterity entry rather than as an additive entry
+        const dexGroup = log.groups.find(g => g.displayName === 'dexterity')!
+        assert.deepEqual(dexGroup.entries[0].detail, [
+            { displayName: RingPlusTwoDex.displayName, amount: 2 },
+        ])
+
+        assert.equal(log.finalResult().total, total)
     })
 })
 

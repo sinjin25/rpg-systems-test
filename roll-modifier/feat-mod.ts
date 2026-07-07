@@ -19,6 +19,7 @@ export const calculateFeatMod = (
     return applyContextMod(
         allFeats,
         feat => feat.context,
+        feat => feat.displayName,
         data,
         context,
         broadContext,

@@ -22,7 +22,7 @@ describe('standard functionality', () => {
         })
 
         const result = std()
-        assert.equal(result, 2)
+        assert.equal(result.total, 2)
     })
 
     test('scales off strength, not dex', () => {
@@ -40,7 +40,7 @@ describe('standard functionality', () => {
         })
 
         const result = standard()
-        assert.equal(result, 0)
+        assert.equal(result.total, 0)
     })
 
     // the weapon's own context tags are passed to the feat reducer,
@@ -65,7 +65,7 @@ describe('standard functionality', () => {
 
         // bm(2) + fm(1, shortsword is tagged melee)
         const result = standard()
-        assert.equal(result, 3)
+        assert.equal(result.total, 3)
     })
 
     test('weapon enhancement applies to damage through the equipment mod', () => {
@@ -84,6 +84,6 @@ describe('standard functionality', () => {
 
         // bm(2) + em(1, the dagger's +1 enhancement)
         const result = standard()
-        assert.equal(result, 3)
+        assert.equal(result.total, 3)
     })
 })

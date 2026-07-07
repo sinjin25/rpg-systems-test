@@ -11,7 +11,8 @@ export const calculateEquipmentMod = <D extends Partial<FeatModRequiredData>>(
 ) => {
     return applyContextMod(
         equipment.flatMap(equip => equip?.generateAdditionalContexts ?? []),
-        contextMap => contextMap,
+        source => source.context,
+        source => source.displayName,
         data,
         context,
         broadContext,

@@ -26,7 +26,7 @@ describe('Correctly filters', () => {
             weapon: es.mainhand!
         }, contexts, 'attack')
 
-        assert.equal(result, 2)
+        assert.equal(result.total, 2)
     })
     test('correctly filters wrong inapplicable equipment', () => {
         // in this test, the finesse ring should not apply because the contexts isn't right (it should still find the ring though)
@@ -46,6 +46,6 @@ describe('Correctly filters', () => {
             weapon: es.mainhand!
         }, contexts, 'attack')
 
-        assert.equal(result, 0)
+        assert.equal(result.total, 0)
     })
 })

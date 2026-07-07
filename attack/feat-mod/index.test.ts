@@ -22,7 +22,7 @@ describe('Correctly filters', () => {
         const result = runTheTest()
 
         assert.equal(
-            result,
+            result.total,
             1,
         )
 
@@ -38,7 +38,7 @@ describe('Correctly filters', () => {
         )
         const result2 = runTheTest()
         assert.equal(
-            result2,
+            result2.total,
             2,
         )
     })

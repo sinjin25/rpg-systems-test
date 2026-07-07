@@ -19,13 +19,18 @@ describe('calculateFeatMod', () => {
             }, contexts, broad)
 
         // melee weapon fighting grants +1 to both attack and damage in melee
-        assert.equal(run(['melee'], 'attack'), 1)
-        assert.equal(run(['melee'], 'damage'), 1)
+        assert.equal(run(['melee'], 'attack').total, 1)
+        assert.equal(run(['melee'], 'damage').total, 1)
         // but not out of context
-        assert.equal(run(['ranged'], 'attack'), 0)
+        assert.equal(run(['ranged'], 'attack').total, 0)
         // con saves feat only touches the save broad context
-        assert.equal(run(['constitution'], 'save'), 1)
-        assert.equal(run(['constitution'], 'attack'), 0)
+        assert.equal(run(['constitution'], 'save').total, 1)
+        assert.equal(run(['constitution'], 'attack').total, 0)
+
+        // each contributing feat is named in the entries
+        assert.deepEqual(run(['melee'], 'attack').entries, [
+            { displayName: featMeleeWeaponFighting.displayName, amount: 1 },
+        ])
     })
 
     test('empty feat sheet contributes nothing', () => {
@@ -35,6 +40,7 @@ describe('calculateFeatMod', () => {
             featSheet: {},
         }, ['melee'], 'attack')
 
-        assert.equal(result, 0)
+        assert.equal(result.total, 0)
+        assert.deepEqual(result.entries, [])
     })
 })

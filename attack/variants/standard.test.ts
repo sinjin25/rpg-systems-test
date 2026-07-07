@@ -22,7 +22,7 @@ describe('standard functionality', () => {
         })
 
         const result = std()
-        assert.equal(result, 2)
+        assert.equal(result.total, 2)
     })
 })
 
@@ -42,7 +42,7 @@ describe('Can be extended', () => {
         })
 
         const result = standard()
-        assert.equal(result, 0)
+        assert.equal(result.total, 0)
     })
     test('Can get a negative modifier', () => {
         const standard = standardAttackModifierFactory({
@@ -59,7 +59,7 @@ describe('Can be extended', () => {
         })
 
         const result = standard()
-        assert.equal(result, -1)
+        assert.equal(result.total, -1)
     })
     test('is not affected by finesse changes', () => {
         const standard = standardAttackModifierFactory({
@@ -78,6 +78,6 @@ describe('Can be extended', () => {
             weapon: shortsword,
         })
 
-        assert.equal(standard(), 0)
+        assert.equal(standard().total, 0)
     })
 })

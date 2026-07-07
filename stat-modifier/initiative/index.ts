@@ -30,20 +30,28 @@ export const calculateInitiativeMod = (data: InitiativeData) => {
     }
 
     // calculate effective dex (base + bonuses)
-    const dexBonus = calculateEquipmentMod(allEquipment, modData, contextTags, broadContextStat)
-        + calculateFeatMod(modData, contextTags, broadContextStat)
-    const dexMod = calculateModifier(cs.dex, [dexBonus])
+    const dexBonusEquip = calculateEquipmentMod(allEquipment, modData, contextTags, broadContextStat)
+    const dexBonusFeat = calculateFeatMod(modData, contextTags, broadContextStat)
+    const dexMod = calculateModifier(cs.dex, [dexBonusEquip.total + dexBonusFeat.total])
 
     // calculate flat initiative bonuses
     const fm = calculateFeatMod(modData, [], broadContextInitiative)
     const em = calculateEquipmentMod(allEquipment, modData, [], broadContextInitiative)
 
-    log.addMod({ displayName: 'dexterity', amount: dexMod })
-    log.addMod({ displayName: 'feats', amount: fm })
-    log.addMod({ displayName: 'equipment', amount: em })
+    // stat bonuses are halved inside calculateModifier, so they are detail, not additive entries
+    log.addModGroup('dexterity', {
+        total: dexMod,
+        entries: [{
+            displayName: 'dex modifier',
+            amount: dexMod,
+            detail: [...dexBonusEquip.entries, ...dexBonusFeat.entries],
+        }],
+    })
+    log.addModGroup('feats', fm)
+    log.addModGroup('equipment', em)
 
     return {
-        total: dexMod + fm + em,
+        total: dexMod + fm.total + em.total,
         log,
     }
 }

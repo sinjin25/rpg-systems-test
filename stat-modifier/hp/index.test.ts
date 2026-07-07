@@ -75,20 +75,43 @@ describe('calculateHp', () => {
         assert.equal(calc.total, 11)
     })
 
-    test('log records the health sources', () => {
-        const { log } = calculateHp({
+    test('log records the health sources per group', () => {
+        const { log, total } = calculateHp({
             cs: defaultCharacterSheet,
             es: { ring: RingPlusTenHealth },
             fs: {},
             ss: {},
         })
 
-        assert.equal(log.mods.length, 3)
+        assert.deepEqual(log.groups.map(g => g.displayName), ['base health', 'feats', 'equipment'])
 
-        assert.isTrue(log.mods.some(findDisplayName('base health')))
-        assert.isTrue(log.mods.some(findDisplayName('feats')))
-        assert.isTrue(log.mods.some(findDisplayName('equipment')))
+        // the individual item shows up by name inside the equipment group
+        const equipGroup = log.groups.find(g => g.displayName === 'equipment')!
+        assert.deepEqual(equipGroup.entries, [
+            { displayName: RingPlusTenHealth.displayName, amount: 10 },
+        ])
 
-        assert.isTrue(typeof log.finalResult().total === 'number')
+        assert.equal(log.finalResult().total, total)
+    })
+
+    test('log details the con bonuses feeding base health', () => {
+        const { log } = calculateHp({
+            cs: {
+                ...defaultCharacterSheet,
+                con: 10,
+                level: 1,
+            },
+            es: { ring: RingPlusTwoCon },
+            fs: {},
+            ss: {},
+        })
+
+        // the ring's +2 con is halved inside the con modifier, so it appears
+        // as detail on the base health entry rather than as an additive entry
+        const baseGroup = log.groups.find(g => g.displayName === 'base health')!
+        assert.equal(baseGroup.total, 11)
+        assert.deepEqual(baseGroup.entries[0].detail, [
+            { displayName: RingPlusTwoCon.displayName, amount: 2 },
+        ])
     })
 })

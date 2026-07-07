@@ -16,7 +16,7 @@ describe('factory works', () => {
         })
 
         const result = myFunc()
-        assert.equal(result, 2)
+        assert.equal(result.total, 2)
     })
     test('works with arbitrary sheets', () => {
         const myFunc = finesseDamageModifierFactory({
@@ -33,7 +33,7 @@ describe('factory works', () => {
         })
 
         const result = myFunc()
-        assert.equal(result, -5)
+        assert.equal(result.total, -5)
     })
     test('works with feat sheets', () => {
         const fs: FeatSheet = {
@@ -52,7 +52,7 @@ describe('factory works', () => {
         })
 
         const beforeFeat = myFunc()
-        assert.equal(beforeFeat, 3)
+        assert.equal(beforeFeat.total, 3)
 
         addFeat({
             characterSheet: cs,
@@ -62,7 +62,13 @@ describe('factory works', () => {
         })
 
         const afterFeat = myFunc()
-        assert.equal(afterFeat - beforeFeat, 1)
+        assert.equal(afterFeat.total - beforeFeat.total, 1)
+
+        // the feat shows up by name in the feat mod group
+        const featGroup = afterFeat.groups.find(g => g.displayName === 'feat mod')!
+        assert.deepEqual(featGroup.entries, [
+            { displayName: fs.featMeleeWeaponFighting!.displayName, amount: 1 },
+        ])
     })
     test('works with equipment mods', () => {
         const cs: CharacterSheet = {
@@ -84,6 +90,17 @@ describe('factory works', () => {
 
         // bm(3) + em(1, ring applies via finesse context)
         const result = myFunc()
-        assert.equal(result, 4)
+        assert.equal(result.total, 4)
+
+        // the player-facing group-by breakdown
+        assert.deepEqual(result.groups.map(g => g.displayName), ['base mod', 'feat mod', 'equipment mod'])
+
+        const baseGroup = result.groups.find(g => g.displayName === 'base mod')!
+        assert.deepEqual(baseGroup.entries, [{ displayName: 'dex', amount: 3 }])
+
+        const equipGroup = result.groups.find(g => g.displayName === 'equipment mod')!
+        assert.deepEqual(equipGroup.entries, [
+            { displayName: RingPlusOneFinesseAttack.displayName, amount: 1 },
+        ])
     })
 })

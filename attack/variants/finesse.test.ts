@@ -16,7 +16,7 @@ describe('factory works', () => {
         })
 
         const result = myFunc()
-        assert.equal(result, 2)
+        assert.equal(result.total, 2)
     })
     test('works with arbitrary sheets', () => {
         const myFunc = finesseAttackModifierFactory({
@@ -33,7 +33,7 @@ describe('factory works', () => {
         })
 
         const result = myFunc()
-        assert.equal(result, -5)
+        assert.equal(result.total, -5)
     })
     test('works with feat sheets', () => {
         const fs: FeatSheet = {
@@ -52,7 +52,7 @@ describe('factory works', () => {
         })
 
         const beforeFeat = myFunc()
-        assert.equal(beforeFeat, 3)
+        assert.equal(beforeFeat.total, 3)
 
         addFeat({
             characterSheet: cs,
@@ -62,6 +62,6 @@ describe('factory works', () => {
         })
 
         const afterFeat = myFunc()
-        assert.equal(afterFeat - beforeFeat, 1)
+        assert.equal(afterFeat.total - beforeFeat.total, 1)
     })
 })

@@ -10,13 +10,19 @@ export type EquipmentSlot = 'mainhand' | 'offhand' | 'twohanded' | 'armor' | 'ri
 
 export type DamageRollFunc = (data?: Partial<FeatModRequiredData>) => number
 
+// an independent mod source that carries its own display name for logging
+export type NamedModContext = {
+    displayName: string,
+    context: FeatContext,
+}
+
 export type BaseEquipment = {
     displayName: string,
     description?: string,
     contexts: Array<ContextNames | EquipmentContextNames>,
     // each entry is an independent mod source with an applies function key and a mod function key
     // this has nothing to do with Feats specifically
-    generateAdditionalContexts?: FeatContext[],
+    generateAdditionalContexts?: NamedModContext[],
 }
 
 export type Weapon = BaseEquipment & {

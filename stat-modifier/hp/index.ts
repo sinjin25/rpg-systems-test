@@ -27,9 +27,9 @@ const calculateHp = (data: {
     }
 
     // calculate effective con (base + bonuses)
-    const conBonus = calculateEquipmentMod(allEquipment, modData, contextTags, broadContextStat)
-        + calculateFeatMod(modData, contextTags, broadContextStat)
-    const conMod = calculateModifier(cs.con, [conBonus])
+    const conBonusEquip = calculateEquipmentMod(allEquipment, modData, contextTags, broadContextStat)
+    const conBonusFeat = calculateFeatMod(modData, contextTags, broadContextStat)
+    const conMod = calculateModifier(cs.con, [conBonusEquip.total + conBonusFeat.total])
 
     // calculate base health off con and level
     const PER_LEVEL = 10
@@ -39,12 +39,20 @@ const calculateHp = (data: {
     const fm = calculateFeatMod(modData, [], broadContextHealth)
     const em = calculateEquipmentMod(allEquipment, modData, [], broadContextHealth)
 
-    log.addMod({ displayName: 'base health', amount: baseHealth })
-    log.addMod({ displayName: 'feats', amount: fm })
-    log.addMod({ displayName: 'equipment', amount: em })
+    // con bonuses are halved inside calculateModifier, so they are detail, not additive entries
+    log.addModGroup('base health', {
+        total: baseHealth,
+        entries: [{
+            displayName: 'base health',
+            amount: baseHealth,
+            detail: [...conBonusEquip.entries, ...conBonusFeat.entries],
+        }],
+    })
+    log.addModGroup('feats', fm)
+    log.addModGroup('equipment', em)
 
     return {
-        total: baseHealth + fm + em,
+        total: baseHealth + fm.total + em.total,
         log,
     }
 }

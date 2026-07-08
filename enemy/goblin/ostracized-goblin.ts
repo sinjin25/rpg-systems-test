@@ -20,7 +20,7 @@ const ostracizedGoblin: Owner = {
     es: {
         ...defaultEquipmentSheet,
         mainhand: clawSmall,
-        armor: naturalAc(6)
+        armor: naturalAc(8)
     }
 }
 

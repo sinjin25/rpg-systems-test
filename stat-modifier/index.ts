@@ -1,4 +1,5 @@
 export const DEFAULT_STAT = 10
+export const DEFAULT_AC = 10
 
 const halveMod = (val: number): number =>
     val >= 0 ? Math.floor(val / 2) : Math.ceil(val / 2)

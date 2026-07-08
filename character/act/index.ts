@@ -13,7 +13,7 @@ type ActRequiredData = {
     ss: {},
 }
 
-type StandardActionResult = {
+export type StandardActionResult = {
     attackRoll: number,
     damageRoll: number,
     attackLog: ModLog,

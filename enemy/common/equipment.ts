@@ -6,3 +6,11 @@ export const clawSmall = createEquipment({
     contexts: ['melee', 'natural'],
     damage: () => roll(4)
 })
+
+export const naturalAc = (amnt: number) => {
+    return createEquipment({
+        displayName: 'claw (small)',
+        contexts: ['natural'],
+        ac: amnt
+    })
+}

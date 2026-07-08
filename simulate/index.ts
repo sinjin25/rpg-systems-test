@@ -1,5 +1,5 @@
 import { act } from "../character/act"
-import instantiateActor, { Actor, instantiateHealth, instantiateSpeed, Owner } from "../character/actor"
+import instantiateActor, { Actor, instantiateAc, instantiateHealth, instantiateSpeed, Owner } from "../character/actor"
 import { round, STANDARD_SPEED } from "../speed"
 
 const instantiateParticipants = (
@@ -12,6 +12,7 @@ const instantiateParticipants = (
             owner: part,
             health: instantiateHealth(part),
             speed: instantiateSpeed(part),
+            ac: instantiateAc(part),
         })
     }
 
@@ -35,6 +36,9 @@ const chooseTarget = (actors: Actor[]) => {
     if (targets.length === 0) return undefined
     return targets[0]
 }
+
+// per readme.md: "if the actor rolls high enough, damage applies"
+export const attackHits = (attackRoll: number, ac: number): boolean => attackRoll >= ac
 
 // massively simplified and wrong
 const tempAnyActorAlive = (
@@ -131,13 +135,13 @@ export const simulateFight = (
             }
 
             // find the first alive person
-            // just assume it hits for now
             const targetTeam = ownerIsMemberOf(theActor.owner, playerActors) ? enemyActors : playerActors
             const target = chooseTarget(targetTeam)
 
             // all actions focus one target for a round
             action.forEach(a => {
                 if (!target) return
+                if (!attackHits(a.attackRoll, target.ac)) return
                 target.health.curr -= a.damageRoll
             })
             if (target && target.health.curr <= 0) target.speed.canAct = false

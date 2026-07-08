@@ -98,11 +98,27 @@ export const featAlert: Feat = {
     }
 }
 
+export const featDodgy: Feat = {
+    displayName: 'DEMO Dodgy',
+    context: {
+        ac: {
+            applies: standardFilters.noBlacklistAnyWhitelistFactory({
+                blacklist: [],
+                whitelist: ['all'],
+            }),
+            mod: (data) => {
+                return 4
+            },
+        }
+    }
+}
+
 export const possibleFeats = {
     featMeleeWeaponFighting,
     featFinesseWeaponFighting,
     featConSaves,
     featAlert,
+    featDodgy,
 }
 
 export type PossibleFeats = typeof possibleFeats

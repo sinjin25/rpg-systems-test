@@ -1,5 +1,5 @@
 import { describe, test, assert, afterEach } from 'vitest'
-import { simulateFight, worldState } from './index.ts'
+import { simulateFight, worldState, attackHits } from './index.ts'
 import { defaultCharacterSheet, defaultEnemySheet } from '../character-sheet/index.ts'
 import { defaultFeatSheet } from '../feat/index.ts'
 import { defaultEquipmentSheet } from '../equipment-sheet/index.ts'
@@ -30,6 +30,20 @@ describe('simulateFight', () => {
                 enemy: [defaultEnemy],
             })
         })
+    })
+})
+
+describe('attackHits', () => {
+    test('a roll equal to ac hits', () => {
+        assert.isTrue(attackHits(15, 15))
+    })
+
+    test('a roll below ac misses', () => {
+        assert.isFalse(attackHits(14, 15))
+    })
+
+    test('a roll above ac hits', () => {
+        assert.isTrue(attackHits(20, 5))
     })
 })
 

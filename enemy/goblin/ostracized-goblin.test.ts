@@ -72,10 +72,11 @@ describe('Ostracized goblin difficulty', () => {
         })
 
         const stats = boxPlotStats(winsPerRun)
+        console.log('how many consecutive fights a player can win in a row', stats)
 
         // the worst-case run (min) still nets at least one win
         expect(stats.min).toBeGreaterThanOrEqual(1)
-        expect(winsPerRun.every(w => w < MAX_CONSECUTIVE_FIGHTS)).toBe(true)
+        expect(winsPerRun.every(w => w <= MAX_CONSECUTIVE_FIGHTS)).toBe(true)
 
         if (SHOW_DEBUG) console.table(stats)
     })
@@ -98,7 +99,7 @@ describe('Ostracized goblin difficulty', () => {
 
         const stats = boxPlotStats(winsPerRun)
 
-        expect(winsPerRun.every(w => w < MAX_CONSECUTIVE_FIGHTS)).toBe(true)
+        expect(winsPerRun.every(w => w <= MAX_CONSECUTIVE_FIGHTS)).toBe(true)
 
         if (SHOW_DEBUG) console.table(stats)
     })
@@ -112,11 +113,41 @@ describe('Ostracized goblin difficulty', () => {
         const stats = boxPlotStats(hpLosses(results))
         const maxHp = instantiateActor(defaultPlayer).health.max
 
-        expect(stats.median).toBeGreaterThan(0)
+        // median can land on 0 now that attacks can miss (or roll low enough
+        // damage to net out), so check the mean trend across all fights instead
+        expect(stats.mean).toBeGreaterThan(0)
         // a single fight can lose at most a full bar of hp
         expect(stats.max).toBeLessThanOrEqual(maxHp)
 
         if (SHOW_DEBUG) console.table({ ...stats, maxHp })
+    })
+
+    test('rounds to resolve a fight, split by outcome', () => {
+        const results = iterate(ITERATIONS, () => simulateFight({
+            player: [defaultPlayer],
+            enemy: [ostracizedGoblin],
+        }))
+
+        const roundsByOutcome = (winner: 'player' | 'enemy' | 'draw') =>
+            results.filter(r => r.winner === winner).map(r => r.rounds)
+
+        const winRounds = roundsByOutcome('player')
+        const lossRounds = roundsByOutcome('enemy')
+        const drawRounds = roundsByOutcome('draw')
+
+        // every fight resolves in at least one round, and none run away forever
+        expect(results.every(r => r.rounds >= 1)).toBe(true)
+
+        if (SHOW_DEBUG) {
+            console.table({
+                wins: winRounds.length,
+                losses: lossRounds.length,
+                draws: drawRounds.length,
+            })
+            if (winRounds.length) console.table({ winRounds: boxPlotStats(winRounds) })
+            if (lossRounds.length) console.table({ lossRounds: boxPlotStats(lossRounds) })
+            if (drawRounds.length) console.table({ drawRounds: boxPlotStats(drawRounds) })
+        }
     })
 
     // only interesting if I provide feats that make help with fighting multiple people

@@ -1,5 +1,6 @@
 import { BroadContexts, ContextNames } from "../contexts"
 import { CharacterSheet } from "../character-sheet"
+import { StatusSheet } from "../status-sheet/types"
 
 export type FeatAppliesContext = {
     whitelist: ContextNames[],
@@ -13,7 +14,7 @@ export type FeatModRequiredData = {
     cs: CharacterSheet,
     fs: {},
     es: {},
-    ss: {},
+    ss: StatusSheet,
 }
 
 export type FeatModFunction = (data?: Partial<FeatModRequiredData>) => number

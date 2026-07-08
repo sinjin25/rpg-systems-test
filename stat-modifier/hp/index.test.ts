@@ -83,7 +83,7 @@ describe('calculateHp', () => {
             ss: {},
         })
 
-        assert.deepEqual(log.groups.map(g => g.displayName), ['base health', 'feats', 'equipment'])
+        assert.deepEqual(log.groups.map(g => g.displayName), ['base health', 'feats', 'equipment', 'statuses'])
 
         // the individual item shows up by name inside the equipment group
         const equipGroup = log.groups.find(g => g.displayName === 'equipment')!

@@ -1,6 +1,7 @@
 import { act } from "../character/act"
 import instantiateActor, { Actor, instantiateAc, instantiateHealth, instantiateSpeed, Owner } from "../character/actor"
 import { round, STANDARD_SPEED } from "../speed"
+import { decayActionsElapsed, decayEnemyKilled, decaySaveSucceeded } from "../status-sheet/decay"
 
 const instantiateParticipants = (
     participants: Owner[],
@@ -122,6 +123,7 @@ export const simulateFight = (
     let rounds = 0
     while (tempAnyActorAlive(enemyActors) && tempAnyActorAlive(playerActors)) {
         rounds++
+        actors.forEach(a => decaySaveSucceeded(a.owner))
         const acting = round({
             participants: actors,
             speedSum: STANDARD_SPEED,
@@ -134,6 +136,7 @@ export const simulateFight = (
 
             // roll
             const action = act(theActor.owner)
+            decayActionsElapsed(theActor.owner.ss, 1)
             if (verbose) {
                 console.log(`${theActor.owner.cs?.flavorSheet?.displayName || 'Someone'} rolled`)
                 console.table(action)
@@ -151,7 +154,10 @@ export const simulateFight = (
                 const isCrit = a.attackLog.finalResult().roll === 20
                 target.health.curr -= isCrit ? a.damageRoll * 2 : a.damageRoll
             })
-            if (target && target.health.curr <= 0) target.speed.canAct = false
+            if (target && target.health.curr <= 0) {
+                target.speed.canAct = false
+                decayEnemyKilled(actors.map(a => a.owner), target)
+            }
         }
     }
 

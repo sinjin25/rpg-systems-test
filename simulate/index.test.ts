@@ -7,6 +7,7 @@ import instantiateActor, { Owner } from '../character/actor/index.ts'
 import { featAlert } from '../feat/feats/index.ts'
 import rollInitiative from '../stat-modifier/initiative/index.ts'
 import { setSeed, clearSeed } from '../roll/index.ts'
+import { round, STANDARD_SPEED } from '../speed/index.ts'
 
 const defaultPlayer: Owner = {
     cs: defaultCharacterSheet,
@@ -30,6 +31,20 @@ describe('simulateFight', () => {
                 enemy: [defaultEnemy],
             })
         })
+    })
+
+    test('decays an actions-elapsed status on an actor once they act', () => {
+        const actor = instantiateActor(defaultPlayer)
+        actor.owner.ss.test = { displayName: 'test', context: {}, expiration: { kind: 'actions-elapsed', remaining: 1 } }
+
+        // a completed fight (>0 rounds) guarantees the player acted at least once
+        const result = simulateFight({
+            player: [actor],
+            enemy: [defaultEnemy],
+        })
+
+        assert.isAbove(result.rounds, 0)
+        assert.notProperty(actor.owner.ss, 'test')
     })
 })
 
@@ -118,5 +133,23 @@ describe('worldState', () => {
         // fails before the first round ever runs
         assert.equal(result.rounds, 0)
         assert.equal(result.winner, 'enemy')
+    })
+})
+
+describe('flat-footed', () => {
+    test('every actor starts flat-footed and loses it once enough speed elapses to act', () => {
+        const actor = instantiateActor(defaultPlayer)
+        assert.property(actor.owner.ss, 'flatFooted')
+
+        const roundData = {
+            participants: [{ owner: actor.owner, speed: actor.speed }],
+            speedSum: STANDARD_SPEED,
+        }
+
+        // running enough rounds guarantees the actor eventually acts, since
+        // flat-footed's duration is seeded to expire exactly at that point
+        for (let i = 0; i < 200 && actor.owner.ss.flatFooted; i++) round(roundData)
+
+        assert.notProperty(actor.owner.ss, 'flatFooted')
     })
 })

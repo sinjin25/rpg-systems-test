@@ -2,6 +2,8 @@ import { describe, test, assert, expect } from 'vitest'
 import instantiateActor, { instantiateHealth, instantiateSpeed } from './index.ts'
 import { defaultCharacterSheet } from '../../character-sheet/index.ts'
 import { RingPlusTenHealth } from '../../defaults/equipment/index.ts'
+import { STANDARD_SPEED } from '../../speed/index.ts'
+import { StatusSheet } from '../../status-sheet/index.ts'
 
 describe('instantiateHealth', () => {
     test('derives max hp from con and level', () => {
@@ -53,6 +55,16 @@ describe('instantiateSpeed', () => {
             cs: defaultCharacterSheet, es: {}, fs: {}, ss: {}
         })
         assert.isTrue(Number.isFinite(speed.remainder))
+    })
+
+    test('instantiateSpeed adds the flatFooted effect', () => {
+        const owner = { cs: defaultCharacterSheet, es: {}, fs: {}, ss: {} as StatusSheet }
+        const speed = instantiateSpeed(owner)
+
+        assert.property(owner.ss, 'flatFooted')
+        const status = owner.ss.flatFooted
+        assert.equal(status.expiration.kind, 'speed-elapsed')
+        assert.equal((status.expiration as any).remaining, STANDARD_SPEED - speed.remainder)
     })
 })
 

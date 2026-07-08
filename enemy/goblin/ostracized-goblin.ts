@@ -2,6 +2,7 @@ import { defaultCharacterSheet, defaultEnemySheet } from "../../character-sheet"
 import { Owner } from "../../character/actor";
 import { defaultEquipmentSheet } from "../../equipment-sheet";
 import { defaultFeatSheet } from "../../feat";
+import { defaultStatusSheet } from "../../status-sheet";
 import { clawSmall, naturalAc } from "../common/equipment";
 import { ambush } from "./feats";
 
@@ -21,7 +22,10 @@ const ostracizedGoblin: Owner = {
         ...defaultEquipmentSheet,
         mainhand: clawSmall,
         armor: naturalAc(8)
-    }
+    },
+    ss: {
+        ...defaultStatusSheet,
+    },
 }
 
 export default ostracizedGoblin

@@ -5,6 +5,7 @@ import { RingPlusTwoDex, leatherArmor } from '../../defaults/equipment/index.ts'
 import { createEquipment } from '../../equipment-sheet/create-equipment.ts'
 import { featDodgy } from '../../feat/feats/index.ts'
 import { ModLogMember } from '../log/index.ts'
+import { flatFootedStatus } from '../../status-sheet/statuses/flat-footed.ts'
 
 describe('calculateAc', () => {
     test('ac derives from dex', () => {
@@ -17,6 +18,15 @@ describe('calculateAc', () => {
             cs: { ...defaultCharacterSheet, dex: 16 }, es: {}, fs: {}, ss: {}
         })
         assert.equal(calc2.total, 13)
+    })
+
+    test('flat-footed cancels the dex bonus', () => {
+        const ss = { flatFooted: flatFootedStatus(10) }
+        const calc = calculateAc({
+            cs: { ...defaultCharacterSheet, dex: 16 }, es: {}, fs: {}, ss
+        })
+        // dex 16 grants +3 normally (see 'ac derives from dex'); flat-footed cancels it
+        assert.equal(calc.total, 10)
     })
 
     test('dex factors in equipment', () => {
@@ -66,7 +76,7 @@ describe('calculateAc', () => {
             ss: {},
         })
 
-        assert.deepEqual(log.groups.map(g => g.displayName), ['base ac', 'dexterity', 'armor', 'feats', 'equipment'])
+        assert.deepEqual(log.groups.map(g => g.displayName), ['base ac', 'dexterity', 'armor', 'feats', 'equipment', 'statuses'])
 
         const armorGroup = log.groups.find(g => g.displayName === 'armor')!
         assert.deepEqual(armorGroup.entries, [

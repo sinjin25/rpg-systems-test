@@ -5,12 +5,13 @@ import { equipmentIsWeapon, EquipmentSheet, Weapon } from "../../equipment-sheet
 import { FeatSheet } from "../../feat"
 import roll from "../../roll"
 import ModifierLog, { ModLog } from "../../stat-modifier/log"
+import { StatusSheet } from "../../status-sheet"
 
 type ActRequiredData = {
     cs: CharacterSheet,
     fs: FeatSheet,
     es: EquipmentSheet,
-    ss: {},
+    ss: StatusSheet,
 }
 
 export type StandardActionResult = {

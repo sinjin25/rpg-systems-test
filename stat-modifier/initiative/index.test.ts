@@ -56,7 +56,7 @@ describe('calculateInitiativeMod', () => {
             ss: {},
         })
 
-        assert.deepEqual(log.groups.map(g => g.displayName), ['dexterity', 'feats', 'equipment'])
+        assert.deepEqual(log.groups.map(g => g.displayName), ['dexterity', 'feats', 'equipment', 'statuses'])
 
         // the individual feat shows up by name inside the feats group
         const featGroup = log.groups.find(g => g.displayName === 'feats')!

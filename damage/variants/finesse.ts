@@ -4,6 +4,7 @@ import { namedMod } from "../../stat-modifier/log"
 import calculateFeatMod from "../../roll-modifier/feat-mod"
 import { ContextNames } from "../../contexts"
 import { calculateWeaponEquipmentMod } from "../../roll-modifier/equipment-mod"
+import { calculateStatusMod } from "../../status-sheet/status-mod"
 
 export const finesseDamageModifierFactory: RollModifierFuncFactory = (
     data: RollModifierRequiredData,
@@ -13,6 +14,7 @@ export const finesseDamageModifierFactory: RollModifierFuncFactory = (
             cs,
             es,
             fs,
+            ss,
             weapon,
         } = data
 
@@ -28,13 +30,18 @@ export const finesseDamageModifierFactory: RollModifierFuncFactory = (
             ...[...BASE_CONTEXT, ...EQUIPMENT_CONTEXT],
         ], 'damage')
         const em = calculateWeaponEquipmentMod(data, BASE_CONTEXT, 'damage')
+        const sm = calculateStatusMod({ cs, ss }, [
+            ...BASE_CONTEXT,
+            ...EQUIPMENT_CONTEXT,
+        ], 'damage')
 
         return {
-            total: bm.total + fm.total + em.total,
+            total: bm.total + fm.total + em.total + sm.total,
             groups: [
                 { displayName: 'base mod', ...bm },
                 { displayName: 'feat mod', ...fm },
                 { displayName: 'equipment mod', ...em },
+                { displayName: 'status mod', ...sm },
             ],
         }
     }

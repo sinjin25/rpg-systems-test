@@ -4,6 +4,7 @@ import { calculateBaseMod } from "../../stat-modifier"
 import { namedMod } from "../../stat-modifier/log"
 import { calculateWeaponEquipmentMod } from "../../roll-modifier/equipment-mod"
 import calculateFeatMod from "../../roll-modifier/feat-mod"
+import { calculateStatusMod } from "../../status-sheet/status-mod"
 import { AttackModifierFuncFactory, AttackModifierRequiredData } from "../types"
 
 export const standardAttackModifierFactory: AttackModifierFuncFactory = (
@@ -26,13 +27,18 @@ export const standardAttackModifierFactory: AttackModifierFuncFactory = (
         ], 'attack')
 
         const em = calculateWeaponEquipmentMod(data, BASE_CONTEXT, 'attack')
+        const sm = calculateStatusMod({ cs, ss }, [
+            ...BASE_CONTEXT,
+            ...EQUIPMENT_CONTEXT,
+        ], 'attack')
 
         return {
-            total: bm.total + fm.total + em.total,
+            total: bm.total + fm.total + em.total + sm.total,
             groups: [
                 { displayName: 'base mod', ...bm },
                 { displayName: 'feat mod', ...fm },
                 { displayName: 'equipment mod', ...em },
+                { displayName: 'status mod', ...sm },
             ],
         }
     }

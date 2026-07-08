@@ -5,29 +5,32 @@ import { BroadContexts, ContextNames } from "../../contexts"
 import { EquipmentSheet, equipmentIsArmor } from "../../equipment-sheet"
 import calculateEquipmentMod from "../../equipment-sheet/equipment-mod"
 import { FeatSheet } from "../../feat"
+import { StatusSheet } from "../../status-sheet"
+import { calculateStatusMod } from "../../status-sheet/status-mod"
 import ModifierLog from "../log"
 
 type AcData = {
     cs: CharacterSheet,
     es: EquipmentSheet,
     fs: FeatSheet,
-    ss: {},
+    ss: StatusSheet,
 }
 
 export const calculateAc = (data: AcData) => {
-    const { cs, es, fs } = data
+    const { cs, es, fs, ss } = data
     const log = ModifierLog('ac')
     const contextTags: ContextNames[] = ['dexterity']
     const broadContextStat: BroadContexts = 'stat'
     const broadContextAc: BroadContexts = 'ac'
 
     const allEquipment = Object.values(es)
-    const modData = { cs, es, fs }
+    const modData = { cs, es, fs, ss }
 
     // calculate effective dex (base + bonuses)
     const dexBonusEquip = calculateEquipmentMod(allEquipment, modData, contextTags, broadContextStat)
     const dexBonusFeat = calculateFeatMod(modData, contextTags, broadContextStat)
-    const dexMod = calculateModifier(cs.dex, [dexBonusEquip.total + dexBonusFeat.total])
+    const dexBonusStatus = calculateStatusMod(modData, contextTags, broadContextStat)
+    const dexMod = calculateModifier(cs.dex, [dexBonusEquip.total + dexBonusFeat.total + dexBonusStatus.total])
 
     // armor's flat, static ac bonus (not part of the generic mod-source system)
     // unarmored characters get no bonus here - the base 10 is already accounted
@@ -38,6 +41,7 @@ export const calculateAc = (data: AcData) => {
     // calculate flat ac bonuses
     const fm = calculateFeatMod(modData, [], broadContextAc)
     const em = calculateEquipmentMod(allEquipment, modData, [], broadContextAc)
+    const sm = calculateStatusMod(modData, [], broadContextAc)
 
     log.addModGroup('base ac', {
         total: DEFAULT_AC,
@@ -48,7 +52,7 @@ export const calculateAc = (data: AcData) => {
         entries: [{
             displayName: 'dex modifier',
             amount: dexMod,
-            detail: [...dexBonusEquip.entries, ...dexBonusFeat.entries],
+            detail: [...dexBonusEquip.entries, ...dexBonusFeat.entries, ...dexBonusStatus.entries],
         }],
     })
     log.addModGroup('armor', {
@@ -57,9 +61,10 @@ export const calculateAc = (data: AcData) => {
     })
     log.addModGroup('feats', fm)
     log.addModGroup('equipment', em)
+    log.addModGroup('statuses', sm)
 
     return {
-        total: DEFAULT_STAT + dexMod + armorBonus + fm.total + em.total,
+        total: DEFAULT_STAT + dexMod + armorBonus + fm.total + em.total + sm.total,
         log,
     }
 }

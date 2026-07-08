@@ -93,7 +93,7 @@ describe('factory works', () => {
         assert.equal(result.total, 4)
 
         // the player-facing group-by breakdown
-        assert.deepEqual(result.groups.map(g => g.displayName), ['base mod', 'feat mod', 'equipment mod'])
+        assert.deepEqual(result.groups.map(g => g.displayName), ['base mod', 'feat mod', 'equipment mod', 'status mod'])
 
         const baseGroup = result.groups.find(g => g.displayName === 'base mod')!
         assert.deepEqual(baseGroup.entries, [{ displayName: 'dex', amount: 3 }])

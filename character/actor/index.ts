@@ -5,6 +5,8 @@ import { Speed, STANDARD_SPEED } from "../../speed";
 import { CharacterSheet } from "../../character-sheet";
 import { FeatSheet } from "../../feat";
 import { EquipmentSheet } from "../../equipment-sheet";
+import { StatusSheet } from "../../status-sheet";
+import { flatFootedStatus } from "../../status-sheet/statuses/flat-footed";
 
 type Health = {
     max: number,
@@ -16,9 +18,7 @@ export type Owner = {
     cs: CharacterSheet,
     fs: FeatSheet,
     es: EquipmentSheet,
-    ss: {
-        // flat-footed: { duration: number, type: 'speed', displayName: string }
-    },
+    ss: StatusSheet,
 }
 
 export type Actor = {
@@ -48,6 +48,8 @@ export const instantiateSpeed = (
 ): Speed => {
     const init = rollInitiative(owner)
     const remainder = init.total
+
+    owner.ss['flatFooted'] = flatFootedStatus(STANDARD_SPEED - remainder)
 
     // display log: max.logs
     return {

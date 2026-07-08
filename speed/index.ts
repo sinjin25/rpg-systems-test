@@ -4,6 +4,8 @@ import { EquipmentSheet } from "../equipment-sheet"
 import { FeatSheet } from "../feat"
 import roll from "../roll"
 import { RollModifierRequiredData } from "../roll-modifier/types"
+import { decaySpeedElapsed } from "../status-sheet/decay"
+import { StatusSheet } from "../status-sheet"
 
 export const STANDARD_SPEED = 35 // average of 2d6 is 3.5
 
@@ -18,7 +20,7 @@ export type TurnData = {
         cs: CharacterSheet,
         fs: FeatSheet,
         es: EquipmentSheet,
-        ss: {}
+        ss: StatusSheet
     },
 }
 
@@ -43,6 +45,7 @@ export const round = (
         // roll
         const roll = speedRoll(part.owner)
         part.speed.remainder += roll
+        decaySpeedElapsed(part.owner.ss, roll)
         if (part.speed.remainder >= data.speedSum) {
             part.speed.remainder -= data.speedSum
             acting.push(part)

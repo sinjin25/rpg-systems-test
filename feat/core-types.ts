@@ -27,6 +27,7 @@ export type FeatContext = {
 
 export interface Feat {
     displayName: string,
+    description?: string,
     context: FeatContext,
 }
 

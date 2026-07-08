@@ -1,0 +1,1 @@
+Goblins are fragile but come in high packs with high initiative. The hardest part of the fight should be turn one.

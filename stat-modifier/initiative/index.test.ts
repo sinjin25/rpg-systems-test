@@ -4,6 +4,13 @@ import { defaultCharacterSheet } from '../../character-sheet/index.ts'
 import { RingPlusTwoDex } from '../../defaults/equipment/index.ts'
 import { featAlert } from '../../feat/feats/index.ts'
 import { ModLogMember } from '../log/index.ts'
+import { iterate } from '../../simulate/util/iterate.ts'
+import { instantiateSpeed, Owner } from '../../character/actor/index.ts'
+import { defaultEquipmentSheet } from '../../equipment-sheet/index.ts'
+import { defaultFeatSheet } from '../../feat/index.ts'
+import { defaultStatusSheet } from '../../status-sheet/types.ts'
+import { boxPlotStats } from '../../simulate/util/box-plot.ts'
+import { StatusExpirationSpeedElapsed } from '../../status-sheet/core-types.ts'
 
 describe('calculateInitiativeMod', () => {
     const findDisplayName = (key: string) => (d: ModLogMember) => d.displayName === key
@@ -112,5 +119,44 @@ describe('rollInitiative', () => {
         }
 
         assert.equal(EXPECTED_UNIQUE_OUTCOMES, uniqueOutcomes)
+    })
+})
+
+describe('integration: flat-footed', () => {
+    test('improved initiative should prevent you from getting caught flat footed', () => {
+        const ITERATIONS = 200
+        const char: Owner = {
+            cs: {
+                ...defaultCharacterSheet,
+                dex: 10,
+            },
+            es: defaultEquipmentSheet,
+            fs: defaultFeatSheet,
+            ss: defaultStatusSheet,
+        }
+        const char2: Owner = {
+            ...char,
+            fs: { featAlert },
+        }
+        const charSlow = iterate(ITERATIONS, () => {
+            const character = char
+            instantiateSpeed(character)
+            const status = character.ss['flatFooted']!.expiration as StatusExpirationSpeedElapsed
+            return status.remaining
+        })
+
+        const charFast = iterate(ITERATIONS, () => {
+            const character = char2
+            instantiateSpeed(character)
+            const status = character.ss['flatFooted']!.expiration as StatusExpirationSpeedElapsed
+            return status.remaining
+        })
+
+        const slow = boxPlotStats(charSlow)
+        const fast = boxPlotStats(charFast)
+        // seeded
+        assert.equal(slow.median, 24)
+        assert.equal(fast.median, 20)
+        expect(slow.median).toBeGreaterThan(fast.median)
     })
 })

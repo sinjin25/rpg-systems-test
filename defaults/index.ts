@@ -1,7 +1,7 @@
 import { CharacterSheet, UseCharacterSheet, calculateModifier } from '../character-sheet'
 import { FeatSheet } from '../feat'
 import { EquipmentSheet } from '../equipment-sheet'
-import { dagger } from './equipment'
+import { dagger, shortsword } from './equipment'
 
 export const defaultCharacterSheet: CharacterSheet = {
     con: 15,
@@ -18,5 +18,5 @@ export const defaultUseCharacterSheet: UseCharacterSheet = {
 export const defaultFeatSheet: FeatSheet = {}
 
 export const defaultEquipmentSheet: EquipmentSheet = {
-    mainhand: dagger,
+    mainhand: shortsword,
 }

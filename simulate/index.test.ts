@@ -45,6 +45,14 @@ describe('attackHits', () => {
     test('a roll above ac hits', () => {
         assert.isTrue(attackHits(20, 5))
     })
+
+    test('a natural 20 always hits, even against an unbeatable ac', () => {
+        assert.isTrue(attackHits(20, 999, 20))
+    })
+
+    test('a natural 1 always misses, even against an ac of 0', () => {
+        assert.isFalse(attackHits(1, 0, 1))
+    })
 })
 
 describe('worldState', () => {

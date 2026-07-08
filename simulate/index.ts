@@ -38,7 +38,12 @@ const chooseTarget = (actors: Actor[]) => {
 }
 
 // per readme.md: "if the actor rolls high enough, damage applies"
-export const attackHits = (attackRoll: number, ac: number): boolean => attackRoll >= ac
+// natural 20 always hits, natural 1 always misses, regardless of modifiers
+export const attackHits = (attackRoll: number, ac: number, naturalRoll?: number): boolean => {
+    if (naturalRoll === 20) return true
+    if (naturalRoll === 1) return false
+    return attackRoll >= ac
+}
 
 // massively simplified and wrong
 const tempAnyActorAlive = (
@@ -141,8 +146,10 @@ export const simulateFight = (
             // all actions focus one target for a round
             action.forEach(a => {
                 if (!target) return
-                if (!attackHits(a.attackRoll, target.ac)) return
-                target.health.curr -= a.damageRoll
+                const naturalRoll = a.attackLog.finalResult().roll
+                if (!attackHits(a.attackRoll, target.ac, naturalRoll)) return
+                const isCrit = a.attackLog.finalResult().roll === 20
+                target.health.curr -= isCrit ? a.damageRoll * 2 : a.damageRoll
             })
             if (target && target.health.curr <= 0) target.speed.canAct = false
         }

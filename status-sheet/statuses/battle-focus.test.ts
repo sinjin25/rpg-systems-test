@@ -7,13 +7,17 @@ import {
     battleFocusActiveStatus,
     battleFocusChargingStatus,
 } from './battle-focus.ts'
+import { util_findRollModifierGroupItem } from '../../roll-modifier/types.ts'
 
 describe('battleFocusChargingStatus', () => {
     test('grants no buff while charging', () => {
         const owner = createDefaultOwner({ ss: { battleFocus: battleFocusChargingStatus(3) } })
         const attack = standardAttackModifierFactory({ ...owner, weapon: owner.es.mainhand! })
-        const statusModGroup = attack().groups.find(g => g.displayName === 'status mod')!
-        assert.isUndefined(statusModGroup.entries.find(e => e.displayName.startsWith('Battle Focus')))
+        const focusMod = util_findRollModifierGroupItem(attack(), {
+            groupName: 'status mod',
+            modDisplayName: 'Battle Focus (Charging)',
+        })
+        assert.isUndefined(focusMod)
     })
 
     test('chains into the active buff once its rounds elapse', () => {
@@ -26,8 +30,10 @@ describe('battleFocusChargingStatus', () => {
         assert.equal(owner.ss.battleFocus.displayName, 'Battle Focus (Active)')
 
         const attack = standardAttackModifierFactory({ ...owner, weapon: owner.es.mainhand! })
-        const statusModGroup = attack().groups.find(g => g.displayName === 'status mod')!
-        const focusMod = statusModGroup.entries.find(e => e.displayName === 'Battle Focus (Active)')!
+        const focusMod = util_findRollModifierGroupItem(attack(), {
+            groupName: 'status mod',
+            modDisplayName: 'Battle Focus (Active)',
+        })!
         assert.equal(focusMod.amount, BATTLE_FOCUS_ATTACK_BONUS)
     })
 })

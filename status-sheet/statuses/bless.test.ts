@@ -3,6 +3,7 @@ import { shortsword } from '../../defaults/equipment/index.ts'
 import { createDefaultOwner } from '../../defaults/index.ts'
 import blessStatus from './bless.ts'
 import { describe, test, assert, expect } from 'vitest'
+import { util_findRollModifierGroupItem } from '../../roll-modifier/types.ts'
 
 describe('bless status affects attack rolls', () => {
     test('Adds +2 to attack', () => {
@@ -17,10 +18,10 @@ describe('bless status affects attack rolls', () => {
         })
 
         const result = attack()
-        const statusModGroup = result.groups.find(a => a.displayName === 'status mod')
-        assert.exists(statusModGroup)
-
-        const blessMod = statusModGroup.entries.find(a => a.displayName === 'Bless')
+        const blessMod = util_findRollModifierGroupItem(result, {
+            groupName: 'status mod',
+            modDisplayName: 'Bless',
+        })
         assert.exists(blessMod)
         assert.equal(blessMod.amount, 2)
     })

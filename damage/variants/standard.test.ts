@@ -9,36 +9,38 @@ import { defaultEquipmentSheet } from '../../equipment-sheet/index.ts'
 describe('standard functionality', () => {
     test('produces a number', () => {
         const std = standardDamageModifierFactory({
-            characterSheet: {
+            cs: {
                 con: 10,
                 dex: 10,
                 str: 14,
+                level: 1,
             },
-            equipmentSheet: {},
-            featSheet: defaultFeatSheet,
-            statusSheet: {},
+            es: {},
+            fs: defaultFeatSheet,
+            ss: {},
             weapon: shortsword,
         })
 
         const result = std()
-        assert.equal(result, 2)
+        assert.equal(result.total, 2)
     })
 
     test('scales off strength, not dex', () => {
         const standard = standardDamageModifierFactory({
-            characterSheet: {
+            cs: {
                 con: 10,
                 dex: 12,
                 str: 10,
+                level: 1,
             },
-            equipmentSheet: {},
-            featSheet: defaultFeatSheet,
-            statusSheet: {},
+            es: {},
+            fs: defaultFeatSheet,
+            ss: {},
             weapon: shortsword,
         })
 
         const result = standard()
-        assert.equal(result, 0)
+        assert.equal(result.total, 0)
     })
 
     // the weapon's own context tags are passed to the feat reducer,
@@ -49,37 +51,39 @@ describe('standard functionality', () => {
             featMeleeWeaponFighting,
         }
         const standard = standardDamageModifierFactory({
-            characterSheet: {
+            cs: {
                 con: 10,
                 dex: 10,
                 str: 14,
+                level: 1,
             },
-            equipmentSheet: {},
-            featSheet: fs,
-            statusSheet: {},
+            es: {},
+            fs,
+            ss: {},
             weapon: shortsword,
         })
 
         // bm(2) + fm(1, shortsword is tagged melee)
         const result = standard()
-        assert.equal(result, 3)
+        assert.equal(result.total, 3)
     })
 
     test('weapon enhancement applies to damage through the equipment mod', () => {
         const standard = standardDamageModifierFactory({
-            characterSheet: {
+            cs: {
                 con: 10,
                 dex: 10,
                 str: 14,
+                level: 1,
             },
-            equipmentSheet: { mainhand: daggerPlusOne },
-            featSheet: defaultFeatSheet,
-            statusSheet: {},
+            es: { mainhand: daggerPlusOne },
+            fs: defaultFeatSheet,
+            ss: {},
             weapon: daggerPlusOne,
         })
 
         // bm(2) + em(1, the dagger's +1 enhancement)
         const result = standard()
-        assert.equal(result, 3)
+        assert.equal(result.total, 3)
     })
 })

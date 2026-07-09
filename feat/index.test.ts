@@ -8,8 +8,8 @@ describe('featSheet', () => {
         const featSheet: FeatSheet = {}
 
         addFeat({
-            characterSheet: defaultCharacterSheet,
-            featSheet,
+            cs: defaultCharacterSheet,
+            fs: featSheet,
         }, {
             key: 'featMeleeWeaponFighting'
         })
@@ -25,8 +25,8 @@ describe('integration', () => {
     test('feats can use applies', () => {
         const fs: FeatSheet = {}
         addFeat({
-            characterSheet: defaultCharacterSheet,
-            featSheet: fs,
+            cs: defaultCharacterSheet,
+            fs,
         }, {
             key: 'featMeleeWeaponFighting'
         })

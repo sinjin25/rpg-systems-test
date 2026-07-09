@@ -3,6 +3,7 @@ import { defaultEquipmentSheet } from '../equipment-sheet/index.ts'
 import { defaultFeatSheet } from '../feat/index.ts'
 import { round, speedRoll, STANDARD_SPEED } from './index.ts'
 import { describe, test, assert, expect } from 'vitest'
+import { StatusSheet } from '../status-sheet/types.ts'
 
 const defaultPerson = {
     cs: defaultCharacterSheet,
@@ -93,5 +94,24 @@ describe('Round reports participants to act', () => {
 
         expect(noActors).toBeGreaterThan(hasActors)
         expect(hasActors / ITERATIONS).toBeCloseTo(.2, 1)
+    })
+
+    test('a speed-elapsed status decays alongside the participant\'s speed rolls', () => {
+        const ss: StatusSheet = {
+            test: { displayName: 'test', context: {}, expiration: { kind: 'speed-elapsed', remaining: 1000 } },
+        }
+        const roundData = {
+            participants: [{
+                owner: { ...defaultPerson, ss },
+                speed: { canAct: true, remainder: 0 },
+            }],
+            speedSum: STANDARD_SPEED,
+        }
+
+        round(roundData)
+        assert.property(ss, 'test', 'a large remaining duration should survive a single round')
+
+        for (let i = 0; i < 200; i++) round(roundData)
+        assert.notProperty(ss, 'test', 'enough rounds should exhaust even a large remaining duration')
     })
 })

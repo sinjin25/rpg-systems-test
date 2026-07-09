@@ -4,9 +4,9 @@ import { FeatSheet } from "../feat";
 import { CharacterSheet } from "../character-sheet";
 
 export type CalculateFeatModRequiredData = {
-    characterSheet: CharacterSheet,
-    featSheet: FeatSheet,
-    equipmentSheet: {},
+    cs: CharacterSheet,
+    fs: FeatSheet,
+    es: {},
 }
 
 export const calculateFeatMod = (
@@ -14,11 +14,12 @@ export const calculateFeatMod = (
     context: ContextNames[],
     broadContext: BroadContexts,
 ) => {
-    const allFeats = Object.values(data.featSheet)
+    const allFeats = Object.values(data.fs)
 
     return applyContextMod(
         allFeats,
         feat => feat.context,
+        feat => feat.displayName,
         data,
         context,
         broadContext,

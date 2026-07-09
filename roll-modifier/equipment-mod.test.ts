@@ -29,22 +29,30 @@ describe('calculateWeaponEquipmentMod', () => {
 
     const run = (weapon: Weapon, contexts: Parameters<typeof calculateWeaponEquipmentMod>[1]) =>
         calculateWeaponEquipmentMod({
-            characterSheet: defaultCharacterSheet,
-            featSheet: defaultFeatSheet,
-            equipmentSheet: es,
+            cs: defaultCharacterSheet,
+            fs: defaultFeatSheet,
+            es,
             weapon,
         }, contexts, 'attack')
 
     test('counts non-weapon equipment plus only the wielded weapon', () => {
         // ring(1, finesse applies) + mainhand enhancement(1); the offhand's +2 is excluded
-        assert.equal(run(mainhand, ['finesse']), 2)
+        assert.equal(run(mainhand, ['finesse']).total, 2)
         // ring(1) + offhand enhancement(2); the mainhand's +1 is excluded
-        assert.equal(run(offhand, ['finesse']), 3)
+        assert.equal(run(offhand, ['finesse']).total, 3)
     })
 
     test('non-weapon equipment still filters by context', () => {
         // the finesse ring does not apply without the finesse context; enhancement always does
-        assert.equal(run(mainhand, []), 1)
-        assert.equal(run(offhand, ['melee']), 2)
+        assert.equal(run(mainhand, []).total, 1)
+        assert.equal(run(offhand, ['melee']).total, 2)
+    })
+
+    test('names each contributing source', () => {
+        const result = run(mainhand, ['finesse'])
+        assert.deepEqual(result.entries, [
+            { displayName: RingPlusOneFinesseAttack.displayName, amount: 1 },
+            { displayName: 'enhancement +1', amount: 1 },
+        ])
     })
 })

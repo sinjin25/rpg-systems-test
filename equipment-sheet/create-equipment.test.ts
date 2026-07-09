@@ -14,11 +14,16 @@ describe('enhancement', () => {
             enhancement: 2,
         })
 
-        assert.equal(calculateEquipmentMod([sword], {}, [], 'attack'), 2)
-        assert.equal(calculateEquipmentMod([sword], {}, [], 'damage'), 2)
-        assert.equal(calculateEquipmentMod([sword], {}, ['ranged', 'magic'], 'attack'), 2)
+        assert.equal(calculateEquipmentMod([sword], {}, [], 'attack').total, 2)
+        assert.equal(calculateEquipmentMod([sword], {}, [], 'damage').total, 2)
+        assert.equal(calculateEquipmentMod([sword], {}, ['ranged', 'magic'], 'attack').total, 2)
         // enhancement does not leak into other broad contexts
-        assert.equal(calculateEquipmentMod([sword], {}, [], 'save'), 0)
+        assert.equal(calculateEquipmentMod([sword], {}, [], 'save').total, 0)
+
+        // the enhancement source is named after its bonus
+        assert.deepEqual(calculateEquipmentMod([sword], {}, [], 'attack').entries, [
+            { displayName: 'enhancement +2', amount: 2 },
+        ])
     })
 
     test('stacks with explicit mods on the same item', () => {
@@ -33,10 +38,16 @@ describe('enhancement', () => {
         })
 
         // enhancement + explicit mod when the context matches
-        assert.equal(calculateEquipmentMod([sword], {}, ['finesse'], 'attack'), 2)
+        assert.equal(calculateEquipmentMod([sword], {}, ['finesse'], 'attack').total, 2)
         // only the enhancement when it does not
-        assert.equal(calculateEquipmentMod([sword], {}, [], 'attack'), 1)
-        assert.equal(calculateEquipmentMod([sword], {}, ['finesse'], 'damage'), 1)
+        assert.equal(calculateEquipmentMod([sword], {}, [], 'attack').total, 1)
+        assert.equal(calculateEquipmentMod([sword], {}, ['finesse'], 'damage').total, 1)
+
+        // explicit mods are named after the item; enhancement separately
+        assert.deepEqual(calculateEquipmentMod([sword], {}, ['finesse'], 'attack').entries, [
+            { displayName: '+1 finesse-attuned sword', amount: 1 },
+            { displayName: 'enhancement +1', amount: 1 },
+        ])
     })
 
     test('the damage roll stays pure base dice', () => {

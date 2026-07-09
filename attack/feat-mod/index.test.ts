@@ -13,22 +13,22 @@ describe('Correctly filters', () => {
 
         const runTheTest = () => {
             return featMod({
-                characterSheet: defaultCharacterSheet,
-                equipmentSheet: {},
-                featSheet: fs,
+                cs: defaultCharacterSheet,
+                es: {},
+                fs,
             }, ['finesse', 'melee'], 'attack')
         }
 
         const result = runTheTest()
 
         assert.equal(
-            result,
+            result.total,
             1,
         )
 
         addFeat({
-            characterSheet: defaultCharacterSheet,
-            featSheet: fs,
+            cs: defaultCharacterSheet,
+            fs,
         }, {
             key: 'featMeleeWeaponFighting'
         })
@@ -38,7 +38,7 @@ describe('Correctly filters', () => {
         )
         const result2 = runTheTest()
         assert.equal(
-            result2,
+            result2.total,
             2,
         )
     })

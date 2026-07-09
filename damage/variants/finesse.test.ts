@@ -8,31 +8,32 @@ import { defaultEquipmentSheet, EquipmentSheet } from '../../equipment-sheet'
 describe('factory works', () => {
     test('default character sheet', () => {
         const myFunc = finesseDamageModifierFactory({
-            characterSheet: defaultCharacterSheet,
-            equipmentSheet: defaultEquipmentSheet,
-            featSheet: defaultFeatSheet,
-            statusSheet: {},
+            cs: defaultCharacterSheet,
+            es: defaultEquipmentSheet,
+            fs: defaultFeatSheet,
+            ss: {},
             weapon: dagger,
         })
 
         const result = myFunc()
-        assert.equal(result, 2)
+        assert.equal(result.total, 2)
     })
     test('works with arbitrary sheets', () => {
         const myFunc = finesseDamageModifierFactory({
-            characterSheet: {
+            cs: {
                 con: 0,
                 dex: 0,
                 str: 0,
+                level: 1,
             },
-            equipmentSheet: {},
-            featSheet: defaultFeatSheet,
-            statusSheet: {},
+            es: {},
+            fs: defaultFeatSheet,
+            ss: {},
             weapon: dagger,
         })
 
         const result = myFunc()
-        assert.equal(result, -5)
+        assert.equal(result.total, -5)
     })
     test('works with feat sheets', () => {
         const fs: FeatSheet = {
@@ -43,25 +44,31 @@ describe('factory works', () => {
             dex: 16,
         }
         const myFunc = finesseDamageModifierFactory({
-            characterSheet: cs,
-            equipmentSheet: defaultEquipmentSheet,
-            featSheet: fs,
-            statusSheet: {},
+            cs,
+            es: defaultEquipmentSheet,
+            fs,
+            ss: {},
             weapon: dagger,
         })
 
         const beforeFeat = myFunc()
-        assert.equal(beforeFeat, 3)
+        assert.equal(beforeFeat.total, 3)
 
         addFeat({
-            characterSheet: cs,
-            featSheet: fs,
+            cs,
+            fs,
         }, {
             key: 'featMeleeWeaponFighting'
         })
 
         const afterFeat = myFunc()
-        assert.equal(afterFeat - beforeFeat, 1)
+        assert.equal(afterFeat.total - beforeFeat.total, 1)
+
+        // the feat shows up by name in the feat mod group
+        const featGroup = afterFeat.groups.find(g => g.displayName === 'feat mod')!
+        assert.deepEqual(featGroup.entries, [
+            { displayName: fs.featMeleeWeaponFighting!.displayName, amount: 1 },
+        ])
     })
     test('works with equipment mods', () => {
         const cs: CharacterSheet = {
@@ -74,15 +81,26 @@ describe('factory works', () => {
             ring: RingPlusOneFinesseAttack,
         }
         const myFunc = finesseDamageModifierFactory({
-            characterSheet: cs,
-            equipmentSheet: es,
-            featSheet: defaultFeatSheet,
-            statusSheet: {},
+            cs,
+            es,
+            fs: defaultFeatSheet,
+            ss: {},
             weapon: dagger,
         })
 
         // bm(3) + em(1, ring applies via finesse context)
         const result = myFunc()
-        assert.equal(result, 4)
+        assert.equal(result.total, 4)
+
+        // the player-facing group-by breakdown
+        assert.deepEqual(result.groups.map(g => g.displayName), ['base mod', 'feat mod', 'equipment mod', 'status mod'])
+
+        const baseGroup = result.groups.find(g => g.displayName === 'base mod')!
+        assert.deepEqual(baseGroup.entries, [{ displayName: 'dex', amount: 3 }])
+
+        const equipGroup = result.groups.find(g => g.displayName === 'equipment mod')!
+        assert.deepEqual(equipGroup.entries, [
+            { displayName: RingPlusOneFinesseAttack.displayName, amount: 1 },
+        ])
     })
 })

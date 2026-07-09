@@ -68,10 +68,10 @@ export const featDemoEvenOdd: Feat = {
                 whitelist: ['all']
             }),
             mod: (data) => {
-                if (!data?.characterSheet) return 0
+                if (!data?.cs) return 0
 
                 let mod = 0
-                const { dex, str, con } = data.characterSheet
+                const { dex, str, con } = data.cs
 
                 if (dex % 2 === 0) mod++
                 if (str % 2 === 0) mod++
@@ -98,11 +98,27 @@ export const featAlert: Feat = {
     }
 }
 
+export const featDodgy: Feat = {
+    displayName: 'DEMO Dodgy',
+    context: {
+        ac: {
+            applies: standardFilters.noBlacklistAnyWhitelistFactory({
+                blacklist: [],
+                whitelist: ['all'],
+            }),
+            mod: (data) => {
+                return 4
+            },
+        }
+    }
+}
+
 export const possibleFeats = {
     featMeleeWeaponFighting,
     featFinesseWeaponFighting,
     featConSaves,
     featAlert,
+    featDodgy,
 }
 
 export type PossibleFeats = typeof possibleFeats

@@ -5,13 +5,15 @@ import { BroadContexts, ContextNames } from "../../contexts"
 import { EquipmentSheet } from "../../equipment-sheet"
 import calculateEquipmentMod from "../../equipment-sheet/equipment-mod"
 import { FeatSheet } from "../../feat"
+import { StatusSheet } from "../../status-sheet"
+import { calculateStatusMod } from "../../status-sheet/status-mod"
 import ModifierLog from "../log"
 
 const calculateHp = (data: {
     cs: CharacterSheet,
     es: EquipmentSheet,
     fs: FeatSheet,
-    ss: {},
+    ss: StatusSheet,
 }) => {
     const { cs, es, fs, ss } = data
     const log = ModifierLog('health')
@@ -20,16 +22,13 @@ const calculateHp = (data: {
     const broadContextHealth: BroadContexts = 'health'
 
     const allEquipment = Object.values(es)
-    const modData = {
-        characterSheet: cs,
-        equipmentSheet: es,
-        featSheet: fs,
-    }
+    const modData = { cs, es, fs, ss }
 
     // calculate effective con (base + bonuses)
-    const conBonus = calculateEquipmentMod(allEquipment, modData, contextTags, broadContextStat)
-        + calculateFeatMod(modData, contextTags, broadContextStat)
-    const conMod = calculateModifier(cs.con, [conBonus])
+    const conBonusEquip = calculateEquipmentMod(allEquipment, modData, contextTags, broadContextStat)
+    const conBonusFeat = calculateFeatMod(modData, contextTags, broadContextStat)
+    const conBonusStatus = calculateStatusMod(modData, contextTags, broadContextStat)
+    const conMod = calculateModifier(cs.con, [conBonusEquip.total + conBonusFeat.total + conBonusStatus.total])
 
     // calculate base health off con and level
     const PER_LEVEL = 10
@@ -38,13 +37,23 @@ const calculateHp = (data: {
     // calculate flat health bonuses
     const fm = calculateFeatMod(modData, [], broadContextHealth)
     const em = calculateEquipmentMod(allEquipment, modData, [], broadContextHealth)
+    const sm = calculateStatusMod(modData, [], broadContextHealth)
 
-    log.addMod({ displayName: 'base health', amount: baseHealth })
-    log.addMod({ displayName: 'feats', amount: fm })
-    log.addMod({ displayName: 'equipment', amount: em })
+    // con bonuses are halved inside calculateModifier, so they are detail, not additive entries
+    log.addModGroup('base health', {
+        total: baseHealth,
+        entries: [{
+            displayName: 'base health',
+            amount: baseHealth,
+            detail: [...conBonusEquip.entries, ...conBonusFeat.entries, ...conBonusStatus.entries],
+        }],
+    })
+    log.addModGroup('feats', fm)
+    log.addModGroup('equipment', em)
+    log.addModGroup('statuses', sm)
 
     return {
-        total: baseHealth + fm + em,
+        total: baseHealth + fm.total + em.total + sm.total,
         log,
     }
 }

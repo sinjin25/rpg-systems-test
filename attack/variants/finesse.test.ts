@@ -8,31 +8,32 @@ import { defaultEquipmentSheet } from '../../equipment-sheet'
 describe('factory works', () => {
     test('default character sheet', () => {
         const myFunc = finesseAttackModifierFactory({
-            characterSheet: defaultCharacterSheet,
-            equipmentSheet: defaultEquipmentSheet,
-            featSheet: defaultFeatSheet,
-            statusSheet: {},
+            cs: defaultCharacterSheet,
+            es: defaultEquipmentSheet,
+            fs: defaultFeatSheet,
+            ss: {},
             weapon: dagger,
         })
 
         const result = myFunc()
-        assert.equal(result, 2)
+        assert.equal(result.total, 2)
     })
     test('works with arbitrary sheets', () => {
         const myFunc = finesseAttackModifierFactory({
-            characterSheet: {
+            cs: {
                 con: 0,
                 dex: 0,
                 str: 0,
+                level: 1,
             },
-            equipmentSheet: {},
-            featSheet: defaultFeatSheet,
-            statusSheet: {},
+            es: {},
+            fs: defaultFeatSheet,
+            ss: {},
             weapon: dagger,
         })
 
         const result = myFunc()
-        assert.equal(result, -5)
+        assert.equal(result.total, -5)
     })
     test('works with feat sheets', () => {
         const fs: FeatSheet = {
@@ -43,24 +44,24 @@ describe('factory works', () => {
             dex: 16,
         }
         const myFunc = finesseAttackModifierFactory({
-            characterSheet: cs,
-            equipmentSheet: defaultEquipmentSheet,
-            featSheet: fs,
-            statusSheet: {},
+            cs,
+            es: defaultEquipmentSheet,
+            fs,
+            ss: {},
             weapon: dagger,
         })
 
         const beforeFeat = myFunc()
-        assert.equal(beforeFeat, 3)
+        assert.equal(beforeFeat.total, 3)
 
         addFeat({
-            characterSheet: cs,
-            featSheet: fs,
+            cs,
+            fs,
         }, {
             key: 'featFinesseWeaponFighting'
         })
 
         const afterFeat = myFunc()
-        assert.equal(afterFeat - beforeFeat, 1)
+        assert.equal(afterFeat.total - beforeFeat.total, 1)
     })
 })

@@ -4,6 +4,13 @@ import { defaultCharacterSheet } from '../../character-sheet/index.ts'
 import { RingPlusTwoDex } from '../../defaults/equipment/index.ts'
 import { featAlert } from '../../feat/feats/index.ts'
 import { ModLogMember } from '../log/index.ts'
+import { iterate } from '../../simulate/util/iterate.ts'
+import { instantiateSpeed, Owner } from '../../character/actor/index.ts'
+import { defaultEquipmentSheet } from '../../equipment-sheet/index.ts'
+import { defaultFeatSheet } from '../../feat/index.ts'
+import { defaultStatusSheet } from '../../status-sheet/types.ts'
+import { boxPlotStats } from '../../simulate/util/box-plot.ts'
+import { StatusExpirationSpeedElapsed } from '../../status-sheet/core-types.ts'
 
 describe('calculateInitiativeMod', () => {
     const findDisplayName = (key: string) => (d: ModLogMember) => d.displayName === key
@@ -48,21 +55,30 @@ describe('calculateInitiativeMod', () => {
         assert.equal(calc.total, 4)
     })
 
-    test('log records the initiative sources', () => {
-        const { log } = calculateInitiativeMod({
+    test('log records the initiative sources per group', () => {
+        const { log, total } = calculateInitiativeMod({
             cs: defaultCharacterSheet,
             es: { ring: RingPlusTwoDex },
             fs: { featAlert },
             ss: {},
         })
 
-        assert.equal(log.mods.length, 3)
+        assert.deepEqual(log.groups.map(g => g.displayName), ['dexterity', 'feats', 'equipment', 'statuses'])
 
-        assert.isTrue(log.mods.some(findDisplayName('dexterity')))
-        assert.isTrue(log.mods.some(findDisplayName('feats')))
-        assert.isTrue(log.mods.some(findDisplayName('equipment')))
+        // the individual feat shows up by name inside the feats group
+        const featGroup = log.groups.find(g => g.displayName === 'feats')!
+        assert.deepEqual(featGroup.entries, [
+            { displayName: featAlert.displayName, amount: 4 },
+        ])
 
-        assert.isTrue(typeof log.finalResult().total === 'number')
+        // the ring's +2 dex is halved inside the dex modifier, so it appears
+        // as detail on the dexterity entry rather than as an additive entry
+        const dexGroup = log.groups.find(g => g.displayName === 'dexterity')!
+        assert.deepEqual(dexGroup.entries[0].detail, [
+            { displayName: RingPlusTwoDex.displayName, amount: 2 },
+        ])
+
+        assert.equal(log.finalResult().total, total)
     })
 })
 
@@ -103,5 +119,44 @@ describe('rollInitiative', () => {
         }
 
         assert.equal(EXPECTED_UNIQUE_OUTCOMES, uniqueOutcomes)
+    })
+})
+
+describe('integration: flat-footed', () => {
+    test('improved initiative should prevent you from getting caught flat footed', () => {
+        const ITERATIONS = 200
+        const char: Owner = {
+            cs: {
+                ...defaultCharacterSheet,
+                dex: 10,
+            },
+            es: defaultEquipmentSheet,
+            fs: defaultFeatSheet,
+            ss: defaultStatusSheet,
+        }
+        const char2: Owner = {
+            ...char,
+            fs: { featAlert },
+        }
+        const charSlow = iterate(ITERATIONS, () => {
+            const character = char
+            instantiateSpeed(character)
+            const status = character.ss['flatFooted']!.expiration as StatusExpirationSpeedElapsed
+            return status.remaining
+        })
+
+        const charFast = iterate(ITERATIONS, () => {
+            const character = char2
+            instantiateSpeed(character)
+            const status = character.ss['flatFooted']!.expiration as StatusExpirationSpeedElapsed
+            return status.remaining
+        })
+
+        const slow = boxPlotStats(charSlow)
+        const fast = boxPlotStats(charFast)
+        // seeded
+        assert.equal(slow.median, 24)
+        assert.equal(fast.median, 20)
+        expect(slow.median).toBeGreaterThan(fast.median)
     })
 })

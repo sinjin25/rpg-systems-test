@@ -1,5 +1,6 @@
 import { BroadContexts, ContextNames } from "../contexts"
 import { CharacterSheet } from "../character-sheet"
+import { StatusSheet } from "../status-sheet/types"
 
 export type FeatAppliesContext = {
     whitelist: ContextNames[],
@@ -8,12 +9,12 @@ export type FeatAppliesContext = {
 
 export type FeatAppliesFunction = (activeContexts: ContextNames[]) => boolean
 
-// featSheet typed as {} intentionally — FeatSheet is defined downstream of feat instances
+// fs typed as {} intentionally — FeatSheet is defined downstream of feat instances
 export type FeatModRequiredData = {
-    characterSheet: CharacterSheet,
-    featSheet: {},
-    equipmentSheet: {},
-    statusSheet: {},
+    cs: CharacterSheet,
+    fs: {},
+    es: {},
+    ss: StatusSheet,
 }
 
 export type FeatModFunction = (data?: Partial<FeatModRequiredData>) => number
@@ -27,7 +28,9 @@ export type FeatContext = {
 
 export interface Feat {
     displayName: string,
+    description?: string,
     context: FeatContext,
+    tags?: string[],
 }
 
 export const standardFilters = {

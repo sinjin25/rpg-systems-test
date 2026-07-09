@@ -1,6 +1,6 @@
 import { ContextNames, BroadContexts, EquipmentContextNames } from "../contexts"
 import { FeatContext, FeatModFunction, standardFilters } from "../feat/core-types"
-import type { BaseEquipment, Weapon, Armor, DamageRollFunc } from "./index.ts"
+import type { BaseEquipment, Weapon, Armor, DamageRollFunc, NamedModContext } from "./index.ts"
 
 type EquipmentModInput = {
     whitelist?: ContextNames[],
@@ -48,8 +48,10 @@ export const createEquipment = (input: CreateEquipmentInput): BaseEquipment | We
         }
         : undefined
 
-    const generateAdditionalContexts = [modsContext, enhancementContext]
-        .filter((c): c is FeatContext => !!c)
+    const generateAdditionalContexts = [
+        modsContext && { displayName, context: modsContext },
+        enhancementContext && { displayName: `enhancement +${enhancement}`, context: enhancementContext },
+    ].filter((c): c is NamedModContext => !!c)
 
     const base: BaseEquipment = {
         displayName,

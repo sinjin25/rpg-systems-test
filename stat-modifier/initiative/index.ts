@@ -6,13 +6,15 @@ import { EquipmentSheet } from "../../equipment-sheet"
 import calculateEquipmentMod from "../../equipment-sheet/equipment-mod"
 import { FeatSheet } from "../../feat"
 import roll from "../../roll"
+import { StatusSheet } from "../../status-sheet"
+import { calculateStatusMod } from "../../status-sheet/status-mod"
 import ModifierLog from "../log"
 
 type InitiativeData = {
     cs: CharacterSheet,
     es: EquipmentSheet,
     fs: FeatSheet,
-    ss: {},
+    ss: StatusSheet,
 }
 
 export const calculateInitiativeMod = (data: InitiativeData) => {
@@ -23,27 +25,34 @@ export const calculateInitiativeMod = (data: InitiativeData) => {
     const broadContextInitiative: BroadContexts = 'initiative'
 
     const allEquipment = Object.values(es)
-    const modData = {
-        characterSheet: cs,
-        equipmentSheet: es,
-        featSheet: fs,
-    }
+    const modData = { cs, es, fs, ss }
 
     // calculate effective dex (base + bonuses)
-    const dexBonus = calculateEquipmentMod(allEquipment, modData, contextTags, broadContextStat)
-        + calculateFeatMod(modData, contextTags, broadContextStat)
-    const dexMod = calculateModifier(cs.dex, [dexBonus])
+    const dexBonusEquip = calculateEquipmentMod(allEquipment, modData, contextTags, broadContextStat)
+    const dexBonusFeat = calculateFeatMod(modData, contextTags, broadContextStat)
+    const dexBonusStatus = calculateStatusMod(modData, contextTags, broadContextStat)
+    const dexMod = calculateModifier(cs.dex, [dexBonusEquip.total + dexBonusFeat.total + dexBonusStatus.total])
 
     // calculate flat initiative bonuses
     const fm = calculateFeatMod(modData, [], broadContextInitiative)
     const em = calculateEquipmentMod(allEquipment, modData, [], broadContextInitiative)
+    const sm = calculateStatusMod(modData, [], broadContextInitiative)
 
-    log.addMod({ displayName: 'dexterity', amount: dexMod })
-    log.addMod({ displayName: 'feats', amount: fm })
-    log.addMod({ displayName: 'equipment', amount: em })
+    // stat bonuses are halved inside calculateModifier, so they are detail, not additive entries
+    log.addModGroup('dexterity', {
+        total: dexMod,
+        entries: [{
+            displayName: 'dex modifier',
+            amount: dexMod,
+            detail: [...dexBonusEquip.entries, ...dexBonusFeat.entries, ...dexBonusStatus.entries],
+        }],
+    })
+    log.addModGroup('feats', fm)
+    log.addModGroup('equipment', em)
+    log.addModGroup('statuses', sm)
 
     return {
-        total: dexMod + fm + em,
+        total: dexMod + fm.total + em.total + sm.total,
         log,
     }
 }

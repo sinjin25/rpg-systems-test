@@ -23,9 +23,9 @@ export const strDagger = createEquipment({
     contexts: ['finesse', 'dagger', 'melee'],
     description: 'does more damage based on character strength, in addition to standard modifiers',
     damage: (data?: Partial<FeatModRequiredData>) => {
-        if (!data || !data.characterSheet) return roll(4)
+        if (!data || !data.cs) return roll(4)
 
-        const str = calculateBaseMod(data.characterSheet.str)
+        const str = calculateBaseMod(data.cs.str)
         return roll(4) + str
     },
 })

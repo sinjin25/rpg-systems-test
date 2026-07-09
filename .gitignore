@@ -34,3 +34,6 @@ Thumbs.db
 # Coverage
 coverage/
 .nyc_output/
+
+# Personal
+design-docs/

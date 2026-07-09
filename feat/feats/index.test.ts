@@ -116,17 +116,18 @@ describe('mod functions work', () => {
         // even stat line
         const fdeo = featDemoEvenOdd
         const mod = fdeo.context.attack!.mod({
-            characterSheet: defaultCharacterSheet,
+            cs: defaultCharacterSheet,
         })
 
         // all odd
         assert.equal(mod, 0)
 
         const mod2 = fdeo.context.attack!.mod({
-            characterSheet: {
+            cs: {
                 con: 15,
                 dex: 16,
                 str: 8,
+                level: 1,
             }
         })
 

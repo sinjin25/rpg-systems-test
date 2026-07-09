@@ -1,43 +1,50 @@
 import { Attack, AttackModifierFunc, AttackModifierFuncFactory, AttackModifierRequiredData } from '../types'
 import { calculateBaseMod } from '../../stat-modifier'
+import { namedMod } from '../../stat-modifier/log'
 import calculateFeatMod from '../../roll-modifier/feat-mod'
 import { ContextNames } from '../../contexts'
 import { calculateWeaponEquipmentMod } from '../../roll-modifier/equipment-mod'
 import { extractContextsTags } from '../../equipment-sheet/extract'
+import { calculateStatusMod } from '../../status-sheet/status-mod'
 
 export const finesseAttackModifierFactory: AttackModifierFuncFactory = (
     data: AttackModifierRequiredData
 ) => {
     return () => {
         const {
-            characterSheet,
-            equipmentSheet,
-            featSheet,
-            statusSheet,
+            cs,
+            es,
+            fs,
+            ss,
             weapon,
         } = data
 
         const BASE_CONTEXT = ['finesse'] as ContextNames[]
         const EQUIPMENT_CONTEXT = extractContextsTags(weapon)
-        /* console.log('EQUIPMENT_CONTEXT', weapon.contexts) */
 
-        const bm = calculateBaseMod(characterSheet.dex)
+        const bm = namedMod('dex', calculateBaseMod(cs.dex))
         const fm = calculateFeatMod({
-            characterSheet,
-            equipmentSheet,
-            featSheet,
+            cs,
+            es,
+            fs,
         }, [
             ...[...BASE_CONTEXT, ...EQUIPMENT_CONTEXT],
         ], 'attack')
         const em = calculateWeaponEquipmentMod(data, BASE_CONTEXT, 'attack')
+        const sm = calculateStatusMod({ cs, ss }, [
+            ...BASE_CONTEXT,
+            ...EQUIPMENT_CONTEXT,
+        ], 'attack')
 
-        /* console.table({
-            bm,
-            fm,
-            em,
-        }) */
-
-        return bm + fm + em
+        return {
+            total: bm.total + fm.total + em.total + sm.total,
+            groups: [
+                { displayName: 'base mod', ...bm },
+                { displayName: 'feat mod', ...fm },
+                { displayName: 'equipment mod', ...em },
+                { displayName: 'status mod', ...sm },
+            ],
+        }
     }
 }
 

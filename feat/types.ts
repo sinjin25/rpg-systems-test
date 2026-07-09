@@ -8,6 +8,6 @@ export type FeatSheet = {
 export type PossibleFeatKeys = keyof PossibleFeats
 
 export type RequiredFeatData = {
-    characterSheet: CharacterSheet,
-    featSheet: FeatSheet,
+    cs: CharacterSheet,
+    fs: FeatSheet,
 }

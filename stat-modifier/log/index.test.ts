@@ -35,6 +35,8 @@ describe('ModifierLog', () => {
             roll: 5 + 3,
             total: 3 + 1 + 1 + 5 + 3
         } as FinalModLogResult)
+
+        /* console.log('addMogGroup test', modLog) */
     })
     test('Works without modifiers', () => {
         const modLog = ModifierLog('attack')
@@ -45,5 +47,37 @@ describe('ModifierLog', () => {
             roll: 0,
             total: 0,
         } as FinalModLogResult)
+    })
+    test('addModGroup records the group and counts its entries once', () => {
+        const modLog = ModifierLog('damage')
+        modLog.addModGroup('feat mod', {
+            total: 3,
+            entries: [
+                { displayName: 'feat a', amount: 1 },
+                { displayName: 'feat b', amount: 2 },
+            ],
+        })
+        modLog.addModGroup('equipment mod', {
+            total: 1,
+            entries: [{ displayName: 'enhancement +1', amount: 1 }],
+        })
+
+        assert.equal(modLog.groups.length, 2)
+        assert.deepEqual(modLog.groups.map(g => g.displayName), ['feat mod', 'equipment mod'])
+        // entries flatten into mods so finalResult stays consistent
+        assert.equal(modLog.mods.length, 3)
+        assert.equal(modLog.finalResult().modifier, 4)
+
+        /* console.log('addMogGroup test', modLog) */
+    })
+    test('detail on a member is informational and never summed', () => {
+        const modLog = ModifierLog('initiative')
+        modLog.addMod({
+            amount: 1,
+            displayName: 'dex modifier',
+            detail: [{ displayName: 'ring plus two dex', amount: 2 }],
+        })
+
+        assert.equal(modLog.finalResult().modifier, 1)
     })
 })

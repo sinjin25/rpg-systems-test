@@ -9,71 +9,75 @@ import { featFinesseWeaponFighting } from '../../feat/feats/index.ts'
 describe('standard functionality', () => {
     test('produces a number', () => {
         const std = standardAttackModifierFactory({
-            characterSheet: {
+            cs: {
                 con: 10,
                 dex: 10,
                 str: 14,
+                level: 1,
             },
-            equipmentSheet: {},
-            featSheet: defaultFeatSheet,
-            statusSheet: {},
+            es: {},
+            fs: defaultFeatSheet,
+            ss: {},
             weapon: shortsword,
         })
 
         const result = std()
-        assert.equal(result, 2)
+        assert.equal(result.total, 2)
     })
 })
 
 describe('Can be extended', () => {
     test('scales off strength, not dex', () => {
         const standard = standardAttackModifierFactory({
-            characterSheet: {
+            cs: {
                 con: 10,
                 dex: 12,
                 str: 10,
+                level: 1,
             },
-            equipmentSheet: {},
-            featSheet: defaultFeatSheet,
-            statusSheet: {},
+            es: {},
+            fs: defaultFeatSheet,
+            ss: {},
             weapon: shortsword,
         })
 
         const result = standard()
-        assert.equal(result, 0)
+        assert.equal(result.total, 0)
     })
     test('Can get a negative modifier', () => {
         const standard = standardAttackModifierFactory({
-            characterSheet: {
+            cs: {
                 con: 10,
                 dex: 12,
                 str: 8,
+                level: 1,
             },
-            equipmentSheet: defaultEquipmentSheet,
-            featSheet: defaultFeatSheet,
-            statusSheet: {},
+            es: defaultEquipmentSheet,
+            fs: defaultFeatSheet,
+            ss: {},
             weapon: shortsword,
         })
 
         const result = standard()
-        assert.equal(result, -1)
+        assert.equal(result.total, -1)
     })
     test('is not affected by finesse changes', () => {
         const standard = standardAttackModifierFactory({
-            characterSheet: {
+            cs: {
                 con: 10,
                 dex: 12,
                 str: 10,
+                level: 1,
             },
-            equipmentSheet: defaultEquipmentSheet,
-            featSheet: {
+            es: defaultEquipmentSheet,
+            fs: {
                 ...defaultFeatSheet,
                 featFinesseWeaponFighting,
             },
-            statusSheet: {},
+            ss: {},
             weapon: shortsword,
         })
 
-        assert.equal(standard(), 0)
+        assert.equal(standard().total, 0)
     })
 })

@@ -2,6 +2,7 @@ import { BroadContexts, ContextNames } from "../contexts"
 import { CharacterSheet } from "../character-sheet"
 import { StatusSheet } from "../status-sheet/types"
 import type { StatusEffect } from "../status-sheet/core-types"
+import type { RequiredFeatData } from "./types"
 
 export type FeatAppliesContext = {
     whitelist: ContextNames[],
@@ -31,11 +32,17 @@ export type FeatContext = {
 // the status(es) this feat grants, if any
 export type FeatFightStartFunction = (data?: Partial<FeatModRequiredData>) => StatusEffect | StatusEffect[] | undefined
 
+// evaluates whether a character currently qualifies for this feat; purely
+// advisory — addFeat reports the result but always grants the feat regardless,
+// so callers (e.g. a class that grants feats for free) can bypass it
+export type FeatPrereqFunction = (data: RequiredFeatData) => boolean
+
 export interface Feat {
     displayName: string,
     description?: string,
     context: FeatContext,
     tags?: string[],
+    prerequisites?: FeatPrereqFunction,
     onFightStart?: FeatFightStartFunction,
 }
 

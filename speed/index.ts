@@ -45,7 +45,7 @@ export const round = (
         // roll
         const roll = speedRoll(part.owner)
         part.speed.remainder += roll
-        decaySpeedElapsed(part.owner.ss, roll)
+        decaySpeedElapsed(part.owner, roll)
         if (part.speed.remainder >= data.speedSum) {
             part.speed.remainder -= data.speedSum
             acting.push(part)

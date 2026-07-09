@@ -1,5 +1,5 @@
 import { describe, test, assert } from 'vitest'
-import { decaySpeedElapsed, decayActionsElapsed, decaySaveSucceeded, decayEnemyKilled } from './decay'
+import { decaySpeedElapsed, decayActionsElapsed, decayRoundsElapsed, decaySaveSucceeded, decayEnemyKilled } from './decay'
 import { StatusSheet } from './types'
 import { StatusEffect } from './core-types'
 import { defaultCharacterSheet } from '../character-sheet'
@@ -12,56 +12,88 @@ const buffStatus = (): StatusEffect => ({
     context: {},
 })
 
+const testOwner = (ss: StatusSheet) => ({
+    cs: defaultCharacterSheet,
+    fs: defaultFeatSheet,
+    es: defaultEquipmentSheet,
+    ss,
+})
+
 describe('decaySpeedElapsed', () => {
     test('removes the status once remaining speed hits zero, keeps it otherwise', () => {
-        const ss: StatusSheet = {
+        const owner = testOwner({
             test: { ...buffStatus(), expiration: { kind: 'speed-elapsed', remaining: 10 } },
-        }
+        })
 
-        decaySpeedElapsed(ss, 6)
-        assert.property(ss, 'test')
-        assert.equal((ss.test.expiration as any).remaining, 4)
+        decaySpeedElapsed(owner, 6)
+        assert.property(owner.ss, 'test')
+        assert.equal((owner.ss.test.expiration as any).remaining, 4)
 
-        decaySpeedElapsed(ss, 6)
-        assert.notProperty(ss, 'test')
+        decaySpeedElapsed(owner, 6)
+        assert.notProperty(owner.ss, 'test')
     })
 
     test('ignores statuses with a different expiration kind', () => {
-        const ss: StatusSheet = {
+        const owner = testOwner({
             test: { ...buffStatus(), expiration: { kind: 'actions-elapsed', remaining: 1 } },
-        }
+        })
 
-        decaySpeedElapsed(ss, 100)
-        assert.property(ss, 'test')
+        decaySpeedElapsed(owner, 100)
+        assert.property(owner.ss, 'test')
     })
 })
 
 describe('decayActionsElapsed', () => {
     test('removes the status once the action count hits zero, keeps it otherwise', () => {
-        const ss: StatusSheet = {
+        const owner = testOwner({
             test: { ...buffStatus(), expiration: { kind: 'actions-elapsed', remaining: 2 } },
-        }
+        })
 
-        decayActionsElapsed(ss, 1)
-        assert.property(ss, 'test')
-        assert.equal((ss.test.expiration as any).remaining, 1)
+        decayActionsElapsed(owner, 1)
+        assert.property(owner.ss, 'test')
+        assert.equal((owner.ss.test.expiration as any).remaining, 1)
 
-        decayActionsElapsed(ss, 1)
-        assert.notProperty(ss, 'test')
+        decayActionsElapsed(owner, 1)
+        assert.notProperty(owner.ss, 'test')
+    })
+})
+
+describe('decayRoundsElapsed', () => {
+    test('removes the status once remaining rounds hits zero, keeps it otherwise', () => {
+        const owner = testOwner({
+            test: { ...buffStatus(), expiration: { kind: 'rounds-elapsed', remaining: 2 } },
+        })
+
+        decayRoundsElapsed(owner, 1)
+        assert.property(owner.ss, 'test')
+        assert.equal((owner.ss.test.expiration as any).remaining, 1)
+
+        decayRoundsElapsed(owner, 1)
+        assert.notProperty(owner.ss, 'test')
+    })
+
+    test('chains into onExpiration, replacing the status under the same key', () => {
+        const chained: StatusEffect = { ...buffStatus(), displayName: 'chained', expiration: { kind: 'actions-elapsed', remaining: 100 } }
+        const owner = testOwner({
+            test: {
+                ...buffStatus(),
+                expiration: { kind: 'rounds-elapsed', remaining: 1 },
+                onExpiration: () => chained,
+            },
+        })
+
+        decayRoundsElapsed(owner, 1)
+        assert.property(owner.ss, 'test')
+        assert.equal(owner.ss.test.displayName, 'chained')
     })
 })
 
 describe('decaySaveSucceeded', () => {
     test('removes the status when the roll meets or beats the dc', () => {
         // dc: 1 always succeeds, regardless of the roll (a d20 never rolls below 1)
-        const owner = {
-            cs: defaultCharacterSheet,
-            fs: defaultFeatSheet,
-            es: defaultEquipmentSheet,
-            ss: {
-                test: { ...buffStatus(), expiration: { kind: 'save-succeeded' as const, saveContext: [], dc: 1 } },
-            } as StatusSheet,
-        }
+        const owner = testOwner({
+            test: { ...buffStatus(), expiration: { kind: 'save-succeeded' as const, saveContext: [], dc: 1 } },
+        })
 
         decaySaveSucceeded(owner)
         assert.notProperty(owner.ss, 'test')
@@ -69,14 +101,9 @@ describe('decaySaveSucceeded', () => {
 
     test('keeps the status when the roll is below the dc', () => {
         // dc: 999 always fails, regardless of the roll (a d20 never rolls above 20)
-        const owner = {
-            cs: defaultCharacterSheet,
-            fs: defaultFeatSheet,
-            es: defaultEquipmentSheet,
-            ss: {
-                test: { ...buffStatus(), expiration: { kind: 'save-succeeded' as const, saveContext: [], dc: 999 } },
-            } as StatusSheet,
-        }
+        const owner = testOwner({
+            test: { ...buffStatus(), expiration: { kind: 'save-succeeded' as const, saveContext: [], dc: 999 } },
+        })
 
         decaySaveSucceeded(owner)
         assert.property(owner.ss, 'test')
@@ -88,14 +115,14 @@ describe('decayEnemyKilled', () => {
         const enemy = { health: { curr: 10 } }
         const enemy2 = { health: { curr: 10 } } // structurally identical, different reference
 
-        const ss: StatusSheet = {
+        const owner = testOwner({
             flanked: { ...buffStatus(), expiration: { kind: 'enemy-killed', enemy } },
-        }
+        })
 
-        decayEnemyKilled([{ ss }], enemy2)
-        assert.property(ss, 'flanked', 'a structurally-equal-but-different object must not trigger removal')
+        decayEnemyKilled([owner], enemy2)
+        assert.property(owner.ss, 'flanked', 'a structurally-equal-but-different object must not trigger removal')
 
-        decayEnemyKilled([{ ss }], enemy)
-        assert.notProperty(ss, 'flanked')
+        decayEnemyKilled([owner], enemy)
+        assert.notProperty(owner.ss, 'flanked')
     })
 })

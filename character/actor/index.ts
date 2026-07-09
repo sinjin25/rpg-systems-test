@@ -1,6 +1,5 @@
 import rollInitiative, { calculateInitiativeMod } from "../../stat-modifier/initiative";
 import calculateHp from "../../stat-modifier/hp";
-import calculateAc from "../../stat-modifier/ac";
 import { Speed, STANDARD_SPEED } from "../../speed";
 import { CharacterSheet } from "../../character-sheet";
 import { FeatSheet } from "../../feat";
@@ -24,7 +23,6 @@ export type Owner = {
 export type Actor = {
     speed: Speed,
     health: Health,
-    ac: number,
     owner: Owner,
 }
 
@@ -58,18 +56,11 @@ export const instantiateSpeed = (
     }
 }
 
-export const instantiateAc = (
-    owner: Owner
-): number => {
-    return calculateAc(owner).total
-}
-
 export const instantiateActor = (
     owner: Owner,
 ): Actor => {
     return {
         health: instantiateHealth(owner),
-        ac: instantiateAc(owner),
         owner,
         speed: instantiateSpeed(owner),
     }

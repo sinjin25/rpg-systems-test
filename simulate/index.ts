@@ -1,7 +1,9 @@
 import { act } from "../character/act"
-import instantiateActor, { Actor, instantiateAc, instantiateHealth, instantiateSpeed, Owner } from "../character/actor"
+import instantiateActor, { Actor, instantiateHealth, instantiateSpeed, Owner } from "../character/actor"
+import { applyFightStartFeats } from "../feat/fight-start"
 import { round, STANDARD_SPEED } from "../speed"
-import { decayActionsElapsed, decayEnemyKilled, decaySaveSucceeded } from "../status-sheet/decay"
+import calculateAc from "../stat-modifier/ac"
+import { decayActionsElapsed, decayEnemyKilled, decayRoundsElapsed, decaySaveSucceeded } from "../status-sheet/decay"
 
 const instantiateParticipants = (
     participants: Owner[],
@@ -9,11 +11,11 @@ const instantiateParticipants = (
     const actors: Actor[] = []
 
     for (let part of participants) {
+        applyFightStartFeats(part)
         actors.push({
             owner: part,
             health: instantiateHealth(part),
             speed: instantiateSpeed(part),
-            ac: instantiateAc(part),
         })
     }
 
@@ -88,8 +90,10 @@ export const worldState = (
     return {
         playerActors,
         playerAfterFight() {
-            // reroll initiative or it will have the leftover initiative from the last fight
+            // reroll initiative or it will have the leftover initiative from the last fight,
+            // and re-grant fight-start feats (e.g. Divine Protection) for the new fight
             this.playerActors.forEach(a => {
+                applyFightStartFeats(a.owner)
                 a.speed = instantiateSpeed(a.owner)
             })
         }
@@ -124,6 +128,7 @@ export const simulateFight = (
     while (tempAnyActorAlive(enemyActors) && tempAnyActorAlive(playerActors)) {
         rounds++
         actors.forEach(a => decaySaveSucceeded(a.owner))
+        actors.forEach(a => decayRoundsElapsed(a.owner, 1))
         const acting = round({
             participants: actors,
             speedSum: STANDARD_SPEED,
@@ -136,7 +141,7 @@ export const simulateFight = (
 
             // roll
             const action = act(theActor.owner)
-            decayActionsElapsed(theActor.owner.ss, 1)
+            decayActionsElapsed(theActor.owner, 1)
             if (verbose) {
                 console.log(`${theActor.owner.cs?.flavorSheet?.displayName || 'Someone'} rolled`)
                 console.table(action)
@@ -150,7 +155,7 @@ export const simulateFight = (
             action.forEach(a => {
                 if (!target) return
                 const naturalRoll = a.attackLog.finalResult().roll
-                if (!attackHits(a.attackRoll, target.ac, naturalRoll)) return
+                if (!attackHits(a.attackRoll, calculateAc(target.owner).total, naturalRoll)) return
                 const isCrit = a.attackLog.finalResult().roll === 20
                 target.health.curr -= isCrit ? a.damageRoll * 2 : a.damageRoll
             })

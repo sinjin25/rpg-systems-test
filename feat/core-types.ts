@@ -1,6 +1,7 @@
 import { BroadContexts, ContextNames } from "../contexts"
 import { CharacterSheet } from "../character-sheet"
 import { StatusSheet } from "../status-sheet/types"
+import type { StatusEffect } from "../status-sheet/core-types"
 
 export type FeatAppliesContext = {
     whitelist: ContextNames[],
@@ -26,11 +27,16 @@ export type FeatContext = {
     }
 }
 
+// invoked once per actor at fight start (see feat/fight-start.ts); returns
+// the status(es) this feat grants, if any
+export type FeatFightStartFunction = (data?: Partial<FeatModRequiredData>) => StatusEffect | StatusEffect[] | undefined
+
 export interface Feat {
     displayName: string,
     description?: string,
     context: FeatContext,
     tags?: string[],
+    onFightStart?: FeatFightStartFunction,
 }
 
 export const standardFilters = {
@@ -48,3 +54,10 @@ export const standardFilters = {
         }
     }
 }
+
+// unconditional "always applies" filter - for buffs/statuses that aren't
+// gated by any particular context tag
+export const allContexts: FeatAppliesFunction = standardFilters.noBlacklistAnyWhitelistFactory({
+    whitelist: ['all'],
+    blacklist: [],
+})

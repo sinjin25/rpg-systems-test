@@ -30,6 +30,7 @@ export interface Feat {
     displayName: string,
     description?: string,
     context: FeatContext,
+    tags?: string[],
 }
 
 export const standardFilters = {

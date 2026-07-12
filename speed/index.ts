@@ -52,5 +52,10 @@ export const round = (
         }
     }
 
-    return acting
+    // reorder based on excess speed
+    const orderBySpeed = acting.sort((a, b) => {
+        return b.speed.remainder - a.speed.remainder
+    })
+
+    return orderBySpeed
 }

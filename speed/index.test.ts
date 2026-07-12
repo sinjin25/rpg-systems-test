@@ -4,6 +4,7 @@ import { defaultFeatSheet } from '../feat/index.ts'
 import { round, speedRoll, STANDARD_SPEED } from './index.ts'
 import { describe, test, assert, expect } from 'vitest'
 import { StatusSheet } from '../status-sheet/types.ts'
+import { iterate } from '../simulate/util/iterate.ts'
 
 const defaultPerson = {
     cs: defaultCharacterSheet,
@@ -113,5 +114,32 @@ describe('Round reports participants to act', () => {
 
         for (let i = 0; i < 200; i++) round(roundData)
         assert.notProperty(ss, 'test', 'enough rounds should exhaust even a large remaining duration')
+    })
+
+    test('Ordering of actors is based on excess speed (descending order)', () => {
+        const roundData = {
+            participants: [{
+                owner: { ...defaultPerson },
+                speed: { canAct: true, remainder: 0 },
+            }, {
+                owner: { ...defaultPerson },
+                speed: { canAct: true, remainder: 0 },
+            }, {
+                owner: { ...defaultPerson },
+                speed: { canAct: true, remainder: 0 },
+            }],
+            speedSum: STANDARD_SPEED,
+        }
+
+        iterate(5, () => {
+            roundData.participants.forEach(a => a.speed.remainder = 34)
+            const result = round(roundData)
+            for (let i = 1; i < result.length; i++) {
+                const prev = result[i - 1]
+                const curr = result[i]
+
+                expect(prev.speed.remainder).toBeGreaterThanOrEqual(curr.speed.remainder)
+            }
+        })
     })
 })

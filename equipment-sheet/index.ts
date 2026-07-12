@@ -27,6 +27,9 @@ export type BaseEquipment = {
 
 export type Weapon = BaseEquipment & {
     damage?: DamageRollFunc,
+    // base threat range (e.g. 20, or 19 for a 19-20 threat range) and multiplier before feats/modifiers are added
+    critRange?: number,
+    critMultiplier?: number,
 }
 
 export type Armor = BaseEquipment & {

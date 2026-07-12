@@ -74,18 +74,21 @@ describe('worldState', () => {
     afterEach(() => clearSeed())
 
     test('keeps playerActors\' hp.curr across consecutive fights', () => {
+        // seeded before worldState() so the initiative roll it triggers (via
+        // instantiateSpeed) is deterministic too, not just the fight itself
+        // (seed 1 coincidentally lands both fights on the same hp total now that
+        // act() draws an extra d20 per attack for the crit confirmation roll)
+        setSeed(2)
         const ws = worldState({ player: [defaultPlayer] })
         const actor = ws.playerActors[0]
         const startingHp = actor.health.curr
 
-        setSeed(1)
         simulateFight({ player: ws.playerActors, enemy: [defaultEnemy] })
         const afterFirstFight = actor.health.curr
         assert.isBelow(afterFirstFight, startingHp)
 
         ws.playerAfterFight()
 
-        setSeed(2)
         simulateFight({ player: ws.playerActors, enemy: [defaultEnemy] })
         const afterSecondFight = actor.health.curr
 

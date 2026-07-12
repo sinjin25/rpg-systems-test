@@ -16,11 +16,16 @@ export type CreateEquipmentInput = {
     // +N enhancement bonus: applies +N to both attack and damage, unconditionally
     enhancement?: number,
     damage?: DamageRollFunc,
+    critRange?: number,
+    critMultiplier?: number,
     ac?: number,
 }
 
+const DEFAULT_CRIT_RANGE = 20
+const DEFAULT_CRIT_MULTIPLIER = 1.5
+
 export const createEquipment = (input: CreateEquipmentInput): BaseEquipment | Weapon | Armor => {
-    const { displayName, description, contexts = [], mods, enhancement, damage, ac } = input
+    const { displayName, description, contexts = [], mods, enhancement, damage, critRange, critMultiplier, ac } = input
 
     const modsContext = mods && Object.fromEntries(
         (Object.entries(mods) as Array<[BroadContexts, EquipmentModInput]>).map(([broadContext, modInput]) => {
@@ -45,6 +50,9 @@ export const createEquipment = (input: CreateEquipmentInput): BaseEquipment | We
         ? {
             attack: { applies: enhancementApplies, mod: () => enhancement },
             damage: { applies: enhancementApplies, mod: () => enhancement },
+            // enhancement bonuses are eligible for crit increases
+            // see crit/split-scaled-damage.ts
+            critMultiplier: { applies: enhancementApplies, mod: () => 0 },
         }
         : undefined
 
@@ -60,7 +68,12 @@ export const createEquipment = (input: CreateEquipmentInput): BaseEquipment | We
         ...(generateAdditionalContexts.length ? { generateAdditionalContexts } : {}),
     }
 
-    if (damage) return { ...base, damage }
+    if (damage) return {
+        ...base,
+        damage,
+        critRange: critRange ?? DEFAULT_CRIT_RANGE,
+        critMultiplier: critMultiplier ?? DEFAULT_CRIT_MULTIPLIER,
+    }
     if (ac !== undefined) return { ...base, ac }
     return base
 }

@@ -32,7 +32,52 @@ export const featMeleeWeaponFighting: Feat = {
             mod: (data = {}) => {
                 return 1
             },
-        }
+        },
+        // is increased by crit damage multipliers
+        critMultiplier: {
+            applies: standardFilters.noBlacklistAnyWhitelistFactory({
+                blacklist: ['ranged', 'magic'],
+                whitelist: ['melee'],
+            }),
+            mod: (data = {}) => {
+                return 0
+            },
+        },
+    }
+}
+
+// widens a weapon's threat range by 1 (e.g. 20 -> 19-20), regardless of weapon type
+// - a negative mod shrinks the threshold number, which is how the range widens
+export const featImprovedCritical: Feat = {
+    displayName: 'DEMO Improved Critical',
+    context: {
+        critRange: {
+            applies: standardFilters.noBlacklistAnyWhitelistFactory({
+                blacklist: [],
+                whitelist: ['all'],
+            }),
+            mod: (data) => {
+                return -1
+            },
+        },
+    }
+}
+
+// a flat melee damage bonus that does NOT scale on a crit (mirrors Power Attack under
+// Pathfinder RAW): no 'critMultiplier' entry is defined, so it lands in the flat bucket
+// (see crit/split-scaled-damage.ts) instead of being multiplied
+export const featPowerAttack: Feat = {
+    displayName: 'DEMO Power Attack',
+    context: {
+        damage: {
+            applies: standardFilters.noBlacklistAnyWhitelistFactory({
+                blacklist: ['ranged', 'magic'],
+                whitelist: ['melee'],
+            }),
+            mod: (data) => {
+                return 4
+            },
+        },
     }
 }
 
@@ -153,6 +198,8 @@ export const featPrereqDemoRequiresCOrDorStr: Feat = {
 
 export const possibleFeats = {
     featMeleeWeaponFighting,
+    featImprovedCritical,
+    featPowerAttack,
     featFinesseWeaponFighting,
     featConSaves,
     featAlert,

@@ -59,6 +59,7 @@ describe('Ostracized goblin difficulty', () => {
         const winsPerRun = iterate(ITERATIONS, () => {
             const ws = worldState({ player: [defaultPlayer] })
             let wins = 0
+
             while (wins < MAX_CONSECUTIVE_FIGHTS) {
                 const result = simulateFight({
                     player: ws.playerActors,

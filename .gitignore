@@ -37,3 +37,6 @@ coverage/
 
 # Personal
 design-docs/
+
+# Debug output
+act-result.debug.json

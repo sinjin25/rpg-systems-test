@@ -4,6 +4,7 @@ import { CharacterSheet, defaultCharacterSheet } from '../../character-sheet'
 import { addFeat, defaultFeatSheet, FeatSheet } from '../../feat'
 import { dagger, RingPlusOneFinesseAttack } from '../../defaults/equipment'
 import { defaultEquipmentSheet, EquipmentSheet } from '../../equipment-sheet'
+import { util_findRollModifierGroupItem } from '../../roll-modifier/types'
 
 describe('factory works', () => {
     test('default character sheet', () => {
@@ -65,10 +66,12 @@ describe('factory works', () => {
         assert.equal(afterFeat.total - beforeFeat.total, 1)
 
         // the feat shows up by name in the feat mod group
-        const featGroup = afterFeat.groups.find(g => g.displayName === 'feat mod')!
-        assert.deepEqual(featGroup.entries, [
-            { displayName: fs.featMeleeWeaponFighting!.displayName, amount: 1 },
-        ])
+        const featMod = util_findRollModifierGroupItem(afterFeat, {
+            groupName: 'feat mod',
+            modDisplayName: fs.featMeleeWeaponFighting!.displayName,
+        })
+        assert.exists(featMod)
+        assert.equal(featMod.amount, 1)
     })
     test('works with equipment mods', () => {
         const cs: CharacterSheet = {
@@ -98,9 +101,11 @@ describe('factory works', () => {
         const baseGroup = result.groups.find(g => g.displayName === 'base mod')!
         assert.deepEqual(baseGroup.entries, [{ displayName: 'dex', amount: 3 }])
 
-        const equipGroup = result.groups.find(g => g.displayName === 'equipment mod')!
-        assert.deepEqual(equipGroup.entries, [
-            { displayName: RingPlusOneFinesseAttack.displayName, amount: 1 },
-        ])
+        const equipMod = util_findRollModifierGroupItem(result, {
+            groupName: 'equipment mod',
+            modDisplayName: RingPlusOneFinesseAttack.displayName,
+        })
+        assert.exists(equipMod)
+        assert.equal(equipMod.amount, 1)
     })
 })

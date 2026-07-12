@@ -3,8 +3,33 @@ import { defaultFeatSheet, FeatSheet } from "../../feat";
 import { describe, test, assert, expect } from 'vitest'
 import { defaultEquipmentSheet, EquipmentSheet } from "../../equipment-sheet";
 import { act } from "./index.ts";
-import { featMeleeWeaponFighting } from "../../feat/feats/index.ts";
-import { daggerPlusOne, RingPlusOneFinesseAttack, shortsword, strDagger } from "../../defaults/equipment/index.ts";
+import { featImprovedCritical, featMeleeWeaponFighting, featPowerAttack } from "../../feat/feats/index.ts";
+import { critAmulet, daggerPlusOne, RingPlusOneFinesseAttack, shortsword, strDagger } from "../../defaults/equipment/index.ts";
+import { util_findRollModifierGroupItem } from "../../roll-modifier/types.ts";
+import { toPlainModLog, toPlainModLogs } from "../../stat-modifier/log/format.ts";
+import { writeFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, join, relative } from "node:path";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+describe('Visualize a act logs:', () => {
+    test('create the file', () => {
+        const result = act({
+            cs: defaultCharacterSheet,
+            es: { ...defaultEquipmentSheet, mainhand: shortsword },
+            fs: { ...defaultFeatSheet, featMeleeWeaponFighting },
+            ss: {},
+        })
+
+        const theAttack = result[0]
+        const logs = [theAttack.attackLog, theAttack.confirmLog, theAttack.damageLog, theAttack.critRangeLog, theAttack.critMultiplierLog]
+
+        const outputPath = join(__dirname, 'act-result.debug.json')
+        writeFileSync(outputPath, JSON.stringify(toPlainModLogs(logs), null, 2))
+        console.log(`wrote ${relative(process.cwd(), outputPath)}`)
+    })
+})
 
 describe('act works with attacks', () => {
     test('Simplest standard attack', () => {
@@ -182,5 +207,79 @@ describe('simulation: act works with feats', () => {
             }
         }
         assert.equal(pass, true)
+    })
+})
+
+describe('act works with crits', () => {
+    test('a plain weapon defaults to a 20 threat range and a x1.5 multiplier', () => {
+        const result = act({
+            cs: defaultCharacterSheet,
+            es: { ...defaultEquipmentSheet, mainhand: shortsword },
+            fs: defaultFeatSheet,
+            ss: {},
+        })
+
+        assert.equal(result[0].critRange, 20)
+        assert.equal(result[0].critMultiplier, 1.5)
+    })
+
+    test('the confirmation roll is just another attack roll: same modifier groups, its own d20', () => {
+        const result = act({
+            cs: defaultCharacterSheet,
+            es: { ...defaultEquipmentSheet, mainhand: shortsword },
+            fs: { ...defaultFeatSheet, featMeleeWeaponFighting },
+            ss: {},
+        })
+
+        const theAttack = result[0]
+        assert.equal(theAttack.confirmLog.groups.map(g => g.displayName).join(), theAttack.attackLog.groups.map(g => g.displayName).join())
+        assert.deepEqual(theAttack.confirmLog.groups, theAttack.attackLog.groups)
+        assert.equal(theAttack.confirmLog.finalResult().modifier, theAttack.attackLog.finalResult().modifier)
+
+        // it's a fresh d20 draw, so the roll/total aren't required to match the attack roll's
+        assert.equal(typeof theAttack.confirmRoll, 'number')
+        assert.equal(theAttack.confirmLog.roll.length, 1)
+        assert.equal(theAttack.confirmLog.roll[0].displayName, 'd20')
+    })
+
+    test('Both feats and equipment can increase threat range', () => {
+        const result = act({
+            cs: defaultCharacterSheet,
+            es: { ...defaultEquipmentSheet, mainhand: shortsword, amulet: critAmulet },
+            fs: { ...defaultFeatSheet, featImprovedCritical },
+            ss: {},
+        })
+
+        assert.equal(result[0].critRange, 18)
+        console.table(result[0].critRangeLog.groups)
+    })
+
+    test("Power Attack's damage bonus lands in the flat (unscaled) bucket, not the scaled one", () => {
+        const result = act({
+            cs: defaultCharacterSheet,
+            es: { ...defaultEquipmentSheet, mainhand: shortsword },
+            fs: { ...defaultFeatSheet, featPowerAttack },
+            ss: {},
+        })
+
+        assert.equal(result[0].critFlatDamage.total, 4)
+        assert.equal(result[0].critScaledDamage.total, 0)
+    })
+
+    test('a feat bonus that also marks itself with critMultiplier scales normally', () => {
+        const result = act({
+            cs: defaultCharacterSheet,
+            es: { ...defaultEquipmentSheet, mainhand: shortsword },
+            fs: { ...defaultFeatSheet, featMeleeWeaponFighting },
+            ss: {},
+        })
+
+        assert.equal(result[0].critScaledDamage.total, 1)
+        assert.equal(result[0].critFlatDamage.total, 0)
+
+        const theAttack = result[0]
+        const logs = [theAttack.attackLog, theAttack.confirmLog, theAttack.damageLog, theAttack.critRangeLog, theAttack.critMultiplierLog]
+
+        writeFileSync(join(__dirname, 'act-result.debug.json'), JSON.stringify(toPlainModLogs(logs), null, 2))
     })
 })

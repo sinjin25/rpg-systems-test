@@ -36,6 +36,10 @@ export type StatusExpiration =
     | StatusExpirationEnemyKilled
     | StatusExpirationRoundsElapsed
 
+export type StatusPersistTypes = {
+    afterBattle: boolean,
+}
+
 // a status effect's buffs/debuffs are Feat-shaped: same whitelist/blacklist-driven
 // context system, just with an expiration layered on top
 export type StatusEffect = {
@@ -46,4 +50,5 @@ export type StatusEffect = {
     // lets one status chain into another on expiry (e.g. a "charging up" status
     // that turns into the actual buff once its rounds run out)
     onExpiration?: (data?: Partial<FeatModRequiredData>) => StatusEffect | undefined,
+    persists?: Partial<StatusPersistTypes>
 }

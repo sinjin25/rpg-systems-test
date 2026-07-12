@@ -4,7 +4,7 @@ import { applyCritMultiplier, isThreat } from "../crit2"
 import { applyFightStartFeats } from "../feat/fight-start"
 import { round, STANDARD_SPEED } from "../speed"
 import calculateAc from "../stat-modifier/ac"
-import { decayActionsElapsed, decayEnemyKilled, decayRoundsElapsed, decaySaveSucceeded } from "../status-sheet/decay"
+import { decayActionsElapsed, decayEnemyKilled, decayRoundsElapsed, decaySaveSucceeded, expireStatusesAfterFight } from "../status-sheet/decay"
 
 const instantiateParticipants = (
     participants: Owner[],
@@ -94,10 +94,11 @@ export const worldState = (
             // reroll initiative or it will have the leftover initiative from the last fight,
             // and re-grant fight-start feats (e.g. Divine Protection) for the new fight
             this.playerActors.forEach(a => {
+                expireStatusesAfterFight(a.owner)
                 applyFightStartFeats(a.owner)
                 a.speed = instantiateSpeed(a.owner)
             })
-        }
+        },
     }
 }
 

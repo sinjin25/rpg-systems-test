@@ -14,5 +14,6 @@ export {
     decayActionsElapsed,
     decaySaveSucceeded,
     decayEnemyKilled,
+    expireStatusesAfterFight,
 } from "./decay"
 export { flatFootedStatus } from "./statuses/flat-footed"

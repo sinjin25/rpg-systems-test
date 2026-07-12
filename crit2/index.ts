@@ -1,0 +1,8 @@
+export { isThreat } from "./threat"
+export { critRangeModifierFactory } from "./range"
+export { critMultiplierModifierFactory } from "./multiplier"
+export { calculateScaledDamage } from "./scaled-damage"
+export { splitScaledDamage } from "./split-scaled-damage"
+export type { ScaledDamageSplit } from "./split-scaled-damage"
+export { applyCritMultiplier } from "./apply-multiplier"
+export type { CritDamageResult } from "./apply-multiplier"

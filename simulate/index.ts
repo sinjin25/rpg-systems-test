@@ -1,5 +1,6 @@
 import { act } from "../character/act"
 import instantiateActor, { Actor, instantiateHealth, instantiateSpeed, Owner } from "../character/actor"
+import { applyCritMultiplier, isThreat } from "../crit2"
 import { applyFightStartFeats } from "../feat/fight-start"
 import { round, STANDARD_SPEED } from "../speed"
 import calculateAc from "../stat-modifier/ac"
@@ -118,6 +119,7 @@ export const simulateFight = (
     }
 
     const playerActors = resolveParticipants(participants.player)
+    // this is ALSO the targeting priority but not the order in which participants act (see speed/index.ts)
     const enemyActors = instantiateParticipants(participants.enemy)
     const actors = [...playerActors, ...enemyActors]
 
@@ -154,10 +156,31 @@ export const simulateFight = (
             // all actions focus one target for a round
             action.forEach(a => {
                 if (!target) return
+                const targetAc = calculateAc(target.owner).total
+
+                // did it hit?
                 const naturalRoll = a.attackLog.finalResult().roll
-                if (!attackHits(a.attackRoll, calculateAc(target.owner).total, naturalRoll)) return
-                const isCrit = a.attackLog.finalResult().roll === 20
-                target.health.curr -= isCrit ? a.damageRoll * 2 : a.damageRoll
+                if (!attackHits(a.attackRoll, targetAc, naturalRoll)) return
+
+                // did it threaten, and if so, did the confirmation roll (just another
+                // attack roll against the same modifier, precomputed in act) also hit?
+                const threatened = isThreat(naturalRoll, a.critRange)
+                const confirmNaturalRoll = a.confirmLog.finalResult().roll
+                const crit = threatened && attackHits(a.confirmRoll, targetAc, confirmNaturalRoll)
+
+                if (!crit) {
+                    target.health.curr -= a.damageRoll
+                    return
+                }
+
+                const rawRollTotal = a.damageLog.roll.reduce((acc, r) => acc + r.amount, 0)
+                const critDamage = applyCritMultiplier(
+                    rawRollTotal,
+                    a.critScaledDamage.total,
+                    a.critFlatDamage.total,
+                    a.critMultiplier,
+                )
+                target.health.curr -= critDamage.total
             })
             if (target && target.health.curr <= 0) {
                 target.speed.canAct = false

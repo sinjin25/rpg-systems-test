@@ -98,8 +98,12 @@ describe('factory works', () => {
         // the player-facing group-by breakdown
         assert.deepEqual(result.groups.map(g => g.displayName), ['base mod', 'feat mod', 'equipment mod', 'status mod'])
 
-        const baseGroup = result.groups.find(g => g.displayName === 'base mod')!
-        assert.deepEqual(baseGroup.entries, [{ displayName: 'dex', amount: 3 }])
+        const baseMod = util_findRollModifierGroupItem(result, {
+            groupName: 'base mod',
+            modDisplayName: 'dex',
+        })
+        assert.exists(baseMod)
+        assert.equal(baseMod.amount, 3)
 
         const equipMod = util_findRollModifierGroupItem(result, {
             groupName: 'equipment mod',

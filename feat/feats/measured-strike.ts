@@ -1,6 +1,6 @@
 import { Feat } from "../core-types"
 import { InterceptRollFunction } from "../../roll-intercept"
-import { attackHits } from "../../attack-hits"
+import { attackHits } from "../../character/act/attack-hits"
 import calculateAc from "../../stat-modifier/ac"
 import roll from "../../roll"
 import ModifierLog from "../../stat-modifier/log"

@@ -1,6 +1,7 @@
 import { ContextNames } from "../contexts"
 import { FeatContext, FeatModRequiredData } from "../feat/core-types"
 import type { TriggerHooks } from "../trigger/core-types"
+import type { InterceptRollFunction } from "../roll-intercept"
 
 export type StatusExpirationSpeedElapsed = {
     kind: 'speed-elapsed',
@@ -54,5 +55,8 @@ export type StatusEffect = {
     // see TriggerHooks (trigger/core-types.ts) - same reactive hooks as Feat,
     // so an active status can also respond to the outcome of an attack
     trigger?: TriggerHooks,
+    // see InterceptRollFunction (roll-intercept/index.ts) - lets a status intercept
+    // and rewrite the roll itself, before hit/miss is resolved from it
+    interceptRoll?: InterceptRollFunction,
     persists?: Partial<StatusPersistTypes>
 }

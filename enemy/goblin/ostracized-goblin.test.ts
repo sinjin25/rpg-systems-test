@@ -47,15 +47,6 @@ describe('Ostracized goblin difficulty', () => {
     const MAX_CONSECUTIVE_FIGHTS = 200
 
     test('how many consecutive fights a player can win in a row', () => {
-        /* const initPlayer: Owner = {
-            cs: defaultCharacterSheet,
-            es: defaultEquipmentSheet,
-            fs: {
-                ...defaultFeatSheet,
-                featAlert,
-            },
-            ss: {},
-        } */
         const winsPerRun = iterate(ITERATIONS, () => {
             const ws = worldState({ player: [defaultPlayer] })
             let wins = 0

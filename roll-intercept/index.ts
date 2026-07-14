@@ -25,9 +25,14 @@ const collectInterceptsFromSheet = (sheet: SheetWithIntercept) => {
     return intercepts
 }
 
+// ss before fs: one-shot reactive statuses (e.g. Feint) need to resolve before
+// standing feat modifiers (e.g. Measured Strike) so a nat-1-to-nat-20 upgrade
+// pre-empts an on-miss reroll instead of the reverse. See issue #44 for the
+// broader open question this doesn't fully solve (ordering within a single sheet).
 export const collectIntercepts = (owner: Owner) => {
-    const { fs } = owner
+    const { fs, ss } = owner
     const intercepts: InterceptRollFunction[] = [
+        ...collectInterceptsFromSheet(ss),
         ...collectInterceptsFromSheet(fs),
     ]
 

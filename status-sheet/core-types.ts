@@ -1,5 +1,6 @@
 import { ContextNames } from "../contexts"
 import { FeatContext, FeatModRequiredData } from "../feat/core-types"
+import type { TriggerHooks } from "../trigger/core-types"
 
 export type StatusExpirationSpeedElapsed = {
     kind: 'speed-elapsed',
@@ -50,5 +51,8 @@ export type StatusEffect = {
     // lets one status chain into another on expiry (e.g. a "charging up" status
     // that turns into the actual buff once its rounds run out)
     onExpiration?: (data?: Partial<FeatModRequiredData>) => StatusEffect | undefined,
+    // see TriggerHooks (trigger/core-types.ts) - same reactive hooks as Feat,
+    // so an active status can also respond to the outcome of an attack
+    trigger?: TriggerHooks,
     persists?: Partial<StatusPersistTypes>
 }

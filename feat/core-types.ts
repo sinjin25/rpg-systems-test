@@ -2,6 +2,7 @@ import { BroadContexts, ContextNames } from "../contexts"
 import { CharacterSheet } from "../character-sheet"
 import { StatusSheet } from "../status-sheet/types"
 import type { StatusEffect } from "../status-sheet/core-types"
+import type { TriggerHooks } from "../trigger/core-types"
 import type { RequiredFeatData } from "./types"
 
 export type FeatAppliesContext = {
@@ -44,6 +45,7 @@ export interface Feat {
     tags?: string[],
     prerequisites?: FeatPrereqFunction,
     onFightStart?: FeatFightStartFunction,
+    trigger?: TriggerHooks,
 }
 
 export const standardFilters = {

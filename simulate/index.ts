@@ -1,10 +1,11 @@
-import { act } from "../character/act"
+import { act, StandardActionResult } from "../character/act"
 import instantiateActor, { Actor, instantiateHealth, instantiateSpeed, Owner } from "../character/actor"
 import { applyCritMultiplier, isThreat } from "../crit2"
 import { applyFightStartFeats } from "../feat/fight-start"
 import { round, STANDARD_SPEED } from "../speed"
 import calculateAc from "../stat-modifier/ac"
 import { decayActionsElapsed, decayEnemyKilled, decayRoundsElapsed, decaySaveSucceeded, expireStatusesAfterFight } from "../status-sheet/decay"
+import { runTrigger } from "../trigger/dispatch"
 
 const instantiateParticipants = (
     participants: Owner[],
@@ -66,6 +67,46 @@ const ownerIsMemberOf = (
         return a.owner === owner
     })) return true
     return false
+}
+
+// resolves a single attack (one entry of act()'s result) against a target
+// handle triggers ex: Feat.triggers
+export const resolveAction = (
+    attacker: Actor,
+    target: Actor,
+    a: StandardActionResult,
+) => {
+    const targetAc = calculateAc(target.owner).total
+
+    // did it hit?
+    const naturalRoll = a.attackLog.finalResult().roll
+    if (!attackHits(a.attackRoll, targetAc, naturalRoll)) {
+        runTrigger({ self: attacker.owner, target: target.owner }, 'onMiss')
+        return
+    }
+    runTrigger({ self: attacker.owner, target: target.owner }, 'onHit')
+
+    // did it threaten? Did it confirm?
+    const threatened = isThreat(naturalRoll, a.critRange)
+    const confirmNaturalRoll = a.confirmLog.finalResult().roll
+    const crit = threatened && attackHits(a.confirmRoll, targetAc, confirmNaturalRoll)
+
+    if (!crit) {
+        target.health.curr -= a.damageRoll
+        runTrigger({ self: target.owner, target: attacker.owner }, 'onDamageTaken')
+        return
+    }
+    runTrigger({ self: attacker.owner, target: target.owner }, 'onCrit')
+
+    const rawRollTotal = a.damageLog.roll.reduce((acc, r) => acc + r.amount, 0)
+    const critDamage = applyCritMultiplier(
+        rawRollTotal,
+        a.critScaledDamage.total,
+        a.critFlatDamage.total,
+        a.critMultiplier,
+    )
+    target.health.curr -= critDamage.total
+    runTrigger({ self: target.owner, target: attacker.owner }, 'onDamageTaken')
 }
 
 export type FightResult = {
@@ -157,35 +198,14 @@ export const simulateFight = (
             // all actions focus one target for a round
             action.forEach(a => {
                 if (!target) return
-                const targetAc = calculateAc(target.owner).total
-
-                // did it hit?
-                const naturalRoll = a.attackLog.finalResult().roll
-                if (!attackHits(a.attackRoll, targetAc, naturalRoll)) return
-
-                // did it threaten, and if so, did the confirmation roll (just another
-                // attack roll against the same modifier, precomputed in act) also hit?
-                const threatened = isThreat(naturalRoll, a.critRange)
-                const confirmNaturalRoll = a.confirmLog.finalResult().roll
-                const crit = threatened && attackHits(a.confirmRoll, targetAc, confirmNaturalRoll)
-
-                if (!crit) {
-                    target.health.curr -= a.damageRoll
-                    return
-                }
-
-                const rawRollTotal = a.damageLog.roll.reduce((acc, r) => acc + r.amount, 0)
-                const critDamage = applyCritMultiplier(
-                    rawRollTotal,
-                    a.critScaledDamage.total,
-                    a.critFlatDamage.total,
-                    a.critMultiplier,
-                )
-                target.health.curr -= critDamage.total
+                // find self (TurnData is not Actor)
+                const self = actors.find(a => a.owner === theActor.owner)!
+                resolveAction(self, target, a)
             })
             if (target && target.health.curr <= 0) {
                 target.speed.canAct = false
                 decayEnemyKilled(actors.map(a => a.owner), target)
+                runTrigger({ self: theActor.owner, target: target.owner }, 'onKill')
             }
         }
     }

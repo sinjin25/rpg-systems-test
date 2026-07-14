@@ -6,6 +6,8 @@ import { round, STANDARD_SPEED } from "../speed"
 import calculateAc from "../stat-modifier/ac"
 import { decayActionsElapsed, decayEnemyKilled, decayRoundsElapsed, decaySaveSucceeded, expireStatusesAfterFight } from "../status-sheet/decay"
 import { runTrigger } from "../trigger/dispatch"
+import { applyIntercepts, collectIntercepts } from "../roll-intercept"
+import { attackHits } from "../character/act/attack-hits"
 
 const instantiateParticipants = (
     participants: Owner[],
@@ -42,14 +44,6 @@ const chooseTarget = (actors: Actor[]) => {
     return targets[0]
 }
 
-// per readme.md: "if the actor rolls high enough, damage applies"
-// natural 20 always hits, natural 1 always misses, regardless of modifiers
-export const attackHits = (attackRoll: number, ac: number, naturalRoll?: number): boolean => {
-    if (naturalRoll === 20) return true
-    if (naturalRoll === 1) return false
-    return attackRoll >= ac
-}
-
 // massively simplified and wrong
 const tempAnyActorAlive = (
     actors: Actor[],
@@ -74,36 +68,40 @@ const ownerIsMemberOf = (
 export const resolveAction = (
     attacker: Actor,
     target: Actor,
-    a: StandardActionResult,
+    sar: StandardActionResult,
 ) => {
     const targetAc = calculateAc(target.owner).total
 
+    // roll intercepts
+    const intercepts = collectIntercepts(attacker.owner)
+    sar = applyIntercepts(attacker, target, sar, intercepts)
+
     // did it hit?
-    const naturalRoll = a.attackLog.finalResult().roll
-    if (!attackHits(a.attackRoll, targetAc, naturalRoll)) {
+    const naturalRoll = sar.attackLog.finalResult().roll
+    if (!attackHits(sar.attackRoll, targetAc, naturalRoll)) {
         runTrigger({ self: attacker.owner, target: target.owner }, 'onMiss')
         return
     }
     runTrigger({ self: attacker.owner, target: target.owner }, 'onHit')
 
     // did it threaten? Did it confirm?
-    const threatened = isThreat(naturalRoll, a.critRange)
-    const confirmNaturalRoll = a.confirmLog.finalResult().roll
-    const crit = threatened && attackHits(a.confirmRoll, targetAc, confirmNaturalRoll)
+    const threatened = isThreat(naturalRoll, sar.critRange)
+    const confirmNaturalRoll = sar.confirmLog.finalResult().roll
+    const crit = threatened && attackHits(sar.confirmRoll, targetAc, confirmNaturalRoll)
 
     if (!crit) {
-        target.health.curr -= a.damageRoll
+        target.health.curr -= sar.damageRoll
         runTrigger({ self: target.owner, target: attacker.owner }, 'onDamageTaken')
         return
     }
     runTrigger({ self: attacker.owner, target: target.owner }, 'onCrit')
 
-    const rawRollTotal = a.damageLog.roll.reduce((acc, r) => acc + r.amount, 0)
+    const rawRollTotal = sar.damageLog.roll.reduce((acc, r) => acc + r.amount, 0)
     const critDamage = applyCritMultiplier(
         rawRollTotal,
-        a.critScaledDamage.total,
-        a.critFlatDamage.total,
-        a.critMultiplier,
+        sar.critScaledDamage.total,
+        sar.critFlatDamage.total,
+        sar.critMultiplier,
     )
     target.health.curr -= critDamage.total
     runTrigger({ self: target.owner, target: attacker.owner }, 'onDamageTaken')

@@ -1,5 +1,6 @@
 import { describe, test, assert, afterEach } from 'vitest'
-import { simulateFight, worldState, attackHits } from './index.ts'
+import { simulateFight, worldState } from './index.ts'
+import { attackHits } from '../character/act/attack-hits.ts'
 import { defaultCharacterSheet, defaultEnemySheet } from '../character-sheet/index.ts'
 import { defaultFeatSheet } from '../feat/index.ts'
 import { defaultEquipmentSheet } from '../equipment-sheet/index.ts'

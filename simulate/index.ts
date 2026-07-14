@@ -1,10 +1,13 @@
-import { act } from "../character/act"
+import { act, StandardActionResult } from "../character/act"
 import instantiateActor, { Actor, instantiateHealth, instantiateSpeed, Owner } from "../character/actor"
 import { applyCritMultiplier, isThreat } from "../crit2"
 import { applyFightStartFeats } from "../feat/fight-start"
 import { round, STANDARD_SPEED } from "../speed"
 import calculateAc from "../stat-modifier/ac"
-import { decayActionsElapsed, decayEnemyKilled, decayRoundsElapsed, decaySaveSucceeded } from "../status-sheet/decay"
+import { decayActionsElapsed, decayEnemyKilled, decayRoundsElapsed, decaySaveSucceeded, expireStatusesAfterFight } from "../status-sheet/decay"
+import { runTrigger } from "../trigger/dispatch"
+import { applyIntercepts, collectIntercepts } from "../roll-intercept"
+import { attackHits } from "../character/act/attack-hits"
 
 const instantiateParticipants = (
     participants: Owner[],
@@ -41,14 +44,6 @@ const chooseTarget = (actors: Actor[]) => {
     return targets[0]
 }
 
-// per readme.md: "if the actor rolls high enough, damage applies"
-// natural 20 always hits, natural 1 always misses, regardless of modifiers
-export const attackHits = (attackRoll: number, ac: number, naturalRoll?: number): boolean => {
-    if (naturalRoll === 20) return true
-    if (naturalRoll === 1) return false
-    return attackRoll >= ac
-}
-
 // massively simplified and wrong
 const tempAnyActorAlive = (
     actors: Actor[],
@@ -66,6 +61,50 @@ const ownerIsMemberOf = (
         return a.owner === owner
     })) return true
     return false
+}
+
+// resolves a single attack (one entry of act()'s result) against a target
+// handle triggers ex: Feat.triggers
+export const resolveAction = (
+    attacker: Actor,
+    target: Actor,
+    sar: StandardActionResult,
+) => {
+    const targetAc = calculateAc(target.owner).total
+
+    // roll intercepts
+    const intercepts = collectIntercepts(attacker.owner)
+    sar = applyIntercepts(attacker, target, sar, intercepts)
+
+    // did it hit?
+    const naturalRoll = sar.attackLog.finalResult().roll
+    if (!attackHits(sar.attackRoll, targetAc, naturalRoll)) {
+        runTrigger({ self: attacker.owner, target: target.owner }, 'onMiss')
+        return
+    }
+    runTrigger({ self: attacker.owner, target: target.owner }, 'onHit')
+
+    // did it threaten? Did it confirm?
+    const threatened = isThreat(naturalRoll, sar.critRange)
+    const confirmNaturalRoll = sar.confirmLog.finalResult().roll
+    const crit = threatened && attackHits(sar.confirmRoll, targetAc, confirmNaturalRoll)
+
+    if (!crit) {
+        target.health.curr -= sar.damageRoll
+        runTrigger({ self: target.owner, target: attacker.owner }, 'onDamageTaken')
+        return
+    }
+    runTrigger({ self: attacker.owner, target: target.owner }, 'onCrit')
+
+    const rawRollTotal = sar.damageLog.roll.reduce((acc, r) => acc + r.amount, 0)
+    const critDamage = applyCritMultiplier(
+        rawRollTotal,
+        sar.critScaledDamage.total,
+        sar.critFlatDamage.total,
+        sar.critMultiplier,
+    )
+    target.health.curr -= critDamage.total
+    runTrigger({ self: target.owner, target: attacker.owner }, 'onDamageTaken')
 }
 
 export type FightResult = {
@@ -94,10 +133,11 @@ export const worldState = (
             // reroll initiative or it will have the leftover initiative from the last fight,
             // and re-grant fight-start feats (e.g. Divine Protection) for the new fight
             this.playerActors.forEach(a => {
+                expireStatusesAfterFight(a.owner)
                 applyFightStartFeats(a.owner)
                 a.speed = instantiateSpeed(a.owner)
             })
-        }
+        },
     }
 }
 
@@ -156,35 +196,14 @@ export const simulateFight = (
             // all actions focus one target for a round
             action.forEach(a => {
                 if (!target) return
-                const targetAc = calculateAc(target.owner).total
-
-                // did it hit?
-                const naturalRoll = a.attackLog.finalResult().roll
-                if (!attackHits(a.attackRoll, targetAc, naturalRoll)) return
-
-                // did it threaten, and if so, did the confirmation roll (just another
-                // attack roll against the same modifier, precomputed in act) also hit?
-                const threatened = isThreat(naturalRoll, a.critRange)
-                const confirmNaturalRoll = a.confirmLog.finalResult().roll
-                const crit = threatened && attackHits(a.confirmRoll, targetAc, confirmNaturalRoll)
-
-                if (!crit) {
-                    target.health.curr -= a.damageRoll
-                    return
-                }
-
-                const rawRollTotal = a.damageLog.roll.reduce((acc, r) => acc + r.amount, 0)
-                const critDamage = applyCritMultiplier(
-                    rawRollTotal,
-                    a.critScaledDamage.total,
-                    a.critFlatDamage.total,
-                    a.critMultiplier,
-                )
-                target.health.curr -= critDamage.total
+                // find self (TurnData is not Actor)
+                const self = actors.find(a => a.owner === theActor.owner)!
+                resolveAction(self, target, a)
             })
             if (target && target.health.curr <= 0) {
                 target.speed.canAct = false
                 decayEnemyKilled(actors.map(a => a.owner), target)
+                runTrigger({ self: theActor.owner, target: target.owner }, 'onKill')
             }
         }
     }

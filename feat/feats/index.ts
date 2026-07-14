@@ -2,6 +2,9 @@ import { Feat, FeatAppliesContext, FeatContext, standardFilters } from "../core-
 import { featDivineProtection } from "./divine-protection"
 import { featRage } from "./rage"
 import { featBattleFocus } from "./battle-focus"
+import { featFatiguingBlows } from "./fatiguing-blows"
+import { featMeasuredStrike } from "./measured-strike"
+import { featFeint } from "./feint"
 
 export { standardFilters } from "../core-types"
 export type { BroadContexts, ContextNames } from "../../contexts"
@@ -10,6 +13,9 @@ export type { FeatAppliesContext, FeatAppliesFunction, FeatModRequiredData, Feat
 export { featDivineProtection } from "./divine-protection"
 export { featRage } from "./rage"
 export { featBattleFocus } from "./battle-focus"
+export { featFatiguingBlows } from "./fatiguing-blows"
+export { featMeasuredStrike } from "./measured-strike"
+export { featFeint } from "./feint"
 
 // examples
 export const featMeleeWeaponFighting: Feat = {
@@ -207,6 +213,9 @@ export const possibleFeats = {
     featDivineProtection,
     featRage,
     featBattleFocus,
+    featFatiguingBlows,
+    featMeasuredStrike,
+    featFeint,
     featPrereqDemoA,
     featPrereqDemoB,
     featPrereqDemoC,

@@ -4,7 +4,7 @@ import { defaultCharacterSheet } from '../../character-sheet/index.ts'
 import { RingPlusTwoDex, leatherArmor } from '../../defaults/equipment/index.ts'
 import { createEquipment } from '../../equipment-sheet/create-equipment.ts'
 import { featDodgy } from '../../feat/feats/index.ts'
-import { ModLogMember } from '../log/index.ts'
+import { util_findModLogGroupItem } from '../log/index.ts'
 import { flatFootedStatus } from '../../status-sheet/statuses/flat-footed.ts'
 
 describe('calculateAc', () => {
@@ -78,13 +78,18 @@ describe('calculateAc', () => {
 
         assert.deepEqual(log.groups.map(g => g.displayName), ['base ac', 'dexterity', 'armor', 'feats', 'equipment', 'statuses'])
 
-        const armorGroup = log.groups.find(g => g.displayName === 'armor')!
-        assert.deepEqual(armorGroup.entries, [
-            { displayName: leatherArmor.displayName, amount: 2 },
-        ])
+        const armorMod = util_findModLogGroupItem(log, {
+            groupName: 'armor',
+            modDisplayName: leatherArmor.displayName,
+        })
+        assert.exists(armorMod)
+        assert.equal(armorMod.amount, 2)
 
-        const dexGroup = log.groups.find(g => g.displayName === 'dexterity')!
-        assert.deepEqual((dexGroup.entries[0] as ModLogMember).detail, [
+        const dexMod = util_findModLogGroupItem(log, {
+            groupName: 'dexterity',
+            modDisplayName: 'dex modifier',
+        })!
+        assert.deepEqual(dexMod.detail, [
             { displayName: RingPlusTwoDex.displayName, amount: 2 },
         ])
 

@@ -1,0 +1,1 @@
+Certain feats or class features might intercept a natural roll. For instance, the common idea of "advantage" rerolls and takes the higher

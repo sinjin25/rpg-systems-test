@@ -3,7 +3,7 @@ import rollInitiative, { calculateInitiativeMod } from './index.ts'
 import { defaultCharacterSheet } from '../../character-sheet/index.ts'
 import { RingPlusTwoDex } from '../../defaults/equipment/index.ts'
 import { featAlert } from '../../feat/feats/index.ts'
-import { ModLogMember } from '../log/index.ts'
+import { ModLogMember, util_findModLogGroupItem } from '../log/index.ts'
 import { iterate } from '../../simulate/util/iterate.ts'
 import { instantiateSpeed, Owner } from '../../character/actor/index.ts'
 import { defaultEquipmentSheet } from '../../equipment-sheet/index.ts'
@@ -66,15 +66,20 @@ describe('calculateInitiativeMod', () => {
         assert.deepEqual(log.groups.map(g => g.displayName), ['dexterity', 'feats', 'equipment', 'statuses'])
 
         // the individual feat shows up by name inside the feats group
-        const featGroup = log.groups.find(g => g.displayName === 'feats')!
-        assert.deepEqual(featGroup.entries, [
-            { displayName: featAlert.displayName, amount: 4 },
-        ])
+        const featMod = util_findModLogGroupItem(log, {
+            groupName: 'feats',
+            modDisplayName: featAlert.displayName,
+        })
+        assert.exists(featMod)
+        assert.equal(featMod.amount, 4)
 
         // the ring's +2 dex is halved inside the dex modifier, so it appears
         // as detail on the dexterity entry rather than as an additive entry
-        const dexGroup = log.groups.find(g => g.displayName === 'dexterity')!
-        assert.deepEqual(dexGroup.entries[0].detail, [
+        const dexMod = util_findModLogGroupItem(log, {
+            groupName: 'dexterity',
+            modDisplayName: 'dex modifier',
+        })!
+        assert.deepEqual(dexMod.detail, [
             { displayName: RingPlusTwoDex.displayName, amount: 2 },
         ])
 

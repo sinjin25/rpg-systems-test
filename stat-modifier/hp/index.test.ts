@@ -2,7 +2,7 @@ import { describe, test, assert, expect } from 'vitest'
 import calculateHp from './index.ts'
 import { defaultCharacterSheet } from '../../character-sheet/index.ts'
 import { RingPlusTenHealth, RingPlusTwoCon } from '../../defaults/equipment/index.ts'
-import { ModLogMember } from '../log/index.ts'
+import { ModLogMember, util_findModLogGroupItem } from '../log/index.ts'
 
 describe('calculateHp', () => {
     const findDisplayName = (key: string) => (d: ModLogMember) => d.displayName === key
@@ -86,10 +86,12 @@ describe('calculateHp', () => {
         assert.deepEqual(log.groups.map(g => g.displayName), ['base health', 'feats', 'equipment', 'statuses'])
 
         // the individual item shows up by name inside the equipment group
-        const equipGroup = log.groups.find(g => g.displayName === 'equipment')!
-        assert.deepEqual(equipGroup.entries, [
-            { displayName: RingPlusTenHealth.displayName, amount: 10 },
-        ])
+        const equipMod = util_findModLogGroupItem(log, {
+            groupName: 'equipment',
+            modDisplayName: RingPlusTenHealth.displayName,
+        })
+        assert.exists(equipMod)
+        assert.equal(equipMod.amount, 10)
 
         assert.equal(log.finalResult().total, total)
     })

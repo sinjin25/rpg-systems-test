@@ -1,10 +1,12 @@
 import { describe, test, assert } from 'vitest'
-import { decaySpeedElapsed, decayActionsElapsed, decayRoundsElapsed, decaySaveSucceeded, decayEnemyKilled } from './decay'
+import { decaySpeedElapsed, decayActionsElapsed, decayRoundsElapsed, decaySaveSucceeded, decayEnemyKilled, expireStatusesAfterFight } from './decay'
 import { StatusSheet } from './types'
 import { StatusEffect } from './core-types'
 import { defaultCharacterSheet } from '../character-sheet'
 import { defaultFeatSheet } from '../feat'
 import { defaultEquipmentSheet } from '../equipment-sheet'
+import { createDefaultOwner } from '../defaults'
+import blessStatus from './statuses/bless'
 
 const buffStatus = (): StatusEffect => ({
     displayName: 'test status',
@@ -124,5 +126,56 @@ describe('decayEnemyKilled', () => {
 
         decayEnemyKilled([owner], enemy)
         assert.notProperty(owner.ss, 'flanked')
+    })
+})
+
+describe('expireStatusesAfterFight', () => {
+    const nonPersistentStatus = (): StatusEffect => ({
+        displayName: 'Demo non persistent status',
+        expiration: { kind: 'speed-elapsed', remaining: 99999 },
+        context: {},
+    })
+    const persistentStatus = (): StatusEffect => ({
+        displayName: 'Persistent Status',
+        expiration: { kind: 'speed-elapsed', remaining: 99999 },
+        context: {},
+        persists: {
+            afterBattle: true,
+        }
+    })
+
+    test('Most statuses should expire after a fight', () => {
+        const owner = createDefaultOwner({
+            ss: {
+                nps: nonPersistentStatus(),
+                bless: blessStatus,
+            }
+        })
+
+        assert.exists(owner.ss.nps)
+        assert.exists(owner.ss.bless)
+
+        expireStatusesAfterFight(owner)
+
+        console.log('owner', owner.ss)
+        assert.notExists(owner.ss.nps)
+        assert.notExists(owner.ss.bless)
+    })
+
+    test('Statuses with persists.afterFight persist', () => {
+        const owner = createDefaultOwner({
+            ss: {
+                ps: persistentStatus(),
+                bless: blessStatus,
+            }
+        })
+
+        assert.exists(owner.ss.ps)
+        assert.exists(owner.ss.bless)
+
+        expireStatusesAfterFight(owner)
+
+        assert.exists(owner.ss.ps)
+        assert.notExists(owner.ss.bless)
     })
 })

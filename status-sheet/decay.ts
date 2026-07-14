@@ -91,3 +91,17 @@ export const decayEnemyKilled = (
         }
     }
 }
+
+// remove a status after fight if it is not intended to persist
+// a function afterward will re-add ones that should be re-added at the start of a fight
+export const expireStatusesAfterFight = (
+    owner: DecayOwnerData,
+) => {
+    const keys = Object.keys(owner.ss)
+    for (let key of keys) {
+        const v = owner.ss[key]
+        if (!v
+            || v.persists === undefined
+            || !v.persists.afterBattle) expireStatus(owner, key)
+    }
+}

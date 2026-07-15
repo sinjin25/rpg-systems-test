@@ -1,16 +1,17 @@
 import { StatusEffect } from "../core-types"
-import roll from "../../roll"
 
-export const BURNING_WEAPON_ROUNDS = 3
-export const BURNING_WEAPON_DIE_SIDES = 6
+export const BURNING_WEAPON_SAVE_DC = 15
 
-export const burningWeaponStatus = (roundsRemaining = BURNING_WEAPON_ROUNDS): StatusEffect => ({
+// MVP wiring for the save-succeeded decay path: rather than lasting a fixed
+// number of rounds, the burning target attempts a reflex save each round (see
+// decaySaveSucceeded in ../decay.ts) and shakes off the flames on a success.
+export const burningWeaponStatus = (dc = BURNING_WEAPON_SAVE_DC): StatusEffect => ({
     displayName: 'Burning (Burning Weapon)',
-    description: 'Takes fire damage each round',
+    description: 'Reflex save each round to put out the flames',
     expiration: {
-        kind: 'rounds-elapsed',
-        remaining: roundsRemaining,
-        tick: () => -roll(BURNING_WEAPON_DIE_SIDES),
+        kind: 'save-succeeded',
+        saveType: 'reflex',
+        dc,
     },
     context: {},
 })

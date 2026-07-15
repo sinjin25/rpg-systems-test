@@ -1,6 +1,8 @@
 import { CharacterSheet } from "../character-sheet"
+import type { Actor } from "../character/actor"
 import { EquipmentSheet } from "../equipment-sheet"
 import { FeatSheet } from "../feat"
+import { applyHealthDelta } from "../health"
 import calculateFeatMod from "../roll-modifier/feat-mod"
 import roll from "../roll"
 import { calculateStatusMod } from "./status-mod"
@@ -54,10 +56,16 @@ export const decayActionsElapsed = (
 export const decayRoundsElapsed = (
     owner: DecayOwnerData,
     elapsed: number,
+    self?: Actor,
 ) => {
     for (const key of Object.keys(owner.ss)) {
         const status = owner.ss[key]
         if (status.expiration.kind !== 'rounds-elapsed') continue
+
+        if (status.expiration.tick && self) {
+            applyHealthDelta(self.health, status.expiration.tick(owner))
+        }
+
         status.expiration.remaining -= elapsed
         if (status.expiration.remaining <= 0) expireStatus(owner, key)
     }

@@ -2,6 +2,7 @@ import { act, StandardActionResult } from "../character/act"
 import instantiateActor, { Actor, instantiateHealth, instantiateSpeed, Owner } from "../character/actor"
 import { applyCritMultiplier, isThreat } from "../crit2"
 import { applyFightStartFeats } from "../feat/fight-start"
+import { applyHealthDelta } from "../health"
 import { round, STANDARD_SPEED } from "../speed"
 import calculateAc from "../stat-modifier/ac"
 import { decayActionsElapsed, decayEnemyKilled, decayRoundsElapsed, decaySaveSucceeded, expireStatusesAfterFight } from "../status-sheet/decay"
@@ -90,7 +91,7 @@ export const resolveAction = (
     const crit = threatened && attackHits(sar.confirmRoll, targetAc, confirmNaturalRoll)
 
     if (!crit) {
-        target.health.curr -= sar.damageRoll
+        applyHealthDelta(target.health, -sar.damageRoll)
         runTrigger({ self: target.owner, target: attacker.owner }, 'onDamageTaken')
         return
     }
@@ -103,8 +104,22 @@ export const resolveAction = (
         sar.critFlatDamage.total,
         sar.critMultiplier,
     )
-    target.health.curr -= critDamage.total
+    applyHealthDelta(target.health, -critDamage.total)
     runTrigger({ self: target.owner, target: attacker.owner }, 'onDamageTaken')
+}
+
+// marks a dead actor unable to act and runs the associated decay/trigger bookkeeping.
+// killer is omitted for deaths not attributable to an attacker (e.g. a DoT tick),
+// which intentionally skips firing onKill since there's no correct self to attribute it to
+const handleDeath = (
+    actors: Actor[],
+    target: Actor,
+    killer?: Owner,
+) => {
+    if (target.health.curr > 0) return
+    target.speed.canAct = false
+    decayEnemyKilled(actors.map(a => a.owner), target)
+    if (killer) runTrigger({ self: killer, target: target.owner }, 'onKill')
 }
 
 export type FightResult = {
@@ -170,7 +185,10 @@ export const simulateFight = (
     while (tempAnyActorAlive(enemyActors) && tempAnyActorAlive(playerActors)) {
         rounds++
         actors.forEach(a => decaySaveSucceeded(a.owner))
-        actors.forEach(a => decayRoundsElapsed(a.owner, 1))
+        // I think this should be only when they actually act
+        // (this is a balance question)
+        /* actors.forEach(a => decayRoundsElapsed(a.owner, 1, a)) */
+        actors.forEach(a => handleDeath(actors, a))
         const acting = round({
             participants: actors,
             speedSum: STANDARD_SPEED,
@@ -179,6 +197,7 @@ export const simulateFight = (
             const theActor = acting.pop()
             if (!theActor) continue
             // died before turn
+            actors.forEach(a => decayRoundsElapsed(a.owner, 1, a))
             if (!theActor.speed.canAct) continue
 
             // roll
@@ -200,11 +219,7 @@ export const simulateFight = (
                 const self = actors.find(a => a.owner === theActor.owner)!
                 resolveAction(self, target, a)
             })
-            if (target && target.health.curr <= 0) {
-                target.speed.canAct = false
-                decayEnemyKilled(actors.map(a => a.owner), target)
-                runTrigger({ self: theActor.owner, target: target.owner }, 'onKill')
-            }
+            if (target) handleDeath(actors, target, theActor.owner)
         }
     }
 

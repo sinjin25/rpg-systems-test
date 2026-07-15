@@ -1,4 +1,4 @@
-import { ContextNames } from "../contexts"
+import type { SaveType } from "../save"
 import { FeatContext, FeatModFunction, FeatModRequiredData } from "../feat/core-types"
 import type { TriggerHooks } from "../trigger/core-types"
 import type { InterceptRollFunction } from "../roll-intercept"
@@ -15,7 +15,8 @@ export type StatusExpirationActionsElapsed = {
 
 export type StatusExpirationSaveSucceeded = {
     kind: 'save-succeeded',
-    saveContext: ContextNames[],
+    // changes which characterSheet vals are used for bonuses
+    saveType: SaveType,
     dc: number,
 }
 

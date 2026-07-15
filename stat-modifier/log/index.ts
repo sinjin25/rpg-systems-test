@@ -42,11 +42,13 @@ export const namedMod = (displayName: string, amount: number): ModResult => ({
 })
 
 export const util_findModLogGroupItem = (
-    log: ModLog,
+    logAggregator: {
+        groups: ModGroup[],
+    },
     query: { groupName: string, modDisplayName: string }
 ) => {
     if (!query.groupName || !query.modDisplayName) throw Error('did not pass either a query.groupName or query.modDisplayName')
-    const group = log.groups.find(a => a.displayName === query.groupName)
+    const group = logAggregator.groups.find(a => a.displayName === query.groupName)
     if (!group) return undefined
     const member = group.entries.find(a => a.displayName === query.modDisplayName)
     return member

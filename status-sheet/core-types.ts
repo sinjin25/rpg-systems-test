@@ -1,5 +1,5 @@
 import { ContextNames } from "../contexts"
-import { FeatContext, FeatModRequiredData } from "../feat/core-types"
+import { FeatContext, FeatModFunction, FeatModRequiredData } from "../feat/core-types"
 import type { TriggerHooks } from "../trigger/core-types"
 import type { InterceptRollFunction } from "../roll-intercept"
 
@@ -29,6 +29,10 @@ export type StatusExpirationEnemyKilled = {
 export type StatusExpirationRoundsElapsed = {
     kind: 'rounds-elapsed',
     remaining: number,
+    // ex: for heal over time or damage over time
+    // they have access to Owner so feats/status/equipment can affect
+    // CURRENTLY WE ASSUME ONLY THIS STATUS TYPE HAS TICKS
+    tick?: FeatModFunction,
 }
 
 export type StatusExpiration =

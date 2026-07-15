@@ -90,6 +90,69 @@ describe('decayRoundsElapsed', () => {
     })
 })
 
+describe('decayRoundsElapsed tick', () => {
+    const testActor = (ss: StatusSheet, curr = 10, max = 20) => ({
+        owner: testOwner(ss),
+        health: { curr, max, temporary: 0 },
+        speed: { canAct: true, remainder: 0 },
+    })
+
+    test('a damage tick reduces health.curr and the status still decrements/expires normally', () => {
+        const actor = testActor({
+            test: {
+                ...buffStatus(),
+                expiration: { kind: 'rounds-elapsed', remaining: 2, tick: () => -3 },
+            },
+        })
+
+        decayRoundsElapsed(actor.owner, 1, actor)
+        assert.equal(actor.health.curr, 7)
+        assert.property(actor.owner.ss, 'test')
+        assert.equal((actor.owner.ss.test.expiration as any).remaining, 1)
+
+        decayRoundsElapsed(actor.owner, 1, actor)
+        assert.equal(actor.health.curr, 4)
+        assert.notProperty(actor.owner.ss, 'test')
+    })
+
+    test('a heal tick increases health.curr, clamped at max', () => {
+        const actor = testActor({
+            test: {
+                ...buffStatus(),
+                expiration: { kind: 'rounds-elapsed', remaining: 1, tick: () => 50 },
+            },
+        }, 18, 20)
+
+        decayRoundsElapsed(actor.owner, 1, actor)
+        assert.equal(actor.health.curr, 20)
+    })
+
+    test('tick is skipped without mutation or error when self is omitted', () => {
+        const owner = testOwner({
+            test: {
+                ...buffStatus(),
+                expiration: { kind: 'rounds-elapsed', remaining: 1, tick: () => -3 },
+            },
+        })
+
+        assert.doesNotThrow(() => decayRoundsElapsed(owner, 1))
+        assert.notProperty(owner.ss, 'test')
+    })
+
+    test('tick fires on the final round before expiry', () => {
+        const actor = testActor({
+            test: {
+                ...buffStatus(),
+                expiration: { kind: 'rounds-elapsed', remaining: 1, tick: () => -5 },
+            },
+        })
+
+        decayRoundsElapsed(actor.owner, 1, actor)
+        assert.equal(actor.health.curr, 5)
+        assert.notProperty(actor.owner.ss, 'test')
+    })
+})
+
 describe('decaySaveSucceeded', () => {
     test('removes the status when the roll meets or beats the dc', () => {
         // dc: 1 always succeeds, regardless of the roll (a d20 never rolls below 1)

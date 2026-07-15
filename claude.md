@@ -2,6 +2,8 @@
 
 Pathfinder/DND-type simulation systems.
 
+TypeScript circular imports do not break systems. Circular type imports signify a github issue should be opened afterward, not now.
+
 # Major Systems
 ## Character Sheet
 Contains character-related values such as strength (str), dexterity, etc.

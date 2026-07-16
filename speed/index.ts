@@ -1,3 +1,4 @@
+import { AbilitySheet } from "../ability-sheet"
 import { CharacterSheet } from "../character-sheet"
 import { act } from "../character/act"
 import { EquipmentSheet } from "../equipment-sheet"
@@ -16,11 +17,13 @@ export type Speed = {
 
 export type TurnData = {
     speed: Speed,
+    // structural, not Owner, to avoid a circular import (character/actor imports speed)
     owner: {
         cs: CharacterSheet,
         fs: FeatSheet,
         es: EquipmentSheet,
-        ss: StatusSheet
+        ss: StatusSheet,
+        as: AbilitySheet,
     },
 }
 

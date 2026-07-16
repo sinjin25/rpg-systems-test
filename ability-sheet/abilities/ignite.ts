@@ -1,5 +1,5 @@
-import roll from "../../../../roll"
-import burningWeaponStatus from "../../../../status-sheet/statuses/burning-weapon"
+import roll from "../../roll"
+import burningWeaponStatus from "../../status-sheet/statuses/burning-weapon"
 import { Ability } from "../types"
 
 const DC = 15
@@ -10,6 +10,7 @@ const DC = 15
 export const ignite: Ability = {
     displayName: 'Ignite',
     keyStat: 'con',
+    castType: 'standard',
     contexts: ['magic'],
     damage: () => roll(6),
     save: {

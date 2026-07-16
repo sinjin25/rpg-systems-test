@@ -5,6 +5,7 @@ import { CharacterSheet } from "../../character-sheet";
 import { FeatSheet } from "../../feat";
 import { EquipmentSheet } from "../../equipment-sheet";
 import { StatusSheet } from "../../status-sheet";
+import { AbilitySheet } from "../../ability-sheet";
 import { flatFootedStatus } from "../../status-sheet/statuses/flat-footed";
 
 type Health = {
@@ -18,6 +19,7 @@ export type Owner = {
     fs: FeatSheet,
     es: EquipmentSheet,
     ss: StatusSheet,
+    as: AbilitySheet,
 }
 
 export type Actor = {

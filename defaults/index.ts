@@ -4,6 +4,7 @@ import { EquipmentSheet } from '../equipment-sheet'
 import { dagger, shortsword } from './equipment'
 import { FeatModRequiredData } from '../feat/core-types'
 import { defaultStatusSheet } from '../status-sheet'
+import { createDefaultAbilitySheet } from '../ability-sheet'
 import { Owner } from '../character/actor'
 
 export const defaultCharacterSheet: CharacterSheet = {
@@ -42,5 +43,7 @@ export const createDefaultOwner = (data: Partial<Owner>) => {
             ...defaultStatusSheet,
             ...data.ss,
         },
+        // fresh per owner - AbilitySheet categories hold mutable state
+        as: data.as || createDefaultAbilitySheet(),
     } as Owner
 }

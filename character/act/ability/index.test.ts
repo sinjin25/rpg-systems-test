@@ -1,8 +1,8 @@
 import { describe, test, assert } from 'vitest'
 
 import { useAbility } from './index.ts'
-import { Ability } from './types.ts'
-import ignite from './abilities/ignite.ts'
+import { Ability } from '../../../ability-sheet/index.ts'
+import ignite from '../../../ability-sheet/abilities/ignite.ts'
 import { defaultFeatSheet } from '../../../feat/index.ts'
 import { createEquipment } from '../../../equipment-sheet/create-equipment.ts'
 import { util_findModLogGroupItem } from '../../../stat-modifier/log/index.ts'
@@ -19,6 +19,7 @@ const baseData = (overrides?: Partial<Parameters<typeof useAbility>[0]>) => ({
 const testAbility = (overrides?: Partial<Ability>): Ability => ({
     displayName: 'test ability',
     keyStat: 'con',
+    castType: 'standard',
     contexts: ['magic'],
     damage: () => 7,
     save: { type: 'reflex', baseDc: 12, damageOnPass: 'half' },

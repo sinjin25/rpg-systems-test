@@ -4,9 +4,12 @@ import { RollModifierResult } from "../../../roll-modifier/types"
 import { calculateBaseMod } from "../../../stat-modifier"
 import ModifierLog, { ModLog, namedMod } from "../../../stat-modifier/log"
 import { calculateStatusMod } from "../../../status-sheet/status-mod"
-import { AbilityActionResult, AbilityModifierRequiredData, AbilitySaveDamageOutcome } from "./types"
+import { AbilitySaveDamageOutcome } from "../../../ability-sheet"
+import { AbilityActionResult, AbilityModifierRequiredData } from "./types"
 
-export type { Ability, AbilityActionResult, AbilityKeyStat, AbilityModifierRequiredData, AbilitySave, AbilitySaveDamageOutcome } from './types'
+export type { AbilityActionResult, AbilityModifierRequiredData } from './types'
+// the Ability data model moved to ability-sheet; re-exported here for convenience
+export type { Ability, AbilityCastType, AbilityKeyStat, AbilitySave, AbilitySaveDamageOutcome } from '../../../ability-sheet'
 
 /*
 an ability DC is structurally an AC, not an attack roll: a static (baseDc + mods)

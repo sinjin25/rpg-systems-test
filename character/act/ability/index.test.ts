@@ -1,3 +1,4 @@
+import { characterLevels } from '../../../character-sheet/class-level'
 import { describe, test, assert } from 'vitest'
 
 import { useAbility } from './index.ts'
@@ -8,7 +9,7 @@ import { createEquipment } from '../../../equipment-sheet/create-equipment.ts'
 import { util_findModLogGroupItem } from '../../../stat-modifier/log/index.ts'
 
 const baseData = (overrides?: Partial<Parameters<typeof useAbility>[0]>) => ({
-    cs: { con: 14, dex: 10, str: 10, level: 1 },
+    cs: { con: 14, dex: 10, str: 10, levels: characterLevels(1) },
     es: {},
     fs: defaultFeatSheet,
     ss: {},
@@ -72,7 +73,7 @@ describe('useAbility structure', () => {
 
 describe('useAbility produces a final DC', () => {
     test('DC is the ability baseDc + its keyStat mod', () => {
-        const result = useAbility(baseData({ cs: { con: 14, dex: 20, str: 20, level: 1 } }))
+        const result = useAbility(baseData({ cs: { con: 14, dex: 20, str: 20, levels: characterLevels(1) } }))
 
         // ignite baseDc 15 + con 14 (+2) = 17; the high dex/str are ignored
         assert.equal(result.save?.dc, 17)
@@ -119,8 +120,8 @@ describe('useAbility can produce damage', () => {
     })
 
     test('keyStat does not affect damage but affects dc', () => {
-        const lowCon = useAbility(baseData({ ability: testAbility(), cs: { con: 10, dex: 10, str: 10, level: 1 } }))
-        const highCon = useAbility(baseData({ ability: testAbility(), cs: { con: 20, dex: 10, str: 10, level: 1 } }))
+        const lowCon = useAbility(baseData({ ability: testAbility(), cs: { con: 10, dex: 10, str: 10, levels: characterLevels(1) } }))
+        const highCon = useAbility(baseData({ ability: testAbility(), cs: { con: 20, dex: 10, str: 10, levels: characterLevels(1) } }))
 
         const logs = highCon.damage?.damageLog.groups!
         const EXPECTED_GROUPS = ['feat mod', 'equipment mod', 'status mod']

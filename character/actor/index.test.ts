@@ -1,3 +1,4 @@
+import { characterLevels } from '../../character-sheet/class-level'
 import { describe, test, assert, expect, beforeEach } from 'vitest'
 import instantiateActor, { instantiateHealth, instantiateSpeed, takeNextAbility, Owner } from './index.ts'
 import { Ability, createAbilityCategory } from '../../ability-sheet/index.ts'
@@ -35,7 +36,7 @@ describe('instantiateHealth', () => {
         owner = createDefaultOwner({
             cs: {
                 ...defaultCharacterSheet,
-                level: 3,
+                levels: characterLevels(3),
             }, es: {}, fs: {}, ss: {}
         })
         const health = instantiateHealth(owner)

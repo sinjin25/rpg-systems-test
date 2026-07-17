@@ -1,3 +1,4 @@
+import { characterLevels } from '../../character-sheet/class-level'
 import { describe, test, assert, expect } from 'vitest'
 
 import standardDamageModifierFactory from './standard.ts'
@@ -13,7 +14,7 @@ describe('standard functionality', () => {
                 con: 10,
                 dex: 10,
                 str: 14,
-                level: 1,
+                levels: characterLevels(1),
             },
             es: {},
             fs: defaultFeatSheet,
@@ -31,7 +32,7 @@ describe('standard functionality', () => {
                 con: 10,
                 dex: 12,
                 str: 10,
-                level: 1,
+                levels: characterLevels(1),
             },
             es: {},
             fs: defaultFeatSheet,
@@ -55,7 +56,7 @@ describe('standard functionality', () => {
                 con: 10,
                 dex: 10,
                 str: 14,
-                level: 1,
+                levels: characterLevels(1),
             },
             es: {},
             fs,
@@ -74,7 +75,7 @@ describe('standard functionality', () => {
                 con: 10,
                 dex: 10,
                 str: 14,
-                level: 1,
+                levels: characterLevels(1),
             },
             es: { mainhand: daggerPlusOne },
             fs: defaultFeatSheet,

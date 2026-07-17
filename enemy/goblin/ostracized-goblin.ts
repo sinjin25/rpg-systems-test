@@ -13,7 +13,6 @@ const ostracizedGoblin: Owner = {
         dex: 8,
         str: 6,
         con: 8,
-        level: 1,
     },
     fs: {
         ...defaultFeatSheet,

@@ -1,9 +1,8 @@
 import { FeatSheet } from "../../feat"
+import type { CharacterSheet } from "../../character-sheet"
 import { ClassLevelMember, ClassLevels, ClassLevelSheet } from "./type"
 
-// clamp the acquired level to the table length: a `level` past the end of the
-// progression table can't grant more than the table defines, so we cap it rather
-// than over-counting or reading off the end.
+// prevent +1/-1 index access
 const clampedLevel = (cl: ClassLevels): number => Math.min(cl.level, cl.data.length)
 
 const acquiredMembers = (cl: ClassLevels): ClassLevelMember[] => cl.data.slice(0, clampedLevel(cl))
@@ -38,7 +37,28 @@ const sumFeatsFromClassLevels = (sheet: ClassLevelSheet): FeatSheet =>
 const sumLevelsFromClassLevels = (sheet: ClassLevelSheet): number =>
     Object.values(sheet).reduce((total, cl) => total + clampedLevel(cl), 0)
 
+// for consumption by other submodules (ex: health)
+const getCharacterLevel = (cs: CharacterSheet): number => sumLevelsFromClassLevels(cs.levels)
+
 const newClassLevelSheet = (): ClassLevelSheet => ({})
+
+// return a new sheet so that other modules (level up) can mutate that without messing things up
+const cloneClassLevelSheet = (sheet: ClassLevelSheet): ClassLevelSheet =>
+    Object.fromEntries(Object.entries(sheet).map(([name, cl]) => [name, { ...cl }]))
+
+// fake a class for passing tests that don't care about this
+const characterLevels = (n: number): ClassLevelSheet => ({
+    base: {
+        displayName: 'Test Class',
+        level: n,
+        data: Array.from({ length: n }, (): ClassLevelMember => ({
+            attackBonus: 0,
+            fortitudeSave: 0,
+            reflexSave: 0,
+            feats: {},
+        })),
+    },
+})
 
 export {
     sumAttackBonusFromClassLevels,
@@ -46,7 +66,10 @@ export {
     sumReflexSaveFromClassLevels,
     sumFeatsFromClassLevels,
     sumLevelsFromClassLevels,
+    getCharacterLevel,
+    characterLevels,
     newClassLevelSheet,
+    cloneClassLevelSheet,
 }
 
 /* future utilities */

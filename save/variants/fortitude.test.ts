@@ -1,3 +1,4 @@
+import { characterLevels } from '../../character-sheet/class-level'
 import { describe, test, assert } from 'vitest'
 
 import fortitudeSaveModifierFactory from './fortitude.ts'
@@ -7,7 +8,7 @@ import { featConSaves } from '../../feat/feats/index.ts'
 describe('fortitude save', () => {
     test('scales off constitution, not dexterity', () => {
         const fort = fortitudeSaveModifierFactory({
-            cs: { con: 14, dex: 20, str: 10, level: 1 },
+            cs: { con: 14, dex: 20, str: 10, levels: characterLevels(1) },
             es: {},
             fs: defaultFeatSheet,
             ss: {},
@@ -19,7 +20,7 @@ describe('fortitude save', () => {
 
     test('applies a feat that targets constitution saves', () => {
         const fort = fortitudeSaveModifierFactory({
-            cs: { con: 14, dex: 10, str: 10, level: 1 },
+            cs: { con: 14, dex: 10, str: 10, levels: characterLevels(1) },
             es: {},
             fs: { ...defaultFeatSheet, featConSaves },
             ss: {},
@@ -31,7 +32,7 @@ describe('fortitude save', () => {
 
     test('can produce a negative modifier', () => {
         const fort = fortitudeSaveModifierFactory({
-            cs: { con: 8, dex: 10, str: 10, level: 1 },
+            cs: { con: 8, dex: 10, str: 10, levels: characterLevels(1) },
             es: {},
             fs: defaultFeatSheet,
             ss: {},

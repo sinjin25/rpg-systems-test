@@ -1,3 +1,4 @@
+import { characterLevels, getCharacterLevel } from '../../character-sheet/class-level'
 import { describe, test, assert } from 'vitest'
 
 import reflexSaveModifierFactory from './reflex.ts'
@@ -9,7 +10,7 @@ import { util_findModLogGroupItem } from '../../stat-modifier/log/index.ts'
 describe('reflex save', () => {
     test('scales off dexterity', () => {
         const ref = reflexSaveModifierFactory({
-            cs: { con: 20, dex: 14, str: 10, level: 1 },
+            cs: { con: 20, dex: 14, str: 10, levels: characterLevels(1) },
             es: {},
             fs: defaultFeatSheet,
             ss: {},
@@ -21,7 +22,7 @@ describe('reflex save', () => {
 
     test('Is properly unaffected by feats w/o the right context', () => {
         const ref = reflexSaveModifierFactory({
-            cs: { con: 10, dex: 14, str: 10, level: 1 },
+            cs: { con: 10, dex: 14, str: 10, levels: characterLevels(1) },
             es: {},
             fs: { ...defaultFeatSheet, featConSaves },
             ss: {},
@@ -41,11 +42,11 @@ describe('reflex save scales with equipment', () => {
         const scalingRing = createEquipment({
             displayName: 'scaling ring',
             // bonuses can work off the characterSheet
-            mods: { save: { whitelist: ['all'], mod: (data) => data?.cs?.level ?? 0 } },
+            mods: { save: { whitelist: ['all'], mod: (data) => data?.cs ? getCharacterLevel(data.cs) : 0 } },
         })
 
         const ref = reflexSaveModifierFactory({
-            cs: { con: 10, dex: 10, str: 10, level: 5 },
+            cs: { con: 10, dex: 10, str: 10, levels: characterLevels(5) },
             es: { ring: scalingRing },
             fs: defaultFeatSheet,
             ss: {},
@@ -71,7 +72,7 @@ describe('reflex save scales with equipment', () => {
             }
         })
         const ref = reflexSaveModifierFactory({
-            cs: { con: 10, dex: 14, str: 10, level: 1 },
+            cs: { con: 10, dex: 14, str: 10, levels: characterLevels(1) },
             es: { amulet, ring, armor: armorOfFortSave, },
             fs: defaultFeatSheet,
             ss: {},

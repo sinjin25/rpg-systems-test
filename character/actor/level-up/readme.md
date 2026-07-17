@@ -1,1 +1,0 @@
-Handles bringing information from character-sheet/class-level into the instantiated Owner (Actor). This includes figuring out if there's a free feat selection from the class and adding it to the generic (non-derived) feat sheet.

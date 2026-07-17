@@ -1,3 +1,4 @@
+import { characterLevels } from '../../character-sheet/class-level'
 import { default as finesseAttackModifierFactory } from './finesse'
 import { describe, test, assert, expect } from 'vitest'
 import { CharacterSheet, defaultCharacterSheet } from '../../character-sheet'
@@ -24,7 +25,7 @@ describe('factory works', () => {
                 con: 0,
                 dex: 0,
                 str: 0,
-                level: 1,
+                levels: characterLevels(1),
             },
             es: {},
             fs: defaultFeatSheet,

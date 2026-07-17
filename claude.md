@@ -2,7 +2,7 @@
 
 Pathfinder/DND-type simulation systems.
 
-TypeScript circular imports do not break systems. Circular type imports signify a github issue should be opened afterward, not now.
+Please for the love of god stop talking about circular type imports and leaving comments about them everywhere. They are not compiled.
 
 # Major Systems
 ## Character Sheet

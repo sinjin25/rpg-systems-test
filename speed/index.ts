@@ -1,10 +1,8 @@
 import { AbilitySheet } from "../ability-sheet"
 import { CharacterSheet } from "../character-sheet"
-import { act } from "../character/act"
 import { EquipmentSheet } from "../equipment-sheet"
 import { FeatSheet } from "../feat"
 import roll from "../roll"
-import { RollModifierRequiredData } from "../roll-modifier/types"
 import { decaySpeedElapsed } from "../status-sheet/decay"
 import { StatusSheet } from "../status-sheet"
 

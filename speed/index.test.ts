@@ -1,17 +1,10 @@
-import { defaultCharacterSheet } from '../character-sheet/index.ts'
-import { defaultEquipmentSheet } from '../equipment-sheet/index.ts'
-import { defaultFeatSheet } from '../feat/index.ts'
+import { createDefaultOwner } from '../defaults/index.ts'
 import { round, speedRoll, STANDARD_SPEED } from './index.ts'
 import { describe, test, assert, expect } from 'vitest'
 import { StatusSheet } from '../status-sheet/types.ts'
 import { iterate } from '../simulate/util/iterate.ts'
 
-const defaultPerson = {
-    cs: defaultCharacterSheet,
-    es: defaultEquipmentSheet,
-    fs: defaultFeatSheet,
-    ss: {},
-}
+const defaultPerson = createDefaultOwner({})
 
 describe('Speed rolls are 2d6', () => {
     test('Simulate: outcomes should be normally distributed', () => {

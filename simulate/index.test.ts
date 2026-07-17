@@ -124,8 +124,8 @@ describe('resolveAbility', () => {
         const attacker = instantiateActor(createDefaultOwner({}))
         const target = instantiateActor(createDefaultOwner({}))
         // dc -999 passes for any save except a natural 1
-        const gentleNuke: Ability = { ...testNuke, save: { type: 'reflex', baseDc: -999, damageOnPass: 'none' } }
-        const aar = useAbility({ ...attacker.owner, ability: gentleNuke })
+        const nuke2: Ability = { ...testNuke, save: { type: 'reflex', baseDc: -999, damageOnPass: 'none' } }
+        const aar = useAbility({ ...attacker.owner, ability: nuke2 })
         const hpBefore = target.health.curr
 
         setSeed(1)

@@ -8,15 +8,12 @@ import { defaultEquipmentSheet } from '../../equipment-sheet/index.ts'
 import instantiateActor, { Owner } from '../../character/actor/index.ts'
 import { describe, test, expect } from 'vitest'
 import { featAlert } from '../../feat/feats/index.ts'
+import { createDefaultAbilitySheet } from '../../ability-sheet/index.ts'
+import { createDefaultOwner } from '../../defaults/index.ts'
 
 const SHOW_DEBUG = false
 
-const defaultPlayer: Owner = {
-    cs: defaultCharacterSheet,
-    fs: defaultFeatSheet,
-    es: defaultEquipmentSheet,
-    ss: {},
-}
+const defaultPlayer: Owner = createDefaultOwner({})
 
 describe('A default player can win', () => {
     test('simulate', () => {

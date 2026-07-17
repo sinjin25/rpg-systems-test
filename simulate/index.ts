@@ -1,5 +1,8 @@
 import { act, StandardActionResult } from "../character/act"
-import instantiateActor, { Actor, instantiateHealth, instantiateSpeed, Owner } from "../character/actor"
+import { AbilityActionResult } from "../character/act/ability"
+import instantiateActor, { Actor, instantiateHealth, instantiateSpeed, Owner, resetAbilityCursors } from "../character/actor"
+import roll from "../roll"
+import { saveModifierFactories, saveSucceeds } from "../save"
 import { applyCritMultiplier, isThreat } from "../crit2"
 import { applyFightStartFeats } from "../feat/fight-start"
 import { applyHealthDelta } from "../health"
@@ -108,6 +111,38 @@ export const resolveAction = (
     runTrigger({ self: target.owner, target: attacker.owner }, 'onDamageTaken')
 }
 
+// resolves one ability entry of act()'s result against a target: the defender
+// rolls the save against the precalc'd dc (mirroring decaySaveSucceeded), damage
+// picks the full or passed-save roll, and a failed save applies the ability's status
+export const resolveAbility = (
+    attacker: Actor,
+    target: Actor,
+    aar: AbilityActionResult,
+) => {
+    let passed = false
+    if (aar.save) {
+        const saveMod = saveModifierFactories[aar.save.type](target.owner)()
+        const natural = roll(20)
+        passed = saveSucceeds(natural + saveMod.total, aar.save.dc, natural)
+    }
+
+    if (aar.damage) {
+        const damage = passed
+            ? aar.damage.passedSaveDamageRoll ?? 0
+            : aar.damage.damageRoll
+        if (damage > 0) {
+            applyHealthDelta(target.health, -damage)
+            runTrigger({ self: target.owner, target: attacker.owner }, 'onDamageTaken')
+        }
+    }
+
+    if (aar.save && !passed && aar.ability.onFailedSave) {
+        const status = aar.ability.onFailedSave(aar.save.dc)
+        // no stacking - same guard as trigger/apply
+        if (!target.owner.ss[status.displayName]) target.owner.ss[status.displayName] = status
+    }
+}
+
 // marks a dead actor unable to act and runs the associated decay/trigger bookkeeping.
 // killer is omitted for deaths not attributable to an attacker (e.g. a DoT tick),
 // which intentionally skips firing onKill since there's no correct self to attribute it to
@@ -150,6 +185,7 @@ export const worldState = (
             this.playerActors.forEach(a => {
                 expireStatusesAfterFight(a.owner)
                 applyFightStartFeats(a.owner)
+                resetAbilityCursors(a.owner)
                 a.speed = instantiateSpeed(a.owner)
             })
         },
@@ -216,8 +252,11 @@ export const simulateFight = (
             action.forEach(a => {
                 if (!target) return
                 // find self (TurnData is not Actor)
-                const self = actors.find(a => a.owner === theActor.owner)!
-                resolveAction(self, target, a)
+                const self = actors.find(x => x.owner === theActor.owner)!
+                // no discriminant on purpose: the shapes share nothing, so this one
+                // spot sorts them out structurally (see objectIsActor)
+                if ('ability' in a) resolveAbility(self, target, a)
+                else resolveAction(self, target, a)
             })
             if (target) handleDeath(actors, target, theActor.owner)
         }

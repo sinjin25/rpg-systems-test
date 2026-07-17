@@ -5,7 +5,7 @@ import { CharacterSheet } from "../../character-sheet";
 import { FeatSheet } from "../../feat";
 import { EquipmentSheet } from "../../equipment-sheet";
 import { StatusSheet } from "../../status-sheet";
-import { AbilitySheet } from "../../ability-sheet";
+import { Ability, AbilityCategory, AbilitySheet } from "../../ability-sheet";
 import { flatFootedStatus } from "../../status-sheet/statuses/flat-footed";
 
 type Health = {
@@ -55,6 +55,34 @@ export const instantiateSpeed = (
     return {
         canAct: true, // maybe statuses, feats, equipment
         remainder,
+    }
+}
+
+// advances a category's priority cursor: returns the ability at the cursor and moves
+// the cursor forward. wrap cycles back to the start (swift/free, recycled every turn);
+// without wrap the list is walked once (standard - the non-resetting cursor stands in
+// for finite casts per day until charges exist)
+export const takeNextAbility = (
+    category: AbilityCategory,
+    opts?: { wrap?: boolean },
+): Ability | undefined => {
+    if (category.priority.length === 0) return undefined
+    if (category.index >= category.priority.length) {
+        if (!opts?.wrap) return undefined // exhausted
+        category.index = 0
+    }
+    const ability = category.items[category.priority[category.index]]
+    category.index++
+    return ability
+}
+
+export const resetAbilityCursors = (owner: Owner) => {
+    if (!owner.as) return
+    const as = owner.as
+    for (let key of ['swift', 'standard', 'free'] as Array<keyof typeof as>) {
+        const cat = as[key]
+        if (!cat) continue
+        cat.index = 0
     }
 }
 

@@ -1,5 +1,9 @@
 import { describe, test, assert, afterEach } from 'vitest'
-import { simulateFight, worldState } from './index.ts'
+import { resolveAbility, simulateFight, worldState } from './index.ts'
+import { Ability, addAbility, createDefaultAbilitySheet } from '../ability-sheet/index.ts'
+import ignite from '../ability-sheet/abilities/ignite.ts'
+import useAbility from '../character/act/ability/index.ts'
+import { act } from '../character/act/index.ts'
 import { attackHits } from '../character/act/attack-hits.ts'
 import { defaultCharacterSheet, defaultEnemySheet } from '../character-sheet/index.ts'
 import { defaultFeatSheet } from '../feat/index.ts'
@@ -17,6 +21,7 @@ const defaultPlayer: Owner = {
     fs: defaultFeatSheet,
     es: defaultEquipmentSheet,
     ss: {},
+    as: createDefaultAbilitySheet(),
 }
 
 const defaultEnemy: Owner = {
@@ -24,6 +29,7 @@ const defaultEnemy: Owner = {
     fs: defaultFeatSheet,
     es: defaultEquipmentSheet,
     ss: {},
+    as: createDefaultAbilitySheet(),
 }
 
 describe('simulateFight', () => {
@@ -82,6 +88,84 @@ describe('trigger hooks', () => {
     })
 })
 
+describe('resolveAbility', () => {
+    afterEach(() => clearSeed())
+
+    // dc 999 fails for any save except a natural 20; the seed pins the
+    // defender's d20 so the outcome is deterministic
+    const testNuke: Ability = {
+        displayName: 'Test Nuke',
+        keyStat: 'con',
+        castType: 'standard',
+        contexts: [],
+        damage: () => 5,
+        save: { type: 'reflex', baseDc: 999, damageOnPass: 'none' },
+        onFailedSave: (dc) => ({
+            displayName: 'Test Nuke Debuff',
+            context: {},
+            expiration: { kind: 'save-succeeded', saveType: 'reflex', dc },
+        }),
+    }
+
+    test('a failed save takes full damage and the onFailedSave status', () => {
+        const attacker = instantiateActor(createDefaultOwner({}))
+        const target = instantiateActor(createDefaultOwner({}))
+        const aar = useAbility({ ...attacker.owner, ability: testNuke })
+        const hpBefore = target.health.curr
+
+        setSeed(1)
+        resolveAbility(attacker, target, aar)
+
+        assert.equal(target.health.curr, hpBefore - aar.damage!.damageRoll)
+        assert.property(target.owner.ss, 'Test Nuke Debuff')
+    })
+
+    test('a passed save against damageOnPass none takes no damage and no status', () => {
+        const attacker = instantiateActor(createDefaultOwner({}))
+        const target = instantiateActor(createDefaultOwner({}))
+        // dc -999 passes for any save except a natural 1
+        const gentleNuke: Ability = { ...testNuke, save: { type: 'reflex', baseDc: -999, damageOnPass: 'none' } }
+        const aar = useAbility({ ...attacker.owner, ability: gentleNuke })
+        const hpBefore = target.health.curr
+
+        setSeed(1)
+        resolveAbility(attacker, target, aar)
+
+        assert.equal(target.health.curr, hpBefore)
+        assert.notProperty(target.owner.ss, 'Test Nuke Debuff')
+    })
+
+    test('an ability without a save always applies its damage', () => {
+        const attacker = instantiateActor(createDefaultOwner({}))
+        const target = instantiateActor(createDefaultOwner({}))
+        const bolt: Ability = {
+            displayName: 'Test Bolt',
+            keyStat: 'con',
+            castType: 'standard',
+            contexts: [],
+            damage: () => 5,
+        }
+        const aar = useAbility({ ...attacker.owner, ability: bolt })
+        const hpBefore = target.health.curr
+
+        resolveAbility(attacker, target, aar)
+
+        assert.equal(target.health.curr, hpBefore - aar.damage!.damageRoll)
+    })
+
+    test('a fight where the player opens with a standard ability runs to completion', () => {
+        const player = createDefaultOwner({})
+        addAbility(player.as, ignite)
+
+        const result = simulateFight({
+            player: [player],
+            enemy: [createDefaultOwner({ cs: defaultEnemySheet })],
+        })
+
+        assert.isAbove(result.rounds, 0)
+    })
+})
+
 describe('attackHits', () => {
     test('a roll equal to ac hits', () => {
         assert.isTrue(attackHits(15, 15))
@@ -136,6 +220,7 @@ describe('worldState', () => {
             fs: { featAlert },
             es: {},
             ss: {},
+            as: createDefaultAbilitySheet(),
         }
         const ws = worldState({ player: [owner] })
         const actor = ws.playerActors[0]
@@ -154,6 +239,27 @@ describe('worldState', () => {
 
         assert.notEqual(rerolled, 999)
         assert.equal(rerolled, expected.total)
+    })
+
+    test('playerAfterFight resets the ability cursors on every slot', () => {
+        const owner = createDefaultOwner({})
+        addAbility(owner.as, ignite)
+        const ws = worldState({ player: [owner] })
+
+        // stand in for wherever a fight would have left the cursors
+        owner.as.standard.index = 1
+        owner.as.swift.index = 2
+        owner.as.free.index = 3
+
+        ws.playerAfterFight()
+
+        assert.equal(owner.as.standard.index, 0)
+        assert.equal(owner.as.swift.index, 0)
+        assert.equal(owner.as.free.index, 0)
+
+        // the reset re-arms the standard slot: the next turn casts instead of attacking
+        const turn = act(owner)
+        assert.property(turn[0], 'ability')
     })
 
     test('documents behavior: a fight ends immediately if the player starts unable to act', () => {

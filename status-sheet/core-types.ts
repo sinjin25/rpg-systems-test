@@ -1,7 +1,11 @@
 import type { SaveType } from "../save"
-import { FeatContext, FeatModFunction, FeatModRequiredData } from "../feat/core-types"
+import { FeatContext, FeatModRequiredData } from "../feat/core-types"
 import type { TriggerHooks } from "../trigger/core-types"
 import type { InterceptRollFunction } from "../roll-intercept"
+import type { CharacterSheet } from "../character-sheet"
+import type { EquipmentSheet } from "../equipment-sheet"
+import type { FeatSheet } from "../feat"
+import type { StatusSheet } from "./types"
 
 export type StatusExpirationSpeedElapsed = {
     kind: 'speed-elapsed',
@@ -26,6 +30,18 @@ export type StatusExpirationEnemyKilled = {
     enemy: { health: { curr: number } },
 }
 
+export type HealthTickResult = {
+    kind: 'heal' | 'damage',
+    amount: number,
+}
+
+export type TickOwnerData = {
+    cs: CharacterSheet,
+    fs: FeatSheet,
+    es: EquipmentSheet,
+    ss: StatusSheet,
+}
+
 // decremented once per round, in simulate/index.ts's round loop - unlike speed-elapsed (initiative-order-based) or actions-elapsed (per action taken)
 export type StatusExpirationRoundsElapsed = {
     kind: 'rounds-elapsed',
@@ -33,7 +49,7 @@ export type StatusExpirationRoundsElapsed = {
     // ex: for heal over time or damage over time
     // they have access to Owner so feats/status/equipment can affect
     // CURRENTLY WE ASSUME ONLY THIS STATUS TYPE HAS TICKS
-    tick?: FeatModFunction,
+    tick?: (data: TickOwnerData) => HealthTickResult,
 }
 
 export type StatusExpiration =

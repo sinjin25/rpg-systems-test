@@ -5,7 +5,7 @@ import roll from "../roll"
 import { saveModifierFactories, saveSucceeds } from "../save"
 import { applyCritMultiplier, isThreat } from "../crit2"
 import { applyFightStartFeats } from "../feat/fight-start"
-import { applyHealthDelta } from "../health"
+import { applyDamage } from "../health"
 import { round, STANDARD_SPEED } from "../speed"
 import calculateAc from "../stat-modifier/ac"
 import { decayActionsElapsed, decayEnemyKilled, decayRoundsElapsed, decaySaveSucceeded, expireStatusesAfterFight } from "../status-sheet/decay"
@@ -94,7 +94,7 @@ export const resolveAction = (
     const crit = threatened && attackHits(sar.confirmRoll, targetAc, confirmNaturalRoll)
 
     if (!crit) {
-        applyHealthDelta(target.health, -sar.damageRoll)
+        applyDamage(target.health, sar.damageRoll)
         runTrigger({ self: target.owner, target: attacker.owner }, 'onDamageTaken')
         return
     }
@@ -107,7 +107,7 @@ export const resolveAction = (
         sar.critFlatDamage.total,
         sar.critMultiplier,
     )
-    applyHealthDelta(target.health, -critDamage.total)
+    applyDamage(target.health, critDamage.total)
     runTrigger({ self: target.owner, target: attacker.owner }, 'onDamageTaken')
 }
 
@@ -131,7 +131,7 @@ export const resolveAbility = (
             ? aar.damage.passedSaveDamageRoll ?? 0
             : aar.damage.damageRoll
         if (damage > 0) {
-            applyHealthDelta(target.health, -damage)
+            applyDamage(target.health, damage)
             runTrigger({ self: target.owner, target: attacker.owner }, 'onDamageTaken')
         }
     }

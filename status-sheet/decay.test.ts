@@ -102,7 +102,7 @@ describe('decayRoundsElapsed tick', () => {
         const actor = testActor({
             test: {
                 ...buffStatus(),
-                expiration: { kind: 'rounds-elapsed', remaining: 2, tick: () => -3 },
+                expiration: { kind: 'rounds-elapsed', remaining: 2, tick: () => ({ kind: 'damage', amount: 3 }) },
             },
         })
 
@@ -120,7 +120,7 @@ describe('decayRoundsElapsed tick', () => {
         const actor = testActor({
             test: {
                 ...buffStatus(),
-                expiration: { kind: 'rounds-elapsed', remaining: 1, tick: () => 50 },
+                expiration: { kind: 'rounds-elapsed', remaining: 1, tick: () => ({ kind: 'heal', amount: 50 }) },
             },
         }, 18, 20)
 
@@ -132,7 +132,7 @@ describe('decayRoundsElapsed tick', () => {
         const owner = testOwner({
             test: {
                 ...buffStatus(),
-                expiration: { kind: 'rounds-elapsed', remaining: 1, tick: () => -3 },
+                expiration: { kind: 'rounds-elapsed', remaining: 1, tick: () => ({ kind: 'damage', amount: 3 }) },
             },
         })
 
@@ -144,7 +144,7 @@ describe('decayRoundsElapsed tick', () => {
         const actor = testActor({
             test: {
                 ...buffStatus(),
-                expiration: { kind: 'rounds-elapsed', remaining: 1, tick: () => -5 },
+                expiration: { kind: 'rounds-elapsed', remaining: 1, tick: () => ({ kind: 'damage', amount: 5 }) },
             },
         })
 

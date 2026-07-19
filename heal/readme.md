@@ -1,0 +1,1 @@
+At this point, only StatusEffects trigger a heal. More work will be required to make like a "cure wounds" type ability.

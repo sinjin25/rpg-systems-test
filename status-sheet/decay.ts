@@ -2,7 +2,7 @@ import { CharacterSheet } from "../character-sheet"
 import type { Actor } from "../character/actor"
 import { EquipmentSheet } from "../equipment-sheet"
 import { FeatSheet } from "../feat"
-import { applyHealthDelta } from "../health"
+import { applyDamage, applyHeal } from "../health"
 import roll from "../roll"
 import { saveModifierFactories, saveSucceeds } from "../save"
 import { StatusSheet } from "./types"
@@ -62,7 +62,9 @@ export const decayRoundsElapsed = (
         if (status.expiration.kind !== 'rounds-elapsed') continue
 
         if (status.expiration.tick && self) {
-            applyHealthDelta(self.health, status.expiration.tick(owner))
+            const t = status.expiration.tick(owner)
+            if (t.kind === 'heal') applyHeal(self.health, t.amount)
+            else applyDamage(self.health, t.amount)
         }
 
         status.expiration.remaining -= elapsed

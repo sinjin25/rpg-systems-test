@@ -1,3 +1,4 @@
+import { standardHealModifierFactory } from "../../heal"
 import { StatusEffect } from "../core-types"
 
 export const REGENERATION_ROUNDS = 5
@@ -9,7 +10,14 @@ export const regenerationStatus = (roundsRemaining = REGENERATION_ROUNDS): Statu
     expiration: {
         kind: 'rounds-elapsed',
         remaining: roundsRemaining,
-        tick: () => REGENERATION_HEAL_PER_ROUND,
+        // the heal broadContext affects this
+        tick: ({ cs, fs, es, ss }) => ({
+            kind: 'heal',
+            amount: standardHealModifierFactory({
+                cs, fs, es, ss,
+                baseHeal: REGENERATION_HEAL_PER_ROUND,
+            })().total,
+        }),
     },
     context: {},
 })

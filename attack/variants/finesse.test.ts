@@ -1,10 +1,13 @@
-import { characterLevels } from '../../character-sheet/class-level'
+import { characterLevels, getCharacterLevel } from '../../character-sheet/class-level'
 import { default as finesseAttackModifierFactory } from './finesse'
 import { describe, test, assert, expect } from 'vitest'
 import { CharacterSheet, defaultCharacterSheet } from '../../character-sheet'
 import { addFeat, defaultFeatSheet, FeatSheet } from '../../feat'
 import { dagger } from '../../defaults/equipment'
-import { defaultEquipmentSheet } from '../../equipment-sheet'
+import { defaultEquipmentSheet, Weapon } from '../../equipment-sheet'
+import { createDefaultOwner } from '../../defaults'
+import { commitLevelUp } from '../../character/level-up'
+import { util_findRollModifierGroupItem } from '../../roll-modifier/types'
 
 describe('factory works', () => {
     test('default character sheet', () => {
@@ -13,7 +16,7 @@ describe('factory works', () => {
             es: defaultEquipmentSheet,
             fs: defaultFeatSheet,
             ss: {},
-            weapon: dagger,
+            weapon: dagger as Weapon,
         })
 
         const result = myFunc()
@@ -30,7 +33,7 @@ describe('factory works', () => {
             es: {},
             fs: defaultFeatSheet,
             ss: {},
-            weapon: dagger,
+            weapon: dagger as Weapon,
         })
 
         const result = myFunc()
@@ -49,7 +52,7 @@ describe('factory works', () => {
             es: defaultEquipmentSheet,
             fs,
             ss: {},
-            weapon: dagger,
+            weapon: dagger as Weapon,
         })
 
         const beforeFeat = myFunc()
@@ -64,5 +67,36 @@ describe('factory works', () => {
 
         const afterFeat = myFunc()
         assert.equal(afterFeat.total - beforeFeat.total, 1)
+    })
+    test('works with class levels (BAB)', () => {
+        const BAB_DISPLAY = 'base attack bonus'
+        const fighter = createDefaultOwner({
+            cs: { ...defaultCharacterSheet, str: 16, dex: 14, levels: {} },
+        })
+        commitLevelUp(fighter, { className: 'fighter', bonusFeat: 'featDodgy' }) // L1
+
+        {
+            const myFunc = finesseAttackModifierFactory({
+                ...fighter,
+                weapon: dagger as Weapon,
+            })
+            const result = myFunc()
+            const bab = result.groups.find(a => a.displayName === BAB_DISPLAY)
+            assert.exists(bab)
+            assert.equal(bab.total, 1)
+        }
+
+        commitLevelUp(fighter, { className: 'fighter' }) // L2
+
+        {
+            const myFunc = finesseAttackModifierFactory({
+                ...fighter,
+                weapon: dagger as Weapon,
+            })
+            const result = myFunc()
+            const bab = result.groups.find(a => a.displayName === BAB_DISPLAY)
+            assert.exists(bab)
+            assert.equal(bab.total, 2)
+        }
     })
 })

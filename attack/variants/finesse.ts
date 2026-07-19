@@ -1,5 +1,6 @@
 import { Attack, AttackModifierFunc, AttackModifierFuncFactory, AttackModifierRequiredData } from '../types'
 import { calculateBaseMod } from '../../stat-modifier'
+import { sumAttackBonusFromClassLevels } from '../../character-sheet/class-level'
 import { namedMod } from '../../stat-modifier/log'
 import calculateFeatMod from '../../roll-modifier/feat-mod'
 import { ContextNames } from '../../contexts'
@@ -23,6 +24,7 @@ export const finesseAttackModifierFactory: AttackModifierFuncFactory = (
         const EQUIPMENT_CONTEXT = extractContextsTags(weapon)
 
         const bm = namedMod('dex', calculateBaseMod(cs.dex))
+        const cm = namedMod('Base Attack Bonus', sumAttackBonusFromClassLevels(cs.levels))
         const fm = calculateFeatMod({
             cs,
             es,
@@ -37,9 +39,10 @@ export const finesseAttackModifierFactory: AttackModifierFuncFactory = (
         ], 'attack')
 
         return {
-            total: bm.total + fm.total + em.total + sm.total,
+            total: bm.total + cm.total + fm.total + em.total + sm.total,
             groups: [
                 { displayName: 'base mod', ...bm },
+                { displayName: 'base attack bonus', ...cm },
                 { displayName: 'feat mod', ...fm },
                 { displayName: 'equipment mod', ...em },
                 { displayName: 'status mod', ...sm },

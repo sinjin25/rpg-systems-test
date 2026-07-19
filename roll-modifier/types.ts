@@ -26,7 +26,7 @@ export type RollModifierFuncFactory = (
 export const util_findRollModifierGroupItem = (
     rollModifierResult: RollModifierResult,
     query: {
-        groupName: 'equipment mod' | 'base mod' | 'status mod' | 'feat mod', modDisplayName: string
+        groupName: 'equipment mod' | 'base mod' | 'status mod' | 'feat mod' | 'base attack bonus', modDisplayName: string
     }
 ) => {
     if (!query.groupName || !query.modDisplayName) throw Error('did not pass either a query.groupName or query.modDisplayName')

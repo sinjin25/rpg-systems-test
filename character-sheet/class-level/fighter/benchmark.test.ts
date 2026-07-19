@@ -1,13 +1,8 @@
-import { describe, test, assert, expect } from 'vitest'
-import { ClassLevelMember, ClassLevelSheet, ClassLevels } from '../type'
-import { fighterClassLevels } from '.'
+import { describe, test, expect } from 'vitest'
 import {
     getCharacterLevel,
-    newClassLevelSheet,
     sumAttackBonusFromClassLevels,
-    sumFeatsFromClassLevels,
     sumFortitudeSaveFromClassLevels,
-    sumLevelsFromClassLevels,
     sumReflexSaveFromClassLevels,
 } from '../index'
 import { commitLevelUp } from '../../../character/level-up'
@@ -15,69 +10,116 @@ import { createDefaultOwner, defaultCharacterSheet } from '../../../defaults'
 import { bandedMail, heavyShield, longSword } from '../../../defaults/equipment'
 import { standardAttackModifierFactory } from '../../../attack'
 import { standardDamageModifierFactory } from '../../../damage'
+import { fortitudeSaveModifierFactory, reflexSaveModifierFactory } from '../../../save'
+import { ModGroup } from '../../../stat-modifier/log'
 import calculateAc from '../../../stat-modifier/ac'
 import calculateHp from '../../../stat-modifier/hp'
+import { Weapon } from '../../../equipment-sheet'
 
-const classLevels = (displayName: string, data: ClassLevelMember[], level: number): ClassLevels => ({
-    displayName,
-    data,
-    level,
-})
+// pull a single named modifier group's total out of a log/factory result, so each
+// test can assert where its bonuses come from one source at a time.
+const groupTotal = (groups: ModGroup[], displayName: string): number => {
+    const group = groups.find(g => g.displayName === displayName)
+    if (!group) throw new Error(`benchmark: no "${displayName}" modifier group found`)
+    return group.total
+}
 
-describe('class level summing', () => {
-    test('Benchmark level 1-4', () => {
-        const fighter = createDefaultOwner({
-            cs: { ...defaultCharacterSheet, str: 16, dex: 14, levels: {} },
-            es: {
-                mainhand: longSword,
-                offhand: heavyShield,
-                armor: bandedMail,
-            }
-        })
-        commitLevelUp(fighter, {
-            className: 'fighter',
-            bonusFeat: 'featDodgy'
-        })
-        commitLevelUp(fighter, {
-            className: 'fighter',
-        })
-        commitLevelUp(fighter, {
-            className: 'fighter',
-            bonusFeat: 'featRage'
-        })
-        commitLevelUp(fighter, {
-            className: 'fighter',
-        })
+// a common level-4 fighter: str 16 / dex 14 / con 15, longsword + heavy shield + banded mail.
+// four fighter levels grant Alert, Con Saves, Power Attack, Measured Strike plus the
+// selected bonus feats Dodgy (L1) and Rage (L3).
+const buildLevel4Fighter = () => {
+    const fighter = createDefaultOwner({
+        cs: { ...defaultCharacterSheet, str: 16, dex: 14, levels: {} },
+        es: {
+            mainhand: longSword,
+            offhand: heavyShield,
+            armor: bandedMail,
+        },
+    })
+    commitLevelUp(fighter, { className: 'fighter', bonusFeat: 'featDodgy' }) // L1
+    commitLevelUp(fighter, { className: 'fighter' })                         // L2
+    commitLevelUp(fighter, { className: 'fighter', bonusFeat: 'featRage' })  // L3
+    commitLevelUp(fighter, { className: 'fighter' })                         // L4
+    return fighter
+}
 
+// the tests below only read the fighter, so one shared instance is fine
+const fighter = buildLevel4Fighter()
+
+describe('Level 4 fighter benchmark', () => {
+    test('is character level 4', () => {
         expect(getCharacterLevel(fighter.cs)).toEqual(4)
+    })
 
-        // --- attack roll modifier (the flat part; the d20 is added at roll time) ---
-        // the modifier factory is stat/feat driven and does NOT fold in the class
-        // level attack bonus, so the benchmark adds them together by hand.
-        // featRage is a fight-start status feat (no attack context), so it does not apply here.
-        const attackMod = standardAttackModifierFactory({ ...fighter, weapon: longSword })().total
-        const classAttackBonus = sumAttackBonusFromClassLevels(fighter.cs.levels)
-        expect(attackMod).toEqual(3)            // str 16 -> +3 (no melee/finesse attack feats granted)
-        expect(classAttackBonus).toEqual(4)     // +1 per fighter level x4
-        expect(attackMod + classAttackBonus).toEqual(7) // total bonus before the d20
+    test('attack modifier: str +3 and BAB +4', () => {
+        // the d20 is added at roll time; this is just the flat part.
+        // featRage is a fight-start status feat (no attack context) so it never applies here.
+        const attack = standardAttackModifierFactory({ ...fighter, weapon: longSword as Weapon })()
 
-        // --- ac ---
-        // 10 base + 2 dex (dex 14) + 7 banded mail + 4 Dodgy feat.
-        // NOTE: the heavy shield's +2 is NOT counted - only es.armor feeds AC today,
-        // an offhand shield's `ac` never reaches calculateAc.
-        expect(calculateAc(fighter).total).toEqual(23)
+        expect(groupTotal(attack.groups, 'base mod')).toEqual(3)      // str 16 -> +3
+        expect(groupTotal(attack.groups, 'base attack bonus')).toEqual(4)   // BAB: +1 per fighter level x4
+        expect(groupTotal(attack.groups, 'feat mod')).toEqual(0)      // no melee/finesse attack feats granted
+        expect(groupTotal(attack.groups, 'equipment mod')).toEqual(0) // plain longsword
+        expect(groupTotal(attack.groups, 'status mod')).toEqual(0)
 
-        // --- damage (the flat modifier; the longsword adds 1d8 on top) ---
-        // str 16 -> +3, plus Power Attack +4 (granted at fighter 3, melee).
-        const damageMod = standardDamageModifierFactory({ ...fighter, weapon: longSword })().total
-        expect(damageMod).toEqual(7)
+        // the 'class level' group is exactly the class-level attack bonus summer
+        expect(sumAttackBonusFromClassLevels(fighter.cs.levels)).toEqual(4)
 
-        // --- health ---
-        // (10 per level + con mod 2) x 4 levels.
-        expect(calculateHp(fighter).total).toEqual(48)
+        expect(attack.total).toEqual(7) // 3 + 4
+    })
 
-        // --- saves (reference; same split as attack - factory + class-level bonus) ---
+    test('ac: 10 base + 2 dex + 7 armor + 4 Dodgy', () => {
+        const ac = calculateAc(fighter)
+
+        expect(groupTotal(ac.log.groups, 'base ac')).toEqual(10)
+        expect(groupTotal(ac.log.groups, 'dexterity')).toEqual(2) // dex 14 -> +2
+        expect(groupTotal(ac.log.groups, 'armor')).toEqual(7)     // banded mail
+        expect(groupTotal(ac.log.groups, 'feats')).toEqual(4)     // featDodgy
+        // the heavy shield's +2 is NOT counted: only es.armor feeds AC today (issue #59)
+        expect(groupTotal(ac.log.groups, 'equipment')).toEqual(0)
+        expect(groupTotal(ac.log.groups, 'statuses')).toEqual(0)
+
+        expect(ac.total).toEqual(23)
+    })
+
+    test('damage modifier: str +3 and Power Attack +4 (plus 1d8 weapon)', () => {
+        const damage = standardDamageModifierFactory({ ...fighter, weapon: longSword as Weapon })()
+
+        expect(groupTotal(damage.groups, 'base mod')).toEqual(3)   // str 16 -> +3
+        expect(groupTotal(damage.groups, 'feat mod')).toEqual(4)   // featPowerAttack (melee), granted at fighter 3
+        expect(groupTotal(damage.groups, 'equipment mod')).toEqual(0)
+        expect(groupTotal(damage.groups, 'status mod')).toEqual(0)
+
+        expect(damage.total).toEqual(7) // flat bonus; the longsword rolls 1d8 on top
+    })
+
+    test('health: (10 + con 2) x 4 levels', () => {
+        const hp = calculateHp(fighter)
+
+        // base health folds the con mod (con 15 -> +2) and level in: (10 + 2) * 4
+        expect(groupTotal(hp.log.groups, 'base health')).toEqual(48)
+        expect(groupTotal(hp.log.groups, 'feats')).toEqual(0)
+        expect(groupTotal(hp.log.groups, 'equipment')).toEqual(0)
+        expect(groupTotal(hp.log.groups, 'statuses')).toEqual(0)
+
+        expect(hp.total).toEqual(48)
+    })
+
+    test('saves: fortitude (con + Con Saves + class), reflex (dex)', () => {
+        const fort = fortitudeSaveModifierFactory(fighter)()
+        const reflex = reflexSaveModifierFactory(fighter)()
+
+        // unlike attack, the class-level save bonus is NOT folded into the factory yet,
+        // so the factory total is stat + feats only and the class portion is added by hand.
+        expect(groupTotal(fort.groups, 'base mod')).toEqual(2) // con 15 -> +2
+        expect(groupTotal(fort.groups, 'feat mod')).toEqual(1) // featConSaves
+        expect(fort.total).toEqual(3)
         expect(sumFortitudeSaveFromClassLevels(fighter.cs.levels)).toEqual(2) // 1+0+1+0
+        expect(fort.total + sumFortitudeSaveFromClassLevels(fighter.cs.levels)).toEqual(5) // effective fortitude
+
+        expect(groupTotal(reflex.groups, 'base mod')).toEqual(2) // dex 14 -> +2
+        expect(groupTotal(reflex.groups, 'feat mod')).toEqual(0)
+        expect(reflex.total).toEqual(2)
         expect(sumReflexSaveFromClassLevels(fighter.cs.levels)).toEqual(0)
     })
 })

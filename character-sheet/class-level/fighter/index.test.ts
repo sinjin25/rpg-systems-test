@@ -1,6 +1,6 @@
 import { describe, test, assert } from 'vitest'
-import { ClassLevelMember, ClassLevelSheet, ClassLevels } from './type'
-import { fighterClassLevels } from './fighter'
+import { ClassLevelMember, ClassLevelSheet, ClassLevels } from '../type'
+import { fighterClassLevels } from '.'
 import {
     newClassLevelSheet,
     sumAttackBonusFromClassLevels,
@@ -8,7 +8,7 @@ import {
     sumFortitudeSaveFromClassLevels,
     sumLevelsFromClassLevels,
     sumReflexSaveFromClassLevels,
-} from './index'
+} from '../index'
 
 // +1 attack each and the feats Alert, Con Saves, Power Attack, Measured Strike.
 const fighterTemplate: ClassLevelMember[] = fighterClassLevels

@@ -1,5 +1,5 @@
-import { featAlert, featConSaves, featMeasuredStrike, featPowerAttack } from '../../feat/feats'
-import { ClassLevelMember, ClassLevelSheet, ClassLevels } from './type'
+import { featAlert, featConSaves, featMeasuredStrike, featPowerAttack } from '../../../feat/feats'
+import { ClassLevelMember, ClassLevelSheet, ClassLevels } from '../type'
 
 const ATTACK_BONUS_PER_LEVEL = 1
 

@@ -141,6 +141,12 @@ export const resolveAbility = (
         // no stacking - same guard as trigger/apply
         if (!target.owner.ss[status.displayName]) target.owner.ss[status.displayName] = status
     }
+
+    // for saveless status effects (ex: studied target)
+    if (aar.ability.onUse) {
+        const status = aar.ability.onUse()
+        if (!target.owner.ss[status.displayName]) target.owner.ss[status.displayName] = status
+    }
 }
 
 // marks a dead actor unable to act and runs the associated decay/trigger bookkeeping.

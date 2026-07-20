@@ -19,10 +19,11 @@ export const addAbility = (
     const category = as[ability.castType]
 
     const key = getAbilityKey(ability)
+    const isNew = !category.items[key]
     category.items[key] = ability
 
-    // assume the user added this because they want to use it
-    category.priority.push(key)
+    // if ability is new, add it to the end of the priority queue
+    if (isNew) category.priority.push(key)
 }
 
 export const createAbilityCategory = (): AbilityCategory => ({

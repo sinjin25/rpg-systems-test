@@ -166,7 +166,7 @@ describe('Difficulty Level 4', () => {
     const MAX_CONSECUTIVE_FIGHTS = 50
 
     test('Fighter: Expect to be trivial'/* , { timeout: 10_000 } */, () => {
-        const EXPECTED_MEDIAN = 16
+        const EXPECTED_MEDIAN = 22
         const fighter = createDefaultOwner({ cs: { ...defaultCharacterSheet, levels: {} } })
         commitLevelUp(fighter, {
             className: 'fighter',

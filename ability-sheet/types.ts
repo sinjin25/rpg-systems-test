@@ -24,6 +24,8 @@ export type Ability = {
     // a save is optional
     save?: AbilitySave,
     onFailedSave?: (dc: number) => StatusEffect,
+    // no dex save. Can technically use dc99 but generates logs
+    onUse?: () => StatusEffect,
 }
 
 

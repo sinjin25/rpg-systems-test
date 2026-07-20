@@ -5,6 +5,7 @@ import { featBattleFocus } from "./battle-focus"
 import { featFatiguingBlows } from "./fatiguing-blows"
 import { featMeasuredStrike } from "./measured-strike"
 import { featFeint } from "./feint"
+import { featArmorTraining } from "./armor-training"
 
 export { standardFilters } from "../core-types"
 export type { BroadContexts, ContextNames } from "../../contexts"
@@ -16,6 +17,7 @@ export { featBattleFocus } from "./battle-focus"
 export { featFatiguingBlows } from "./fatiguing-blows"
 export { featMeasuredStrike } from "./measured-strike"
 export { featFeint } from "./feint"
+export { featArmorTraining } from "./armor-training"
 
 // examples
 export const featMeleeWeaponFighting: Feat = {
@@ -197,25 +199,6 @@ export const featHeavyArmorMastery: Feat = {
             applies: standardFilters.noBlacklistAnyWhitelistFactory({
                 blacklist: [],
                 whitelist: ['heavyArmor'],
-            }),
-            mod: (data) => {
-                return 1
-            },
-        }
-    }
-}
-
-// Fighter's Armor Training: raises the maximum dexterity bonus worn armor allows
-// toward AC. Contributes additively to the 'maxDex' broadcontext, which calculateAc
-// folds into the armor's base allowance before clamping dex. Fixed at +1 for now -
-// there is no ranked-feature system yet, so this does not scale on fighter level.
-export const featArmorTraining: Feat = {
-    displayName: 'Armor Training',
-    context: {
-        maxDex: {
-            applies: standardFilters.noBlacklistAnyWhitelistFactory({
-                blacklist: [],
-                whitelist: ['all'],
             }),
             mod: (data) => {
                 return 1

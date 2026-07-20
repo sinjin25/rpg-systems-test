@@ -10,7 +10,7 @@ import {
     sumReflexSaveFromClassLevels,
 } from '../index'
 
-// +1 attack each and the feats Alert, Con Saves, Power Attack, Measured Strike.
+// +1 attack each and the feats Alert, Con Saves, Power Attack + Armor Training, Measured Strike.
 const fighterTemplate: ClassLevelMember[] = fighterClassLevels
 
 // a second class to exercise multiclass summing
@@ -91,6 +91,7 @@ describe('Supports feats from class levels', () => {
         assert.exists(feats.featConSaves)
         // but not later level feats
         assert.notExists(feats.featPowerAttack)
+        assert.notExists(feats.featArmorTraining) // granted at level 3
         assert.notExists(feats.featMeasuredStrike)
     })
 
@@ -105,6 +106,7 @@ describe('Supports feats from class levels', () => {
         assert.exists(feats.featAlert)
         assert.exists(feats.featConSaves)
         assert.exists(feats.featPowerAttack)
+        assert.exists(feats.featArmorTraining)
         assert.exists(feats.featMeasuredStrike)
     })
 

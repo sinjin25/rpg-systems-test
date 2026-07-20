@@ -25,8 +25,8 @@ const groupTotal = (groups: ModGroup[], displayName: string): number => {
 }
 
 // a common level-4 fighter: str 16 / dex 14 / con 15, longsword + heavy shield + banded mail.
-// four fighter levels grant Alert, Con Saves, Power Attack, Measured Strike plus the
-// selected bonus feats Dodgy (L1) and Rage (L3).
+// four fighter levels grant Alert, Con Saves, Power Attack + Armor Training (L3),
+// Measured Strike plus the selected bonus feats Dodgy (L1) and Rage (L3).
 const buildLevel4Fighter = () => {
     const fighter = createDefaultOwner({
         cs: { ...defaultCharacterSheet, str: 16, dex: 14, levels: {} },
@@ -68,18 +68,21 @@ describe('Level 4 fighter benchmark', () => {
         expect(attack.total).toEqual(7) // 3 + 4
     })
 
-    test('ac: 10 base + 2 dex + 7 armor + 4 Dodgy', () => {
+    test('ac: 10 base + 2 dex + 9 armor + 4 Dodgy', () => {
         const ac = calculateAc(fighter)
 
         expect(groupTotal(ac.log.groups, 'base ac')).toEqual(10)
-        expect(groupTotal(ac.log.groups, 'dexterity')).toEqual(2) // dex 14 -> +2
-        expect(groupTotal(ac.log.groups, 'armor')).toEqual(7)     // banded mail
+        // dex 14 -> +2. banded mail's base max dex is +1, but Armor Training (L3) raises
+        // the allowance to +2 via the 'maxDex' broadcontext, so the full +2 applies.
+        expect(groupTotal(ac.log.groups, 'dexterity')).toEqual(2)
+        // banded mail (7) + heavy shield (2): both flat-ac pieces now count (issue #59)
+        expect(groupTotal(ac.log.groups, 'armor')).toEqual(9)
         expect(groupTotal(ac.log.groups, 'feats')).toEqual(4)     // featDodgy
-        // the heavy shield's +2 is NOT counted: only es.armor feeds AC today (issue #59)
+        // the shield's ac is a flat bonus (armor group), not a mods.ac effect
         expect(groupTotal(ac.log.groups, 'equipment')).toEqual(0)
         expect(groupTotal(ac.log.groups, 'statuses')).toEqual(0)
 
-        expect(ac.total).toEqual(23)
+        expect(ac.total).toEqual(25)
     })
 
     test('damage modifier: str +3 and Power Attack +4 (plus 1d8 weapon)', () => {

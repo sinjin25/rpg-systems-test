@@ -34,6 +34,9 @@ export type Weapon = BaseEquipment & {
 
 export type Armor = BaseEquipment & {
     ac?: number,
+    // this is an optional value (undefined = unlimited)
+    // there's a broadContext that can add mods to this ex: fighter's armor training
+    maxDexBonus?: number,
 }
 
 export type EquipmentSheet = {

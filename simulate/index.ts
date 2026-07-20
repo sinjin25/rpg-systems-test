@@ -233,7 +233,9 @@ export const simulateFight = (
             const theActor = acting.pop()
             if (!theActor) continue
             // died before turn
-            actors.forEach(a => decayRoundsElapsed(a.owner, 1, a))
+            const found = actors
+                .find(a => a.owner === theActor.owner)
+            if (found) decayRoundsElapsed(found.owner, 1, found)
             if (!theActor.speed.canAct) continue
 
             // roll

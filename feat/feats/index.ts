@@ -171,6 +171,59 @@ export const featDodgy: Feat = {
     }
 }
 
+// grants +1 AC while a shield is equipped. gated on the 'shield' context, which
+// calculateAc makes active from worn defensive gear's context tags.
+export const featShieldMastery: Feat = {
+    displayName: 'Shield Mastery',
+    context: {
+        ac: {
+            applies: standardFilters.noBlacklistAnyWhitelistFactory({
+                blacklist: [],
+                whitelist: ['shield'],
+            }),
+            mod: (data) => {
+                return 1
+            },
+        }
+    }
+}
+
+// grants +1 AC only while heavy armor is worn. gated on the 'heavyArmor' context,
+// so light/medium armor (or none) does not trigger it.
+export const featHeavyArmorMastery: Feat = {
+    displayName: 'Heavy Armor Mastery',
+    context: {
+        ac: {
+            applies: standardFilters.noBlacklistAnyWhitelistFactory({
+                blacklist: [],
+                whitelist: ['heavyArmor'],
+            }),
+            mod: (data) => {
+                return 1
+            },
+        }
+    }
+}
+
+// Fighter's Armor Training: raises the maximum dexterity bonus worn armor allows
+// toward AC. Contributes additively to the 'maxDex' broadcontext, which calculateAc
+// folds into the armor's base allowance before clamping dex. Fixed at +1 for now -
+// there is no ranked-feature system yet, so this does not scale on fighter level.
+export const featArmorTraining: Feat = {
+    displayName: 'Armor Training',
+    context: {
+        maxDex: {
+            applies: standardFilters.noBlacklistAnyWhitelistFactory({
+                blacklist: [],
+                whitelist: ['all'],
+            }),
+            mod: (data) => {
+                return 1
+            },
+        }
+    }
+}
+
 // prerequisite chain demo: A requires B, B requires both C and D, C and D require nothing
 export const featPrereqDemoC: Feat = {
     displayName: 'DEMO Prereq C',
@@ -210,6 +263,9 @@ export const possibleFeats = {
     featConSaves,
     featAlert,
     featDodgy,
+    featShieldMastery,
+    featHeavyArmorMastery,
+    featArmorTraining,
     featDivineProtection,
     featRage,
     featBattleFocus,

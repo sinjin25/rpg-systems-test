@@ -1,6 +1,6 @@
 import { describe, test, assert } from 'vitest'
 import { createDefaultOwner } from '../../defaults/index.ts'
-import { act } from '../../character/act/index.ts'
+import useAttack, { StandardActionResult } from '../../character/act/attack/index.ts'
 import { instantiateHealth, instantiateSpeed } from '../../character/actor/index.ts'
 import ModifierLog, { util_findModLogGroupItem } from '../../stat-modifier/log/index.ts'
 import roll, { setSeed, clearSeed } from '../../roll/index.ts'
@@ -16,7 +16,7 @@ const buildActor = (owner: ReturnType<typeof createDefaultOwner>) => ({
 
 // the attacker's own act() output, but with the attack roll forced to a specific
 // natural result so hit/miss is deterministic for the test
-const forceNaturalRoll = (sar: ReturnType<typeof act>[number], naturalRoll: number) => {
+const forceNaturalRoll = (sar: StandardActionResult, naturalRoll: number) => {
     const attackLog = ModifierLog(sar.attackLog.displayName)
     sar.attackLog.groups.forEach(g => attackLog.addModGroup(g.displayName, g))
     attackLog.addRoll({ displayName: 'd20', amount: naturalRoll })
@@ -31,7 +31,7 @@ describe('featMeasuredStrike', () => {
         const attacker = buildActor(attackerOwner)
         const target = buildActor(targetOwner)
 
-        const [sar] = act({ cs: attackerOwner.cs, es: attackerOwner.es, fs: attackerOwner.fs, ss: attackerOwner.ss })
+        const [sar] = useAttack(attackerOwner)
         const missSar = forceNaturalRoll(sar, NAT_ROLL) // automatic miss
 
         setSeed(1234)
@@ -61,7 +61,7 @@ describe('featMeasuredStrike', () => {
         const attacker = buildActor(attackerOwner)
         const target = buildActor(targetOwner)
 
-        const [sar] = act({ cs: attackerOwner.cs, es: attackerOwner.es, fs: attackerOwner.fs, ss: attackerOwner.ss })
+        const [sar] = useAttack(attackerOwner)
         const missSar = forceNaturalRoll(sar, NAT_ROLL) // automatic miss
 
         setSeed(1234)
@@ -91,7 +91,7 @@ describe('featMeasuredStrike', () => {
         const attacker = buildActor(attackerOwner)
         const target = buildActor(targetOwner)
 
-        const [sar] = act({ cs: attackerOwner.cs, es: attackerOwner.es, fs: attackerOwner.fs, ss: attackerOwner.ss })
+        const [sar] = useAttack(attackerOwner)
         const hitSar = forceNaturalRoll(sar, 15)
 
         const result = featMeasuredStrike.interceptRoll!(attacker, target, hitSar)

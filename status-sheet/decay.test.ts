@@ -1,4 +1,5 @@
-import { describe, test, assert } from 'vitest'
+import { describe, test, assert, afterEach } from 'vitest'
+import { setSeed, clearSeed } from '../roll'
 import { decaySpeedElapsed, decayActionsElapsed, decayRoundsElapsed, decaySaveSucceeded, decayEnemyKilled, expireStatusesAfterFight } from './decay'
 import { StatusSheet } from './types'
 import { StatusEffect } from './core-types'
@@ -101,7 +102,7 @@ describe('decayRoundsElapsed tick', () => {
         const actor = testActor({
             test: {
                 ...buffStatus(),
-                expiration: { kind: 'rounds-elapsed', remaining: 2, tick: () => -3 },
+                expiration: { kind: 'rounds-elapsed', remaining: 2, tick: () => ({ kind: 'damage', amount: 3 }) },
             },
         })
 
@@ -119,7 +120,7 @@ describe('decayRoundsElapsed tick', () => {
         const actor = testActor({
             test: {
                 ...buffStatus(),
-                expiration: { kind: 'rounds-elapsed', remaining: 1, tick: () => 50 },
+                expiration: { kind: 'rounds-elapsed', remaining: 1, tick: () => ({ kind: 'heal', amount: 50 }) },
             },
         }, 18, 20)
 
@@ -131,7 +132,7 @@ describe('decayRoundsElapsed tick', () => {
         const owner = testOwner({
             test: {
                 ...buffStatus(),
-                expiration: { kind: 'rounds-elapsed', remaining: 1, tick: () => -3 },
+                expiration: { kind: 'rounds-elapsed', remaining: 1, tick: () => ({ kind: 'damage', amount: 3 }) },
             },
         })
 
@@ -143,7 +144,7 @@ describe('decayRoundsElapsed tick', () => {
         const actor = testActor({
             test: {
                 ...buffStatus(),
-                expiration: { kind: 'rounds-elapsed', remaining: 1, tick: () => -5 },
+                expiration: { kind: 'rounds-elapsed', remaining: 1, tick: () => ({ kind: 'damage', amount: 5 }) },
             },
         })
 
@@ -154,24 +155,48 @@ describe('decayRoundsElapsed tick', () => {
 })
 
 describe('decaySaveSucceeded', () => {
-    test('removes the status when the roll meets or beats the dc', () => {
-        // dc: 1 always succeeds, regardless of the roll (a d20 never rolls below 1)
+    // the default sheet has con 15 and dex 15, each a +2 modifier, so a fortitude/reflex
+    // save total is (d20 + 2). seeds are chosen for a known first roll (see roll/mulberry32).
+    afterEach(() => clearSeed())
+
+    test('removes the status when the save total meets or beats the dc', () => {
+        setSeed(2) // first roll: 15 -> total 17
         const owner = testOwner({
-            test: { ...buffStatus(), expiration: { kind: 'save-succeeded' as const, saveContext: [], dc: 1 } },
+            test: { ...buffStatus(), expiration: { kind: 'save-succeeded' as const, saveType: 'fortitude', dc: 10 } },
         })
 
         decaySaveSucceeded(owner)
         assert.notProperty(owner.ss, 'test')
     })
 
-    test('keeps the status when the roll is below the dc', () => {
-        // dc: 999 always fails, regardless of the roll (a d20 never rolls above 20)
+    test('keeps the status when the save total is below the dc', () => {
+        setSeed(8) // first roll: 4 -> total 6
         const owner = testOwner({
-            test: { ...buffStatus(), expiration: { kind: 'save-succeeded' as const, saveContext: [], dc: 999 } },
+            test: { ...buffStatus(), expiration: { kind: 'save-succeeded' as const, saveType: 'reflex', dc: 15 } },
         })
 
         decaySaveSucceeded(owner)
         assert.property(owner.ss, 'test')
+    })
+
+    test('a natural 1 keeps the status even when the total would beat the dc', () => {
+        setSeed(7) // first roll: 1 -> total 3, which beats dc 2, but a nat 1 always fails
+        const owner = testOwner({
+            test: { ...buffStatus(), expiration: { kind: 'save-succeeded' as const, saveType: 'fortitude', dc: 2 } },
+        })
+
+        decaySaveSucceeded(owner)
+        assert.property(owner.ss, 'test')
+    })
+
+    test('a natural 20 removes the status even against an unbeatable dc', () => {
+        setSeed(36) // first roll: 20 -> a nat 20 always succeeds, regardless of dc
+        const owner = testOwner({
+            test: { ...buffStatus(), expiration: { kind: 'save-succeeded' as const, saveType: 'reflex', dc: 999 } },
+        })
+
+        decaySaveSucceeded(owner)
+        assert.notProperty(owner.ss, 'test')
     })
 })
 

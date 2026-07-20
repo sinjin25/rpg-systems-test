@@ -2,6 +2,6 @@ import { createEquipment } from '../../../equipment-sheet/create-equipment.ts'
 
 export const leatherArmor = createEquipment({
     displayName: 'leather armor',
-    contexts: [],
+    contexts: ['lightArmor'],
     ac: 2,
 })

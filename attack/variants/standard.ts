@@ -1,4 +1,5 @@
 import { ContextNames } from "../../contexts"
+import { sumAttackBonusFromClassLevels } from "../../character-sheet/class-level"
 import { extractContextsTags } from "../../equipment-sheet/extract"
 import { calculateBaseMod } from "../../stat-modifier"
 import { namedMod } from "../../stat-modifier/log"
@@ -17,6 +18,7 @@ export const standardAttackModifierFactory: AttackModifierFuncFactory = (
         const EQUIPMENT_CONTEXT = extractContextsTags(weapon)
 
         const bm = namedMod('str', calculateBaseMod(cs.str))
+        const cm = namedMod('Base Attack Bonus', sumAttackBonusFromClassLevels(cs.levels))
         const fm = calculateFeatMod({
             cs,
             es,
@@ -33,9 +35,10 @@ export const standardAttackModifierFactory: AttackModifierFuncFactory = (
         ], 'attack')
 
         return {
-            total: bm.total + fm.total + em.total + sm.total,
+            total: bm.total + cm.total + fm.total + em.total + sm.total,
             groups: [
                 { displayName: 'base mod', ...bm },
+                { displayName: 'base attack bonus', ...cm },
                 { displayName: 'feat mod', ...fm },
                 { displayName: 'equipment mod', ...em },
                 { displayName: 'status mod', ...sm },

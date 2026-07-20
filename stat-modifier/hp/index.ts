@@ -1,6 +1,8 @@
 import { calculateModifier } from ".."
 import { calculateFeatMod } from "../../attack"
 import { CharacterSheet } from "../../character-sheet"
+import { getCharacterLevel } from "../../character-sheet/class-level"
+import { Owner } from "../../character/actor"
 import { BroadContexts, ContextNames } from "../../contexts"
 import { EquipmentSheet } from "../../equipment-sheet"
 import calculateEquipmentMod from "../../equipment-sheet/equipment-mod"
@@ -9,12 +11,7 @@ import { StatusSheet } from "../../status-sheet"
 import { calculateStatusMod } from "../../status-sheet/status-mod"
 import ModifierLog from "../log"
 
-const calculateHp = (data: {
-    cs: CharacterSheet,
-    es: EquipmentSheet,
-    fs: FeatSheet,
-    ss: StatusSheet,
-}) => {
+const calculateHp = (data: Owner) => {
     const { cs, es, fs, ss } = data
     const log = ModifierLog('health')
     const contextTags: ContextNames[] = ['constitution']
@@ -32,7 +29,7 @@ const calculateHp = (data: {
 
     // calculate base health off con and level
     const PER_LEVEL = 10
-    const baseHealth = (PER_LEVEL + conMod) * cs.level
+    const baseHealth = (PER_LEVEL + conMod) * getCharacterLevel(cs)
 
     // calculate flat health bonuses
     const fm = calculateFeatMod(modData, [], broadContextHealth)

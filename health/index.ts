@@ -1,1 +1,2 @@
-export { applyHealthDelta } from "./apply-delta"
+export { applyDamage } from "./apply-damage"
+export { applyHeal } from "./apply-heal"

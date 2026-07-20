@@ -19,13 +19,14 @@ export type CreateEquipmentInput = {
     critRange?: number,
     critMultiplier?: number,
     ac?: number,
+    maxDexBonus?: number,
 }
 
 const DEFAULT_CRIT_RANGE = 20
 const DEFAULT_CRIT_MULTIPLIER = 1.5
 
 export const createEquipment = (input: CreateEquipmentInput): BaseEquipment | Weapon | Armor => {
-    const { displayName, description, contexts = [], mods, enhancement, damage, critRange, critMultiplier, ac } = input
+    const { displayName, description, contexts = [], mods, enhancement, damage, critRange, critMultiplier, ac, maxDexBonus } = input
 
     const modsContext = mods && Object.fromEntries(
         (Object.entries(mods) as Array<[BroadContexts, EquipmentModInput]>).map(([broadContext, modInput]) => {
@@ -68,12 +69,18 @@ export const createEquipment = (input: CreateEquipmentInput): BaseEquipment | We
         ...(generateAdditionalContexts.length ? { generateAdditionalContexts } : {}),
     }
 
+    // for weapons
     if (damage) return {
         ...base,
         damage,
         critRange: critRange ?? DEFAULT_CRIT_RANGE,
         critMultiplier: critMultiplier ?? DEFAULT_CRIT_MULTIPLIER,
     }
-    if (ac !== undefined) return { ...base, ac }
+    // for armor (body, shield, .ac)
+    if (ac !== undefined) return {
+        ...base,
+        ac,
+        ...(maxDexBonus !== undefined ? { maxDexBonus } : {}),
+    }
     return base
 }

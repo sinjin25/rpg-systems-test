@@ -6,17 +6,16 @@ import { defaultCharacterSheet } from '../../character-sheet/index.ts'
 import { defaultFeatSheet } from '../../feat/index.ts'
 import { defaultEquipmentSheet } from '../../equipment-sheet/index.ts'
 import instantiateActor, { Owner } from '../../character/actor/index.ts'
-import { describe, test, expect } from 'vitest'
+import { describe, test, expect, assert } from 'vitest'
 import { featAlert } from '../../feat/feats/index.ts'
+import { createDefaultAbilitySheet } from '../../ability-sheet/index.ts'
+import { createDefaultOwner } from '../../defaults/index.ts'
+import { commitLevelUp } from '../../character/level-up/index.ts'
+import { getCharacterLevel } from '../../character-sheet/class-level/index.ts'
 
-const SHOW_DEBUG = false
+const SHOW_DEBUG = true
 
-const defaultPlayer: Owner = {
-    cs: defaultCharacterSheet,
-    fs: defaultFeatSheet,
-    es: defaultEquipmentSheet,
-    ss: {},
-}
+const defaultPlayer: Owner = createDefaultOwner({})
 
 describe('A default player can win', () => {
     test('simulate', () => {
@@ -41,11 +40,9 @@ describe('A default player can win', () => {
 const hpLosses = (results: ReturnType<typeof simulateFight>[]) =>
     results.map(r => r.debugData.player0HpStart - r.debugData.player0HpEnd)
 
-describe('Ostracized goblin difficulty', () => {
-    const ITERATIONS = 200
-    // guards against a broken sim looping forever if the player never takes damage
-    const MAX_CONSECUTIVE_FIGHTS = 200
-
+describe('Expected Difficulty: Level 1', () => {
+    const ITERATIONS = 100
+    const MAX_CONSECUTIVE_FIGHTS = 100
     test('how many consecutive fights a player can win in a row', () => {
         const winsPerRun = iterate(ITERATIONS, () => {
             const ws = worldState({ player: [defaultPlayer] })
@@ -161,5 +158,51 @@ describe('Ostracized goblin difficulty', () => {
         expect(statsTwo.median).toBeGreaterThan(statsOne.median)
 
         if (SHOW_DEBUG) console.table({ oneGoblin: statsOne, twoGoblins: statsTwo })
+    })
+})
+
+describe('Difficulty Level 4', () => {
+    const ITERATIONS = 50
+    const MAX_CONSECUTIVE_FIGHTS = 50
+
+    test('Fighter: Expect to be trivial'/* , { timeout: 10_000 } */, () => {
+        const EXPECTED_MEDIAN = 16
+        const fighter = createDefaultOwner({ cs: { ...defaultCharacterSheet, levels: {} } })
+        commitLevelUp(fighter, {
+            className: 'fighter',
+            bonusFeat: 'featDodgy'
+        })
+        commitLevelUp(fighter, {
+            className: 'fighter',
+        })
+        commitLevelUp(fighter, {
+            className: 'fighter',
+            bonusFeat: 'featRage'
+        })
+        commitLevelUp(fighter, {
+            className: 'fighter',
+        })
+
+        expect(getCharacterLevel(fighter.cs)).toEqual(4)
+        const winsPerRun = iterate(ITERATIONS, () => {
+            const ws = worldState({ player: [fighter] })
+            let wins = 0
+            while (wins < MAX_CONSECUTIVE_FIGHTS) {
+                const result = simulateFight({
+                    player: ws.playerActors,
+                    enemy: [ostracizedGoblin, ostracizedGoblin, ostracizedGoblin],
+                })
+                if (result.winner !== 'player') break
+                wins++
+                ws.playerAfterFight()
+            }
+            return wins
+        })
+
+        const stats = boxPlotStats(winsPerRun)
+
+        if (SHOW_DEBUG) console.table(stats)
+
+        assert.equal(stats.median, EXPECTED_MEDIAN)
     })
 })

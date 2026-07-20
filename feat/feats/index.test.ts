@@ -1,3 +1,4 @@
+import { characterLevels } from '../../character-sheet/class-level'
 import { defaultCharacterSheet } from '../../character-sheet/index.ts'
 import { featMeleeWeaponFighting, standardFilters, possibleFeats, featDemoEvenOdd } from './index.ts'
 import { describe, test, assert, expect } from 'vitest'
@@ -127,7 +128,7 @@ describe('mod functions work', () => {
                 con: 15,
                 dex: 16,
                 str: 8,
-                level: 1,
+                levels: characterLevels(1),
             }
         })
 

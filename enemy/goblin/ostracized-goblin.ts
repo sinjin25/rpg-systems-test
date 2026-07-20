@@ -3,6 +3,7 @@ import { Owner } from "../../character/actor";
 import { defaultEquipmentSheet } from "../../equipment-sheet";
 import { defaultFeatSheet } from "../../feat";
 import { defaultStatusSheet } from "../../status-sheet";
+import { createDefaultAbilitySheet } from "../../ability-sheet";
 import { clawSmall, naturalAc } from "../common/equipment";
 import { ambush } from "./feats";
 
@@ -12,7 +13,6 @@ const ostracizedGoblin: Owner = {
         dex: 8,
         str: 6,
         con: 8,
-        level: 1,
     },
     fs: {
         ...defaultFeatSheet,
@@ -26,6 +26,7 @@ const ostracizedGoblin: Owner = {
     ss: {
         ...defaultStatusSheet,
     },
+    as: createDefaultAbilitySheet(),
 }
 
 export default ostracizedGoblin

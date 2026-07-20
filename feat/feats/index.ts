@@ -5,6 +5,7 @@ import { featBattleFocus } from "./battle-focus"
 import { featFatiguingBlows } from "./fatiguing-blows"
 import { featMeasuredStrike } from "./measured-strike"
 import { featFeint } from "./feint"
+import { featArmorTraining } from "./armor-training"
 
 export { standardFilters } from "../core-types"
 export type { BroadContexts, ContextNames } from "../../contexts"
@@ -16,6 +17,7 @@ export { featBattleFocus } from "./battle-focus"
 export { featFatiguingBlows } from "./fatiguing-blows"
 export { featMeasuredStrike } from "./measured-strike"
 export { featFeint } from "./feint"
+export { featArmorTraining } from "./armor-training"
 
 // examples
 export const featMeleeWeaponFighting: Feat = {
@@ -171,6 +173,40 @@ export const featDodgy: Feat = {
     }
 }
 
+// grants +1 AC while a shield is equipped. gated on the 'shield' context, which
+// calculateAc makes active from worn defensive gear's context tags.
+export const featShieldMastery: Feat = {
+    displayName: 'Shield Mastery',
+    context: {
+        ac: {
+            applies: standardFilters.noBlacklistAnyWhitelistFactory({
+                blacklist: [],
+                whitelist: ['shield'],
+            }),
+            mod: (data) => {
+                return 1
+            },
+        }
+    }
+}
+
+// grants +1 AC only while heavy armor is worn. gated on the 'heavyArmor' context,
+// so light/medium armor (or none) does not trigger it.
+export const featHeavyArmorMastery: Feat = {
+    displayName: 'Heavy Armor Mastery',
+    context: {
+        ac: {
+            applies: standardFilters.noBlacklistAnyWhitelistFactory({
+                blacklist: [],
+                whitelist: ['heavyArmor'],
+            }),
+            mod: (data) => {
+                return 1
+            },
+        }
+    }
+}
+
 // prerequisite chain demo: A requires B, B requires both C and D, C and D require nothing
 export const featPrereqDemoC: Feat = {
     displayName: 'DEMO Prereq C',
@@ -210,6 +246,9 @@ export const possibleFeats = {
     featConSaves,
     featAlert,
     featDodgy,
+    featShieldMastery,
+    featHeavyArmorMastery,
+    featArmorTraining,
     featDivineProtection,
     featRage,
     featBattleFocus,

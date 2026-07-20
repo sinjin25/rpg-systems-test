@@ -26,7 +26,7 @@ export type BaseEquipment = {
 }
 
 export type Weapon = BaseEquipment & {
-    damage?: DamageRollFunc,
+    damage: DamageRollFunc,
     // base threat range (e.g. 20, or 19 for a 19-20 threat range) and multiplier before feats/modifiers are added
     critRange?: number,
     critMultiplier?: number,
@@ -34,6 +34,9 @@ export type Weapon = BaseEquipment & {
 
 export type Armor = BaseEquipment & {
     ac?: number,
+    // this is an optional value (undefined = unlimited)
+    // there's a broadContext that can add mods to this ex: fighter's armor training
+    maxDexBonus?: number,
 }
 
 export type EquipmentSheet = {

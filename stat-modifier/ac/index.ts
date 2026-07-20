@@ -2,12 +2,13 @@ import { calculateModifier, DEFAULT_AC, DEFAULT_STAT } from ".."
 import { calculateFeatMod } from "../../attack"
 import { CharacterSheet } from "../../character-sheet"
 import { BroadContexts, ContextNames } from "../../contexts"
-import { EquipmentSheet, equipmentIsArmor } from "../../equipment-sheet"
+import { Armor, EquipmentSheet, equipmentIsArmor } from "../../equipment-sheet"
 import calculateEquipmentMod from "../../equipment-sheet/equipment-mod"
+import { extractContextsTags } from "../../equipment-sheet/extract"
 import { FeatSheet } from "../../feat"
 import { StatusSheet } from "../../status-sheet"
 import { calculateStatusMod } from "../../status-sheet/status-mod"
-import ModifierLog from "../log"
+import ModifierLog, { ModLogMember } from "../log"
 
 type AcData = {
     cs: CharacterSheet,
@@ -22,26 +23,59 @@ export const calculateAc = (data: AcData) => {
     const contextTags: ContextNames[] = ['dexterity']
     const broadContextStat: BroadContexts = 'stat'
     const broadContextAc: BroadContexts = 'ac'
+    const broadContextMaxDex: BroadContexts = 'maxDex'
 
     const allEquipment = Object.values(es)
     const modData = { cs, es, fs, ss }
+
+    // Armor has an ac property (as opposed to general equipment)
+    // which has a ac broadContext mod
+    // shields are considered Armor
+    const acPieces = allEquipment.filter((e): e is Armor => !!e && equipmentIsArmor(e))
 
     // calculate effective dex (base + bonuses)
     const dexBonusEquip = calculateEquipmentMod(allEquipment, modData, contextTags, broadContextStat)
     const dexBonusFeat = calculateFeatMod(modData, contextTags, broadContextStat)
     const dexBonusStatus = calculateStatusMod(modData, contextTags, broadContextStat)
-    const dexMod = calculateModifier(cs.dex, [dexBonusEquip.total + dexBonusFeat.total + dexBonusStatus.total])
+    const dexDetail: ModLogMember[] = [...dexBonusEquip.entries, ...dexBonusFeat.entries, ...dexBonusStatus.entries]
+    const finalDex = calculateModifier(cs.dex, [dexBonusEquip.total + dexBonusFeat.total + dexBonusStatus.total])
 
-    // armor's flat, static ac bonus (not part of the generic mod-source system)
-    // unarmored characters get no bonus here - the base 10 is already accounted
-    // for by the 'base ac' group below
-    const armor = es.armor
-    const armorBonus = armor && equipmentIsArmor(armor) ? (armor.ac ?? 0) : 0
+    // find the lowest maxDexBonus item (if any exists)
+    const capPieces = acPieces.filter(e => e.maxDexBonus !== undefined)
+    // explanation: finalDex is the player's mod, we still need to figure out if the mod is too big for the equipment
+    let dexMod = finalDex
+    if (capPieces.length) {
+        // this is the lowest
+        const base = Math.min(...capPieces.map(e => e.maxDexBonus as number))
+        // calculate any maxDex BroadContexts that may increase it
+        // ex: fighter's armor training feature
+        const maxDexFeat = calculateFeatMod(modData, [], broadContextMaxDex)
+        const maxDexEquip = calculateEquipmentMod(allEquipment, modData, [], broadContextMaxDex)
+        const maxDexStatus = calculateStatusMod(modData, [], broadContextMaxDex)
+        const finalMaxDex = base + maxDexFeat.total + maxDexEquip.total + maxDexStatus.total
+        // ex: +6 dex but finalMaxDex is +3 (or vice versa)
+        dexMod = Math.min(finalDex, finalMaxDex)
+        // if this isn't boosted then we don't need to make a log
+        if (dexMod !== finalDex) {
+            const capSourceName = capPieces.find(e => e.maxDexBonus === base)?.displayName ?? 'armor'
+            dexDetail.push({ displayName: `max dex (${capSourceName})`, amount: dexMod - finalDex })
+            dexDetail.push(...maxDexFeat.entries, ...maxDexEquip.entries, ...maxDexStatus.entries)
+        }
+    }
 
-    // calculate flat ac bonuses
-    const fm = calculateFeatMod(modData, [], broadContextAc)
-    const em = calculateEquipmentMod(allEquipment, modData, [], broadContextAc)
-    const sm = calculateStatusMod(modData, [], broadContextAc)
+    // sum of armor ac
+    // we have not included base ac (10) yet
+    const armorEntries: ModLogMember[] = acPieces
+        .filter(e => (e.ac ?? 0) !== 0)
+        .map(e => ({ displayName: e.displayName, amount: e.ac as number }))
+    const armorBonus = armorEntries.reduce((sum, e) => sum + e.amount, 0)
+
+    // get the context tags from relevant equipment (ex: shield, heavyArmor)
+    // this is for mods
+    const acContextTags = acPieces.flatMap(e => extractContextsTags(e))
+    const fm = calculateFeatMod(modData, acContextTags, broadContextAc)
+    const em = calculateEquipmentMod(allEquipment, modData, acContextTags, broadContextAc)
+    const sm = calculateStatusMod(modData, acContextTags, broadContextAc)
 
     log.addModGroup('base ac', {
         total: DEFAULT_AC,
@@ -52,12 +86,12 @@ export const calculateAc = (data: AcData) => {
         entries: [{
             displayName: 'dex modifier',
             amount: dexMod,
-            detail: [...dexBonusEquip.entries, ...dexBonusFeat.entries, ...dexBonusStatus.entries],
+            detail: dexDetail,
         }],
     })
     log.addModGroup('armor', {
         total: armorBonus,
-        entries: armorBonus ? [{ displayName: armor?.displayName || 'Natural AC', amount: armorBonus }] : [],
+        entries: armorEntries,
     })
     log.addModGroup('feats', fm)
     log.addModGroup('equipment', em)

@@ -2,10 +2,9 @@ import { CharacterSheet } from "../character-sheet"
 import type { Actor } from "../character/actor"
 import { EquipmentSheet } from "../equipment-sheet"
 import { FeatSheet } from "../feat"
-import { applyHealthDelta } from "../health"
-import calculateFeatMod from "../roll-modifier/feat-mod"
+import { applyDamage, applyHeal } from "../health"
 import roll from "../roll"
-import { calculateStatusMod } from "./status-mod"
+import { saveModifierFactories, saveSucceeds } from "../save"
 import { StatusSheet } from "./types"
 
 export type DecayOwnerData = {
@@ -63,7 +62,9 @@ export const decayRoundsElapsed = (
         if (status.expiration.kind !== 'rounds-elapsed') continue
 
         if (status.expiration.tick && self) {
-            applyHealthDelta(self.health, status.expiration.tick(owner))
+            const t = status.expiration.tick(owner)
+            if (t.kind === 'heal') applyHeal(self.health, t.amount)
+            else applyDamage(self.health, t.amount)
         }
 
         status.expiration.remaining -= elapsed
@@ -78,12 +79,12 @@ export const decaySaveSucceeded = (
         const status = owner.ss[key]
         if (status.expiration.kind !== 'save-succeeded') continue
 
-        const { saveContext, dc } = status.expiration
-        const sm = calculateStatusMod(owner, saveContext, 'save')
-        const fm = calculateFeatMod(owner, saveContext, 'save')
-        const result = roll(20) + sm.total + fm.total
+        const { saveType, dc } = status.expiration
+        const saveMod = saveModifierFactories[saveType](owner)()
+        const natural = roll(20)
+        const total = natural + saveMod.total
 
-        if (result >= dc) expireStatus(owner, key)
+        if (saveSucceeds(total, dc, natural)) expireStatus(owner, key)
     }
 }
 

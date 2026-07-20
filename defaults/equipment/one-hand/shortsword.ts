@@ -6,3 +6,9 @@ export const shortsword = createEquipment({
     contexts: ['shortsword', 'melee'],
     damage: () => roll(6),
 })
+
+export const longSword = createEquipment({
+    displayName: 'longsword',
+    contexts: ['longsword', 'melee'],
+    damage: () => roll(8)
+})

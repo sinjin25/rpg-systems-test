@@ -1,10 +1,13 @@
+import { characterLevels } from '../../character-sheet/class-level'
 import { describe, test, assert, expect } from 'vitest'
 
 import standardAttackModifierFactory, { default as defaultAttack } from './standard.ts'
 import { defaultFeatSheet } from '../../feat/index.ts'
 import { shortsword } from '../../defaults/equipment/index.ts'
-import { defaultEquipmentSheet } from '../../defaults/index.ts'
+import { createDefaultOwner, defaultCharacterSheet, defaultEquipmentSheet } from '../../defaults/index.ts'
 import { featFinesseWeaponFighting } from '../../feat/feats/index.ts'
+import { Weapon } from '../../equipment-sheet/index.ts'
+import { commitLevelUp } from '../../character/level-up/index.ts'
 
 describe('standard functionality', () => {
     test('produces a number', () => {
@@ -13,12 +16,12 @@ describe('standard functionality', () => {
                 con: 10,
                 dex: 10,
                 str: 14,
-                level: 1,
+                levels: characterLevels(1),
             },
             es: {},
             fs: defaultFeatSheet,
             ss: {},
-            weapon: shortsword,
+            weapon: shortsword as Weapon,
         })
 
         const result = std()
@@ -33,12 +36,12 @@ describe('Can be extended', () => {
                 con: 10,
                 dex: 12,
                 str: 10,
-                level: 1,
+                levels: characterLevels(1),
             },
             es: {},
             fs: defaultFeatSheet,
             ss: {},
-            weapon: shortsword,
+            weapon: shortsword as Weapon,
         })
 
         const result = standard()
@@ -50,12 +53,12 @@ describe('Can be extended', () => {
                 con: 10,
                 dex: 12,
                 str: 8,
-                level: 1,
+                levels: characterLevels(1),
             },
             es: defaultEquipmentSheet,
             fs: defaultFeatSheet,
             ss: {},
-            weapon: shortsword,
+            weapon: shortsword as Weapon,
         })
 
         const result = standard()
@@ -67,7 +70,7 @@ describe('Can be extended', () => {
                 con: 10,
                 dex: 12,
                 str: 10,
-                level: 1,
+                levels: characterLevels(1),
             },
             es: defaultEquipmentSheet,
             fs: {
@@ -75,9 +78,40 @@ describe('Can be extended', () => {
                 featFinesseWeaponFighting,
             },
             ss: {},
-            weapon: shortsword,
+            weapon: shortsword as Weapon,
         })
 
         assert.equal(standard().total, 0)
+    })
+    test('works with class levels (BAB)', () => {
+        const BAB_DISPLAY = 'base attack bonus'
+        const fighter = createDefaultOwner({
+            cs: { ...defaultCharacterSheet, str: 16, dex: 14, levels: {} },
+        })
+        commitLevelUp(fighter, { className: 'fighter', bonusFeat: 'featDodgy' }) // L1
+
+        {
+            const myFunc = standardAttackModifierFactory({
+                ...fighter,
+                weapon: shortsword as Weapon,
+            })
+            const result = myFunc()
+            const bab = result.groups.find(a => a.displayName === BAB_DISPLAY)
+            assert.exists(bab)
+            assert.equal(bab.total, 1)
+        }
+
+        commitLevelUp(fighter, { className: 'fighter' }) // L2
+
+        {
+            const myFunc = standardAttackModifierFactory({
+                ...fighter,
+                weapon: shortsword as Weapon,
+            })
+            const result = myFunc()
+            const bab = result.groups.find(a => a.displayName === BAB_DISPLAY)
+            assert.exists(bab)
+            assert.equal(bab.total, 2)
+        }
     })
 })

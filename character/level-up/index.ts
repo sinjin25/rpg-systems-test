@@ -1,3 +1,4 @@
+import { Ability, addAbility } from '../../ability-sheet'
 import { addFeat, FeatSheet } from '../../feat'
 import { possibleFeats } from '../../feat/feats'
 import { PossibleFeatKeys } from '../../feat/types'
@@ -12,6 +13,7 @@ export type LevelUpPreview = {
     // consider: do I wanna keep this? It's very UI-level
     atMax: boolean,
     grantedFeats: FeatSheet,
+    grantedAbilities: Ability[],
     offersBonusFeat: boolean,
     eligibleFeats: PossibleFeatKeys[],
 }
@@ -23,7 +25,7 @@ export type LevelUpSelection = {
 }
 
 export type LevelUpResult =
-    | { ok: true, className: string, newLevel: number, addedFeats: PossibleFeatKeys[] }
+    | { ok: true, className: string, newLevel: number, addedFeats: PossibleFeatKeys[], addedAbilities: Ability[] }
     | { ok: false, reason: LevelUpError }
 
 
@@ -52,6 +54,7 @@ const emptyPreview = (className: string, nextLevel: number): LevelUpPreview => (
     nextLevel,
     atMax: true,
     grantedFeats: {},
+    grantedAbilities: [],
     offersBonusFeat: false,
     eligibleFeats: [],
 })
@@ -85,6 +88,7 @@ export const previewLevelUp = (owner: Owner, className: string): LevelUpPreview 
         nextLevel: target + 1,
         atMax: false,
         grantedFeats: { ...member.feats },
+        grantedAbilities: [...member.abilities ?? []],
         offersBonusFeat: !!member.selectBonusFeat,
         eligibleFeats,
     }
@@ -118,8 +122,11 @@ export const commitLevelUp = (owner: Owner, selection: LevelUpSelection): LevelU
     }
 
     // commit changes
-    // merge feats, increase class level, register new class if necessary
+    // merge feats, register this level's abilities, increase class level,
+    // register new class if necessary
     Object.assign(owner.fs, temp)
+    const grantedAbilities = member.abilities ?? []
+    for (const ability of grantedAbilities) addAbility(owner.as, ability)
     cl.level = target + 1
     owner.cs.levels[className] = cl
 
@@ -128,5 +135,6 @@ export const commitLevelUp = (owner: Owner, selection: LevelUpSelection): LevelU
         className,
         newLevel: cl.level,
         addedFeats: bonusFeat ? [...grantedKeys, bonusFeat] : grantedKeys,
+        addedAbilities: [...grantedAbilities],
     }
 }

@@ -1,3 +1,4 @@
+import { Ability, getAbilityKey } from "../../ability-sheet"
 import { FeatSheet } from "../../feat"
 import type { CharacterSheet } from "../../character-sheet"
 import { ClassLevelMember, ClassLevels, ClassLevelSheet } from "./type"
@@ -33,6 +34,18 @@ const sumFeatsFromClassLevels = (sheet: ClassLevelSheet): FeatSheet =>
         return fs
     }, {})
 
+// deduped by key so a multiclass that grants the same ability twice still only
+// gets one copy in the rotation
+const sumAbilitiesFromClassLevels = (sheet: ClassLevelSheet): Ability[] => {
+    const byKey: Record<string, Ability> = {}
+    for (const cl of Object.values(sheet)) {
+        for (const member of acquiredMembers(cl)) {
+            for (const ability of member.abilities ?? []) byKey[getAbilityKey(ability)] = ability
+        }
+    }
+    return Object.values(byKey)
+}
+
 // for determining health
 const sumLevelsFromClassLevels = (sheet: ClassLevelSheet): number =>
     Object.values(sheet).reduce((total, cl) => total + clampedLevel(cl), 0)
@@ -65,6 +78,7 @@ export {
     sumFortitudeSaveFromClassLevels,
     sumReflexSaveFromClassLevels,
     sumFeatsFromClassLevels,
+    sumAbilitiesFromClassLevels,
     sumLevelsFromClassLevels,
     getCharacterLevel,
     characterLevels,

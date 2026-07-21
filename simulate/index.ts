@@ -8,6 +8,8 @@ import { applyFightStartFeats } from "../feat/fight-start"
 import { applyDamage } from "../health"
 import { round, STANDARD_SPEED } from "../speed"
 import calculateAc from "../stat-modifier/ac"
+import calculateDamageTaken from "../stat-modifier/damage-taken"
+import { extractContextsTags } from "../equipment-sheet/extract"
 import { decayActionsElapsed, decayEnemyKilled, decayRoundsElapsed, decaySaveSucceeded, expireStatusesAfterFight } from "../status-sheet/decay"
 import { runTrigger } from "../trigger/dispatch"
 import { applyIntercepts, collectIntercepts } from "../roll-intercept"
@@ -93,8 +95,12 @@ export const resolveAction = (
     const confirmNaturalRoll = sar.confirmLog.finalResult().roll
     const crit = threatened && attackHits(sar.confirmRoll, targetAc, confirmNaturalRoll)
 
+    // extract tags from weapon for usage in figuring out calculateDamageTaken contexts (ex: bludgeon, slashing, etc.)
+    const damageTakenContext = extractContextsTags(sar.weapon)
+
     if (!crit) {
-        applyDamage(target.health, sar.damageRoll)
+        const damageTaken = calculateDamageTaken(target.owner, sar.damageRoll, damageTakenContext)
+        applyDamage(target.health, damageTaken.total)
         runTrigger({ self: target.owner, target: attacker.owner }, 'onDamageTaken')
         return
     }
@@ -107,7 +113,9 @@ export const resolveAction = (
         sar.critFlatDamage.total,
         sar.critMultiplier,
     )
-    applyDamage(target.health, critDamage.total)
+
+    // currently attack -> crit -> damage taken mods
+    applyDamage(target.health, calculateDamageTaken(target.owner, critDamage.total, damageTakenContext).total)
     runTrigger({ self: target.owner, target: attacker.owner }, 'onDamageTaken')
 }
 
@@ -131,7 +139,8 @@ export const resolveAbility = (
             ? aar.damage.passedSaveDamageRoll ?? 0
             : aar.damage.damageRoll
         if (damage > 0) {
-            applyDamage(target.health, damage)
+            // TODO: there are no abilities with tags right now
+            applyDamage(target.health, calculateDamageTaken(target.owner, damage, []).total)
             runTrigger({ self: target.owner, target: attacker.owner }, 'onDamageTaken')
         }
     }
@@ -139,6 +148,12 @@ export const resolveAbility = (
     if (aar.save && !passed && aar.ability.onFailedSave) {
         const status = aar.ability.onFailedSave(aar.save.dc)
         // no stacking - same guard as trigger/apply
+        if (!target.owner.ss[status.displayName]) target.owner.ss[status.displayName] = status
+    }
+
+    // for saveless status effects (ex: studied target)
+    if (aar.ability.onUse) {
+        const status = aar.ability.onUse()
         if (!target.owner.ss[status.displayName]) target.owner.ss[status.displayName] = status
     }
 }
@@ -233,7 +248,9 @@ export const simulateFight = (
             const theActor = acting.pop()
             if (!theActor) continue
             // died before turn
-            actors.forEach(a => decayRoundsElapsed(a.owner, 1, a))
+            const found = actors
+                .find(a => a.owner === theActor.owner)
+            if (found) decayRoundsElapsed(found.owner, 1, found)
             if (!theActor.speed.canAct) continue
 
             // roll

@@ -1,4 +1,5 @@
 import { fighterClassLevels } from './fighter'
+import { slayerClassLevels } from './slayer'
 import { ClassLevelMember, ClassLevels } from './type'
 
 // table template for a classes's feats, bonuses at given levels
@@ -9,6 +10,7 @@ export type ClassDefinition = {
 
 export const classRegistry: Record<string, ClassDefinition> = {
     fighter: { displayName: 'Fighter', data: fighterClassLevels },
+    slayer: { displayName: 'Slayer', data: slayerClassLevels },
 }
 
 // return a copy of a class's table and supporting properties

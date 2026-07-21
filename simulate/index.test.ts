@@ -1,5 +1,7 @@
 import { describe, test, assert, afterEach } from 'vitest'
-import { resolveAbility, simulateFight, worldState } from './index.ts'
+import { resolveAbility, resolveAction, simulateFight, worldState } from './index.ts'
+import useAttack from '../character/act/attack/index.ts'
+import studiedTargetStatus from '../status-sheet/statuses/studied-target.ts'
 import { Ability, addAbility, createDefaultAbilitySheet } from '../ability-sheet/index.ts'
 import ignite from '../ability-sheet/abilities/ignite.ts'
 import useAbility from '../character/act/ability/index.ts'
@@ -294,5 +296,31 @@ describe('flat-footed', () => {
         for (let i = 0; i < 200 && actor.owner.ss.flatFooted; i++) round(roundData)
 
         assert.notProperty(actor.owner.ss, 'flatFooted')
+    })
+})
+
+describe('damageTaken', () => {
+    afterEach(() => clearSeed())
+    test('Confirm studied target status can increase end damage taken', () => {
+        const attacker = instantiateActor(createDefaultOwner({ cs: { str: 18, dex: 14 } }))
+        const plain = instantiateActor(createDefaultOwner({}))
+        const studied = instantiateActor(createDefaultOwner({}))
+        studied.owner.ss['Studied Target'] = studiedTargetStatus()
+
+        // simulate an sar
+        const sar = useAttack(attacker.owner)[0]
+        const guaranteedHit = { ...sar, attackRoll: 999, confirmRoll: -999, critRange: 20 }
+
+        const plainBefore = plain.health.curr
+        const studiedBefore = studied.health.curr
+
+        resolveAction(attacker, plain, guaranteedHit)
+        resolveAction(attacker, studied, guaranteedHit)
+
+        const plainLost = plainBefore - plain.health.curr
+        const studiedLost = studiedBefore - studied.health.curr
+
+        assert.isAbove(plainLost, 0)
+        assert.equal(studiedLost - plainLost, 2)
     })
 })

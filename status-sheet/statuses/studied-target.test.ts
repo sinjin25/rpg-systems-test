@@ -2,6 +2,7 @@ import { describe, test, expect } from 'vitest'
 import { createDefaultOwner } from '../../defaults'
 import { bandedMail, heavyShield, longSword } from '../../defaults/equipment'
 import calculateAc from '../../stat-modifier/ac'
+import calculateDamageTaken from '../../stat-modifier/damage-taken'
 import { util_findModLogGroupItem } from '../../stat-modifier/log'
 import studiedTargetStatus from './studied-target'
 
@@ -29,6 +30,26 @@ describe('studiedTargetStatus', () => {
         })
 
         expect(acEntry(armored)?.amount).toEqual(-1)
+    })
+
+    test('adds +2 to damage taken', () => {
+        const owner = createDefaultOwner({})
+        expect(calculateDamageTaken(owner, 8).total).toEqual(8)
+
+        owner.ss['Studied Target'] = studiedTargetStatus()
+
+        expect(calculateDamageTaken(owner, 8).total).toEqual(10)
+        expect(util_findModLogGroupItem(calculateDamageTaken(owner, 8).log, {
+            groupName: 'statuses',
+            modDisplayName: 'Studied Target',
+        })?.amount).toEqual(2)
+    })
+
+    test('the damage bonus fires regardless of the attacker weapon tags', () => {
+        const owner = createDefaultOwner({ ss: { 'Studied Target': studiedTargetStatus() } })
+
+        expect(calculateDamageTaken(owner, 8, ['longsword', 'melee']).total).toEqual(10)
+        expect(calculateDamageTaken(owner, 8, []).total).toEqual(10)
     })
 
     test('expires on a rounds-elapsed clock', () => {

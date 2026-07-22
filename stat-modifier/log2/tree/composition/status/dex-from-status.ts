@@ -1,6 +1,6 @@
 import newModNode, { sumFunc } from "../../..";
 import { EveryTree, OwnerMaximal } from "../../types";
-import { collectStatusContributions } from "./collect-status-contributions";
+import { collectStatusContributions } from "../../../collect-status-contributions";
 
 const displayName: EveryTree = 'dex-from-status'
 

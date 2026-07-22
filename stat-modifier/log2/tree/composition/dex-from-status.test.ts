@@ -1,8 +1,8 @@
 import { describe, test, expect } from 'vitest'
 import dexFromStatus from './status/dex-from-status'
 import catsGrace from '../bases/status/cats-grace'
-import { asStatus } from './status/collect-status-contributions'
 import { createDefaultOwner } from '../../../../defaults'
+import { asStatus } from '../../collect-status-contributions'
 
 // LAYER: dex-from-status. Reads the runtime status sheet (owner.ss) and sums every dex-affecting
 // status found there. Trusts each status leaf; this proves both that a present status is summed and

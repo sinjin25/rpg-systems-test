@@ -1,9 +1,9 @@
 import { describe, test, expect } from 'vitest'
 import acFromDex from './ac-from-dex'
 import catsGrace from '../bases/status/cats-grace'
-import { asStatus } from './status/collect-status-contributions'
 import { createDefaultOwner } from '../../../../defaults'
 import { bandedMail } from '../../../../defaults/equipment'
+import { asStatus } from '../../collect-status-contributions'
 
 // LAYER: ac-from-dex = min(modded-dex, max-dex-of-equipment). The dex that AC actually gets, after
 // the armor cap. Trusts both children; this proves the cap clamps, and that with no armor the dex

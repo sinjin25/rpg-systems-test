@@ -1,9 +1,9 @@
 import { describe, test, expect } from 'vitest'
 import ac from './ac'
 import catsGrace from '../bases/status/cats-grace'
-import { asStatus } from '../composition/status/collect-status-contributions'
 import { createDefaultOwner } from '../../../../defaults'
 import { bandedMail, heavyShield } from '../../../../defaults/equipment'
+import { asStatus } from '../../collect-status-contributions'
 
 // LAYER: ac (terminal) = base-ac + ac-from-dex + ac-of-equipment. Every child has its own suite, so
 // this only proves the three are summed into the final answer. Cat's Grace is placed on the sheet.

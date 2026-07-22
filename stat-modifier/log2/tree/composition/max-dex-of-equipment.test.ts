@@ -1,7 +1,10 @@
-import { describe, test, expect } from 'vitest'
+import { describe, test, expect, assert } from 'vitest'
 import maxDexOfEquipment from './max-dex-of-equipment'
 import { createDefaultOwner } from '../../../../defaults'
 import { bandedMail, halfPlate, heavyShield } from '../../../../defaults/equipment'
+import { asStatus } from '../../collect-status-contributions'
+import flatFooted from '../bases/status/flat-footed'
+import modNodeToText from '../../format'
 
 // LAYER: max-dex-of-equipment. The lowest real cap across worn armor. Trusts the
 // per-piece leaf; this proves the min, that unlimited pieces drop out, and the
@@ -28,5 +31,22 @@ describe('max-dex-of-equipment', () => {
     test('only-unlimited armor -> the placeholder max', () => {
         const owner = createDefaultOwner({ es: { offhand: heavyShield } })
         expect(maxDexOfEquipment(owner).total()).toBe(TEMP_MAX)
+    })
+})
+
+describe('Works with flat-footed status', () => {
+    test('Flat-footed hijacks and returns 0', () => {
+        const owner = createDefaultOwner({
+            es: { armor: bandedMail, offhand: heavyShield },
+            ss: {
+                flatFooted: asStatus(flatFooted)
+            }
+        })
+        const result = maxDexOfEquipment(owner)
+        expect(result.total()).toBe(0)
+
+        // still returns the original items
+        const containsMail = result.children.find(a => a.displayName === bandedMail.displayName)
+        assert.exists(containsMail)
     })
 })

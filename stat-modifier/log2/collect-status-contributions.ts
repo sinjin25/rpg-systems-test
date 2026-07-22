@@ -1,6 +1,6 @@
-import { ModNode } from "../../..";
-import { StatusEffect } from "../../../../../status-sheet";
-import { BroadContextsMaximal, OwnerMaximal, StatusEffectMaximal } from "../../types";
+import { ModNode } from ".";
+import { StatusEffect } from "../../status-sheet";
+import { BroadContextsMaximal, OwnerMaximal, StatusEffectMaximal } from "./tree/types";
 
 // --- the throwaway bridge between the legacy StatusEffect stored in owner.ss and log2's
 // StatusEffectMaximal. When legacy dies, deleting this file's two casts retires the whole bridge.

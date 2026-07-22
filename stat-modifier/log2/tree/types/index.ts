@@ -5,14 +5,14 @@ import { Owner } from "../../../../character/actor";
 export type OwnerMaximal = Owner
 
 // curated subset of tree nodes a status is allowed to attach to (an aggregator, not any internal node)
-export type BroadContextsMaximal = 'dex-from-status'
+export type BroadContextsMaximal = 'dex-from-status' | 'max-dex-of-equipment'
 
 export type StatusEffectMaximal = {
     displayName: string,
     broadContexts: Partial<Record<BroadContextsMaximal, (owner: OwnerMaximal) => ModNode>>
 }
 
-export type AllStatusEffects = 'cats-grace'
+export type AllStatusEffects = 'cats-grace' | 'flat-footed'
 
 export type CsScore = 'str' | 'dex' | 'con'
 

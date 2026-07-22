@@ -1,8 +1,8 @@
 import { describe, test, expect } from 'vitest'
 import moddedDex from './modded-dex'
 import catsGrace from '../bases/status/cats-grace'
-import { asStatus } from './status/collect-status-contributions'
 import { createDefaultOwner } from '../../../../defaults'
+import { asStatus } from '../../collect-status-contributions'
 
 // LAYER: modded-dex = raw-dex + dex-from-status. Trusts both children (each has its own suite);
 // this only proves the two are added together. dex-from-status now reads owner.ss, so the status

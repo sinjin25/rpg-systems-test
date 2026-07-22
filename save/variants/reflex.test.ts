@@ -6,6 +6,7 @@ import { defaultFeatSheet } from '../../feat/index.ts'
 import { featConSaves } from '../../feat/feats/index.ts'
 import { createEquipment } from '../../equipment-sheet/create-equipment.ts'
 import { util_findModLogGroupItem } from '../../stat-modifier/log/index.ts'
+import { RollModifierGroup } from '../../roll-modifier/types.ts'
 
 describe('reflex save', () => {
     test('scales off dexterity', () => {
@@ -84,7 +85,7 @@ describe('reflex save scales with equipment', () => {
         assert.equal(result.total, 5)
         console.table(result.groups.find(a => a.displayName === 'base mod'))
 
-        const logCases: Array<{ groupName: string, modDisplayName: string, shouldExist: boolean }> = [
+        const logCases: Array<{ groupName: RollModifierGroup, modDisplayName: string, shouldExist: boolean }> = [
             { groupName: 'base mod', modDisplayName: 'dex', shouldExist: true },
             { groupName: 'equipment mod', modDisplayName: 'dex save amulet', shouldExist: true },
             { groupName: 'equipment mod', modDisplayName: 'save ring', shouldExist: true },

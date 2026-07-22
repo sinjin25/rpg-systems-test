@@ -37,7 +37,11 @@ export type EveryTree =
     | 'str-from-status'
     | 'effective-attack-stat'
     | 'base-attack-bonus'
+    | 'attack-feat-mod'
+    | 'attack-status-mod'
+    | 'attack-equipment-mod'
     // terminal
     | 'ac'
+    | 'attack'
 
 export type TreeSubproblems = Partial<Record<EveryTree, ModNode>>

@@ -6,6 +6,6 @@ describe("cats-grace", () => {
     test('registers a +4 dex-from-status contribution', () => {
         const contribution = flatFooted.broadContexts['max-dex-of-equipment']!
 
-        expect(contribution(createDefaultOwner({})).total()).toBe(0)
+        expect(contribution(createDefaultOwner({}))!.total()).toBe(0)
     })
 })

@@ -4,16 +4,21 @@ import { Owner } from "../../../../character/actor";
 // the feat sheet, native. loose string keys like StatusSheet - the collector reads values, not keys
 export type FeatSheetMaximal = { [key: string]: FeatMaximal }
 
+// the status sheet, native (StatusEffectMaximal). same loose-key shape as the feat sheet
+export type StatusSheetMaximal = { [key: string]: StatusEffectMaximal }
+
 // the maximal amount of information we could every possibly need because we don't know what we're building.
-// same owner as legacy, but the feat sheet is native (FeatMaximal) instead of the old FeatSheet
-export type OwnerMaximal = Omit<Owner, 'fs'> & { fs: FeatSheetMaximal }
+// same owner as legacy, but the feat and status sheets are native instead of the old legacy sheets
+export type OwnerMaximal = Omit<Owner, 'fs' | 'ss'> & { fs: FeatSheetMaximal, ss: StatusSheetMaximal }
 
 // curated subset of tree nodes a status is allowed to attach to (an aggregator, not any internal node)
-export type BroadContextsMaximal = 'dex-from-status' | 'str-from-status' | 'max-dex-of-equipment' | BaseStatEquipmentMod
+export type BroadContextsMaximal = 'dex-from-status' | 'str-from-status' | 'max-dex-of-equipment' | 'attack-status-mod' | 'ac-status-mod' | BaseStatEquipmentMod
 
+// a producer returns undefined when the status is on the sheet but doesn't apply here (e.g. a melee-only
+// attack status with a ranged weapon); the collector drops those, same as feats.
 export type StatusEffectMaximal = {
     displayName: string,
-    broadContexts: Partial<Record<BroadContextsMaximal, (owner: OwnerMaximal) => ModNode>>
+    broadContexts: Partial<Record<BroadContextsMaximal, (owner: OwnerMaximal) => ModNode | undefined>>
 }
 
 export type EquipmentMaximal = {
@@ -70,6 +75,7 @@ export type EveryTree =
     | 'attack-status-mod'
     | 'attack-equipment-mod'
     | 'ac-feat-mod'
+    | 'ac-status-mod'
     // terminal
     | 'ac'
     | 'attack'

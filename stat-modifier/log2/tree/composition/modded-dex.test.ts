@@ -2,7 +2,6 @@ import { describe, test, expect } from 'vitest'
 import moddedDex from './modded-dex'
 import catsGrace from '../bases/status/cats-grace'
 import { createDefaultOwner } from '../../defaults'
-import { asStatus } from '../../collect-status-contributions'
 import { dexAmulet } from './equipment/demo-equips'
 
 // LAYER: modded-dex = halfToZero(raw-dex + dex-from-status + equipment-modded-dex). Every source
@@ -14,7 +13,7 @@ import { dexAmulet } from './equipment/demo-equips'
 describe('modded-dex', () => {
     test('sums the status score bonus before converting to a modifier', () => {
         const withStatus = (dex: number) =>
-            createDefaultOwner({ cs: { dex }, ss: { catsGrace: asStatus(catsGrace) } })
+            createDefaultOwner({ cs: { dex }, ss: { catsGrace } })
         expect(moddedDex(withStatus(14)).total()).toBe(4) // (14 + 4) -> +4
         expect(moddedDex(withStatus(10)).total()).toBe(2) // (10 + 4) -> +2
     })

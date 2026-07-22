@@ -15,15 +15,16 @@ gated-out feat leaves no leaf in the outline) — the node just sums what's left
 `calculateFeatMod` / `modResultToNode` path for feats is retired. The same `ac-feat-mod` node now feeds
 AC (Dodgy, Shield/Heavy Armor Mastery).
 
-## The remaining bridges (legacy context-tag engine)
+## The remaining bridge (legacy context-tag engine)
 
-These two nodes still call the legacy `applyContextMod` machinery and wrap the result with
-`modResultToNode` (in `../../collect-status-contributions.ts`). They inherit the old
+This node still calls the legacy `applyContextMod` machinery and wraps the result with
+`modResultToNode` (in `../../collect-status-contributions.ts`). It inherits the old
 whitelist/blacklist tag filtering wholesale instead of routing contributions natively.
+(`attack-status-mod` used to be here too; it is native now — statuses declare an `attack-status-mod`
+contribution and gate themselves via `../feats/gate.ts`, exactly like `attack-feat-mod`.)
 
 | node | file | bridges to |
 | --- | --- | --- |
-| `attack-status-mod` | `../composition/attack-status-mod.ts` | `status-sheet/status-mod.ts` → `calculateStatusMod` |
 | `attack-equipment-mod` | `../composition/attack-equipment-mod.ts` | `roll-modifier/equipment-mod.ts` → `calculateWeaponEquipmentMod` |
 
 Shared bridge helper: `modResultToNode` — flattens a legacy `ModResult` (one entry per applying

@@ -6,6 +6,7 @@ import acOfEquipment from "../composition/ac-of-equipment";
 import acFromDex from "../composition/ac-from-dex";
 import baseAc from "../bases/base-ac";
 import acFeatMod from "../composition/ac-feat-mod";
+import acStatusMod from "../composition/ac-status-mod";
 
 const displayName: EveryTree = 'ac'
 
@@ -15,6 +16,7 @@ const ac = (owner: OwnerMaximal) => {
         'ac-from-dex': acFromDex(owner),
         "ac-of-equipment": acOfEquipment(owner),
         'ac-feat-mod': acFeatMod(owner),
+        'ac-status-mod': acStatusMod(owner),
     }
 
     const subpr = Object.values(subproblems)

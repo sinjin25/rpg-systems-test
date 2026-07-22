@@ -3,10 +3,10 @@ import attack from './attack'
 import { createDefaultOwner } from '../../defaults'
 import { daggerPlusOne, RingPlusOneFinesseAttack } from '../../../../defaults/equipment'
 import finesseWeaponFighting from '../feats/finesse-weapon-fighting'
-import { standardFilters } from '../../../../feat/core-types'
-import { StatusEffect } from '../../../../status-sheet/core-types'
+import { StatusEffectMaximal } from '../types'
+import { passesTags, weaponTags } from '../feats/gate'
 import { ClassLevels, ClassLevelMember } from '../../../../character-sheet/class-level/type'
-import { findNodeMatching } from '../..'
+import { findNodeMatching, leaf } from '../..'
 
 // LAYER: attack (terminal). Sums the five children; each has its own suite, so this proves the
 // assembly and that a full build lands on the right number. See attack-readme.md for the bridges.
@@ -17,15 +17,11 @@ const clazz = (displayName: string, levels: number): ClassLevels => ({
 })
 
 // +2 attack on a finesse weapon
-const finesseBless: StatusEffect = {
+const finesseBless: StatusEffectMaximal = {
     displayName: 'Finesse Bless',
-    context: {
-        attack: {
-            applies: standardFilters.noBlacklistAnyWhitelistFactory({ blacklist: [], whitelist: ['finesse'] }),
-            mod: () => 2,
-        },
+    broadContexts: {
+        'attack-status-mod': o => passesTags(weaponTags(o), ['finesse'], []) ? leaf('Finesse Bless', 2) : undefined,
     },
-    expiration: { kind: 'rounds-elapsed', remaining: 1 },
 }
 
 // a coherent finesse build so every child contributes:

@@ -2,7 +2,6 @@ import { describe, test, expect } from 'vitest'
 import moddedStr from './modded-str'
 import bullsStrength from '../bases/status/bulls-strength'
 import { createDefaultOwner } from '../../defaults'
-import { asStatus } from '../../collect-status-contributions'
 
 // LAYER: modded-str = halfToZero(raw-str + str-from-status). Every source is summed in SCORE
 // space first, then converted to a modifier once. Trusts both children (each has its own suite);
@@ -12,7 +11,7 @@ import { asStatus } from '../../collect-status-contributions'
 describe('modded-str', () => {
     test('sums the status score bonus before converting to a modifier', () => {
         const withStatus = (str: number) =>
-            createDefaultOwner({ cs: { str }, ss: { bullsStrength: asStatus(bullsStrength) } })
+            createDefaultOwner({ cs: { str }, ss: { bullsStrength } })
         expect(moddedStr(withStatus(14)).total()).toBe(4) // (14 + 4) -> +4
         expect(moddedStr(withStatus(10)).total()).toBe(2) // (10 + 4) -> +2
     })

@@ -9,6 +9,6 @@ import { createDefaultOwner } from '../../../defaults'
 describe("cats-grace", () => {
     test('registers a +4 dex-from-status contribution', () => {
         const contribution = catsGrace.broadContexts['dex-from-status']!
-        expect(contribution(createDefaultOwner({})).total()).toBe(4)
+        expect(contribution(createDefaultOwner({}))!.total()).toBe(4)
     })
 })

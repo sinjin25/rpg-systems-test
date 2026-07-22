@@ -3,7 +3,6 @@ import acFromDex from './ac-from-dex'
 import catsGrace from '../bases/status/cats-grace'
 import { createDefaultOwner } from '../../defaults'
 import { bandedMail } from '../../../../defaults/equipment'
-import { asStatus } from '../../collect-status-contributions'
 
 // LAYER: ac-from-dex = min(modded-dex, max-dex-of-equipment). The dex that AC actually gets, after
 // the armor cap. Trusts both children; this proves the cap clamps, and that with no armor the dex
@@ -15,7 +14,7 @@ describe('ac-from-dex', () => {
         const owner = createDefaultOwner({
             cs: { dex: 14 },
             es: { armor: bandedMail },
-            ss: { catsGrace: asStatus(catsGrace) },
+            ss: { catsGrace },
         })
         expect(acFromDex(owner).total()).toBe(1)
     })
@@ -23,7 +22,7 @@ describe('ac-from-dex', () => {
     test('with no armor, dex passes through uncapped', () => {
         const owner = createDefaultOwner({
             cs: { dex: 14 },
-            ss: { catsGrace: asStatus(catsGrace) },
+            ss: { catsGrace },
         })
         expect(acFromDex(owner).total()).toBe(4) // full modded-dex (14 + 4 -> +4), no cap in play
     })

@@ -1,46 +1,36 @@
 import { describe, test, expect } from 'vitest'
 import attackStatusMod from './attack-status-mod'
 import { createDefaultOwner } from '../../defaults'
-import { dagger } from '../../../../defaults/equipment'
-import { standardFilters } from '../../../../feat/core-types'
-import { StatusEffect } from '../../../../status-sheet/core-types'
+import { leaf } from '../..'
+import { StatusEffectMaximal } from '../types'
+import { passesTags, weaponTags } from '../feats/gate'
 import bullsStrength from '../bases/status/bulls-strength'
-import { asStatus } from '../../collect-status-contributions'
 
-// LAYER: attack-status-mod bridges to the legacy context-tag engine, same as attack-feat-mod. These
-// tests use a minimal legacy-format status (one that carries a `.context` map) to prove the bridge
-// and the tag filtering. Default mainhand is the shortsword (['shortsword','melee']).
+// LAYER: attack-status-mod is native now, a mirror of attack-feat-mod - it sums every status on owner.ss
+// that declares an 'attack-status-mod' contribution. Each status gates itself on the weapon tags and
+// returns undefined when it doesn't apply, leaving no leaf. Default mainhand is the shortsword
+// (['shortsword','melee']).
 
 // +2 attack, but only on a melee weapon
-const meleeBless: StatusEffect = {
+const meleeBless: StatusEffectMaximal = {
     displayName: 'Melee Bless',
-    context: {
-        attack: {
-            applies: standardFilters.noBlacklistAnyWhitelistFactory({ blacklist: [], whitelist: ['melee'] }),
-            mod: () => 2,
-        },
+    broadContexts: {
+        'attack-status-mod': o => passesTags(weaponTags(o), ['melee'], []) ? leaf('Melee Bless', 2) : undefined,
     },
-    expiration: { kind: 'rounds-elapsed', remaining: 1 },
 }
 
-describe('attack-status-mod', () => {
+describe('attack-status-mod (native)', () => {
     test('an applying status becomes a summed child leaf', () => {
         const node = attackStatusMod(createDefaultOwner({ ss: { meleeBless } }))
         expect(node.total()).toBe(2)
         expect(node.children.map(c => `${c.displayName} ${c.total()}`)).toEqual(['Melee Bless 2'])
     })
 
-    test('tag filtering: the melee status is skipped when the weapon is not melee-tagged', () => {
-        // dagger is ['finesse','dagger','melee'] - still melee, so instead prove the inverse with a
-        // ranged-only whitelist against the melee shortsword
-        const rangedOnly: StatusEffect = {
-            ...meleeBless,
+    test('tag filtering: a ranged-only status is skipped against the melee shortsword', () => {
+        const rangedOnly: StatusEffectMaximal = {
             displayName: 'Ranged Only',
-            context: {
-                attack: {
-                    applies: standardFilters.noBlacklistAnyWhitelistFactory({ blacklist: [], whitelist: ['ranged'] }),
-                    mod: () => 2,
-                },
+            broadContexts: {
+                'attack-status-mod': o => passesTags(weaponTags(o), ['ranged'], []) ? leaf('Ranged Only', 2) : undefined,
             },
         }
         const node = attackStatusMod(createDefaultOwner({ ss: { rangedOnly } }))
@@ -54,8 +44,8 @@ describe('attack-status-mod', () => {
         expect(node.children).toEqual([])
     })
 
-    test('a log2 broadContexts-only status (no legacy .context) contributes 0 here', () => {
-        const node = attackStatusMod(createDefaultOwner({ ss: { bullsStrength: asStatus(bullsStrength) } }))
+    test('a stat-boost status (no attack-status-mod contribution) contributes 0 here', () => {
+        const node = attackStatusMod(createDefaultOwner({ ss: { bullsStrength } }))
         expect(node.total()).toBe(0)
     })
 })

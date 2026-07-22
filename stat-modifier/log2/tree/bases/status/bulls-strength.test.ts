@@ -9,6 +9,6 @@ import { createDefaultOwner } from '../../../defaults'
 describe("bulls-strength", () => {
     test('registers a +4 str-from-status contribution', () => {
         const contribution = bullsStrength.broadContexts['str-from-status']!
-        expect(contribution(createDefaultOwner({})).total()).toBe(4)
+        expect(contribution(createDefaultOwner({}))!.total()).toBe(4)
     })
 })

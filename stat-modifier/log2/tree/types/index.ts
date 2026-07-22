@@ -5,7 +5,7 @@ import { Owner } from "../../../../character/actor";
 export type OwnerMaximal = Owner
 
 // curated subset of tree nodes a status is allowed to attach to (an aggregator, not any internal node)
-export type BroadContextsMaximal = 'dex-from-status' | 'max-dex-of-equipment'
+export type BroadContextsMaximal = 'dex-from-status' | 'str-from-status' | 'max-dex-of-equipment'
 
 export type StatusEffectMaximal = {
     displayName: string,
@@ -34,6 +34,9 @@ export type EveryTree =
     | 'ac-of-equipment'
     | 'ac-from-dex'
     | 'dex-from-status'
+    | 'str-from-status'
+    | 'effective-attack-stat'
+    | 'base-attack-bonus'
     // terminal
     | 'ac'
 

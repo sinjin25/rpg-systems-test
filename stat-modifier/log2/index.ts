@@ -106,4 +106,51 @@ export const rollNode = (
     return newModNode(displayName, [sides], constantFunc(rolled))
 }
 
+// options for findNodeMatching. Partial at the call site - any key left out uses the default below,
+// so `findNodeMatching(node, /dex/i)` just works.
+export type MatchNodeOptions = {
+    // how many child levels below the root to descend. 0 = the root node only; 1 = root + its direct
+    // children; Infinity = the whole subtree. Default: Infinity.
+    depth: number,
+    // whether the root's own displayName is eligible to match (vs only its descendants). Default: true.
+    includeRoot: boolean,
+    // when `pattern` is a string, compile it case-insensitively. Ignored when `pattern` is already a
+    // RegExp (put the flags on the RegExp yourself). Default: true.
+    caseInsensitive: boolean,
+}
+
+const DEFAULT_MATCH_OPTIONS: MatchNodeOptions = {
+    depth: Infinity,
+    includeRoot: true,
+    caseInsensitive: true,
+}
+
+const findWithin = (node: ModNode, re: RegExp, depth: number, includeRoot: boolean): ModNode | undefined => {
+    if (includeRoot && re.test(node.displayName)) return node
+    if (depth <= 0) return undefined
+    for (const c of node.children) {
+        const hit = findWithin(c, re, depth - 1, true)
+        if (hit) return hit
+    }
+    return undefined
+}
+
+// The first node (depth-first, root before children) whose displayName matches `pattern`, searching
+// `node` and its descendants within `depth` levels - or undefined if none. Lets a test confirm a tree
+// *considered* something - e.g. that effective-attack-stat used dex, not str - and inspect that node's
+// total, without rendering the outline first. Undefined is falsy and a node is truthy, so a plain
+// existence check still reads naturally. `g`/`y` flags are stripped so repeated .test() calls stay
+// stateless.
+export const findNodeMatching = (
+    node: ModNode,
+    pattern: RegExp | string,
+    options: Partial<MatchNodeOptions> = {},
+): ModNode | undefined => {
+    const { depth, includeRoot, caseInsensitive } = { ...DEFAULT_MATCH_OPTIONS, ...options }
+    const re = pattern instanceof RegExp
+        ? new RegExp(pattern.source, pattern.flags.replace(/[gy]/g, ''))
+        : new RegExp(pattern, caseInsensitive ? 'i' : '')
+    return findWithin(node, re, depth, includeRoot)
+}
+
 export default newModNode

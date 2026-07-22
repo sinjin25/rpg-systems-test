@@ -20,6 +20,11 @@ const sumNumericFromClassLevels = (
 const sumAttackBonusFromClassLevels = (sheet: ClassLevelSheet): number =>
     sumNumericFromClassLevels(sheet, (member) => member.attackBonus)
 
+// BAB from a single class: its per-level attack bonuses summed over the levels actually acquired.
+// (sumAttackBonusFromClassLevels is this folded across every class on the sheet.)
+const attackBonusForClass = (cl: ClassLevels): number =>
+    acquiredMembers(cl).reduce((sum, member) => sum + member.attackBonus, 0)
+
 const sumFortitudeSaveFromClassLevels = (sheet: ClassLevelSheet): number =>
     sumNumericFromClassLevels(sheet, (member) => member.fortitudeSave)
 
@@ -75,6 +80,7 @@ const characterLevels = (n: number): ClassLevelSheet => ({
 
 export {
     sumAttackBonusFromClassLevels,
+    attackBonusForClass,
     sumFortitudeSaveFromClassLevels,
     sumReflexSaveFromClassLevels,
     sumFeatsFromClassLevels,

@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vitest'
 import dexFromStatus from './status/dex-from-status'
 import catsGrace from '../bases/status/cats-grace'
-import { createDefaultOwner } from '../../../../defaults'
+import { createDefaultOwner } from '../../defaults'
 import { asStatus } from '../../collect-status-contributions'
 
 // LAYER: dex-from-status. Reads the runtime status sheet (owner.ss) and sums every dex-affecting

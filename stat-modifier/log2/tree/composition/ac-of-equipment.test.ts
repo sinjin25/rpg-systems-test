@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest'
 import acOfEquipment from './ac-of-equipment'
-import { createDefaultOwner } from '../../../../defaults'
+import { createDefaultOwner } from '../../defaults'
 import { bandedMail, heavyShield } from '../../../../defaults/equipment'
 
 // LAYER: ac-of-equipment. Sums the flat AC of every worn armor piece. Trusts the

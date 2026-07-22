@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest'
 import baseAc from './base-ac'
-import { createDefaultOwner } from '../../../../defaults'
+import { createDefaultOwner } from '../../defaults'
 
 // LAYER: base-ac (a leaf). The flat 10 every character starts from.
 

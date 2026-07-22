@@ -1,8 +1,8 @@
 import { describe, test, expect } from 'vitest'
 import attack from './attack'
-import { createDefaultOwner } from '../../../../defaults'
+import { createDefaultOwner } from '../../defaults'
 import { daggerPlusOne, RingPlusOneFinesseAttack } from '../../../../defaults/equipment'
-import { featFinesseWeaponFighting } from '../../../../feat/feats'
+import finesseWeaponFighting from '../feats/finesse-weapon-fighting'
 import { standardFilters } from '../../../../feat/core-types'
 import { StatusEffect } from '../../../../status-sheet/core-types'
 import { ClassLevels, ClassLevelMember } from '../../../../character-sheet/class-level/type'
@@ -31,13 +31,13 @@ const finesseBless: StatusEffect = {
 // a coherent finesse build so every child contributes:
 //   effective stat (dex, dagger is finesse): dex 18 -> +4
 //   base attack bonus: Fighter 4          -> +4
-//   feat (Finesse Weapon Fighting, +1)    -> +1
+//   feat (Finesse Weapon Fighting, +1, native) -> +1
 //   status (Finesse Bless, +2)            -> +2
 //   equipment (+1 dagger enhancement, +1 finesse ring) -> +2
 const finesseBuild = () => createDefaultOwner({
     cs: { dex: 18, str: 10, levels: { fighter: clazz('Fighter', 4) } },
     es: { mainhand: daggerPlusOne, ring: RingPlusOneFinesseAttack },
-    fs: { featFinesseWeaponFighting },
+    fs: { finesseWeaponFighting },
     ss: { finesseBless },
 })
 

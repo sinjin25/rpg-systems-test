@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest'
 import newRawStr from './raw-str'
-import { createDefaultOwner } from '../../../../defaults'
+import { createDefaultOwner } from '../../defaults'
 
 // LAYER: raw-str (a leaf). It reads owner.cs.str and reports the raw SCORE unchanged.
 // The stat->modifier rounding now lives one layer up in modded-str (which sums every str

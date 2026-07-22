@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest'
 import bullsStrength from './bulls-strength'
-import { createDefaultOwner } from '../../../../../defaults'
+import { createDefaultOwner } from '../../../defaults'
 
 // LAYER: bulls-strength (a status definition). It registers a +4 contribution under the
 // 'str-from-status' broad context. Whether the owner actually HAS it is str-from-status's job

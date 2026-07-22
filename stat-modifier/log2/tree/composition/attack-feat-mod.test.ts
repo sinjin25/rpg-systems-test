@@ -1,32 +1,42 @@
-import { describe, test, expect } from 'vitest'
+import { describe, test, expect, assert } from 'vitest'
 import attackFeatMod from './attack-feat-mod'
-import { createDefaultOwner } from '../../../../defaults'
+import { createDefaultOwner } from '../../defaults'
 import { dagger } from '../../../../defaults/equipment'
-import { featMeleeWeaponFighting, featFinesseWeaponFighting } from '../../../../feat/feats'
-import bullsStrength from '../bases/status/bulls-strength'
-import { asStatus } from '../../collect-status-contributions'
+import finesseWeaponFighting from '../feats/finesse-weapon-fighting'
+import meleeWeaponFighting from '../feats/melee-weapon-fighting'
+import dodgy from '../feats/dodgy'
+import { modResultToNode } from '../../collect-status-contributions'
+import modNodeToText from '../../format'
+import { findNodeMatching } from '../..'
 
-// LAYER: attack-feat-mod bridges to the legacy context-tag engine. It trusts calculateFeatMod's
-// filtering; these tests prove the bridge wires tags from the mainhand and turns each applying feat
-// into a child leaf. Default mainhand is the shortsword (['shortsword','melee']).
+// LAYER: attack-feat-mod is native now - it sums every feat on owner.fs that declares an
+// 'attack-feat-mod' contribution. Each feat gates itself on the weapon tags (mainhand stand-in) and
+// returns undefined when it doesn't apply, so a gated-out feat leaves no child behind. Default mainhand
+// is the shortsword (['shortsword','melee']). Native feats are placed on the sheet directly, under
+// any (loose) string key.
 
-describe('attack-feat-mod', () => {
+describe('attack-feat-mod (native)', () => {
     test('an applying feat becomes a summed child leaf', () => {
         // Melee Weapon Fighting whitelists 'melee'; the default shortsword is melee
-        const node = attackFeatMod(createDefaultOwner({ fs: { featMeleeWeaponFighting } }))
+        const node = attackFeatMod(createDefaultOwner({
+            fs: { meleeWeaponFighting },
+        }))
         expect(node.total()).toBe(1)
-        expect(node.children.map(c => `${c.displayName} ${c.total()}`)).toEqual(['DEMO Melee Weapon Fighting 1'])
+        console.log(modNodeToText(node))
+        const find = findNodeMatching(node, /weapon\-fighting/i)
+        assert.exists(find)
     })
 
-    test('tag filtering: a finesse-only feat applies with a dagger, not a shortsword', () => {
-        // Finesse Weapon Fighting whitelists 'finesse'
+    test('weapon-tag gating: a finesse feat applies with a dagger, not a shortsword', () => {
         const withDagger = attackFeatMod(createDefaultOwner({
-            fs: { featFinesseWeaponFighting }, es: { mainhand: dagger },
+            fs: { finesseWeaponFighting }, es: { mainhand: dagger },
         }))
         expect(withDagger.total()).toBe(1) // dagger carries 'finesse'
 
-        const withShortsword = attackFeatMod(createDefaultOwner({ fs: { featFinesseWeaponFighting } }))
-        expect(withShortsword.total()).toBe(0) // shortsword has no 'finesse' tag
+        const withShortsword = attackFeatMod(createDefaultOwner({
+            fs: { finesseWeaponFighting },
+        }))
+        expect(withShortsword.total()).toBe(0) // present but gated out -> no child at all
         expect(withShortsword.children).toEqual([])
     })
 
@@ -36,8 +46,10 @@ describe('attack-feat-mod', () => {
         expect(node.children).toEqual([])
     })
 
-    test('a log2 stat-boost status does not leak into feat mod', () => {
-        const node = attackFeatMod(createDefaultOwner({ ss: { bullsStrength: asStatus(bullsStrength) } }))
+    test('an AC-only feat does not leak into the attack feat mod', () => {
+        // dodgy declares only 'ac-feat-mod', so it is filtered out here entirely (not even a 0 leaf)
+        const node = attackFeatMod(createDefaultOwner({ fs: { dodgy } }))
         expect(node.total()).toBe(0)
+        expect(node.children).toEqual([])
     })
 })

@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest'
 import attackStatusMod from './attack-status-mod'
-import { createDefaultOwner } from '../../../../defaults'
+import { createDefaultOwner } from '../../defaults'
 import { dagger } from '../../../../defaults/equipment'
 import { standardFilters } from '../../../../feat/core-types'
 import { StatusEffect } from '../../../../status-sheet/core-types'

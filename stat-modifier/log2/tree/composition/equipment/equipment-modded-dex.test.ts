@@ -1,5 +1,5 @@
 import { RingPlusTwoCon } from '../../../../../defaults/equipment/index.ts'
-import { createDefaultOwner } from '../../../../../defaults/index.ts'
+import { createDefaultOwner } from '../../../defaults'
 import modNodeToText from '../../../format.ts'
 import { dexAmulet } from './demo-equips.ts'
 import equipmentModdedDex from './equipment-modded-dex.ts'

@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vitest'
 import moddedStr from './modded-str'
 import bullsStrength from '../bases/status/bulls-strength'
-import { createDefaultOwner } from '../../../../defaults'
+import { createDefaultOwner } from '../../defaults'
 import { asStatus } from '../../collect-status-contributions'
 
 // LAYER: modded-str = halfToZero(raw-str + str-from-status). Every source is summed in SCORE

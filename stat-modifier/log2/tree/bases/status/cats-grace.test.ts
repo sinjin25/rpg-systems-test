@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest'
 import catsGrace from './cats-grace'
-import { createDefaultOwner } from '../../../../../defaults'
+import { createDefaultOwner } from '../../../defaults'
 
 // LAYER: cats-grace (a status definition). It registers a +4 contribution under the
 // 'dex-from-status' broad context. Whether the owner actually HAS it is dex-from-status's job

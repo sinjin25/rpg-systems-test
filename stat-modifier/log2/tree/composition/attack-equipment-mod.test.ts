@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest'
 import attackEquipmentMod from './attack-equipment-mod'
-import { createDefaultOwner } from '../../../../defaults'
+import { createDefaultOwner } from '../../defaults'
 import { dagger, daggerPlusOne, RingPlusOneFinesseAttack } from '../../../../defaults/equipment'
 
 // LAYER: attack-equipment-mod bridges to the legacy context-tag engine (calculateWeaponEquipmentMod).

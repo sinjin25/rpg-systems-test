@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vitest'
 import moddedDex from './modded-dex'
 import catsGrace from '../bases/status/cats-grace'
-import { createDefaultOwner } from '../../../../defaults'
+import { createDefaultOwner } from '../../defaults'
 import { asStatus } from '../../collect-status-contributions'
 import { dexAmulet } from './equipment/demo-equips'
 

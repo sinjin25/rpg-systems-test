@@ -18,8 +18,10 @@ const attackEquipmentMod = (owner: OwnerMaximal) => {
     const mainhand = owner.es.mainhand
     const weapon = (mainhand && equipmentIsWeapon(mainhand) ? mainhand : undefined) as Weapon
     const tags = mainhand ? extractContextsTags(mainhand) : []
+    // fs: {} on purpose - the equipment bridge never reads feats (calculateWeaponEquipmentMod only
+    // forwards data to equipment mod fns), so it stays decoupled from the now-native feat sheet.
     return modResultToNode(displayName, calculateWeaponEquipmentMod(
-        { cs: owner.cs, fs: owner.fs, es: owner.es, weapon },
+        { cs: owner.cs, fs: {}, es: owner.es, weapon },
         tags,
         'attack',
     ))

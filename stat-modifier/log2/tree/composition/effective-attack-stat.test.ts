@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest'
 import effectiveAttackStat from './effective-attack-stat'
-import { createDefaultOwner } from '../../../../defaults'
+import { createDefaultOwner } from '../../defaults'
 import { dagger } from '../../../../defaults/equipment'
 import modNodeToText from '../../format'
 import { findNodeMatching } from '../..'

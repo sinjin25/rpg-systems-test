@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vitest'
 import strFromStatus from './status/str-from-status'
 import bullsStrength from '../bases/status/bulls-strength'
-import { createDefaultOwner } from '../../../../defaults'
+import { createDefaultOwner } from '../../defaults'
 import { asStatus } from '../../collect-status-contributions'
 
 // LAYER: str-from-status. Reads the runtime status sheet (owner.ss) and sums every str-affecting

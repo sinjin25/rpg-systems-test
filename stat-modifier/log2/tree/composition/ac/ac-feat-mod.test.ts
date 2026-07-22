@@ -1,10 +1,10 @@
 import { describe, test, expect } from 'vitest'
 import acFeatMod from './ac-feat-mod'
-import { createDefaultOwner } from '../../defaults'
-import { bandedMail, heavyShield, leatherArmor } from '../../../../defaults/equipment'
-import dodgy from '../feats/dodgy'
-import shieldMastery from '../feats/shield-mastery'
-import heavyArmorMastery from '../feats/heavy-armor-mastery'
+import { createDefaultOwner } from '../../../defaults'
+import { bandedMail, heavyShield, leatherArmor } from '../../../../../defaults/equipment'
+import dodgy from '../../feats/dodgy'
+import shieldMastery from '../../feats/shield-mastery'
+import heavyArmorMastery from '../../feats/heavy-armor-mastery'
 
 // LAYER: ac-feat-mod is native - it sums every feat on owner.fs that declares an 'ac-feat-mod'
 // contribution. Dodgy is unconditional (+4); Shield/Heavy Armor Mastery gate on equipped gear tags.

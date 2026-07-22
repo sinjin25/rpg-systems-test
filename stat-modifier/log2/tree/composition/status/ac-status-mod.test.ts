@@ -1,9 +1,9 @@
 import { describe, test, expect } from 'vitest'
 import acStatusMod from './ac-status-mod'
-import { createDefaultOwner } from '../../defaults'
-import studiedTarget from '../bases/status/studied-target'
-import divineProtection from '../bases/status/divine-protection'
-import bless from '../bases/status/bless'
+import { createDefaultOwner } from '../../../defaults'
+import studiedTarget from '../../bases/status/studied-target'
+import divineProtection from '../../bases/status/divine-protection'
+import bless from '../../bases/status/bless'
 
 // LAYER: ac-status-mod is native, the mirror of ac-feat-mod - it sums every status on owner.ss that
 // declares an 'ac-status-mod' contribution. Divine Protection (+N) and Studied Target (-1) are both

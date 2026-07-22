@@ -1,6 +1,6 @@
-import newModNode, { sumFunc } from "../..";
-import { EveryTree, OwnerMaximal } from "../types";
-import { collectFeatContributions } from "../../collect-feat-contributions";
+import newModNode, { sumFunc } from "../../..";
+import { EveryTree, OwnerMaximal } from "../../types";
+import { collectFeatContributions } from "../../../collect-feat-contributions";
 
 const displayName: EveryTree = 'ac-feat-mod'
 

@@ -1,9 +1,9 @@
 // the max dex from a piece of equipment
 
-import { default as newModNode, ModNode } from "../..";
-import maxDexOfEquipment from "./max-dex-of-equipment";
-import { OwnerMaximal, EveryTree, TreeSubproblems } from "../types"
-import moddedDex from "./modded-dex";
+import { default as newModNode, ModNode } from "../../..";
+import maxDexOfEquipment from "../max-dex-of-equipment";
+import { OwnerMaximal, EveryTree, TreeSubproblems } from "../../types"
+import moddedDex from "../modded-dex";
 
 const displayName: EveryTree = 'ac-from-dex'
 

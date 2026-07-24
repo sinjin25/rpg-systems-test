@@ -1,5 +1,6 @@
 import { ModNode } from "../..";
 import { Owner } from "../../../../character/actor";
+import { BaseEquipment } from "../../../../equipment-sheet";
 
 // the feat sheet, native. loose string keys like StatusSheet - the collector reads values, not keys
 export type FeatSheetMaximal = { [key: string]: FeatMaximal }
@@ -9,7 +10,7 @@ export type StatusSheetMaximal = { [key: string]: StatusEffectMaximal }
 
 // the maximal amount of information we could every possibly need because we don't know what we're building.
 // same owner as legacy, but the feat and status sheets are native instead of the old legacy sheets
-export type OwnerMaximal = Omit<Owner, 'fs' | 'ss'> & { fs: FeatSheetMaximal, ss: StatusSheetMaximal }
+export type OwnerMaximal = Omit<Owner, 'fs' | 'ss'> & { fs: FeatSheetMaximal, ss: StatusSheetMaximal, relevantSlot?: BaseEquipment }
 
 // curated subset of tree nodes a status is allowed to attach to (an aggregator, not any internal node)
 export type BroadContextsMaximal = 'dex-from-status' | 'str-from-status' | 'max-dex-of-equipment' | 'attack-status-mod' | 'ac-status-mod' | BaseStatEquipmentMod
@@ -30,7 +31,7 @@ export type EquipmentMaximal = {
 // feats route natively exactly like statuses, only into their own aggregator nodes. A feat declares
 // which node it feeds and returns the ModNode to inject; the destination node discovers it via
 // collectFeatContributions (presence on owner.fs is the condition, same as statuses on owner.ss).
-export type FeatBroadContexts = 'attack-feat-mod' | 'ac-feat-mod' | ''
+export type FeatBroadContexts = 'attack-feat-mod' | 'ac-feat-mod' | 'crit-confirm-mod' | 'damage-feat-mod'
 
 // a producer returns undefined when the feat is on the sheet but doesn't apply here (e.g. a finesse
 // feat with a non-finesse weapon); the collector drops those so they leave no trace in the outline.
@@ -41,7 +42,7 @@ export type FeatMaximal = {
 
 export type AllFeats =
     | 'finesse-weapon-fighting' | 'melee-weapon-fighting'
-    | 'dodgy' | 'shield-mastery' | 'heavy-armor-mastery'
+    | 'dodgy' | 'shield-mastery' | 'heavy-armor-mastery' | 'crit-focus'
 
 export type AllStatusEffects = 'cats-grace' | 'flat-footed'
 
@@ -55,6 +56,9 @@ export type BaseStatEquipmentMod = `equipment-modded-${CsScore}`
 
 export type ModdedStat = `modded-${CsScore}` // 'modded-str' | 'modded-dex' | 'modded-con'
 
+export type FeatModTypes = 'attack' | 'ac' | 'damage'
+export type FeatMod = `${FeatModTypes}-feat-mod`
+
 export type EveryTree =
     // base
     BaseStat
@@ -64,20 +68,23 @@ export type EveryTree =
     | AllStatusEffects
     | 'base-ac'
     // composition
+    | FeatMod
     | 'max-dex-of-equipment'
     | 'ac-of-equipment'
     | 'ac-from-dex'
     | 'dex-from-status'
     | 'str-from-status'
     | 'effective-attack-stat'
+    | 'effective-damage-stat'
     | 'base-attack-bonus'
-    | 'attack-feat-mod'
     | 'attack-status-mod'
     | 'attack-equipment-mod'
-    | 'ac-feat-mod'
     | 'ac-status-mod'
+    | 'crit-confirm-mod'
     // terminal
     | 'ac'
     | 'attack'
+    | 'crit-confirm'
+    | 'damage'
 
 export type TreeSubproblems = Partial<Record<EveryTree, ModNode>>

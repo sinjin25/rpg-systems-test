@@ -50,10 +50,12 @@ describe('attack (terminal)', () => {
         expect(node.total()).toBe(childSum)
     })
 
-    test('the outline records which stat was used (dex here, via the finesse dagger)', () => {
+    test('a finesse weapon makes both stats candidates, and the better (dex) wins', () => {
         const node = attack(finesseBuild())
+        // finesse dagger offers str AND dex; maxFunc picks dex (18 -> +4 beats str 10 -> +0)
         expect(findNodeMatching(node, /modded-dex/i)).toBeTruthy()
-        expect(findNodeMatching(node, /modded-str/i)).toBeUndefined()
+        expect(findNodeMatching(node, /modded-str/i)).toBeTruthy()
+        expect(findNodeMatching(node, /effective-attack-stat/i)?.total()).toBe(4)
     })
 
     test('a plain default character still assembles (str, no gear bonuses)', () => {

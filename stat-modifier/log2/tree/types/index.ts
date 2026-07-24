@@ -13,7 +13,7 @@ export type StatusSheetMaximal = { [key: string]: StatusEffectMaximal }
 export type OwnerMaximal = Omit<Owner, 'fs' | 'ss'> & { fs: FeatSheetMaximal, ss: StatusSheetMaximal, relevantSlot?: BaseEquipment }
 
 // curated subset of tree nodes a status is allowed to attach to (an aggregator, not any internal node)
-export type BroadContextsMaximal = 'dex-from-status' | 'str-from-status' | 'max-dex-of-equipment' | 'attack-status-mod' | 'ac-status-mod' | BaseStatEquipmentMod
+export type BroadContextsMaximal = 'dex-from-status' | 'str-from-status' | 'max-dex-of-equipment' | 'attack-status-mod' | 'ac-status-mod' | 'damage-taken-status-mod' | BaseStatEquipmentMod
 
 // a producer returns undefined when the status is on the sheet but doesn't apply here (e.g. a melee-only
 // attack status with a ranged weapon); the collector drops those, same as feats.
@@ -38,6 +38,8 @@ export type FeatBroadContexts =
     // added on afterward and never scales.
     | 'crit-scalable-damage-feat-mod' | 'flat-damage-feat-mod'
     | 'crit-multiplier-mod'
+    // defender-side: mods applied to incoming damage (DR, defensive rolls, etc.)
+    | 'damage-taken-feat-mod'
 
 // a producer returns undefined when the feat is on the sheet but doesn't apply here (e.g. a finesse
 // feat with a non-finesse weapon); the collector drops those so they leave no trace in the outline.
@@ -94,11 +96,15 @@ export type EveryTree =
     | 'flat-damage-feat-mod'
     | 'crit-multiplier'
     | 'crit-multiplier-mod'
+    // damage-taken composition (defender side)
+    | 'damage-taken-feat-mod'
+    | 'damage-taken-status-mod'
     // terminal
     | 'ac'
     | 'attack'
     | 'crit-confirm'
     | 'damage'
     | 'crit-damage'
+    | 'damage-taken'
 
 export type TreeSubproblems = Partial<Record<EveryTree, ModNode>>

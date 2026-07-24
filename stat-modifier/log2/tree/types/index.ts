@@ -31,7 +31,13 @@ export type EquipmentMaximal = {
 // feats route natively exactly like statuses, only into their own aggregator nodes. A feat declares
 // which node it feeds and returns the ModNode to inject; the destination node discovers it via
 // collectFeatContributions (presence on owner.fs is the condition, same as statuses on owner.ss).
-export type FeatBroadContexts = 'attack-feat-mod' | 'ac-feat-mod' | 'crit-confirm-mod' | 'damage-feat-mod'
+export type FeatBroadContexts =
+    | 'attack-feat-mod' | 'ac-feat-mod' | 'crit-confirm-mod'
+    // damage splits into two buckets by crit-eligibility: a feat picks its bucket by which key it
+    // declares. 'crit-scalable-*' is eligible to be multiplied by the crit multiplier; 'flat-*' is
+    // added on afterward and never scales.
+    | 'crit-scalable-damage-feat-mod' | 'flat-damage-feat-mod'
+    | 'crit-multiplier-mod'
 
 // a producer returns undefined when the feat is on the sheet but doesn't apply here (e.g. a finesse
 // feat with a non-finesse weapon); the collector drops those so they leave no trace in the outline.
@@ -56,7 +62,7 @@ export type BaseStatEquipmentMod = `equipment-modded-${CsScore}`
 
 export type ModdedStat = `modded-${CsScore}` // 'modded-str' | 'modded-dex' | 'modded-con'
 
-export type FeatModTypes = 'attack' | 'ac' | 'damage'
+export type FeatModTypes = 'attack' | 'ac'
 export type FeatMod = `${FeatModTypes}-feat-mod`
 
 export type EveryTree =
@@ -81,10 +87,18 @@ export type EveryTree =
     | 'attack-equipment-mod'
     | 'ac-status-mod'
     | 'crit-confirm-mod'
+    // crit damage composition
+    | 'crit-scalable-damage'
+    | 'flat-damage'
+    | 'crit-scalable-damage-feat-mod'
+    | 'flat-damage-feat-mod'
+    | 'crit-multiplier'
+    | 'crit-multiplier-mod'
     // terminal
     | 'ac'
     | 'attack'
     | 'crit-confirm'
     | 'damage'
+    | 'crit-damage'
 
 export type TreeSubproblems = Partial<Record<EveryTree, ModNode>>

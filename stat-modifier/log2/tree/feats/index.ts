@@ -5,6 +5,7 @@ import dodgy from "./dodgy";
 import shieldMastery from "./shield-mastery";
 import heavyArmorMastery from "./heavy-armor-mastery";
 import critFocus from "./crit-focus";
+import improvedCritical from "./improved-critical";
 
 export {
     finesseWeaponFighting,
@@ -23,4 +24,5 @@ export const nativeFeats: Record<AllFeats, FeatMaximal> = {
     'shield-mastery': shieldMastery,
     'heavy-armor-mastery': heavyArmorMastery,
     'crit-focus': critFocus,
+    'improved-critical': improvedCritical,
 }

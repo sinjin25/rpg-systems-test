@@ -38,6 +38,8 @@ export type FeatBroadContexts =
     // added on afterward and never scales.
     | 'crit-scalable-damage-feat-mod' | 'flat-damage-feat-mod'
     | 'crit-multiplier-mod'
+    // crit threat range: negative widens the range (Improved Critical takes a 20 down to 19)
+    | 'crit-threat-range-mod'
     // defender-side: mods applied to incoming damage (DR, defensive rolls, etc.)
     | 'damage-taken-feat-mod'
 
@@ -51,6 +53,7 @@ export type FeatMaximal = {
 export type AllFeats =
     | 'finesse-weapon-fighting' | 'melee-weapon-fighting'
     | 'dodgy' | 'shield-mastery' | 'heavy-armor-mastery' | 'crit-focus'
+    | 'improved-critical'
 
 export type AllStatusEffects = 'cats-grace' | 'flat-footed'
 
@@ -96,6 +99,8 @@ export type EveryTree =
     | 'flat-damage-feat-mod'
     | 'crit-multiplier'
     | 'crit-multiplier-mod'
+    // crit threat range composition
+    | 'crit-threat-range-mod'
     // damage-taken composition (defender side)
     | 'damage-taken-feat-mod'
     | 'damage-taken-status-mod'
@@ -103,6 +108,7 @@ export type EveryTree =
     | 'ac'
     | 'attack'
     | 'crit-confirm'
+    | 'crit-threat-range'
     | 'damage'
     | 'crit-damage'
     | 'damage-taken'

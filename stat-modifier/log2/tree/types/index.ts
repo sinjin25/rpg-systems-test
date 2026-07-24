@@ -13,7 +13,7 @@ export type StatusSheetMaximal = { [key: string]: StatusEffectMaximal }
 export type OwnerMaximal = Omit<Owner, 'fs' | 'ss'> & { fs: FeatSheetMaximal, ss: StatusSheetMaximal, relevantSlot?: BaseEquipment }
 
 // curated subset of tree nodes a status is allowed to attach to (an aggregator, not any internal node)
-export type BroadContextsMaximal = 'dex-from-status' | 'str-from-status' | 'max-dex-of-equipment' | 'attack-status-mod' | 'ac-status-mod' | 'damage-taken-status-mod' | BaseStatEquipmentMod
+export type BroadContextsMaximal = 'dex-from-status' | 'str-from-status' | 'con-from-status' | 'max-dex-of-equipment' | 'attack-status-mod' | 'ac-status-mod' | 'save-status-mod' | 'damage-taken-status-mod' | BaseStatEquipmentMod
 
 // a producer returns undefined when the status is on the sheet but doesn't apply here (e.g. a melee-only
 // attack status with a ranged weapon); the collector drops those, same as feats.
@@ -42,6 +42,8 @@ export type FeatBroadContexts =
     | 'crit-threat-range-mod'
     // defender-side: mods applied to incoming damage (DR, defensive rolls, etc.)
     | 'damage-taken-feat-mod'
+    // saves (fortitude/reflex share one feat bucket; the base-context tag distinguishes them)
+    | 'save-feat-mod'
 
 // a producer returns undefined when the feat is on the sheet but doesn't apply here (e.g. a finesse
 // feat with a non-finesse weapon); the collector drops those so they leave no trace in the outline.
@@ -85,6 +87,7 @@ export type EveryTree =
     | 'ac-from-dex'
     | 'dex-from-status'
     | 'str-from-status'
+    | 'con-from-status'
     | 'effective-attack-stat'
     | 'effective-damage-stat'
     | 'base-attack-bonus'
@@ -92,6 +95,12 @@ export type EveryTree =
     | 'attack-equipment-mod'
     | 'ac-status-mod'
     | 'crit-confirm-mod'
+    // save composition (base-<save> from class levels + the three mod buckets, shared by both saves)
+    | 'base-fortitude'
+    | 'base-reflex'
+    | 'save-feat-mod'
+    | 'save-status-mod'
+    | 'save-equipment-mod'
     // crit damage composition
     | 'crit-scalable-damage'
     | 'flat-damage'
@@ -107,6 +116,8 @@ export type EveryTree =
     // terminal
     | 'ac'
     | 'attack'
+    | 'fortitude'
+    | 'reflex'
     | 'crit-confirm'
     | 'crit-threat-range'
     | 'damage'

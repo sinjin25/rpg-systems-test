@@ -20,11 +20,25 @@ const sumNumericFromClassLevels = (
 const sumAttackBonusFromClassLevels = (sheet: ClassLevelSheet): number =>
     sumNumericFromClassLevels(sheet, (member) => member.attackBonus)
 
+// BAB from a single class: its per-level attack bonuses summed over the levels actually acquired.
+// (sumAttackBonusFromClassLevels is this folded across every class on the sheet.)
+const attackBonusForClass = (cl: ClassLevels): number =>
+    acquiredMembers(cl).reduce((sum, member) => sum + member.attackBonus, 0)
+
 const sumFortitudeSaveFromClassLevels = (sheet: ClassLevelSheet): number =>
     sumNumericFromClassLevels(sheet, (member) => member.fortitudeSave)
 
+// fortitude base save from a single class: its per-level fortitude saves summed over the levels
+// actually acquired. (sumFortitudeSaveFromClassLevels is this folded across every class on the sheet.)
+const fortitudeSaveForClass = (cl: ClassLevels): number =>
+    acquiredMembers(cl).reduce((sum, member) => sum + member.fortitudeSave, 0)
+
 const sumReflexSaveFromClassLevels = (sheet: ClassLevelSheet): number =>
     sumNumericFromClassLevels(sheet, (member) => member.reflexSave)
+
+// reflex base save from a single class, the reflex analog of fortitudeSaveForClass.
+const reflexSaveForClass = (cl: ClassLevels): number =>
+    acquiredMembers(cl).reduce((sum, member) => sum + member.reflexSave, 0)
 // const sumWillSaveFromClassLevels = () => {}
 
 // free feats ignore prereq requirements on purpose
@@ -75,8 +89,11 @@ const characterLevels = (n: number): ClassLevelSheet => ({
 
 export {
     sumAttackBonusFromClassLevels,
+    attackBonusForClass,
     sumFortitudeSaveFromClassLevels,
+    fortitudeSaveForClass,
     sumReflexSaveFromClassLevels,
+    reflexSaveForClass,
     sumFeatsFromClassLevels,
     sumAbilitiesFromClassLevels,
     sumLevelsFromClassLevels,

@@ -13,8 +13,10 @@ export type ModResult = {
     entries: ModLogMember[],
 }
 
-export type ModGroup = ModResult & {
-    displayName: string,
+// all this does is nail down the possibilities for what strings might exist, giving autocomplete
+// in exchange, you do have (should) to define G on a per calculator basis
+export type ModGroup<G extends string = string> = ModResult & {
+    displayName: G,
 }
 
 export type FinalModLogResult = {
@@ -23,15 +25,16 @@ export type FinalModLogResult = {
     total: number,
 }
 
-export type ModLog = {
+export type ModLog<G extends string = string> = {
     displayName: string,
     roll: ModLogMember[],
     mods: ModLogMember[],
-    groups: ModGroup[],
+    // .find(a=> a.displayName) has autocomplete
+    groups: ModGroup<G>[],
     addRoll: (d: ModLogMember) => ModLogMember[],
     addMod: (d: ModLogMember) => ModLogMember[],
     // a member belongs to either addMod or addModGroup, never both
-    addModGroup: (displayName: string, res: ModResult) => ModGroup[],
+    addModGroup: (displayName: G, res: ModResult) => ModGroup<G>[],
     finalResult: () => FinalModLogResult,
 }
 
@@ -41,11 +44,12 @@ export const namedMod = (displayName: string, amount: number): ModResult => ({
     entries: [{ displayName, amount }],
 })
 
-export const util_findModLogGroupItem = (
+export const util_findModLogGroupItem = <G extends string>(
     logAggregator: {
-        groups: ModGroup[],
+        groups: ModGroup<G>[],
     },
-    query: { groupName: string, modDisplayName: string }
+    // NoInfer matters: without it G would also infer from groupName, widening to AcGroup | 'typo' and quietly accepting a bad name instead of erroring
+    query: { groupName: NoInfer<G>, modDisplayName: string }
 ) => {
     if (!query.groupName || !query.modDisplayName) throw Error('did not pass either a query.groupName or query.modDisplayName')
     const group = logAggregator.groups.find(a => a.displayName === query.groupName)
@@ -54,7 +58,7 @@ export const util_findModLogGroupItem = (
     return member
 }
 
-const ModifierLog = (displayName: string): ModLog => {
+const ModifierLog = <G extends string = string>(displayName: string): ModLog<G> => {
     return {
         displayName,
         roll: [],
@@ -68,7 +72,7 @@ const ModifierLog = (displayName: string): ModLog => {
             this.mods.push(d)
             return this.mods
         },
-        addModGroup(displayName: string, res: ModResult) {
+        addModGroup(displayName: G, res: ModResult) {
             this.groups.push({ displayName, ...res })
             this.mods.push(...res.entries)
             return this.groups

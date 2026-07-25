@@ -1,0 +1,83 @@
+AC  26
+    Base AC 10
+    Dex 5
+        Max Dex 7
+            Chainmail   5
+                Base 4
+                Mythril 1
+            Amulet  1
+            Fighter Training    1
+        Dex Mod 5
+            Base Dex    3
+            Cat's Grace 2
+            Amulet  .5
+    Armor   8
+        Chainmail +2   6
+            Base    4
+            Enhancement 2
+        Shield  2
+            Base    2
+    Feats   3
+        Shield Mastery  1
+        Medium Armor Mastery    1
+        Dodgy   1
+
+Attack  30
+    Modifier    15
+        Base Mod    5
+            Weapon Finesse  5
+                Strength Mod    1
+                    Base    11
+                    Mutagen 2
+                Dexterity Mod   5
+                    Base    15
+                    Cat's Grace 6
+        Equipment   3
+            Longsword +2    2
+                Enhancement 2
+            Amulet  1
+        Status Effects  4
+            Bless   2
+            Rage    2
+        Feats   3
+            Improved Rage   1
+            Improved Bless  1
+            Longsword Mastery   1
+    Roll    15
+        Measured Strike Average 15
+            Natural Roll    10
+                Sides   20
+            Second Roll 20
+                Sides   20
+
+Damage  55
+    Crit    48
+        Crit Multi  3
+        Crit Scaling Damage 16
+            Weapon  11
+                Longsword +2    11
+                    Roll    5
+                        Sides   8
+                    Enhancement 2
+                    Spirit Hunter Class Enhancement 4
+                        Roll    4
+                            Sides   6
+            Feats   5
+                Power Attack    4
+                    Base    2
+                    Mult Count  2
+                        Base    1
+                        From BAB    1
+                            Base Attack bonus   5
+                                Slayer  4
+                                Fighter 1
+                Weapon Mastery  1
+    Non-Scaling 7
+        Smite on Crit   7
+            Base    3
+            Int Mod 2
+                Base    14
+            Roll    2
+                Sides   4
+
+

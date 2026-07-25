@@ -2,7 +2,7 @@ import { describe, test, expect } from 'vitest'
 import reflex from './reflex'
 import { createDefaultOwner } from '../../defaults'
 import { findNodeMatching } from '../..'
-import { ClassLevels, ClassLevelMember } from '../../../../character-sheet/class-level/type'
+import { ClassLevels, ClassLevelMember } from '../../../character-sheet/class-level/type'
 
 // LAYER: reflex terminal = base-reflex + modded-dex + save-feat-mod + save-status-mod +
 // save-equipment-mod, summed (mirror of terminal/fortitude.ts). Critically, reflex reuses the UNCAPPED

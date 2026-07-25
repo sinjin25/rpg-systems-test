@@ -3,11 +3,11 @@ import damageTaken from './damage-taken'
 import critDamage from '../terminal/crit-damage'
 import { createDefaultOwner } from '../../defaults'
 import { OwnerMaximal, StatusEffectMaximal } from '../types'
-import { Weapon } from '../../../../equipment-sheet'
+import { Weapon } from '../../../equipment-sheet'
 import studiedTarget from '../bases/status/studied-target'
 import defensiveRoll from '../bases/status/defensive-roll'
 import { leaf, findNodeMatching } from '../..'
-import { setSeed, clearSeed } from '../../../../roll'
+import { setSeed, clearSeed } from '../../../roll'
 import modNodeToText from '../../format'
 
 // LAYER: damage-taken (terminal). The first CROSS-ACTOR tree: it takes the DEFENDER's owner plus an

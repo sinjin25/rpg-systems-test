@@ -1,11 +1,11 @@
 import { describe, test, expect } from 'vitest'
 import attack from './attack'
 import { createDefaultOwner } from '../../defaults'
-import { daggerPlusOne, RingPlusOneFinesseAttack } from '../../../../defaults/equipment'
+import { daggerPlusOne, RingPlusOneFinesseAttack } from '../../../defaults/equipment'
 import finesseWeaponFighting from '../feats/finesse-weapon-fighting'
 import { StatusEffectMaximal } from '../types'
 import { passesTags, weaponTags } from '../feats/gate'
-import { ClassLevels, ClassLevelMember } from '../../../../character-sheet/class-level/type'
+import { ClassLevels, ClassLevelMember } from '../../../character-sheet/class-level/type'
 import { findNodeMatching, leaf } from '../..'
 
 // LAYER: attack (terminal). Sums the five children; each has its own suite, so this proves the

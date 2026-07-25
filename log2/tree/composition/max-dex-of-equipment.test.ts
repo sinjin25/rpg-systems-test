@@ -1,7 +1,7 @@
 import { describe, test, expect, assert } from 'vitest'
 import maxDexOfEquipment from './max-dex-of-equipment'
 import { createDefaultOwner } from '../../defaults'
-import { bandedMail, halfPlate, heavyShield } from '../../../../defaults/equipment'
+import { bandedMail, halfPlate, heavyShield } from '../../../defaults/equipment'
 import flatFooted from '../bases/status/flat-footed'
 import modNodeToText from '../../format'
 

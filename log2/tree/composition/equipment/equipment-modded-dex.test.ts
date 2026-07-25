@@ -1,4 +1,4 @@
-import { RingPlusTwoCon } from '../../../../../defaults/equipment/index.ts'
+import { RingPlusTwoCon } from '../../../../defaults/equipment/index.ts'
 import { createDefaultOwner } from '../../../defaults'
 import modNodeToText from '../../../format.ts'
 import { dexAmulet } from './demo-equips.ts'

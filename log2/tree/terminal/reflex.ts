@@ -4,7 +4,7 @@
 // Reflex use the raw Dex modifier").
 
 import newModNode, { sumFunc } from "../..";
-import { ContextNames } from "../../../../contexts";
+import { ContextNames } from "../../../contexts";
 import { OwnerMaximal, EveryTree, TreeSubproblems } from "../types";
 import baseSave from "../composition/base-save";
 import moddedDex from "../composition/modded-dex";

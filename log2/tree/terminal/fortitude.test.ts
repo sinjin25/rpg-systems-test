@@ -2,7 +2,7 @@ import { describe, test, expect } from 'vitest'
 import fortitude from './fortitude'
 import { createDefaultOwner } from '../../defaults'
 import { findNodeMatching } from '../..'
-import { ClassLevels, ClassLevelMember } from '../../../../character-sheet/class-level/type'
+import { ClassLevels, ClassLevelMember } from '../../../character-sheet/class-level/type'
 
 // LAYER: fortitude terminal = base-fortitude + modded-con + save-feat-mod + save-status-mod +
 // save-equipment-mod, summed (mirror of terminal/ac.ts). Trusts each child's own suite; this proves the

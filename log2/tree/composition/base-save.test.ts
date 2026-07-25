@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vitest'
 import baseSave from './base-save'
 import { createDefaultOwner } from '../../defaults'
-import { ClassLevels, ClassLevelMember } from '../../../../character-sheet/class-level/type'
+import { ClassLevels, ClassLevelMember } from '../../../character-sheet/class-level/type'
 
 // LAYER: base-save = one base-save-for-class-level child per class, summed - the direct base-attack-bonus
 // analog, reading the fortitudeSave/reflexSave per-level fields instead of attackBonus. Trusts the

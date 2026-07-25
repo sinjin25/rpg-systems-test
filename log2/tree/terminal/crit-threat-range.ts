@@ -1,6 +1,6 @@
 import newModNode, { leaf, sumFunc } from "../..";
 import { EveryTree, OwnerMaximal } from "../types";
-import { equipmentIsWeapon } from "../../../../equipment-sheet";
+import { equipmentIsWeapon } from "../../../equipment-sheet";
 import critThreatRangeMod from "../composition/crit-threat-range-mod";
 
 const displayName: EveryTree = 'crit-threat-range'

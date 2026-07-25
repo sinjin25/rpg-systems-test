@@ -1,6 +1,6 @@
 import newModNode, { sumFunc } from "../..";
 import { EveryTree, OwnerMaximal } from "../types";
-import { equipmentIsWeapon } from "../../../../equipment-sheet";
+import { equipmentIsWeapon } from "../../../equipment-sheet";
 import damageOfEquipmentPiece from "../bases/damage-of-equipment-piece";
 import effectiveDamageStat from "./effective-damage-stat";
 import critScalableDamageFeatMod from "./crit-scalable-damage-feat-mod";

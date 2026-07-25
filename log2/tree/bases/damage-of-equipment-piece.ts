@@ -1,5 +1,5 @@
 import newModNode, { rollNode } from "../..";
-import { Armor, Weapon } from "../../../../equipment-sheet";
+import { Armor, Weapon } from "../../../equipment-sheet";
 import { OwnerMaximal } from "../types";
 
 const damageOfEquipmentPiece = (equipment: Weapon) => {

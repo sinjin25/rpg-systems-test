@@ -2,8 +2,8 @@ import { describe, test, expect } from 'vitest'
 import critScalableDamage from './crit-scalable-damage'
 import { createDefaultOwner } from '../../defaults'
 import { OwnerMaximal, FeatMaximal } from '../types'
-import { Weapon } from '../../../../equipment-sheet'
-import { daggerPlusOne, leatherArmor } from '../../../../defaults/equipment'
+import { Weapon } from '../../../equipment-sheet'
+import { daggerPlusOne, leatherArmor } from '../../../defaults/equipment'
 import { leaf, findNodeMatching } from '../..'
 
 // LAYER: crit-scalable-damage (composition). Sums the weapon's rolled damage, the effective attack

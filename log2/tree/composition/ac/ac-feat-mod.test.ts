@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vitest'
 import acFeatMod from './ac-feat-mod'
 import { createDefaultOwner } from '../../../defaults'
-import { bandedMail, heavyShield, leatherArmor } from '../../../../../defaults/equipment'
+import { bandedMail, heavyShield, leatherArmor } from '../../../../defaults/equipment'
 import dodgy from '../../feats/dodgy'
 import shieldMastery from '../../feats/shield-mastery'
 import heavyArmorMastery from '../../feats/heavy-armor-mastery'

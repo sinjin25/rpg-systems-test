@@ -3,10 +3,10 @@ import ac from './ac'
 import catsGrace from '../bases/status/cats-grace'
 import divineProtection from '../bases/status/divine-protection'
 import { createDefaultOwner } from '../../defaults'
-import { bandedMail, heavyShield } from '../../../../defaults/equipment'
+import { bandedMail, heavyShield } from '../../../defaults/equipment'
 import dodgy from '../feats/dodgy'
 import shieldMastery from '../feats/shield-mastery'
-import { modLogToText } from '../../../log/format'
+import { modLogToText } from '../../../stat-modifier/log/format'
 import modNodeToText from '../../format'
 
 // LAYER: ac (terminal) = base-ac + ac-from-dex + ac-of-equipment + ac-feat-mod + ac-status-mod. Every

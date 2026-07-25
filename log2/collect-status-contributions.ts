@@ -1,5 +1,5 @@
 import { ModNode, newModNode, leaf, sumFunc } from ".";
-import { ModResult } from "../log";
+import { ModResult } from "../stat-modifier/log";
 import { BroadContextsMaximal, OwnerMaximal } from "./tree/types";
 
 // read seam: pull every status off owner.ss that declares a contribution to `broadContext`. owner.ss

@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vitest'
 import baseAttackBonus from './base-attack-bonus'
 import { createDefaultOwner } from '../../defaults'
-import { ClassLevels, ClassLevelMember } from '../../../../character-sheet/class-level/type'
+import { ClassLevels, ClassLevelMember } from '../../../character-sheet/class-level/type'
 
 // LAYER: base-attack-bonus = one base-attack-bonus-for-class-level child per class, summed. Trusts
 // the per-class leaf; this proves the fold and the one-child-per-class outline.

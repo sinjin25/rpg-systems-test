@@ -1,6 +1,6 @@
 import { EveryTree, OwnerMaximal } from "../types";
-import { ContextNames } from "../../../../contexts";
-import calculateEquipmentMod from "../../../../equipment-sheet/equipment-mod";
+import { ContextNames } from "../../../contexts";
+import calculateEquipmentMod from "../../../equipment-sheet/equipment-mod";
 import { modResultToNode } from "../../collect-status-contributions";
 
 const displayName: EveryTree = 'save-equipment-mod'

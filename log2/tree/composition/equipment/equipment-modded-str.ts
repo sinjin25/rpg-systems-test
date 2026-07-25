@@ -1,7 +1,7 @@
 import newModNode, { sumFunc } from "../../..";
 import { EquipmentMaximal, EveryTree, OwnerMaximal } from "../../types";
 import { collectStatusContributions } from "../../../collect-status-contributions";
-import { Armor } from "../../../../../equipment-sheet";
+import { Armor } from "../../../../equipment-sheet";
 
 const displayName: EveryTree = 'equipment-modded-str'
 

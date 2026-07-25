@@ -1,5 +1,5 @@
 import newModNode from "../..";
-import { Armor } from "../../../../equipment-sheet";
+import { Armor } from "../../../equipment-sheet";
 import { OwnerMaximal } from "../types";
 
 const maxDexOfEquipmentPiece = (equipment: Armor) => newModNode(

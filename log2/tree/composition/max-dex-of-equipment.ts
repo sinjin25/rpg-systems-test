@@ -1,7 +1,7 @@
 // the lowest max-dex cap across worn armor
 
 import newModNode, { minFunc } from "../..";
-import { Armor, equipmentIsArmor } from "../../../../equipment-sheet";
+import { Armor, equipmentIsArmor } from "../../../equipment-sheet";
 import { OwnerMaximal, EveryTree } from "../types";
 import maxDexOfEquipmentPiece from "../bases/max-dex-of-equipment-piece";
 import { collectStatusContributions } from "../../collect-status-contributions";

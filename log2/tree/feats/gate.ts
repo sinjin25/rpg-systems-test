@@ -1,4 +1,4 @@
-import { ContextNames, EquipmentContextNames } from "../../../../contexts";
+import { ContextNames, EquipmentContextNames } from "../../../contexts";
 import { OwnerMaximal } from "../types";
 
 // Tag gating for native feats, kept self-contained inside log2 (deliberately not importing the legacy

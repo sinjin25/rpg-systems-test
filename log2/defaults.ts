@@ -1,8 +1,8 @@
-import { createDefaultOwner as createLegacyOwner } from "../../defaults"
-import { CharacterSheet } from "../../character-sheet"
-import { EquipmentSheet } from "../../equipment-sheet"
-import { StatusSheet } from "../../status-sheet"
-import { AbilitySheet } from "../../ability-sheet"
+import { createDefaultOwner as createLegacyOwner } from "../defaults"
+import { CharacterSheet } from "../character-sheet"
+import { EquipmentSheet } from "../equipment-sheet"
+import { StatusSheet } from "../status-sheet"
+import { AbilitySheet } from "../ability-sheet"
 import { FeatSheetMaximal, OwnerMaximal } from "./tree/types"
 
 // Builds an OwnerMaximal for log2. Reuses the legacy default sheet-builder for the sheets we haven't

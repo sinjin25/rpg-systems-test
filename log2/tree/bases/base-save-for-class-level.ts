@@ -1,6 +1,6 @@
 import { leaf } from "../..";
-import { ClassLevels } from "../../../../character-sheet/class-level/type";
-import { fortitudeSaveForClass, reflexSaveForClass } from "../../../../character-sheet/class-level";
+import { ClassLevels } from "../../../character-sheet/class-level/type";
+import { fortitudeSaveForClass, reflexSaveForClass } from "../../../character-sheet/class-level";
 import { SaveType } from "../composition/base-save";
 
 // Base save contributed by a SINGLE class: the class's display name over one flat number - the sum of

@@ -1,7 +1,7 @@
 import { describe, test, expect, assert } from 'vitest'
 import attackFeatMod from './attack-feat-mod'
 import { createDefaultOwner } from '../../defaults'
-import { dagger } from '../../../../defaults/equipment'
+import { dagger } from '../../../defaults/equipment'
 import finesseWeaponFighting from '../feats/finesse-weapon-fighting'
 import meleeWeaponFighting from '../feats/melee-weapon-fighting'
 import dodgy from '../feats/dodgy'

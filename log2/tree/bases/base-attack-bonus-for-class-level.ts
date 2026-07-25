@@ -1,6 +1,6 @@
 import { leaf } from "../..";
-import { ClassLevels } from "../../../../character-sheet/class-level/type";
-import { attackBonusForClass } from "../../../../character-sheet/class-level";
+import { ClassLevels } from "../../../character-sheet/class-level/type";
+import { attackBonusForClass } from "../../../character-sheet/class-level";
 
 // BAB contributed by a SINGLE class: the class's display name over one flat number - the sum of its
 // per-level attack bonuses across the levels actually acquired. Deliberately NOT one node per level:

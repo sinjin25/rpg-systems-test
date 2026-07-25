@@ -1,8 +1,8 @@
 import { describe, test, expect } from 'vitest'
 import damageOfEquipmentPiece from './damage-of-equipment-piece'
-import { Weapon } from '../../../../equipment-sheet'
-import { longSword } from '../../../../defaults/equipment'
-import { setSeed, clearSeed } from '../../../../roll'
+import { Weapon } from '../../../equipment-sheet'
+import { longSword } from '../../../defaults/equipment'
+import { setSeed, clearSeed } from '../../../roll'
 
 // LAYER: damage-of-equipment-piece (a leaf). One weapon's rolled damage.
 // The load-bearing distinction lives here: the roll is resolved ONCE, at

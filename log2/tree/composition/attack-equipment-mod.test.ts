@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vitest'
 import attackEquipmentMod from './attack-equipment-mod'
 import { createDefaultOwner } from '../../defaults'
-import { dagger, daggerPlusOne, RingPlusOneFinesseAttack } from '../../../../defaults/equipment'
+import { dagger, daggerPlusOne, RingPlusOneFinesseAttack } from '../../../defaults/equipment'
 
 // LAYER: attack-equipment-mod bridges to the legacy context-tag engine (calculateWeaponEquipmentMod).
 // It trusts that engine's filtering; these tests prove the bridge counts the mainhand's own

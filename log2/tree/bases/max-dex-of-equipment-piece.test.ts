@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest'
 import maxDexOfEquipmentPiece from './max-dex-of-equipment-piece'
-import { Armor } from '../../../../equipment-sheet'
+import { Armor } from '../../../equipment-sheet'
 
 // LAYER: max-dex-of-equipment-piece (a leaf). One armor piece's dex cap.
 // The load-bearing distinction lives here: a cap of 0 is the MOST restrictive

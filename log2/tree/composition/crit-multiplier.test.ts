@@ -2,8 +2,8 @@ import { describe, test, expect } from 'vitest'
 import critMultiplier from './crit-multiplier'
 import { createDefaultOwner } from '../../defaults'
 import { OwnerMaximal, FeatMaximal } from '../types'
-import { Weapon } from '../../../../equipment-sheet'
-import { leatherArmor } from '../../../../defaults/equipment'
+import { Weapon } from '../../../equipment-sheet'
+import { leatherArmor } from '../../../defaults/equipment'
 import { leaf, findNodeMatching } from '../..'
 
 // LAYER: crit-multiplier (composition). weapon base multiplier + feat increments, summed. The base

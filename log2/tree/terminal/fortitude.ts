@@ -3,7 +3,7 @@
 // (the 'constitution' tag lets equipment target it specifically), the reflex analog scales off dex.
 
 import newModNode, { sumFunc } from "../..";
-import { ContextNames } from "../../../../contexts";
+import { ContextNames } from "../../../contexts";
 import { OwnerMaximal, EveryTree, TreeSubproblems } from "../types";
 import baseSave from "../composition/base-save";
 import moddedCon from "../composition/modded-con";

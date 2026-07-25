@@ -1,4 +1,4 @@
-import roll from "../../roll"
+import roll from "../roll"
 
 // A mod is a node in a tree. Every node looks the same - a name, a total, and the
 // children that explain it - but each node owns *how* its total derives from those

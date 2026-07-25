@@ -1,6 +1,6 @@
 import { ModNode } from "../..";
-import { Owner } from "../../../../character/actor";
-import { BaseEquipment } from "../../../../equipment-sheet";
+import { Owner } from "../../../character/actor";
+import { BaseEquipment } from "../../../equipment-sheet";
 
 // the feat sheet, native. loose string keys like StatusSheet - the collector reads values, not keys
 export type FeatSheetMaximal = { [key: string]: FeatMaximal }

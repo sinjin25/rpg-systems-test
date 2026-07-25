@@ -10,7 +10,7 @@ import acStatusMod from "../composition/status/ac-status-mod";
 
 const displayName: EveryTree = 'ac'
 
-const ac = (owner: OwnerMaximal) => {
+export default (owner: OwnerMaximal) => {
     const subproblems: TreeSubproblems = {
         'base-ac': baseAc(owner),
         'ac-from-dex': acFromDex(owner),
@@ -27,5 +27,3 @@ const ac = (owner: OwnerMaximal) => {
         () => sumFunc(subpr)
     )
 }
-
-export default ac

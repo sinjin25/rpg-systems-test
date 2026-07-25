@@ -11,7 +11,7 @@ import attackEquipmentMod from "../composition/attack-equipment-mod";
 
 const displayName: EveryTree = 'attack'
 
-const attack = (owner: OwnerMaximal) => {
+export default (owner: OwnerMaximal) => {
     const subproblems: TreeSubproblems = {
         'effective-attack-stat': effectiveAttackStat(owner),
         'base-attack-bonus': baseAttackBonus(owner),
@@ -28,5 +28,3 @@ const attack = (owner: OwnerMaximal) => {
         () => sumFunc(subpr)
     )
 }
-
-export default attack

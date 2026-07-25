@@ -5,15 +5,13 @@ import equipmentModdedCon from "./equipment/equipment-modded-con";
 import conFromStatus from "./status/con-from-status";
 
 const displayName: EveryTree = 'modded-con'
-
-// pathfinder halves round toward zero, not down: con 9 -> -0.5 -> +0, con 7 -> -1.5 -> -1.
 const BASE = 10
 const halfToZero = (raw: number) => {
     const halfMod = (raw - BASE) / 2
     return raw < BASE ? Math.ceil(halfMod) : Math.floor(halfMod)
 }
 
-const moddedCon = (owner: OwnerMaximal) => {
+export default (owner: OwnerMaximal) => {
 
     const subproblems: TreeSubproblems = {
         'raw-con': newRawCon(owner),
@@ -33,5 +31,3 @@ const moddedCon = (owner: OwnerMaximal) => {
         mapFunc(halfToZero)
     )
 }
-
-export default moddedCon

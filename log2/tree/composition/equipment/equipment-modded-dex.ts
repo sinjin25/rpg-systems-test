@@ -5,9 +5,7 @@ import { Armor } from "../../../../equipment-sheet";
 
 const displayName: EveryTree = 'equipment-modded-dex'
 
-// sums every dex-affecting status found on the runtime status sheet. Empty sheet -> no children
-// -> 0 (sumFunc is safe on empty children).
-const calc = (owner: OwnerMaximal) => {
+export default (owner: OwnerMaximal) => {
 
     type Slots = keyof OwnerMaximal['es']
     const es = owner.es as any
@@ -29,6 +27,3 @@ const calc = (owner: OwnerMaximal) => {
         () => sumFunc(items)
     )
 }
-
-export default calc
-

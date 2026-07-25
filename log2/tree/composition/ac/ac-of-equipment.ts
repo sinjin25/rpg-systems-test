@@ -7,7 +7,7 @@ import { OwnerMaximal, EveryTree } from "../../types";
 
 const displayName: EveryTree = 'ac-of-equipment'
 
-const acOfEquipment = (owner: OwnerMaximal) => {
+export default (owner: OwnerMaximal) => {
     const items = Object.values(owner.es).filter((e): e is Armor => !!e && equipmentIsArmor(e))
 
     // this should actually be 10
@@ -23,5 +23,3 @@ const acOfEquipment = (owner: OwnerMaximal) => {
         ]
     )
 }
-
-export default acOfEquipment

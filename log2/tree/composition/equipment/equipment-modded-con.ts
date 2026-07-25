@@ -2,10 +2,7 @@ import newModNode, { sumFunc } from "../../..";
 import { EquipmentMaximal, EveryTree, OwnerMaximal } from "../../types";
 
 const displayName: EveryTree = 'equipment-modded-con'
-
-// sums every con-affecting piece of equipment found on the runtime equipment sheet. Empty sheet -> no
-// children -> 0 (sumFunc is safe on empty children). Mirrors equipment-modded-str/dex.
-const calc = (owner: OwnerMaximal) => {
+export default (owner: OwnerMaximal) => {
 
     type Slots = keyof OwnerMaximal['es']
     const es = owner.es as any
@@ -26,5 +23,3 @@ const calc = (owner: OwnerMaximal) => {
         () => sumFunc(items)
     )
 }
-
-export default calc

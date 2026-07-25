@@ -12,7 +12,7 @@ import critConfirmMod from "../composition/crit-confirm-mod";
 
 const displayName: EveryTree = 'crit-confirm'
 
-const critConfirm = (owner: OwnerMaximal) => {
+export default (owner: OwnerMaximal) => {
     const subproblems: TreeSubproblems = {
         'attack': attack(owner),
         'crit-confirm-mod': critConfirmMod(owner),
@@ -26,5 +26,3 @@ const critConfirm = (owner: OwnerMaximal) => {
         () => sumFunc(subpr)
     )
 }
-
-export default critConfirm

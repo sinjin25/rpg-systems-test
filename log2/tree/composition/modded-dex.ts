@@ -5,15 +5,13 @@ import equipmentModdedDex from "./equipment/equipment-modded-dex";
 import dexFromStatus from "./status/dex-from-status";
 
 const displayName: EveryTree = 'modded-dex'
-
-// pathfinder halves round toward zero, not down: dex 9 -> -0.5 -> +0, dex 7 -> -1.5 -> -1.
 const BASE = 10
 const halfToZero = (raw: number) => {
     const halfMod = (raw - BASE) / 2
     return raw < BASE ? Math.ceil(halfMod) : Math.floor(halfMod)
 }
 
-const moddedDex = (owner: OwnerMaximal) => {
+export default (owner: OwnerMaximal) => {
 
     const subproblems: TreeSubproblems = {
         'raw-dex': newRawDex(owner),
@@ -33,5 +31,3 @@ const moddedDex = (owner: OwnerMaximal) => {
         mapFunc(halfToZero)
     )
 }
-
-export default moddedDex

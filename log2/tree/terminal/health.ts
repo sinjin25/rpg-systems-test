@@ -6,8 +6,7 @@ import moddedCon from "../composition/modded-con";
 import healthFeatMod from "../composition/health-feat-mod";
 
 const displayName: EveryTree = 'health'
-
-const health = (owner: OwnerMaximal) => {
+export default (owner: OwnerMaximal) => {
     const subproblems: TreeSubproblems = {
         'modded-con': moddedCon(owner),
         'health': healthFeatMod(owner)
@@ -21,5 +20,3 @@ const health = (owner: OwnerMaximal) => {
         () => sumFunc(subpr)
     )
 }
-
-export default health

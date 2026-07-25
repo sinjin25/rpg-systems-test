@@ -1,7 +1,3 @@
-// The full fortitude save modifier (before the roll): the class base save + the constitution modifier +
-// the feat/status/equipment contributions, all summed. Mirrors terminal/ac.ts. Fortitude scales off con
-// (the 'constitution' tag lets equipment target it specifically), the reflex analog scales off dex.
-
 import newModNode, { sumFunc } from "../..";
 import { ContextNames } from "../../../contexts";
 import { OwnerMaximal, EveryTree, TreeSubproblems } from "../types";
@@ -15,7 +11,7 @@ const displayName: EveryTree = 'fortitude'
 
 const FORTITUDE_CONTEXT = ['constitution'] as ContextNames[]
 
-const fortitude = (owner: OwnerMaximal) => {
+export default (owner: OwnerMaximal) => {
     const subproblems: TreeSubproblems = {
         'base-fortitude': baseSave(owner, 'fortitude'),
         'modded-con': moddedCon(owner),
@@ -32,5 +28,3 @@ const fortitude = (owner: OwnerMaximal) => {
         () => sumFunc(subpr)
     )
 }
-
-export default fortitude

@@ -7,7 +7,7 @@ import moddedDex from "../modded-dex";
 
 const displayName: EveryTree = 'ac-from-dex'
 
-const acFromDex = (owner: OwnerMaximal) => {
+export default (owner: OwnerMaximal) => {
 
     const subproblems: TreeSubproblems = {
         // solve modded dex
@@ -19,9 +19,7 @@ const acFromDex = (owner: OwnerMaximal) => {
 
     return newModNode(
         displayName,
-        subpr,
+        Object.values(subproblems),
         () => Math.min(...subpr.map(a => a.total()))
     )
 }
-
-export default acFromDex

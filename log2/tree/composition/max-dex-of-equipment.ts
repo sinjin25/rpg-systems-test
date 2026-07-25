@@ -9,7 +9,7 @@ import { collectStatusContributions } from "../../collect-status-contributions";
 const TEMP_MAX = 999
 const displayName: EveryTree = 'max-dex-of-equipment'
 
-const maxDexOfEquipment = (owner: OwnerMaximal) => {
+export default (owner: OwnerMaximal) => {
     // guard: look for flat-footed first
     const collection = collectStatusContributions(owner, displayName)
     const flatFooted = collection.find(a => a.displayName === 'flat-footed')
@@ -33,5 +33,3 @@ const maxDexOfEquipment = (owner: OwnerMaximal) => {
         },
     )
 }
-
-export default maxDexOfEquipment

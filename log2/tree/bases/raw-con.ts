@@ -1,12 +1,9 @@
 import newModNode from "../..";
-import { OwnerMaximal } from "../types";
+import { EveryTree, OwnerMaximal } from "../types";
 
-// the raw con SCORE, not a modifier. summing every con source (this, statuses, equipment) happens in
-// score space; modded-con owns the single stat->modifier conversion.
-const newRawCon = (owner: OwnerMaximal) => newModNode(
-    'Raw Con',
+const displayName: EveryTree = 'raw-con'
+export default (owner: OwnerMaximal) => newModNode(
+    displayName,
     [],
     () => owner.cs.con
 )
-
-export default newRawCon

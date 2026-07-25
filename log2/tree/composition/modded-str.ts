@@ -12,7 +12,7 @@ const halfToZero = (raw: number) => {
     return raw < BASE ? Math.ceil(halfMod) : Math.floor(halfMod)
 }
 
-const moddedStr = (owner: OwnerMaximal) => {
+export default (owner: OwnerMaximal) => {
 
     const subproblems: TreeSubproblems = {
         'raw-str': newRawStr(owner),
@@ -21,8 +21,6 @@ const moddedStr = (owner: OwnerMaximal) => {
 
     const subpr = Object.values(subproblems)
 
-    // sum all str SOURCES in score space, THEN convert the grand total to a modifier once.
-    // rounding each source on its own would round-then-add and inflate the result.
     const totalStr = newModNode('total-str', subpr, sumFunc)
 
     return newModNode(
@@ -31,5 +29,3 @@ const moddedStr = (owner: OwnerMaximal) => {
         mapFunc(halfToZero)
     )
 }
-
-export default moddedStr

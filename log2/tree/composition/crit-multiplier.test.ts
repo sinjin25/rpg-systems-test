@@ -6,9 +6,6 @@ import { Weapon } from '../../../equipment-sheet'
 import { leatherArmor } from '../../../defaults/equipment'
 import { leaf, findNodeMatching } from '../..'
 
-// LAYER: crit-multiplier (composition). weapon base multiplier + feat increments, summed. The base
-// comes from relevantSlot.critMultiplier, defaulting to x1.5 (mirrors legacy crit2/multiplier).
-
 const weapon = (crit?: number): Weapon =>
     ({ displayName: 'test-weapon', contexts: ['melee'], damage: () => 0, critMultiplier: crit } as Weapon)
 

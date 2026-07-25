@@ -5,11 +5,6 @@ import critFocus from '../feats/crit-focus'
 import { findNodeMatching } from '../..'
 import modNodeToText from '../../format'
 
-// LAYER: crit-confirm (terminal). Sums two children - the full attack roll and the crit-confirm-mod.
-// Both have their own suites, so this proves the assembly: that the crit-confirm-mod child is wired in
-// and lands in the total. Default character's attack is +2 (str 15 -> +2, everything else 0); crit-focus
-// contributes +4 through crit-confirm-mod, so a confirm build totals 6.
-
 describe('crit-confirm (terminal)', () => {
     test('adds the crit-confirm-mod child (crit-focus, +4) on top of the attack', () => {
         const node = critConfirm(createDefaultOwner({ fs: { critFocus } }))

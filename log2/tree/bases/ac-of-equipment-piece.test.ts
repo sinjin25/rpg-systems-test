@@ -1,9 +1,6 @@
 import { describe, test, expect } from 'vitest'
 import acOfEquipmentPiece from './ac-of-equipment-piece'
 import { Armor } from '../../../equipment-sheet'
-
-// LAYER: ac-of-equipment-piece (a leaf). One armor piece's flat AC contribution.
-
 const armor = (ac?: number): Armor => ({ displayName: 'test', contexts: [], ac } as Armor)
 
 describe('ac-of-equipment-piece', () => {

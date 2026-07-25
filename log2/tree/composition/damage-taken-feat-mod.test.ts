@@ -4,9 +4,6 @@ import { createDefaultOwner } from '../../defaults'
 import { FeatMaximal } from '../types'
 import { leaf, findNodeMatching } from '../..'
 
-// LAYER: damage-taken-feat-mod (aggregator). Sums every feat on owner.fs that declares a
-// 'damage-taken-feat-mod' contribution. No native content yet, so 0 by default.
-
 describe('damage-taken-feat-mod', () => {
     test('is 0 with no contributing feats', () => {
         expect(damageTakenFeatMod(createDefaultOwner({})).total()).toBe(0)

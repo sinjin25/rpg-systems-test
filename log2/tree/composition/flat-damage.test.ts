@@ -4,9 +4,6 @@ import { createDefaultOwner } from '../../defaults'
 import { FeatMaximal } from '../types'
 import { leaf, findNodeMatching } from '../..'
 
-// LAYER: flat-damage (composition). The bucket added AFTER the crit multiply. Only feat mods feed it
-// for now, so it is 0 unless a flat-damage feat is present.
-
 describe('flat-damage', () => {
     test('is 0 with no flat sources', () => {
         expect(flatDamage(createDefaultOwner({})).total()).toBe(0)

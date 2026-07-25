@@ -4,9 +4,6 @@ import { createDefaultOwner } from '../../../defaults'
 import { StatusEffectMaximal } from '../../types'
 import { leaf, findNodeMatching } from '../../..'
 
-// LAYER: damage-taken-status-mod (aggregator). Sums every status on owner.ss that declares a
-// 'damage-taken-status-mod' contribution. Empty sheet -> no children -> 0. Mirrors ac-status-mod.
-
 const dtStatus = (amount: number): StatusEffectMaximal => ({
     displayName: 'Test DT',
     broadContexts: { 'damage-taken-status-mod': () => leaf('Test DT', amount) },

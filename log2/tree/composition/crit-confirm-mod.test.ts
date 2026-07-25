@@ -6,10 +6,6 @@ import dodgy from '../feats/dodgy'
 import modNodeToText from '../../format'
 import { findNodeMatching } from '../..'
 
-// LAYER: crit-confirm-mod is native, exactly like attack-feat-mod - it sums every feat on owner.fs that
-// declares a 'crit-confirm-mod' contribution. A feat that declares a different broad context (or isn't
-// on the sheet) leaves no child behind. crit-focus contributes a flat +4 unconditionally.
-
 describe('crit-confirm-mod (native)', () => {
     test('crit-focus contributes a summed +4 child leaf', () => {
         const node = critConfirmMod(createDefaultOwner({
@@ -28,7 +24,6 @@ describe('crit-confirm-mod (native)', () => {
     })
 
     test('a non crit-confirm feat does not leak into the crit confirm mod', () => {
-        // dodgy declares only 'ac-feat-mod', so it is filtered out here entirely (not even a 0 leaf)
         const node = critConfirmMod(createDefaultOwner({ fs: { dodgy } }))
         expect(node.total()).toBe(0)
         expect(node.children).toEqual([])

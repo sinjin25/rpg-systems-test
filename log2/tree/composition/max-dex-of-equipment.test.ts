@@ -5,11 +5,7 @@ import { bandedMail, halfPlate, heavyShield } from '../../../defaults/equipment'
 import flatFooted from '../bases/status/flat-footed'
 import modNodeToText from '../../format'
 
-// LAYER: max-dex-of-equipment. The lowest real cap across worn armor. Trusts the
-// per-piece leaf; this proves the min, that unlimited pieces drop out, and the
-// placeholder for "no real cap".
-
-const TEMP_MAX = 999 // mirrors the placeholder in the source until real "no cap" semantics land
+const TEMP_MAX = 999 // no cap
 
 describe('max-dex-of-equipment', () => {
     test('the most restrictive real cap wins', () => {

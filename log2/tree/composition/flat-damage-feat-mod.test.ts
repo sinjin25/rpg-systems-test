@@ -4,9 +4,6 @@ import { createDefaultOwner } from '../../defaults'
 import { FeatMaximal } from '../types'
 import { leaf, findNodeMatching } from '../..'
 
-// LAYER: flat-damage-feat-mod (aggregator). Collects every feat on owner.fs that declares a
-// 'flat-damage-feat-mod' contribution and sums them. Empty sheet -> no children -> 0.
-
 const flat = (amount: number): FeatMaximal => ({
     displayName: 'test-flat',
     broadContexts: { 'flat-damage-feat-mod': () => leaf('test-flat', amount) },

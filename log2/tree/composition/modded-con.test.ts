@@ -2,9 +2,6 @@ import { describe, test, expect } from 'vitest'
 import moddedCon from './modded-con'
 import { createDefaultOwner } from '../../defaults'
 
-// LAYER: modded-con = halfToZero(raw-con + con-from-status + equipment-modded-con). No con-affecting
-// content exists yet, so this proves the raw score->modifier conversion and owns the rounding tests.
-// Mirrors modded-dex.
 describe('modded-con', () => {
     test('converts the raw score to a modifier', () => {
         expect(moddedCon(createDefaultOwner({ cs: { con: 14 } })).total()).toBe(2)

@@ -3,9 +3,6 @@ import baseSave from './base-save'
 import { createDefaultOwner } from '../../defaults'
 import { ClassLevels, ClassLevelMember } from '../../../character-sheet/class-level/type'
 
-// LAYER: base-save = one base-save-for-class-level child per class, summed - the direct base-attack-bonus
-// analog, reading the fortitudeSave/reflexSave per-level fields instead of attackBonus. Trusts the
-// per-class leaf; this proves the fold, the one-child-per-class outline, and the save-type selection.
 
 const member = (fortitudeSave: number, reflexSave: number): ClassLevelMember =>
     ({ attackBonus: 0, fortitudeSave, reflexSave, feats: {} })

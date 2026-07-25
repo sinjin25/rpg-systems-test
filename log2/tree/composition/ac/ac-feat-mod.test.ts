@@ -6,9 +6,6 @@ import dodgy from '../../feats/dodgy'
 import shieldMastery from '../../feats/shield-mastery'
 import heavyArmorMastery from '../../feats/heavy-armor-mastery'
 
-// LAYER: ac-feat-mod is native - it sums every feat on owner.fs that declares an 'ac-feat-mod'
-// contribution. Dodgy is unconditional (+4); Shield/Heavy Armor Mastery gate on equipped gear tags.
-
 describe('ac-feat-mod (native)', () => {
     test('dodgy contributes +4 unconditionally', () => {
         const node = acFeatMod(createDefaultOwner({ fs: { dodgy } }))

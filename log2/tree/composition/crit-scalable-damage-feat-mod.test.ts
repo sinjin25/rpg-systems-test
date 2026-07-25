@@ -4,9 +4,6 @@ import { createDefaultOwner } from '../../defaults'
 import { FeatMaximal } from '../types'
 import { leaf, findNodeMatching } from '../..'
 
-// LAYER: crit-scalable-damage-feat-mod (aggregator). Collects every feat on owner.fs that declares a
-// 'crit-scalable-damage-feat-mod' contribution and sums them. Empty sheet -> no children -> 0.
-
 const scaler = (amount: number): FeatMaximal => ({
     displayName: 'test-scaler',
     broadContexts: { 'crit-scalable-damage-feat-mod': () => leaf('test-scaler', amount) },

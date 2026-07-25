@@ -6,11 +6,6 @@ import { Weapon } from '../../../equipment-sheet'
 import { daggerPlusOne, leatherArmor } from '../../../defaults/equipment'
 import { leaf, findNodeMatching } from '../..'
 
-// LAYER: crit-scalable-damage (composition). Sums the weapon's rolled damage, the effective attack
-// stat, and the crit-scalable feat mods - the bucket ELIGIBLE to be multiplied on a crit (not
-// multiplied here). Also owns the relevantSlot weapon guard that both the damage and crit-damage
-// terminals inherit.
-
 const weapon = (dmg: number): Weapon =>
     ({ displayName: 'test-weapon', contexts: ['melee'], damage: () => dmg } as Weapon)
 

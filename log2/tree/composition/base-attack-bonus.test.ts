@@ -3,9 +3,6 @@ import baseAttackBonus from './base-attack-bonus'
 import { createDefaultOwner } from '../../defaults'
 import { ClassLevels, ClassLevelMember } from '../../../character-sheet/class-level/type'
 
-// LAYER: base-attack-bonus = one base-attack-bonus-for-class-level child per class, summed. Trusts
-// the per-class leaf; this proves the fold and the one-child-per-class outline.
-
 const member: ClassLevelMember = { attackBonus: 1, fortitudeSave: 0, reflexSave: 0, feats: {} }
 const bab = (displayName: string, levels: number): ClassLevels => ({
     displayName, level: levels, data: Array.from({ length: levels }, () => member),
@@ -18,7 +15,6 @@ describe('base-attack-bonus', () => {
         })
         const node = baseAttackBonus(owner)
         expect(node.total()).toBe(6)
-        // the whole point: classes are summarised per class, not per level
         expect(node.children.map(c => `${c.displayName} ${c.total()}`)).toEqual(['Fighter 4', 'Slayer 2'])
     })
 

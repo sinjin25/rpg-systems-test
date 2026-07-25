@@ -4,7 +4,6 @@ import { hasEquipmentTag } from "./gate";
 
 const displayName: AllFeats = 'shield-mastery'
 
-// +1 AC while a shield is equipped.
 const feat: FeatMaximal = {
     displayName,
     broadContexts: {

@@ -9,12 +9,6 @@ import { modResultToNode } from '../../collect-status-contributions'
 import modNodeToText from '../../format'
 import { findNodeMatching } from '../..'
 
-// LAYER: attack-feat-mod is native now - it sums every feat on owner.fs that declares an
-// 'attack-feat-mod' contribution. Each feat gates itself on the weapon tags (mainhand stand-in) and
-// returns undefined when it doesn't apply, so a gated-out feat leaves no child behind. Default mainhand
-// is the shortsword (['shortsword','melee']). Native feats are placed on the sheet directly, under
-// any (loose) string key.
-
 describe('attack-feat-mod (native)', () => {
     test('an applying feat becomes a summed child leaf', () => {
         // Melee Weapon Fighting whitelists 'melee'; the default shortsword is melee
@@ -47,7 +41,6 @@ describe('attack-feat-mod (native)', () => {
     })
 
     test('an AC-only feat does not leak into the attack feat mod', () => {
-        // dodgy declares only 'ac-feat-mod', so it is filtered out here entirely (not even a 0 leaf)
         const node = attackFeatMod(createDefaultOwner({ fs: { dodgy } }))
         expect(node.total()).toBe(0)
         expect(node.children).toEqual([])

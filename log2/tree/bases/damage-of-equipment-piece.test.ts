@@ -4,14 +4,6 @@ import { Weapon } from '../../../equipment-sheet'
 import { longSword } from '../../../defaults/equipment'
 import { setSeed, clearSeed } from '../../../roll'
 
-// LAYER: damage-of-equipment-piece (a leaf). One weapon's rolled damage.
-// The load-bearing distinction lives here: the roll is resolved ONCE, at
-// construction, and frozen. total() must report that same number to every
-// caller - a node whose total() rerolled on each read would hand a different
-// damage figure to each ancestor that looked at it (see rollNode in
-// log2/index.ts). This layer can't use rollNode directly yet because the
-// legacy Weapon.damage() isn't a `sides` subtree.
-
 const weapon = (damage: () => number): Weapon =>
     ({ displayName: 'test', contexts: [], damage } as Weapon)
 

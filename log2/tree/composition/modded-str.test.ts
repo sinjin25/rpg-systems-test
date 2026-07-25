@@ -3,11 +3,6 @@ import moddedStr from './modded-str'
 import bullsStrength from '../bases/status/bulls-strength'
 import { createDefaultOwner } from '../../defaults'
 
-// LAYER: modded-str = halfToZero(raw-str + str-from-status). Every source is summed in SCORE
-// space first, then converted to a modifier once. Trusts both children (each has its own suite);
-// this proves they are summed before the conversion, and owns the rounding tests. str-from-status
-// reads owner.ss, so the status contribution is present only when the status is on the sheet.
-
 describe('modded-str', () => {
     test('sums the status score bonus before converting to a modifier', () => {
         const withStatus = (str: number) =>

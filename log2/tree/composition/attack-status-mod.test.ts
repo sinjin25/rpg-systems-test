@@ -6,11 +6,6 @@ import { StatusEffectMaximal } from '../types'
 import { passesTags, weaponTags } from '../feats/gate'
 import bullsStrength from '../bases/status/bulls-strength'
 
-// LAYER: attack-status-mod is native now, a mirror of attack-feat-mod - it sums every status on owner.ss
-// that declares an 'attack-status-mod' contribution. Each status gates itself on the weapon tags and
-// returns undefined when it doesn't apply, leaving no leaf. Default mainhand is the shortsword
-// (['shortsword','melee']).
-
 // +2 attack, but only on a melee weapon
 const meleeBless: StatusEffectMaximal = {
     displayName: 'Melee Bless',

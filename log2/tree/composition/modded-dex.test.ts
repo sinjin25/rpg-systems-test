@@ -4,12 +4,6 @@ import catsGrace from '../bases/status/cats-grace'
 import { createDefaultOwner } from '../../defaults'
 import { dexAmulet } from './equipment/demo-equips'
 
-// LAYER: modded-dex = halfToZero(raw-dex + dex-from-status + equipment-modded-dex). Every source
-// is summed in SCORE space first, then converted to a modifier once. Trusts each child (each has
-// its own suite); this proves they are summed before the conversion, and owns the rounding tests.
-// dex-from-status now reads owner.ss, so the status contribution is present only when the status
-// is actually on the sheet.
-
 describe('modded-dex', () => {
     test('sums the status score bonus before converting to a modifier', () => {
         const withStatus = (dex: number) =>

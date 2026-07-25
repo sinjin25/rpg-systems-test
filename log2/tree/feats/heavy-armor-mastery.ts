@@ -4,7 +4,6 @@ import { hasEquipmentTag } from "./gate";
 
 const displayName: AllFeats = 'heavy-armor-mastery'
 
-// +1 AC while heavy armor is worn.
 const feat: FeatMaximal = {
     displayName,
     broadContexts: {

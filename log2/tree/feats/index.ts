@@ -15,8 +15,6 @@ export {
     heavyArmorMastery,
 }
 
-// registry of every native feat, keyed by displayName. Placing a feat on owner.fs is what activates it;
-// this map is the menu to pick from.
 export const nativeFeats: Record<AllFeats, FeatMaximal> = {
     'finesse-weapon-fighting': finesseWeaponFighting,
     'melee-weapon-fighting': meleeWeaponFighting,

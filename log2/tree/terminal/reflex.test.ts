@@ -4,10 +4,6 @@ import { createDefaultOwner } from '../../defaults'
 import { findNodeMatching } from '../..'
 import { ClassLevels, ClassLevelMember } from '../../../character-sheet/class-level/type'
 
-// LAYER: reflex terminal = base-reflex + modded-dex + save-feat-mod + save-status-mod +
-// save-equipment-mod, summed (mirror of terminal/fortitude.ts). Critically, reflex reuses the UNCAPPED
-// modded-dex - no max-dex armor cap (that is an AC-only concern; see DESIGN.md worked example).
-
 const member = (reflexSave: number): ClassLevelMember =>
     ({ attackBonus: 0, fortitudeSave: 0, reflexSave, feats: {} })
 
@@ -35,7 +31,6 @@ describe('reflex', () => {
     })
 
     test('uses the uncapped dex modifier (no armor max-dex cap on saves)', () => {
-        // high dex that an armor cap would clip for AC must pass through in full for reflex
         const node = reflex(createDefaultOwner({ cs: { dex: 20, levels: {} } }))
         expect(findNodeMatching(node, 'modded-dex')?.total()).toBe(5)
     })

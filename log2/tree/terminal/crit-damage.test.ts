@@ -7,20 +7,14 @@ import { leatherArmor } from '../../../defaults/equipment'
 import { leaf, findNodeMatching } from '../..'
 import modNodeToText from '../../format'
 
-// LAYER: crit-damage (terminal). Assembles floor( multiplier x (weaponRoll + scaledMods) + flatMods )
-// out of three sub-problems that each have their own suite: crit-multiplier, crit-scalable-damage, flat-damage.
-// So this proves the assembly - the multiplier hits ONLY the scaled bucket, the flat bucket is added
-// after, and the single floor at the root matches legacy crit2/apply-multiplier. The four numeric cases
-// below are ported directly from crit2/apply-multiplier/index.test.ts.
-
-// a weapon whose damage and crit multiplier are fixed, so totals are exact without touching the RNG
 const weapon = (dmg: number, crit?: number): Weapon =>
     ({ displayName: 'test-weapon', contexts: ['melee'], damage: () => dmg, critMultiplier: crit } as Weapon)
 
 const withSlot = (owner: OwnerMaximal, slot: OwnerMaximal['relevantSlot']): OwnerMaximal =>
     ({ ...owner, relevantSlot: slot })
 
-// str 10 -> +0, so the scaled bucket is exactly (roll + scaledMods), matching legacy's rawRollTotal
+
+
 const flatStatOwner = (fs: OwnerMaximal['fs'] = {}) =>
     createDefaultOwner({ cs: { str: 10, dex: 10 }, fs })
 

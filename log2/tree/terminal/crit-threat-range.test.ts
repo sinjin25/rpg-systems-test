@@ -8,12 +8,6 @@ import { findNodeMatching } from '../..'
 import improvedCritical from '../feats/improved-critical'
 import modNodeToText from '../../format'
 
-// LAYER: crit-threat-range (terminal). Sums the weapon's base critRange with the crit-threat-range-mod
-// feat aggregator (its own suite). So this proves the assembly - the weapon base is read from
-// relevantSlot and the feat mod is wired in. Ports legacy crit2/range: base + feat mod, summed, where
-// negative widens (Improved Critical takes a 20 down to 19). The base default is 20 (nat-20 only).
-
-// a weapon whose critRange is fixed, so the threshold is exact without touching the RNG
 const weapon = (critRange?: number): Weapon =>
     ({ displayName: 'test-weapon', contexts: ['melee'], damage: () => 1, critRange } as Weapon)
 

@@ -9,14 +9,6 @@ import shieldMastery from '../feats/shield-mastery'
 import { modLogToText } from '../../../stat-modifier/log/format'
 import modNodeToText from '../../format'
 
-// LAYER: ac (terminal) = base-ac + ac-from-dex + ac-of-equipment + ac-feat-mod + ac-status-mod. Every
-// child has its own suite, so this only proves they are summed into the final answer. Cat's Grace is
-// placed on the sheet; native feats are placed directly on the feat sheet (no cast).
-//
-// NB: totals still differ from the legacy ac benchmark in the no-feat cases because a rule is missing
-// - no Armor Training raising banded mail's cap from +1 to +2. The structure (base + dex + armor +
-// feats) is what this layer is responsible for.
-
 describe('ac (terminal)', () => {
     test('armored: base 10 + capped dex 1 + armor 9', () => {
         const owner = createDefaultOwner({

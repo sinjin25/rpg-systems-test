@@ -2,10 +2,7 @@ import { ModNode, newModNode, leaf, sumFunc } from ".";
 import { ModResult } from "../stat-modifier/log";
 import { BroadContextsMaximal, OwnerMaximal } from "./tree/types";
 
-// read seam: pull every status off owner.ss that declares a contribution to `broadContext`. owner.ss
-// holds StatusEffectMaximal objects directly now (no legacy cast), so this is a plain read. Two ways a
-// status contributes nothing: it isn't on the sheet, or its producer returns undefined because it
-// doesn't apply here (e.g. weapon tags don't match). Both are filtered - presence IS the condition.
+// given a broadContext (key), collect relevant items
 export const collectStatusContributions = (
     owner: OwnerMaximal,
     broadContext: BroadContextsMaximal,

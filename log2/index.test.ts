@@ -2,22 +2,20 @@ import { describe, test, assert } from 'vitest'
 import { newModNode, leaf, minFunc, statSumFunc, maxFunc, sumFunc } from './index.ts'
 import { modNodeToText } from './format.ts'
 
-// rebuilds scratch.txt exactly - the hand-written AC 26 breakdown
+// this is a test file for proviing index.ts node system could rebuild some scratch work
+// more interesting, just look in tree/*
 const scratchAcTree = () => {
     const maxDex = newModNode('Max Dex', [
         newModNode('Chainmail', [leaf('Base', 4), leaf('Mythril', 1)]),
         leaf('Amulet', 1),
         leaf('Fighter Training', 1),
     ])
-
-    // a +1 raw dex item contributes +0.5 in modifier space; the node rounds once
     const dexMod = newModNode('Dex Mod', [
         leaf('Base Dex', 3),
         leaf("Cat's Grace", 2),
         leaf('Amulet', .5),
     ], statSumFunc)
 
-    // the cap is not additive with the modifier - the lower of the two wins
     const dex = newModNode('Dex', [maxDex, dexMod], minFunc)
 
     const armor = newModNode('Armor', [
@@ -63,21 +61,17 @@ type ModNodeLike = ReturnType<typeof leaf>
 
 describe('trees that probe the model', () => {
     test('BREAK? negative dex rounding', () => {
-        // dex 7 (-1.5 in modifier space) with a +1 raw item (+0.5)
         const dexMod = newModNode('Dex Mod', [
             leaf('Base Dex', -1.5),
             leaf('Amulet', .5),
         ], statSumFunc)
-        // -1.0 exactly, so rounding direction is not exercised here
         assert.equal(dexMod.total(), -1)
 
-        // dex 7 with no help: -1.5 must round toward zero to -1, not down to -2
         const bare = newModNode('Dex Mod', [leaf('Base Dex', -1.5)], statSumFunc)
         assert.equal(bare.total(), -1, 'pathfinder rounds negatives toward zero')
     })
 
     test('BREAK? a min node with no children', () => {
-        // no armor equipped means no cap - the Max Dex child should not be built at all
         assert.throws(() => newModNode('Dex', [], minFunc).total(), /at least one child/)
     })
 
@@ -91,15 +85,10 @@ describe('trees that probe the model', () => {
     test('BREAK? a leaf that gains children lies about its total', () => {
         const l = leaf('Base AC', 10)
         l.children.push(leaf('surprise', 5))
-        // constantFunc ignores children entirely - the outline would show a child
-        // that contributes nothing, with no error
         assert.equal(l.total(), 10)
     })
 
     test('BREAK? pathfinder same-type bonuses do not stack', () => {
-        // two enhancement bonuses: only the better one applies, then it sums with
-        // a dodge bonus from a different type. one flat sum cannot express this -
-        // it needs a grouping level keyed by bonus *type*, which displayName is not
         const enhancement = newModNode('enhancement', [
             leaf('Chainmail +2', 2),
             leaf("Mage's Bracers +1", 1),
@@ -108,8 +97,6 @@ describe('trees that probe the model', () => {
         const armor = newModNode('Armor', [enhancement, dodge])
 
         assert.equal(armor.total(), 3, 'max(2,1) + 1, not 2+1+1')
-        // it works - but only because the tree was built with a type layer.
-        // nothing in ModNode forces or records that the layer means "bonus type"
     })
 
     test('BREAK: total() is lazy, so a rolling node rerolls on every read', () => {
@@ -125,13 +112,11 @@ describe('trees that probe the model', () => {
     })
 
     test('BREAK? a multiplier node', () => {
-        // crit multiplier is not additive with its siblings
         const damage = newModNode('Damage', [
             newModNode('base damage', [leaf('weapon', 6), leaf('str', 3)]),
             leaf('crit multiplier', 2),
         ], (children) => children[0].total() * children[1].total())
 
         assert.equal(damage.total(), 18)
-        // works, but the totalFunc now depends on child *order*, not child identity
     })
 })

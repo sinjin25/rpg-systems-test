@@ -1,5 +1,5 @@
 import { ModNode } from ".";
-import { FeatBroadContexts, OwnerMaximal } from "./tree/types";
+import { FeatBroadContexts, OwnerMaximal } from "./types";
 
 // given a broadcontext (key on an object), collect relevant items
 export const collectFeatContributions = (

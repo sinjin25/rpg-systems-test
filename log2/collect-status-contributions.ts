@@ -1,6 +1,6 @@
 import { ModNode, newModNode, leaf, sumFunc } from ".";
 import { ModResult } from "../stat-modifier/log";
-import { BroadContextsMaximal, OwnerMaximal } from "./tree/types";
+import { BroadContextsMaximal, OwnerMaximal } from "./types";
 
 // given a broadContext (key), collect relevant items
 export const collectStatusContributions = (

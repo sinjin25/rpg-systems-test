@@ -2,11 +2,11 @@
 
 import { default as newModNode, ModNode, sumFunc } from "../..";
 import { OwnerMaximal, EveryTree, TreeSubproblems } from "../types";
-import acOfEquipment from "../composition/ac-of-equipment";
-import acFromDex from "../composition/ac-from-dex";
+import acOfEquipment from "../composition/ac/ac-of-equipment";
+import acFromDex from "../composition/ac/ac-from-dex";
 import baseAc from "../bases/base-ac";
-import acFeatMod from "../composition/ac-feat-mod";
-import acStatusMod from "../composition/ac-status-mod";
+import acFeatMod from "../composition/ac/ac-feat-mod";
+import acStatusMod from "../composition/status/ac-status-mod";
 
 const displayName: EveryTree = 'ac'
 

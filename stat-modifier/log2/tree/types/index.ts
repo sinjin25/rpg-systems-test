@@ -44,6 +44,8 @@ export type FeatBroadContexts =
     | 'damage-taken-feat-mod'
     // saves (fortitude/reflex share one feat bucket; the base-context tag distinguishes them)
     | 'save-feat-mod'
+    | 'initiative-feat-mod'
+    | 'health-feat-mod'
 
 // a producer returns undefined when the feat is on the sheet but doesn't apply here (e.g. a finesse
 // feat with a non-finesse weapon); the collector drops those so they leave no trace in the outline.
@@ -98,6 +100,8 @@ export type EveryTree =
     // save composition (base-<save> from class levels + the three mod buckets, shared by both saves)
     | 'base-fortitude'
     | 'base-reflex'
+    | 'initiative-feat-mod'
+    | 'health-feat-mod'
     | 'save-feat-mod'
     | 'save-status-mod'
     | 'save-equipment-mod'
@@ -123,5 +127,7 @@ export type EveryTree =
     | 'damage'
     | 'crit-damage'
     | 'damage-taken'
+    | 'health'
+    | 'initiative'
 
 export type TreeSubproblems = Partial<Record<EveryTree, ModNode>>

@@ -6,6 +6,8 @@ import { createDefaultOwner } from '../../defaults'
 import { bandedMail, heavyShield } from '../../../../defaults/equipment'
 import dodgy from '../feats/dodgy'
 import shieldMastery from '../feats/shield-mastery'
+import { modLogToText } from '../../../log/format'
+import modNodeToText from '../../format'
 
 // LAYER: ac (terminal) = base-ac + ac-from-dex + ac-of-equipment + ac-feat-mod + ac-status-mod. Every
 // child has its own suite, so this only proves they are summed into the final answer. Cat's Grace is
@@ -43,7 +45,9 @@ describe('ac (terminal)', () => {
             fs: { dodgy, shieldMastery },
         })
         // armored 20 (from the first case) + Dodgy 4 + Shield Mastery 1
-        expect(ac(owner).total()).toBe(25)
+        const result = ac(owner)
+        expect(result.total()).toBe(25)
+        console.log(modNodeToText(result))
     })
 
     test('an AC status folds in: Divine Protection (+2)', () => {

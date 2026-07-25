@@ -7,6 +7,7 @@ import { EquipmentSheet } from "../../equipment-sheet";
 import { StatusSheet } from "../../status-sheet";
 import { Ability, AbilityCategory, AbilitySheet } from "../../ability-sheet";
 import { flatFootedStatus } from "../../status-sheet/statuses/flat-footed";
+import { OwnerMaximal } from "../../log2/types";
 
 type Health = {
     max: number,
@@ -21,6 +22,14 @@ export type Owner = {
     ss: StatusSheet,
     as: AbilitySheet,
 }
+// slowly replace with OwnerMaximal
+/* export type Owner = {
+    cs: CharacterSheet,
+    fs: FeatSheet,
+    es: EquipmentSheet,
+    ss: StatusSheet,
+    as: AbilitySheet,
+} */
 
 export type Actor = {
     speed: Speed,

@@ -22,16 +22,6 @@ export type EquipmentMaximal = {
     broadContexts: Partial<Record<BroadContextsMaximal, (owner: OwnerMaximal) => ModNode>>
 }
 
-export type FeatBroadContexts =
-    | 'attack-feat-mod' | 'ac-feat-mod' | 'crit-confirm-mod'
-    | 'crit-scalable-damage-feat-mod' | 'flat-damage-feat-mod'
-    | 'crit-multiplier-mod'
-    | 'crit-threat-range-mod'
-    | 'damage-taken-feat-mod'
-    | 'save-feat-mod'
-    | 'initiative-feat-mod'
-    | 'health-feat-mod'
-
 export type FeatMaximal = {
     displayName: string,
     broadContexts: Partial<Record<FeatBroadContexts, (owner: OwnerMaximal) => ModNode | undefined>>
@@ -58,7 +48,7 @@ export type BaseStateMod = `raw-${CsScore}`
     | `modded-${CsScore}`
     | `${CsScore}-from-status`
 
-export type FeatModTypes = 'attack' | 'ac' | 'initiative' | 'health' | 'flat-damage' | 'crit-scalable-damage' | 'damage-taken'
+export type FeatModTypes = 'attack' | 'ac' | 'initiative' | 'health' | 'flat-damage' | 'crit-scalable-damage' | 'damage-taken' | 'max-dex'
 export type FeatMod = `${FeatModTypes}-feat-mod`
 
 // from terminal/ these are end results
@@ -102,3 +92,28 @@ export type EveryTree =
     | TerminalRoutes
 
 export type TreeSubproblems = Partial<Record<EveryTree, ModNode>>
+
+type Subset<T, U extends T> = U
+/* export type FeatBroadContexts =
+    | 'attack-feat-mod' | 'ac-feat-mod' | 'crit-confirm-mod'
+    | 'crit-scalable-damage-feat-mod' | 'flat-damage-feat-mod'
+    | 'crit-multiplier-mod'
+    | 'crit-threat-range-mod'
+    | 'damage-taken-feat-mod'
+    | 'save-feat-mod'
+    | 'initiative-feat-mod'
+    | 'health-feat-mod' */
+export type FeatBroadContexts = Subset<EveryTree,
+    | 'attack-feat-mod'
+    | 'ac-feat-mod'
+    | 'crit-confirm-mod'
+    | 'crit-scalable-damage-feat-mod'
+    | 'flat-damage-feat-mod'
+    | 'crit-multiplier-mod'
+    | 'crit-threat-range-mod'
+    | 'damage-taken-feat-mod'
+    | 'save-feat-mod'
+    | 'initiative-feat-mod'
+    | 'health-feat-mod'
+    | 'max-dex-feat-mod'
+>

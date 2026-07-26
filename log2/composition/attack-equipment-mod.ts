@@ -2,7 +2,6 @@ import { EveryTree, OwnerMaximal } from "../types";
 import { calculateWeaponEquipmentMod } from "../../roll-modifier/equipment-mod";
 import { extractContextsTags } from "../../equipment-sheet/extract";
 import { equipmentIsWeapon, Weapon } from "../../equipment-sheet";
-import { modResultToNode } from "../collect-status-contributions";
 
 const displayName: EveryTree = 'attack-equipment-mod'
 

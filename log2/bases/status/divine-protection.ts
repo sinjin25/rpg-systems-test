@@ -1,5 +1,5 @@
 import { leaf } from "../../";
-import { StatusEffectMaximal } from "../../types";
+import { ObjectWithBroadContexts } from "../../types";
 
 // divine-protection is a status DEFINITION. It only contributes when it lives in owner.ss - ac-status-mod
 // discovers it there via collectStatusContributions. A flat +acBonus to AC, unconditional (ported from
@@ -7,7 +7,7 @@ import { StatusEffectMaximal } from "../../types";
 //
 // A factory, not a const, because acBonus is caller-supplied (rolled once at grant time in legacy). The
 // legacy roundsRemaining/expiration is a simulate concern, not a tree one, so it is dropped here.
-const divineProtection = (acBonus: number): StatusEffectMaximal => ({
+const divineProtection = (acBonus: number): ObjectWithBroadContexts => ({
     displayName: 'Divine Protection',
     broadContexts: {
         'ac-status-mod': () => leaf('Divine Protection', acBonus),

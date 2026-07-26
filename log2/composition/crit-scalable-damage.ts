@@ -3,7 +3,7 @@ import { EveryTree, OwnerMaximal } from "../types";
 import { equipmentIsWeapon } from "../../equipment-sheet";
 import damageOfEquipmentPiece from "../bases/damage-of-equipment-piece";
 import effectiveDamageStat from "./effective-damage-stat";
-import critScalableDamageFeatMod from "./crit-scalable-damage-feat-mod";
+import featContribution from "./feat-contribution";
 
 const displayName: EveryTree = 'crit-scalable-damage'
 export default (owner: OwnerMaximal) => {
@@ -14,6 +14,6 @@ export default (owner: OwnerMaximal) => {
     return newModNode(displayName, [
         damageOfEquipmentPiece(relevantSlot),
         effectiveDamageStat(owner),
-        critScalableDamageFeatMod(owner),
+        featContribution('crit-scalable-damage-feat-mod')(owner),
     ], sumFunc)
 }

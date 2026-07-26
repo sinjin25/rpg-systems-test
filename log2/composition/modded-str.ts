@@ -1,7 +1,7 @@
 import newModNode, { sumFunc, mapFunc } from "..";
-import newRawStr from "../bases/raw-str";
+import rawCsScore from "../bases/raw-cs-score";
 import { EveryTree, OwnerMaximal, TreeSubproblems } from "../types";
-import strFromStatus from "./status/str-from-status";
+import csFromStatus from "./status/cs-from-status";
 
 const displayName: EveryTree = 'modded-str'
 
@@ -15,8 +15,8 @@ const halfToZero = (raw: number) => {
 export default (owner: OwnerMaximal) => {
 
     const subproblems: TreeSubproblems = {
-        'raw-str': newRawStr(owner),
-        'str-from-status': strFromStatus(owner),
+        'raw-str': rawCsScore('str')(owner),
+        'str-from-status': csFromStatus('str')(owner),
     }
 
     const subpr = Object.values(subproblems)

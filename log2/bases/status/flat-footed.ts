@@ -1,9 +1,9 @@
 import newModNode, { leaf } from "../../";
-import { AllStatusEffects, OwnerMaximal, StatusEffectMaximal } from "../../types";
+import { AllStatusEffects, OwnerMaximal, ObjectWithBroadContexts } from "../../types";
 
 const displayName: AllStatusEffects = 'flat-footed'
 
-const status: StatusEffectMaximal = {
+const status: ObjectWithBroadContexts = {
     displayName,
     broadContexts: {
         'max-dex-of-equipment': (owner: OwnerMaximal) => {

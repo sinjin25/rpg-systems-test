@@ -2,17 +2,25 @@ import { ModNode } from ".";
 import { Owner } from "../character/actor";
 import { BaseEquipment } from "../equipment-sheet";
 
-export type FeatSheetMaximal = { [key: string]: FeatMaximal }
+/* export type FeatSheetMaximal = { [key: string]: FeatMaximal }
 
-export type StatusSheetMaximal = { [key: string]: StatusEffectMaximal }
+export type StatusSheetMaximal = { [key: string]: StatusEffectMaximal } */
 
-export type OwnerMaximal = Omit<Owner, 'fs' | 'ss'> & { fs: FeatSheetMaximal, ss: StatusSheetMaximal, relevantSlot?: BaseEquipment }
+export type OwnerMaximal = Omit<Owner, 'fs' | 'ss' | 'es'> &
+{
+    fs: Record<string, ObjectWithBroadContexts>,
+    ss: Record<string, ObjectWithBroadContexts>,
+    es: Record<string, ObjectWithBroadContexts>,
+    relevantSlot?: BaseEquipment
+
+}
 
 // specific tags for collector functions
-export type BroadContextsMaximal = 'dex-from-status' | 'str-from-status' | 'con-from-status' | 'max-dex-of-equipment' | 'attack-status-mod' | 'ac-status-mod' | 'save-status-mod' | 'damage-taken-status-mod' | `equipment-modded-${CsScore}`
+/* export type BroadContextsMaximal = 'dex-from-status' | 'str-from-status' | 'con-from-status' | 'max-dex-of-equipment' | 'attack-status-mod' | 'ac-status-mod' | 'save-status-mod' | 'damage-taken-status-mod' | `equipment-modded-${CsScore}` */
 
-export type StatusEffectMaximal = {
+/* export type StatusEffectMaximal = {
     displayName: string,
+    description?: string,
     broadContexts: Partial<Record<BroadContextsMaximal, (owner: OwnerMaximal) => ModNode | undefined>>
 }
 
@@ -20,6 +28,11 @@ export type EquipmentMaximal = {
     displayName: string,
     description?: string,
     broadContexts: Partial<Record<BroadContextsMaximal, (owner: OwnerMaximal) => ModNode>>
+} */
+
+export type ObjectWithBroadContexts = {
+    displayName: string,
+    broadContexts: Partial<Record<EveryTree, (owner: OwnerMaximal) => ModNode | undefined>>
 }
 
 export type FeatMaximal = {
@@ -44,11 +57,10 @@ export type CsScore = 'str' | 'dex' | 'con'
 
 export type BaseStateMod = `raw-${CsScore}`
     | `status-modded-${CsScore}`
-    | `equipment-modded-${CsScore}`
+    | `${CsScore}-from-equipment`
     | `modded-${CsScore}`
     | `${CsScore}-from-status`
-
-export type FeatModTypes = 'attack' | 'ac' | 'initiative' | 'health' | 'flat-damage' | 'crit-scalable-damage' | 'damage-taken' | 'max-dex'
+export type FeatModTypes = 'attack' | 'damage' | 'ac' | 'initiative' | 'health' | 'flat-damage' | 'crit-scalable-damage' | 'damage-taken' | 'max-dex'
 export type FeatMod = `${FeatModTypes}-feat-mod`
 
 // from terminal/ these are end results
@@ -94,15 +106,6 @@ export type EveryTree =
 export type TreeSubproblems = Partial<Record<EveryTree, ModNode>>
 
 type Subset<T, U extends T> = U
-/* export type FeatBroadContexts =
-    | 'attack-feat-mod' | 'ac-feat-mod' | 'crit-confirm-mod'
-    | 'crit-scalable-damage-feat-mod' | 'flat-damage-feat-mod'
-    | 'crit-multiplier-mod'
-    | 'crit-threat-range-mod'
-    | 'damage-taken-feat-mod'
-    | 'save-feat-mod'
-    | 'initiative-feat-mod'
-    | 'health-feat-mod' */
 export type FeatBroadContexts = Subset<EveryTree,
     | 'attack-feat-mod'
     | 'ac-feat-mod'
@@ -112,8 +115,20 @@ export type FeatBroadContexts = Subset<EveryTree,
     | 'crit-multiplier-mod'
     | 'crit-threat-range-mod'
     | 'damage-taken-feat-mod'
+    | 'damage-feat-mod'
     | 'save-feat-mod'
     | 'initiative-feat-mod'
     | 'health-feat-mod'
     | 'max-dex-feat-mod'
+>
+
+export type StatusBroadContexts = Subset<EveryTree,
+    /* | 'dex-from-status'
+    | 'str-from-status'
+    | 'con-from-status' */
+    | 'max-dex-of-equipment'
+    | 'attack-status-mod'
+    | 'ac-status-mod'
+    | 'save-status-mod'
+    | 'damage-taken-status-mod'
 >

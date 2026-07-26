@@ -1,17 +1,22 @@
 import { createDefaultOwner as createLegacyOwner } from "../defaults"
 import { CharacterSheet } from "../character-sheet"
-import { EquipmentSheet } from "../equipment-sheet"
 import { StatusSheet } from "../status-sheet"
 import { AbilitySheet } from "../ability-sheet"
-import { FeatSheetMaximal, OwnerMaximal } from "./types"
+import { ObjectWithBroadContexts, OwnerMaximal } from "./types"
 
-// Builds an OwnerMaximal for log2. Reuses the legacy default sheet-builder for the sheets we haven't
-// migrated yet (cs/es/ss/as - including cs level cloning), then swaps in a NATIVE feat sheet. This is
-// the one boundary where legacy sheet defaults meet the native owner, so tests no longer need per-call
-// asFeat casts - a feat goes on the sheet as itself.
+type BaseEquipment = {
+    displayName: string,
+    description?: string,
+    /* contexts: Array<ContextNames | EquipmentContextNames>, */
+    broadContext?: Record<string, ObjectWithBroadContexts>
+}
+export type EquipmentSlot = 'mainhand' | 'offhand' | 'twohanded' | 'armor' | 'ring' | 'amulet'
+type EquipmentSheet = {
+    [K in EquipmentSlot]?: BaseEquipment
+}
 export const createDefaultOwner = (data: Partial<{
     cs: Partial<CharacterSheet>,
-    fs: FeatSheetMaximal,
+    fs: OwnerMaximal['fs'],
     es: Partial<EquipmentSheet>,
     ss: Partial<StatusSheet>,
     as: Partial<AbilitySheet>,

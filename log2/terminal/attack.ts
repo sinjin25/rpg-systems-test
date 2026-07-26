@@ -17,7 +17,7 @@ export default (owner: OwnerMaximal) => {
         'base-attack-bonus': baseAttackBonus(owner),
         'attack-feat-mod': featContribution('attack-feat-mod')(owner),
         'attack-status-mod': attackStatusMod(owner),
-        'attack-equipment-mod': attackEquipmentMod(owner),
+        'attack-from-equipment': attackEquipmentMod(owner),
     }
 
     const subpr = Object.values(subproblems)

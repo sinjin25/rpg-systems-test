@@ -1,7 +1,7 @@
 import newModNode, { sumFunc, mapFunc } from "..";
 import rawCsScore from "../bases/raw-cs-score";
 import { EveryTree, OwnerMaximal, TreeSubproblems } from "../types";
-import equipmentModdedDex from "./equipment/equipment-modded-dex";
+import modFromEquipment from "./equipment/mod-from-equipment";
 import csFromStatus from "./status/cs-from-status";
 
 const displayName: EveryTree = 'modded-dex'
@@ -16,7 +16,7 @@ export default (owner: OwnerMaximal) => {
     const subproblems: TreeSubproblems = {
         'raw-dex': rawCsScore('dex')(owner),
         'dex-from-status': csFromStatus('dex')(owner),
-        'equipment-modded-dex': equipmentModdedDex(owner),
+        'dex-from-equipment': modFromEquipment('dex-from-equipment')(owner)
     }
 
     const subpr = Object.values(subproblems)

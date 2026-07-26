@@ -71,14 +71,14 @@ export const productFunc: TotalFunc = (children) => {
 export const newModNode = (
     displayName: string,
     children: ModNode[] = [],
-    totalFunc: TotalFunc = sumFunc,
+    totalFunc: TotalFunc | number = sumFunc,
 ): ModNode => {
     const node: ModNode = {
         displayName,
         children,
         // reads node.children rather than the captured argument so a tree stays
         // correct if children are pushed after construction
-        total: () => totalFunc(node.children),
+        total: typeof totalFunc === 'number' ? () => totalFunc : () => totalFunc(node.children),
     }
     return node
 }

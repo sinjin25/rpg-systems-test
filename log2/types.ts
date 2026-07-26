@@ -1,16 +1,22 @@
 import { ModNode } from ".";
 import { Owner } from "../character/actor";
-import { BaseEquipment } from "../equipment-sheet";
 
 /* export type FeatSheetMaximal = { [key: string]: FeatMaximal }
 
 export type StatusSheetMaximal = { [key: string]: StatusEffectMaximal } */
+export type BaseEquipment = {
+    tags?: string[], // ex: ['finesse', 'melee']
+} & ObjectWithBroadContexts
+export type EquipmentSlot = 'mainhand' | 'offhand' | 'twohanded' | 'armor' | 'ring' | 'amulet'
+export type EquipmentSheet = {
+    [K in EquipmentSlot]?: BaseEquipment
+}
 
 export type OwnerMaximal = Omit<Owner, 'fs' | 'ss' | 'es'> &
 {
     fs: Record<string, ObjectWithBroadContexts>,
     ss: Record<string, ObjectWithBroadContexts>,
-    es: Record<string, ObjectWithBroadContexts>,
+    es: EquipmentSheet,
     relevantSlot?: BaseEquipment
 
 }
@@ -90,7 +96,7 @@ export type EveryTree =
     | 'effective-damage-stat'
     | 'base-attack-bonus'
     | 'attack-status-mod'
-    | 'attack-equipment-mod'
+    | 'attack-from-equipment'
     | 'ac-status-mod'
     | 'crit-confirm-mod'
     | SaveModSources

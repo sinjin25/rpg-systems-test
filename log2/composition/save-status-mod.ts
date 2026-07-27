@@ -1,8 +1,9 @@
 import newModNode, { sumFunc } from "..";
 import { EveryTree, OwnerMaximal } from "../types";
-import { collectStatusContributions } from "../collect-status-contributions";
+import statusContribution from "./status/status-contribution";
 
-const displayName: EveryTree = 'save-status-mod'
+// pretty sure this should be a member of fortitude, will, reflex
+// and this wasn't finished
+type Member = 'fortitude' | 'reflex' | 'will'
 
-export default (owner: OwnerMaximal) =>
-    newModNode(displayName, collectStatusContributions(owner, 'save-status-mod'), sumFunc)
+export default (member: Member) => (owner: OwnerMaximal) => statusContribution(`${member}-status-mod`)(owner)

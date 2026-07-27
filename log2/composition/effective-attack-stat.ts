@@ -1,7 +1,6 @@
 import newModNode, { maxFunc } from "..";
 import { EveryTree, OwnerMaximal } from "../types";
-import moddedStr from "./modded-str";
-import moddedDex from "./modded-dex";
+import moddedCsScore from "./modded-cs-score";
 
 const displayName: EveryTree = 'effective-attack-stat'
 
@@ -15,11 +14,11 @@ const displayName: EveryTree = 'effective-attack-stat'
 // otherwise (Slashing/Fencing Grace, Agile) - so a damage node must NOT reuse this. See damage.ts.
 const effectiveAttackStat = (owner: OwnerMaximal) => {
     const mainhand = owner.es.mainhand
-    const isFinesse = !!mainhand?.contexts?.includes('finesse')
+    const isFinesse = !!mainhand?.tags?.includes('finesse')
 
     const candidates = isFinesse
-        ? [moddedStr(owner), moddedDex(owner)]
-        : [moddedStr(owner)]
+        ? [moddedCsScore('dex')(owner), moddedCsScore('str')(owner)]
+        : [moddedCsScore('str')(owner)]
 
     return newModNode(displayName, candidates, maxFunc)
 }

@@ -55,9 +55,9 @@ export type AllStatusEffects = 'cats-grace' | 'flat-footed'
 
 export type Saves = 'fortitude' | 'will' | 'reflex'
 export type BaseSaves = `base-${Saves}`
-export type SaveModSources = 'save-feat-mod'
-    | 'save-status-mod'
-    | 'save-equipment-mod'
+export type SaveModSources = `${Saves}-feat-mod`
+    | `${Saves}-status-mod`
+    | `${Saves}-equipment-mod`
 
 export type CsScore = 'str' | 'dex' | 'con'
 
@@ -66,6 +66,7 @@ export type BaseStateMod = `raw-${CsScore}`
     | `${CsScore}-from-equipment`
     | `modded-${CsScore}`
     | `${CsScore}-from-status`
+    | `${CsScore}-total` // after all modifiers
 export type FeatModTypes = 'attack' | 'damage' | 'ac' | 'initiative' | 'health' | 'flat-damage' | 'crit-scalable-damage' | 'damage-taken' | 'max-dex'
 export type FeatMod = `${FeatModTypes}-feat-mod`
 
@@ -122,10 +123,10 @@ export type FeatBroadContexts = Subset<EveryTree,
     | 'crit-threat-range-mod'
     | 'damage-taken-feat-mod'
     | 'damage-feat-mod'
-    | 'save-feat-mod'
     | 'initiative-feat-mod'
     | 'health-feat-mod'
     | 'max-dex-feat-mod'
+    | `${Saves}-feat-mod`
 >
 
 export type StatusBroadContexts = Subset<EveryTree,
@@ -135,6 +136,6 @@ export type StatusBroadContexts = Subset<EveryTree,
     | 'max-dex-of-equipment'
     | 'attack-status-mod'
     | 'ac-status-mod'
-    | 'save-status-mod'
+    | `${Saves}-status-mod`
     | 'damage-taken-status-mod'
 >

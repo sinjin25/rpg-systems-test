@@ -1,11 +1,10 @@
 import newModNode from "..";
-import { EveryTree, OwnerMaximal } from "../types";
+import { CsScore, EveryTree, OwnerMaximal } from "../types";
 
-type Member = 'con' | 'dex' | 'str'
-const displayName = (member: Member) => {
+const displayName = (member: CsScore): EveryTree => {
     return `raw-${member}`
 }
-export default (member: Member) => {
+export default (member: CsScore) => {
     return (owner: OwnerMaximal) => newModNode(
         displayName(member),
         [],

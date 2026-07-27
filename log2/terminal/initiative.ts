@@ -1,13 +1,13 @@
 import { default as newModNode, ModNode, sumFunc } from "..";
 import { OwnerMaximal, EveryTree, TreeSubproblems } from "../types";
-import moddedDex from "../composition/modded-dex";
 import featContribution from "../composition/feat-contribution";
+import moddedCsScore from "../composition/modded-cs-score";
 
 const displayName: EveryTree = 'initiative'
 
 export default (owner: OwnerMaximal) => {
     const subproblems: TreeSubproblems = {
-        'modded-dex': moddedDex(owner),
+        'modded-dex': moddedCsScore('dex')(owner),
         'initiative-feat-mod': featContribution('initiative-feat-mod')(owner)
     }
 

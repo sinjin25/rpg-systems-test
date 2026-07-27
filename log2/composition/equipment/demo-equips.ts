@@ -1,18 +1,18 @@
 // remove this later
 
 import newModNode from "../..";
-import { EquipmentMaximal } from "../../types";
+import { BaseEquipment } from "../../types";
 
-export const dexAmulet: EquipmentMaximal = {
+export const dexAmulet: BaseEquipment = {
     displayName: 'dex amulet',
     broadContexts: {
-        'equipment-modded-dex': (owner) => newModNode('dex amulet', [], (owner) => 2)
+        'dex-from-equipment': (owner) => newModNode('dex amulet', [], (owner) => 2)
     }
 }
 
-export const strAmulet: EquipmentMaximal = {
+export const strAmulet: BaseEquipment = {
     displayName: 'str amulet',
     broadContexts: {
-        'equipment-modded-str': (owner) => newModNode('str amulet', [], (owner) => 2)
+        'str-from-equipment': (owner) => newModNode('str amulet', [], (owner) => 2)
     }
 }

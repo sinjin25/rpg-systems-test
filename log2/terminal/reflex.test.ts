@@ -26,7 +26,7 @@ describe('reflex', () => {
         const node = reflex(createDefaultOwner({}))
         expect(node.displayName).toBe('reflex')
         expect(node.children.map(c => c.displayName)).toEqual([
-            'base-reflex', 'modded-dex', 'save-feat-mod', 'save-status-mod', 'save-equipment-mod',
+            'base-reflex', 'modded-dex', 'reflex-feat-mod', 'reflex-status-mod', 'reflex-equipment-mod',
         ])
     })
 

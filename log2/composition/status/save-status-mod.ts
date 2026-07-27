@@ -1,6 +1,6 @@
-import newModNode, { sumFunc } from "..";
-import { EveryTree, OwnerMaximal } from "../types";
-import statusContribution from "./status/status-contribution";
+import newModNode, { sumFunc } from "../..";
+import { EveryTree, OwnerMaximal } from "../../types";
+import statusContribution from "./status-contribution";
 
 // pretty sure this should be a member of fortitude, will, reflex
 // and this wasn't finished

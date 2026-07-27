@@ -1,5 +1,5 @@
-import { findNodeMatching } from '..'
-import { createDefaultOwner } from '../defaults'
+import { findNodeMatching } from '../../index.ts'
+import { createDefaultOwner } from '../../defaults.ts'
 import saveStatusMod from './save-status-mod.ts'
 import { describe, test, assert, expect } from 'vitest'
 

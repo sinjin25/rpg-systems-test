@@ -2,10 +2,10 @@ import newModNode, { sumFunc } from "..";
 import { ContextNames } from "../../contexts";
 import { OwnerMaximal, EveryTree, TreeSubproblems } from "../types";
 import baseSave from "../composition/base-save";
-import saveStatusMod from "../composition/save-status-mod";
-import saveEquipmentMod from "../composition/save-equipment-mod";
+import saveStatusMod from "../composition/status/save-status-mod";
 import moddedCsScore from "../composition/modded-cs-score";
 import featContribution from "../composition/feat-contribution";
+import modFromEquipment from "../composition/equipment/mod-from-equipment";
 
 const displayName: EveryTree = 'reflex'
 
@@ -16,7 +16,7 @@ export default (owner: OwnerMaximal) => {
         'modded-dex': moddedCsScore('dex')(owner),
         'reflex-feat-mod': featContribution('reflex-feat-mod')(owner),
         'reflex-status-mod': saveStatusMod('reflex')(owner),
-        'reflex-equipment-mod': saveEquipmentMod(owner, REFLEX_CONTEXT),
+        'reflex-equipment-mod': modFromEquipment('reflex-equipment-mod')(owner)
     }
 
     const subpr = Object.values(subproblems)

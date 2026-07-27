@@ -25,7 +25,7 @@ describe('fortitude', () => {
         const node = fortitude(createDefaultOwner({}))
         expect(node.displayName).toBe('fortitude')
         expect(node.children.map(c => c.displayName)).toEqual([
-            'base-fortitude', 'modded-con', 'save-feat-mod', 'save-status-mod', 'save-equipment-mod',
+            'base-fortitude', 'modded-con', 'fortitude-feat-mod', 'fortitude-status-mod', 'fortitude-equipment-mod',
         ])
     })
 

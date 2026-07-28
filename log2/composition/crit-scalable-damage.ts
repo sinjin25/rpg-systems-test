@@ -9,10 +9,9 @@ const displayName: EveryTree = 'crit-scalable-damage'
 export default (owner: OwnerMaximal) => {
     const relevantSlot = owner.relevantSlot
     if (!relevantSlot) throw Error('Need to pass in a weapon to relevantSlot')
-    if (!equipmentIsWeapon(relevantSlot)) throw Error('Need to pass in a weapon to relevantSlot')
 
     return newModNode(displayName, [
-        damageOfEquipmentPiece(relevantSlot),
+        damageOfEquipmentPiece(relevantSlot)(owner),
         effectiveDamageStat(owner),
         featContribution('crit-scalable-damage-feat-mod')(owner),
     ], sumFunc)

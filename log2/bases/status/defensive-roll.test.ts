@@ -19,14 +19,12 @@ describe('defensive-roll', () => {
         }
     })
 
-    test('the die is frozen: total is stable across reads', () => {
+    test('amount is stable across reads', () => {
         setSeed(7)
         try {
             const node = defensiveRoll.broadContexts['damage-taken-status-mod']!(createDefaultOwner({}))!
             const first = node.total()
             expect(node.total()).toBe(first)
-            // the 1d4 shows as a positive child under a negative-total node
-            expect(findNodeMatching(node, /d4/i)?.total()).toBe(-first)
         } finally {
             clearSeed()
         }

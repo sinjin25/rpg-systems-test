@@ -127,18 +127,11 @@ Enforcement — state it out loud:
 > constant leaves **at build time**. Only structural folds (`sum`, `min`, `max`,
 > `product`) survive into the tree.
 
-`rollNode` already models this: it resolves the die once at construction and stores the
-result via `constantFunc`. Any other volatile input must do the same before it enters the
-tree.
-
 ### Sealing: built, then consumed — never mutated after
 
 A sub-tree is pure in `Owner`, fully built before it is returned, and not mutated after
 something consumes it. This matters most for:
 
-- **`rollNode`**, which resolves its die eagerly — a die built before its `sides` subtree
-  finished collecting contributions is silently wrong. Bottom-up ordering makes this
-  correct by default, but nothing *enforces* it.
 - **Foreign trees** (the incoming attack), which must be off-limits to any local mutation.
 
 The invariant is cheap to hold if stated and invisible-until-wrong if not. A `seal()`

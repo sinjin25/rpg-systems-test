@@ -1,4 +1,4 @@
-import maxDexFeatMod from '../../log2/composition/max-dex-feat-mod.ts'
+import featContribution from '../../log2/composition/feat-contribution.ts'
 import { createDefaultOwner } from '../../log2/defaults.ts'
 import { findNodeMatching } from '../../log2/index.ts'
 import armorTraining from './armor-training.ts'
@@ -11,7 +11,7 @@ describe('Works', () => {
                 armorTraining,
             }
         })
-        const maxDexFeatModTree = maxDexFeatMod(owner)
+        const maxDexFeatModTree = featContribution('max-dex-feat-mod')(owner)
         const found = findNodeMatching(maxDexFeatModTree, /training/i)
         assert.exists(found)
         expect(found.total()).toEqual(1)

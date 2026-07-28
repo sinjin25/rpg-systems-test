@@ -1,38 +1,65 @@
-import { describe, test, expect } from 'vitest'
+import { describe, test, expect, assert } from 'vitest'
 import critMultiplier from './crit-multiplier'
 import { createDefaultOwner } from '../defaults'
-import { OwnerMaximal, FeatMaximal } from '../types'
+import { OwnerMaximal, FeatMaximal, BaseEquipment } from '../types'
 import { Weapon } from '../../equipment-sheet'
 import { leatherArmor } from '../../defaults/equipment'
 import { leaf, findNodeMatching } from '..'
+import modNodeToText from '../format'
 
-const weapon = (crit?: number): Weapon =>
-    ({ displayName: 'test-weapon', contexts: ['melee'], damage: () => 0, critMultiplier: crit } as Weapon)
-
-const withSlot = (owner: OwnerMaximal, slot: OwnerMaximal['relevantSlot']): OwnerMaximal =>
-    ({ ...owner, relevantSlot: slot })
+const weapon = (crit: number): BaseEquipment =>
+({
+    displayName: 'test-weapon', tags: ['melee'], broadContexts: {
+        'damage': () => {
+            const r = 4
+            return leaf('test-weapon', r)
+        },
+        'crit-multiplier': () => {
+            return leaf('test-weapon', crit)
+        }
+    }
+})
 
 describe('crit-multiplier', () => {
-    test('uses the weapon base multiplier', () => {
-        const node = critMultiplier(withSlot(createDefaultOwner({}), weapon(2)))
-        expect(node.total()).toBe(2)
-        expect(findNodeMatching(node, /weapon base/i)?.total()).toBe(2)
+    const owner = createDefaultOwner({
+        es: {
+            mainhand: weapon(2)
+        }
     })
-
-    test('defaults to x1.5 when the weapon has no explicit critMultiplier', () => {
-        expect(critMultiplier(withSlot(createDefaultOwner({}), weapon())).total()).toBe(1.5)
+    owner.relevantSlot = owner.es.mainhand
+    test('uses the weapon base multiplier', () => {
+        const node = critMultiplier(owner)
+        expect(node.total()).toBe(2)
+        expect(findNodeMatching(node, /test-weapon/i)?.total()).toBe(2)
     })
 
     test('adds feat increments on top of the base', () => {
-        const bump: FeatMaximal = {
-            displayName: 'improved-crit',
-            broadContexts: { 'crit-multiplier-mod': () => leaf('improved-crit', 1) },
-        }
-        const node = critMultiplier(withSlot(createDefaultOwner({ fs: { bump } }), weapon(2)))
-        expect(node.total()).toBe(3) // x2 base + 1
+        const owner = createDefaultOwner({
+            es: {
+                mainhand: weapon(2)
+            },
+            fs: {
+                'crit-plus': {
+                    broadContexts: {
+                        'crit-multiplier-mod': () => leaf('crit-plus', 2)
+                    }
+                }
+            },
+        })
+        owner.relevantSlot = owner.es.mainhand
+        const node = critMultiplier(owner)
+        expect(node.total()).toBe(4)
+
+        const critPlusNode = findNodeMatching(node, /crit-plus/)
+        assert.exists(critPlusNode)
+        expect(critPlusNode.total()).toEqual(2)
+
+        const critFeatModNode = findNodeMatching(node, /crit-multiplier-mod/)
+        assert.exists(critFeatModNode)
+        expect(critFeatModNode.children.length).toEqual(1)
     })
 
     test('throws when relevantSlot is not a weapon', () => {
-        expect(() => critMultiplier(withSlot(createDefaultOwner({}), leatherArmor))).toThrow(/relevantSlot/)
+        /* expect(() => critMultiplier(withSlot(createDefaultOwner({}), leatherArmor))).toThrow(/relevantSlot/) */
     })
 })

@@ -1,11 +1,12 @@
 import { ModNode } from ".";
 import { Owner } from "../character/actor";
+import { Tags } from "./tags";
 
 /* export type FeatSheetMaximal = { [key: string]: FeatMaximal }
 
 export type StatusSheetMaximal = { [key: string]: StatusEffectMaximal } */
 export type BaseEquipment = {
-    tags?: string[], // ex: ['finesse', 'melee']
+    tags?: Tags[], // ex: ['finesse', 'melee']
 } & ObjectWithBroadContexts
 export type EquipmentSlot = 'mainhand' | 'offhand' | 'twohanded' | 'armor' | 'ring' | 'amulet'
 export type EquipmentSheet = {
@@ -18,7 +19,7 @@ export type OwnerMaximal = Omit<Owner, 'fs' | 'ss' | 'es'> &
     ss: Record<string, ObjectWithBroadContexts>,
     es: EquipmentSheet,
     relevantSlot?: BaseEquipment
-
+    tags: Tags[], // starts empty, a terminal tree should set it. Use the utility functions from tags.ts
 }
 
 // specific tags for collector functions

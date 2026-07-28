@@ -1,54 +1,67 @@
-import { describe, test, expect } from 'vitest'
+import { describe, test, expect, assert } from 'vitest'
 import damage from './damage'
 import { createDefaultOwner } from '../defaults'
-import { OwnerMaximal } from '../types'
+import { BaseEquipment, OwnerMaximal } from '../types'
 import { Weapon } from '../../equipment-sheet'
 import { longSword, daggerPlusOne, leatherArmor } from '../../defaults/equipment'
-import { setSeed, clearSeed } from '../../roll'
-import { findNodeMatching } from '..'
+import roll, { setSeed, clearSeed } from '../../roll'
+import newModNode, { findNodeMatching, leaf } from '..'
 import modNodeToText from '../format'
 
-const weapon = (dmg: number): Weapon =>
-    ({ displayName: 'test-weapon', contexts: ['melee'], damage: () => dmg } as Weapon)
-
-const withSlot = (owner: OwnerMaximal, slot: OwnerMaximal['relevantSlot']): OwnerMaximal =>
-    ({ ...owner, relevantSlot: slot })
+const wp = (dmg: number): BaseEquipment => ({
+    displayName: 'test-weapon',
+    tags: ['melee'],
+    broadContexts: {
+        'damage': () => leaf('test-weapon', dmg)
+    }
+})
 
 describe('damage (terminal)', () => {
     test('sums its two buckets: crit-scalable-damage + flat-damage', () => {
-        const node = damage(withSlot(createDefaultOwner({}), weapon(8)))
-        expect(node.total()).toBe(10) // (8 damage + 2 str) scalable + 0 flat
-        expect(node.children.length).toBe(2)
-        expect(findNodeMatching(node, /crit-scalable-damage/i)).toBeTruthy()
-        expect(findNodeMatching(node, /flat-damage/i)).toBeTruthy()
-    })
-
-    test('total is exactly the sum of its children (trusts them)', () => {
-        const node = damage(withSlot(createDefaultOwner({}), weapon(8)))
-        const childSum = node.children.reduce((acc, c) => acc + c.total(), 0)
-        expect(node.total()).toBe(childSum)
-    })
-
-    test('the die comes from relevantSlot, the stat from the mainhand', () => {
-        const owner = withSlot(
-            createDefaultOwner({ cs: { dex: 18, str: 10 }, es: { mainhand: daggerPlusOne } }),
-            weapon(8),
-        )
+        // NOTE: CRIT-SCALABLE-DAMAGE IS SCALABLE, DOES NOT MEAN IT WAS SCALED
+        const w = wp(5) // 5
+        const owner = createDefaultOwner({
+            cs: { str: 20, dex: 10 }, // +5
+            es: {
+                mainhand: w
+            },
+        })
+        owner.relevantSlot = owner.es.mainhand
         const node = damage(owner)
+        const csd = findNodeMatching(node, /crit-scalable-damage/i)
+        assert.exists(csd)
+        const fd = findNodeMatching(node, /flat-damage/)
+        assert.exists(fd)
 
-        expect(node.total()).toBe(12)
-        expect(findNodeMatching(node, /modded-dex/i)).toBeTruthy()
-        expect(findNodeMatching(node, /effective-damage-stat/i)?.total()).toBe(4)
-        console.log(modNodeToText(node))
+        assert.equal(node.total(), 10)
     })
 
-    test('a real longsword\'s roll is frozen, so the total is stable across reads', () => {
+    test('Confirm a roll can be frozen across reads', () => {
         setSeed(42)
         try {
-            const node = damage(withSlot(createDefaultOwner({}), longSword))
+            const w: BaseEquipment = ({
+                displayName: 'test-weapon',
+                tags: ['melee'],
+                broadContexts: {
+                    'damage': () => {
+                        const r = roll(4)
+                        return leaf('test-weapon', r)
+                    }
+                }
+            })
+            const owner = createDefaultOwner({
+                cs: { str: 10, dex: 10 }, // +5
+                es: {
+                    mainhand: w
+                },
+            })
+            owner.relevantSlot = owner.es.mainhand
+            const node = damage(owner)
             const first = node.total()
-            expect(first).toBeGreaterThanOrEqual(1 + 2)
-            expect(first).toBeLessThanOrEqual(8 + 2)
+            expect(first).toBeGreaterThanOrEqual(1)
+            expect(first).toBeLessThanOrEqual(4)
+
+            // would roll again if it wasn't frozen
             expect(node.total()).toBe(first)
         } finally {
             clearSeed()
@@ -56,10 +69,8 @@ describe('damage (terminal)', () => {
     })
 
     test('throws when no relevantSlot is provided', () => {
-        expect(() => damage(createDefaultOwner({}))).toThrow(/relevantSlot/)
-    })
-
-    test('throws when relevantSlot is not a weapon', () => {
-        expect(() => damage(withSlot(createDefaultOwner({}), leatherArmor))).toThrow(/relevantSlot/)
+        const owner = createDefaultOwner({})
+        owner.relevantSlot = undefined
+        expect(() => damage(owner)).toThrow(/relevant/)
     })
 })

@@ -1,8 +1,7 @@
 import newModNode, { sumFunc } from "../..";
 import { EveryTree, OwnerMaximal } from "../../types";
-import { collectStatusContributions } from "../../collect-status-contributions";
+import statusContribution from "./status-contribution";
 
 const displayName: EveryTree = 'damage-taken-status-mod'
 
-export default (owner: OwnerMaximal) =>
-    newModNode(displayName, collectStatusContributions(owner, 'damage-taken-status-mod'), sumFunc)
+export default (owner: OwnerMaximal) => statusContribution(displayName)(owner)

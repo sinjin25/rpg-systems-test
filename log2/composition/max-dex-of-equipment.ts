@@ -4,15 +4,15 @@ import newModNode, { minFunc } from "..";
 import { Armor, equipmentIsArmor } from "../../equipment-sheet";
 import { OwnerMaximal, EveryTree } from "../types";
 import maxDexOfEquipmentPiece from "../bases/max-dex-of-equipment-piece";
-import { collectStatusContributions } from "../collect-status-contributions";
+import statusContribution from "./status/status-contribution";
 
 const TEMP_MAX = 999
 const displayName: EveryTree = 'max-dex-of-equipment'
 
 export default (owner: OwnerMaximal) => {
     // guard: look for flat-footed first
-    const collection = collectStatusContributions(owner, displayName)
-    const flatFooted = collection.find(a => a.displayName === 'flat-footed')
+    const collection = statusContribution(displayName)(owner)
+    const flatFooted = collection.children.find(a => a.displayName === 'flat-footed')
 
 
     const items = Object.values(owner.es).filter((e): e is Armor => !!e && equipmentIsArmor(e))

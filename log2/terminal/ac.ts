@@ -5,8 +5,8 @@ import { OwnerMaximal, EveryTree, TreeSubproblems } from "../types";
 import acOfEquipment from "../composition/ac/ac-of-equipment";
 import acFromDex from "../composition/ac/ac-from-dex";
 import baseAc from "../bases/base-ac";
-import acFeatMod from "../composition/ac/ac-feat-mod";
 import acStatusMod from "../composition/status/ac-status-mod";
+import featContribution from "../composition/feat-contribution";
 
 const displayName: EveryTree = 'ac'
 
@@ -15,7 +15,7 @@ export default (owner: OwnerMaximal) => {
         'base-ac': baseAc(owner),
         'ac-from-dex': acFromDex(owner),
         "ac-of-equipment": acOfEquipment(owner),
-        'ac-feat-mod': acFeatMod(owner),
+        'ac-feat-mod': featContribution('ac-feat-mod')(owner),
         'ac-status-mod': acStatusMod(owner),
     }
 

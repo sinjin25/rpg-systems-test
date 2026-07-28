@@ -8,10 +8,19 @@ import baseAttackBonus from "../composition/base-attack-bonus";
 import attackStatusMod from "../composition/attack-status-mod";
 import attackEquipmentMod from "../composition/attack-equipment-mod";
 import featContribution from "../composition/feat-contribution";
+import { addTags, mutateOwnerTags, Tags } from "../tags";
 
 const displayName: EveryTree = 'attack'
 
 export default (owner: OwnerMaximal) => {
+    // add tags from equipment
+    const TERMINAL_TAGS: Tags[] = ['standard-attack']
+
+    if (!owner.relevantSlot) throw Error('relevant slot was not passed')
+
+    const eqTg = owner?.relevantSlot?.tags || []
+    mutateOwnerTags(owner, ...eqTg, ...TERMINAL_TAGS)
+
     const subproblems: TreeSubproblems = {
         'effective-attack-stat': effectiveAttackStat(owner),
         'base-attack-bonus': baseAttackBonus(owner),
@@ -19,7 +28,6 @@ export default (owner: OwnerMaximal) => {
         'attack-status-mod': attackStatusMod(owner),
         'attack-from-equipment': attackEquipmentMod(owner),
     }
-
     const subpr = Object.values(subproblems)
 
     return newModNode(

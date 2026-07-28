@@ -23,7 +23,8 @@ export const collectEquipmentTags = (
 
 const collectEquipmentContributions = (
     owner: OwnerMaximal,
-    broadContext: EveryTree
+    broadContext: EveryTree,
+    tags: string[] = []
 ): ModNode[] => {
     const v = Object.values(owner.es)
         .filter(e => !!e)

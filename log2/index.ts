@@ -89,23 +89,6 @@ export const leaf = (displayName: string, amount: number): ModNode =>
 
 export type Roller = (sides: number) => number
 
-// A die. Its rule really is `roll(sides)`, where sides is its own subtree - so
-// anything that grows the die (an oversized-dice effect) is just another child of
-// sides, and shows up in the outline like every other contribution.
-//
-// The roll is resolved once, here, and stored. total() is lazy everywhere else, and
-// a die whose total() rerolled on every read would report a different number to
-// every caller that looked at it.
-export const rollNode = (
-    displayName: string,
-    sides: ModNode,
-    roller: Roller = roll,
-): ModNode => {
-    const rolled = roller(sides.total())
-    // sides is the only child: it is the input to the roll, not a term in it
-    return newModNode(displayName, [sides], constantFunc(rolled))
-}
-
 // options for findNodeMatching. Partial at the call site - any key left out uses the default below,
 // so `findNodeMatching(node, /dex/i)` just works.
 export type MatchNodeOptions = {

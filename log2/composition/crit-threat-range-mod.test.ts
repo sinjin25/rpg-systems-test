@@ -12,7 +12,7 @@ describe('crit-threat-range-mod (native)', () => {
             fs: { improvedCritical },
         }))
         expect(node.total()).toBe(-1)
-        console.log(modNodeToText(node))
+        /* console.log(modNodeToText(node)) */
         const find = findNodeMatching(node, /improved\-critical/i)
         assert.exists(find)
     })

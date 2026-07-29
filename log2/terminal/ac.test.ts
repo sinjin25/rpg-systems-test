@@ -39,7 +39,7 @@ describe('ac (terminal)', () => {
         // armored 20 (from the first case) + Dodgy 4 + Shield Mastery 1
         const result = ac(owner)
         expect(result.total()).toBe(25)
-        console.log(modNodeToText(result))
+        /* console.log(modNodeToText(result)) */
     })
 
     test('an AC status folds in: Divine Protection (+2)', () => {

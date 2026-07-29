@@ -12,7 +12,7 @@ describe('crit-confirm-mod (native)', () => {
             fs: { critFocus },
         }))
         expect(node.total()).toBe(4)
-        console.log(modNodeToText(node))
+        /* console.log(modNodeToText(node)) */
         const find = findNodeMatching(node, /crit\-focus/i)
         assert.exists(find)
     })

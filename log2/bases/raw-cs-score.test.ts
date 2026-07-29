@@ -6,7 +6,6 @@ describe('Can grab raw scores', () => {
     test('Str', () => {
         const owner = createDefaultOwner()
         const rawStr = rawCsScore('str')(owner)
-        console.log(rawStr.total())
     })
     test('Con', () => {
         const owner = createDefaultOwner({
@@ -15,7 +14,6 @@ describe('Can grab raw scores', () => {
             }
         })
         const rawStr = rawCsScore('con')(owner)
-        console.log(rawStr.total())
     })
     test('Dex', () => {
         const owner = createDefaultOwner({
@@ -24,6 +22,5 @@ describe('Can grab raw scores', () => {
             }
         })
         const rawStr = rawCsScore('dex')(owner)
-        console.log(rawStr.total())
     })
 })

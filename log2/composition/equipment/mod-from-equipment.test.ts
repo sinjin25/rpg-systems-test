@@ -1,6 +1,6 @@
 import roll from '../../../roll/index.ts'
 import { createDefaultOwner } from '../../defaults.ts'
-import newModNode, { findNodeMatching, rollNode } from '../../index.ts'
+import newModNode, { findNodeMatching } from '../../index.ts'
 import { describe, test, assert, expect } from 'vitest'
 import { BaseEquipment, OwnerMaximal } from '../../types.ts'
 import modFromEquipment from './mod-from-equipment.ts'

@@ -23,7 +23,7 @@ describe('Works', () => {
         assert.equal(dex.total(), 4)
         assert.equal(con.total(), 0)
 
-        console.log(str)
+        /* console.log(str) */
         assert.exists(findNodeMatching(str, 'str-from-status', {
             includeRoot: true,
         }))

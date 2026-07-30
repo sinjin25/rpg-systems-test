@@ -1,11 +1,6 @@
-import newModNode, { leaf, mapFunc, rollNode } from "../../";
+import newModNode, { leaf } from "../../";
 import roll from "../../../roll";
 import { ObjectWithBroadContexts } from "../../types";
-
-// defensive-roll is a DEFENDER status: when hit, roll 1d4 and subtract it from the incoming damage.
-// The die is a frozen roll (rollNode resolves it once at build time and stores the constant, so the
-// tree stays pure - see DESIGN.md purity/sealing), wrapped in mapFunc(x => -x) so it REDUCES the sum.
-// The 1d4 shows as a positive child under a node whose own total is negative, keeping the die visible.
 
 const displayName = `Defensive Roll`
 const defensiveRoll: ObjectWithBroadContexts = {

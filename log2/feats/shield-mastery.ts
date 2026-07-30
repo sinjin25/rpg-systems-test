@@ -1,7 +1,6 @@
 import { leaf } from "..";
 import { hasAllTags } from "../tags";
 import { AllFeats, FeatMaximal } from "../types";
-import { hasEquipmentTag } from "./gate";
 
 const displayName: AllFeats = 'shield-mastery'
 

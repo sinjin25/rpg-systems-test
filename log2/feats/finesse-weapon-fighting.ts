@@ -1,6 +1,6 @@
 import { leaf } from "..";
+import { hasAllTags } from "../tags";
 import { AllFeats, FeatMaximal } from "../types";
-import { passesTags, weaponTags } from "./gate";
 
 const displayName: AllFeats = 'finesse-weapon-fighting'
 
@@ -10,7 +10,7 @@ const feat: FeatMaximal = {
     displayName,
     broadContexts: {
         'attack-feat-mod': (owner) =>
-            passesTags(weaponTags(owner), ['finesse'], []) ? leaf(displayName, 1) : undefined,
+            hasAllTags(owner.tags, ['finesse']) ? leaf(displayName, 1) : undefined
     },
 }
 

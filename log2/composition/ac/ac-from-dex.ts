@@ -16,6 +16,7 @@ export default (owner: OwnerMaximal) => {
     }
 
     const subpr = Object.values(subproblems)
+        .filter(a => !!a)
 
     return newModNode(
         displayName,

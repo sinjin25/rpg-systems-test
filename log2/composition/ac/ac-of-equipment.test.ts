@@ -1,12 +1,19 @@
-import { describe, test, expect } from 'vitest'
+import { describe, test, expect, assert } from 'vitest'
 import acOfEquipment from './ac-of-equipment'
 import { createDefaultOwner } from '../../defaults'
-import { bandedMail, heavyShield } from '../../../defaults/equipment'
+import { armors, heavyShield } from '../../../equipment-sheet2/defaults'
+import { findNodeMatching } from '../..'
 
 describe('ac-of-equipment', () => {
     test('sums every armor piece, shields included', () => {
-        const owner = createDefaultOwner({ es: { armor: bandedMail, offhand: heavyShield } })
-        expect(acOfEquipment(owner).total()).toBe(9) // banded mail 7 + heavy shield 2
+        const owner = createDefaultOwner({ es: { armor: armors['banded mail'], offhand: heavyShield } })
+        const node = acOfEquipment(owner)
+        expect(node.total()).toBe(9) // banded mail 7 + heavy shield 2
+        const f1 = findNodeMatching(node, /banded mail/)
+        const f2 = findNodeMatching(node, /heavy shield/)
+
+        assert.exists(f1)
+        assert.exists(f2)
     })
 
     test('no armor is 0', () => {

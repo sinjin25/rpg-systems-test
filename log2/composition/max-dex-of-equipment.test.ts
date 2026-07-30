@@ -1,47 +1,75 @@
 import { describe, test, expect, assert } from 'vitest'
 import maxDexOfEquipment from './max-dex-of-equipment'
-import { createDefaultOwner } from '../defaults'
-import { bandedMail, halfPlate, heavyShield } from '../../defaults/equipment'
 import flatFooted from '../bases/status/flat-footed'
 import modNodeToText from '../format'
+import { armors, heavyShield } from '../../equipment-sheet2/defaults'
+import { createDefaultOwner } from '../defaults'
+import { OwnerMaximal } from '../types'
+import { findNodeMatching, leaf } from '..'
 
-const TEMP_MAX = 999 // no cap
+const owner = createDefaultOwner({
+    es: {
+        armor: armors['banded mail'], offhand: {
+            displayName: 'super-heavy-shield',
+            broadContexts: {
+                'max-dex-of-equipment': (o: OwnerMaximal) => {
+                    return leaf('super-heavy-shield', 0)
+                }
+            }
+        }
+    }
+})
 
 describe('max-dex-of-equipment', () => {
-    test('the most restrictive real cap wins', () => {
-        // banded mail caps at +1, half plate at 0 -> 0 is the tighter cap
-        const owner = createDefaultOwner({ es: { armor: bandedMail, offhand: halfPlate } })
-        expect(maxDexOfEquipment(owner).total()).toBe(0)
+    test('No max dex equipment returns undefined', () => {
+        const owner = createDefaultOwner()
+        const node = maxDexOfEquipment(owner)
+        assert.notExists(node)
     })
+    test('Reports max dex of equipment, taking the floor', () => {
+        const node = maxDexOfEquipment(owner)!
+        assert.equal(node.total(), 0)
+        assert.exists(node)
 
-    test('unlimited pieces (a shield with no cap) drop out of the min', () => {
-        const owner = createDefaultOwner({ es: { armor: bandedMail, offhand: heavyShield } })
-        expect(maxDexOfEquipment(owner).total()).toBe(1) // banded mail's +1, shield ignored
-    })
+        const f0 = findNodeMatching(node, /max-dex-of-equipment/, {
+            includeRoot: true,
+        })
+        assert.exists(f0)
 
-    test('no armor -> the placeholder max (no cap applied)', () => {
-        expect(maxDexOfEquipment(createDefaultOwner({})).total()).toBe(TEMP_MAX)
-    })
+        const f1 = findNodeMatching(node, /super-heavy/)
+        const f2 = findNodeMatching(node, /banded mail/)
 
-    test('only-unlimited armor -> the placeholder max', () => {
-        const owner = createDefaultOwner({ es: { offhand: heavyShield } })
-        expect(maxDexOfEquipment(owner).total()).toBe(TEMP_MAX)
+        assert.exists(f1)
+        assert.equal(f1.total(), 0)
+        assert.exists(f2)
+        assert.equal(f2.total(), 1)
     })
 })
 
 describe('Works with flat-footed status', () => {
     test('Flat-footed hijacks and returns 0', () => {
         const owner = createDefaultOwner({
-            es: { armor: bandedMail, offhand: heavyShield },
+            es: {
+                armor: armors['banded mail']
+            },
             ss: {
-                flatFooted
+                flatFooted: {
+                    displayName: 'flat-footed',
+                    broadContexts: {},
+                }
             }
         })
-        const result = maxDexOfEquipment(owner)
-        expect(result.total()).toBe(0)
+        const node = maxDexOfEquipment(owner)!
+        assert.equal(node.total(), 0)
+        assert.exists(node)
 
         // still returns the original items
-        const containsMail = result.children.find(a => a.displayName === bandedMail.displayName)
-        assert.exists(containsMail)
+        const f0 = findNodeMatching(node, /flat-footed/)
+        assert.exists(f0)
+        assert.equal(f0.total(), 0)
+
+        const f1 = findNodeMatching(node, /banded mail/)
+        assert.exists(f1)
+        assert.equal(f1.total(), 1)
     })
 })

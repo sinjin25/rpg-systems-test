@@ -1,14 +1,32 @@
-import { describe, test, expect } from 'vitest'
+import { describe, test, expect, assert } from 'vitest'
 import acOfEquipmentPiece from './ac-of-equipment-piece'
-import { Armor } from '../../equipment-sheet'
-const armor = (ac?: number): Armor => ({ displayName: 'test', contexts: [], ac } as Armor)
+import { armors, heavyShield } from '../../equipment-sheet2/defaults'
+import { findNodeMatching } from '..'
+import modNodeToText from '../format'
+import { createDefaultOwner } from '../defaults'
 
 describe('ac-of-equipment-piece', () => {
-    test('reports the piece\'s ac', () => {
-        expect(acOfEquipmentPiece(armor(7)).total()).toBe(7)
+    const owner = createDefaultOwner({
+        es: {
+            armor: armors['banded mail'],
+            offhand: heavyShield,
+        }
+    })
+    test('Returns a node where relevant', () => {
+        const node = acOfEquipmentPiece(owner.es.armor!)(owner)
+        assert.exists(node)
+        assert.equal(node.total(), 7)
+
+        const node2 = acOfEquipmentPiece(owner.es.offhand!)(owner)
+        assert.exists(node2)
+        assert.equal(node2.total(), 2)
     })
 
-    test('a piece with no ac contributes 0', () => {
-        expect(acOfEquipmentPiece(armor(undefined)).total()).toBe(0)
+    test('Returns undefined when no relevant broadContext', () => {
+        const node = acOfEquipmentPiece({
+            displayName: 'shortsword',
+            broadContexts: {},
+        })(owner)
+        assert.notExists(node)
     })
 })

@@ -17,6 +17,7 @@ export type EquipmentTags = | 'melee'
     | 'medium-armor'
     | 'heavy-armor'
     | 'unarmored'
+    | 'ac'
 // from terminal branches
 export type TerminalTags = | 'standard-attack'
     | 'crit-confirm'

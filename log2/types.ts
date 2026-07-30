@@ -1,17 +1,12 @@
 import { ModNode } from ".";
 import { Owner } from "../character/actor";
+import { BaseEquipment, EquipmentSheet } from "../equipment-sheet2/types";
 import { Tags } from "./tags";
 
 /* export type FeatSheetMaximal = { [key: string]: FeatMaximal }
 
 export type StatusSheetMaximal = { [key: string]: StatusEffectMaximal } */
-export type BaseEquipment = {
-    tags?: Tags[], // ex: ['finesse', 'melee']
-} & ObjectWithBroadContexts
-export type EquipmentSlot = 'mainhand' | 'offhand' | 'twohanded' | 'armor' | 'ring' | 'amulet'
-export type EquipmentSheet = {
-    [K in EquipmentSlot]?: BaseEquipment
-}
+
 
 export type OwnerMaximal = Omit<Owner, 'fs' | 'ss' | 'es'> &
 {
@@ -21,21 +16,6 @@ export type OwnerMaximal = Omit<Owner, 'fs' | 'ss' | 'es'> &
     relevantSlot?: BaseEquipment
     tags: Tags[], // starts empty, a terminal tree should set it. Use the utility functions from tags.ts
 }
-
-// specific tags for collector functions
-/* export type BroadContextsMaximal = 'dex-from-status' | 'str-from-status' | 'con-from-status' | 'max-dex-of-equipment' | 'attack-status-mod' | 'ac-status-mod' | 'save-status-mod' | 'damage-taken-status-mod' | `equipment-modded-${CsScore}` */
-
-/* export type StatusEffectMaximal = {
-    displayName: string,
-    description?: string,
-    broadContexts: Partial<Record<BroadContextsMaximal, (owner: OwnerMaximal) => ModNode | undefined>>
-}
-
-export type EquipmentMaximal = {
-    displayName: string,
-    description?: string,
-    broadContexts: Partial<Record<BroadContextsMaximal, (owner: OwnerMaximal) => ModNode>>
-} */
 
 export type ObjectWithBroadContexts = {
     displayName: string,
@@ -108,6 +88,7 @@ export type EveryTree =
     | 'crit-multiplier-mod'
     | 'crit-threat-range-mod'
     | 'damage-taken-status-mod'
+    | 'enhancement' // used by attack, ac, damage, for equipment (mostly flavor)
     // terminal
     | TerminalRoutes
 

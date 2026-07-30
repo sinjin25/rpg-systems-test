@@ -2,7 +2,8 @@ import { createDefaultOwner as createLegacyOwner } from "../defaults"
 import { CharacterSheet } from "../character-sheet"
 import { StatusSheet } from "../status-sheet"
 import { AbilitySheet } from "../ability-sheet"
-import { BaseEquipment, EquipmentSheet, ObjectWithBroadContexts, OwnerMaximal } from "./types"
+import { ObjectWithBroadContexts, OwnerMaximal } from "./types"
+import { EquipmentSheet, BaseEquipment } from "../equipment-sheet2/types"
 
 const shortsword: BaseEquipment = {
     broadContexts: {},
@@ -22,11 +23,11 @@ export const createDefaultOwner = (data: Partial<{
     const defaultWp = shortsword
     const owner: OwnerMaximal = {
         ...base, es: {
-            mainhand: shortsword,
+            mainhand: defaultWp,
             ...data.es,
         }, fs: fs ?? {}, tags: []
     }
-    console.log('owner.es', owner.es)
+    /* console.log('owner.es', owner.es) */
     owner.relevantSlot = owner.es.mainhand
     return owner
 }

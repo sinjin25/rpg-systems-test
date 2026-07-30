@@ -3,13 +3,14 @@ import acFromDex from './ac-from-dex'
 import catsGrace from '../../bases/status/cats-grace'
 import { createDefaultOwner } from '../../defaults'
 import { bandedMail } from '../../../defaults/equipment'
+import { armors } from '../../../equipment-sheet2/defaults'
 
 describe('ac-from-dex', () => {
     test('the armor cap clamps a higher dex', () => {
         // dex 14 + Cat's Grace 4 -> modded-dex +4, banded mail caps at +1
         const owner = createDefaultOwner({
             cs: { dex: 14 },
-            es: { armor: bandedMail },
+            es: { armor: armors['banded mail'] },
             ss: { catsGrace },
         })
         expect(acFromDex(owner).total()).toBe(1)

@@ -73,6 +73,7 @@ export type EveryTree =
     | 'attack-from-equipment'
     | 'ac-status-mod'
     | 'crit-confirm-mod'
+    | 'crit-scalable-damage-status-mod'
     | SaveModSources
     | 'crit-scalable-damage'
     | 'flat-damage'
@@ -103,13 +104,12 @@ export type FeatBroadContexts = Subset<EveryTree,
     | `${Saves}-feat-mod`
 >
 
+// convert this into a template literal soon
 export type StatusBroadContexts = Subset<EveryTree,
-    /* | 'dex-from-status'
-    | 'str-from-status'
-    | 'con-from-status' */
     | 'max-dex-of-equipment'
     | 'attack-status-mod'
     | 'ac-status-mod'
     | `${Saves}-status-mod`
     | 'damage-taken-status-mod'
+    | 'crit-scalable-damage-status-mod'
 >

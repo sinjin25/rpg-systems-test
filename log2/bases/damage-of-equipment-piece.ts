@@ -1,7 +1,8 @@
 import newModNode, { leaf } from "..";
 import { Armor, Weapon } from "../../equipment-sheet";
+import { BaseEquipment } from "../../equipment-sheet2/types";
 import roll from "../../roll";
-import { BaseEquipment, OwnerMaximal } from "../types";
+import { OwnerMaximal } from "../types";
 
 export default (equipment: BaseEquipment) => (owner: OwnerMaximal) => {
     // freeze the roll in the closure so it isn't recalced on running .total()

@@ -54,7 +54,7 @@ export type StatusPersistTypes = {
 export type StatusEffect = {
     displayName: string,
     description?: string,
-    broadContext: ObjectWithBroadContexts['broadContexts']
+    broadContexts: ObjectWithBroadContexts['broadContexts']
     expiration: StatusExpiration,
     onExpiration?: (data?: Partial<OwnerMaximal>) => StatusEffect | undefined,
     /* interceptRoll?: InterceptRollFunction, */

@@ -34,6 +34,7 @@ describe('battle-focus', () => {
         decayRoundsElapsed(owner, 1)
         const obj = owner.ss.battleFocus
         assert.equal(obj.displayName, 'Battle Focus')
+        if (!obj.expiration || obj.expiration.kind !== 'rounds-elapsed') throw Error('unexpected obj.expiration')
         assert.equal(obj?.expiration?.remaining, 1)
 
         decayRoundsElapsed(owner, 1)

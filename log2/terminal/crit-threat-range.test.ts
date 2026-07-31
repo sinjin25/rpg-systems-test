@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vitest'
 import critThreatRange from './crit-threat-range'
-import { createDefaultOwner } from '../defaults'
-import { OwnerMaximal } from '../types'
+import { createDefaultOwner } from '../../actor2'
+import { OwnerLog2 } from '../types'
 import { Weapon } from '../../equipment-sheet'
 import { leatherArmor } from '../../defaults/equipment'
 import { findNodeMatching, leaf } from '..'
@@ -23,7 +23,7 @@ describe('crit-threat-range (terminal)', () => {
                 mainhand: {
                     displayName: 'rapier',
                     broadContexts: {
-                        'crit-threat-range': (o: OwnerMaximal) => leaf('rapier', 18)
+                        'crit-threat-range': (o: OwnerLog2) => leaf('rapier', 18)
                     }
                 }
             }

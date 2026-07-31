@@ -2,12 +2,12 @@
 
 import { default as newModNode, ModNode } from "../..";
 import maxDexOfEquipment from "../max-dex-of-equipment";
-import { OwnerMaximal, EveryTree, TreeSubproblems } from "../../types"
+import { OwnerLog2, EveryTree, TreeSubproblems } from "../../types"
 import moddedCsScore from "../modded-cs-score";
 
 const displayName: EveryTree = 'ac-from-dex'
 
-export default (owner: OwnerMaximal) => {
+export default (owner: OwnerLog2) => {
 
     const subproblems: TreeSubproblems = {
         // solve modded dex

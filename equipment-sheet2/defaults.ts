@@ -1,7 +1,8 @@
 // default equipment for testing purposes
 import newModNode, { leaf, ModNode } from '../log2'
 import { Tags } from '../log2/tags'
-import { ObjectWithBroadContexts, OwnerMaximal } from '../log2/types'
+import { ObjectWithBroadContexts } from '../log2/types'
+import { OwnerMaximal } from '../actor2'
 import roll from '../roll'
 import type { BaseEquipment, EquipmentSheet, EquipmentSlot } from './types'
 

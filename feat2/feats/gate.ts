@@ -1,5 +1,5 @@
 import { ContextNames, EquipmentContextNames } from "../../contexts";
-import { OwnerMaximal } from "../../log2/types";
+import { OwnerMaximal } from "../../actor2";
 // remove later probably
 
 type Tag = ContextNames | EquipmentContextNames

@@ -1,7 +1,7 @@
 import { describe, test, expect, assert } from 'vitest'
 import critScalableDamage from './crit-scalable-damage'
-import { createDefaultOwner } from '../defaults'
-import { OwnerMaximal, ObjectWithBroadContexts } from '../types'
+import { createDefaultOwner } from '../../actor2'
+import { OwnerLog2, ObjectWithBroadContexts } from '../types'
 import { leaf, findNodeMatching } from '..'
 import { BaseEquipment } from '../../equipment-sheet2/types'
 import { StatusEffect } from '../../status-sheet2'
@@ -13,7 +13,7 @@ const weapon = (dmg: number): BaseEquipment =>
     }
 })
 
-const withSlot = (owner: OwnerMaximal, slot: OwnerMaximal['relevantSlot']): OwnerMaximal =>
+const withSlot = (owner: OwnerLog2, slot: OwnerLog2['relevantSlot']): OwnerLog2 =>
     ({ ...owner, relevantSlot: slot })
 
 const st: StatusEffect = {

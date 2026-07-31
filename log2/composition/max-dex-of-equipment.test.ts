@@ -3,8 +3,8 @@ import maxDexOfEquipment from './max-dex-of-equipment'
 import flatFooted from '../../status-sheet2/status/flat-footed'
 import modNodeToText from '../format'
 import { armors, heavyShield } from '../../equipment-sheet2/defaults'
-import { createDefaultOwner } from '../defaults'
-import { OwnerMaximal } from '../types'
+import { createDefaultOwner } from '../../actor2'
+import { OwnerLog2 } from '../types'
 import { findNodeMatching, leaf } from '..'
 
 const owner = createDefaultOwner({
@@ -12,7 +12,7 @@ const owner = createDefaultOwner({
         armor: armors['banded mail'], offhand: {
             displayName: 'super-heavy-shield',
             broadContexts: {
-                'max-dex-of-equipment': (o: OwnerMaximal) => {
+                'max-dex-of-equipment': (o: OwnerLog2) => {
                     return leaf('super-heavy-shield', 0)
                 }
             }

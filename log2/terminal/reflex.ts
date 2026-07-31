@@ -1,6 +1,6 @@
 import newModNode, { sumFunc } from "..";
 import { ContextNames } from "../../contexts";
-import { OwnerMaximal, EveryTree, TreeSubproblems } from "../types";
+import { OwnerLog2, EveryTree, TreeSubproblems } from "../types";
 import baseSave from "../composition/base-save";
 import saveStatusMod from "../composition/status/save-status-mod";
 import moddedCsScore from "../composition/modded-cs-score";
@@ -10,7 +10,7 @@ import modFromEquipment from "../composition/equipment/mod-from-equipment";
 const displayName: EveryTree = 'reflex'
 
 const REFLEX_CONTEXT = ['dexterity'] as ContextNames[]
-export default (owner: OwnerMaximal) => {
+export default (owner: OwnerLog2) => {
     const subproblems: TreeSubproblems = {
         'base-reflex': baseSave(owner, 'reflex'),
         'modded-dex': moddedCsScore('dex')(owner),

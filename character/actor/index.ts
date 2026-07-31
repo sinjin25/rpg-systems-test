@@ -7,7 +7,6 @@ import { EquipmentSheet } from "../../equipment-sheet";
 import { StatusSheet } from "../../status-sheet";
 import { Ability, AbilityCategory, AbilitySheet } from "../../ability-sheet";
 import { flatFootedStatus } from "../../status-sheet/statuses/flat-footed";
-import { OwnerMaximal } from "../../log2/types";
 
 type Health = {
     max: number,

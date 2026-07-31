@@ -3,11 +3,11 @@
 import newModNode from "../..";
 import { Armor, equipmentIsArmor } from "../../../equipment-sheet";
 import acOfEquipmentPiece from "../../bases/ac-of-equipment-piece";
-import { OwnerMaximal, EveryTree } from "../../types";
+import { OwnerLog2, EveryTree } from "../../types";
 
 const displayName: EveryTree = 'ac-of-equipment'
 
-export default (owner: OwnerMaximal) => {
+export default (owner: OwnerLog2) => {
     const items = Object.values(owner.es).map(a => {
         return acOfEquipmentPiece(a)(owner)
     })

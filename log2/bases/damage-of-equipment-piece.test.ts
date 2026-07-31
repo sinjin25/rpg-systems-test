@@ -5,7 +5,7 @@ import { longSword } from '../../defaults/equipment'
 import { setSeed, clearSeed } from '../../roll'
 import { BaseEquipment } from '../types'
 import newModNode, { findNodeMatching, leaf } from '..'
-import { createDefaultOwner } from '../defaults'
+import { createDefaultOwner } from '../../actor2'
 
 const owner = createDefaultOwner()
 const weapon = (damage: number): BaseEquipment =>

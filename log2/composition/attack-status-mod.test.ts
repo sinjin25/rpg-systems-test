@@ -1,9 +1,9 @@
 import { describe, test, expect } from 'vitest'
 import attackStatusMod from './attack-status-mod'
-import { createDefaultOwner } from '../defaults'
+import { createDefaultOwner } from '../../actor2'
 import { leaf } from '..'
 import bullsStrength from '../../status-sheet2/status/bulls-strength'
-import { ObjectWithBroadContexts, OwnerMaximal } from '../types'
+import { ObjectWithBroadContexts, OwnerLog2 } from '../types'
 import { hasAllTags, mutateOwnerTags } from '../tags'
 
 // +2 attack, but only on a melee weapon
@@ -17,7 +17,7 @@ const meleeBless: ObjectWithBroadContexts = {
 const rangedOnly: ObjectWithBroadContexts = {
     displayName: 'Ranged Only',
     broadContexts: {
-        'attack-status-mod': (o: OwnerMaximal) => hasAllTags(o.tags, ['ranged']) ? leaf('Ranged Only', 2) : undefined,
+        'attack-status-mod': (o: OwnerLog2) => hasAllTags(o.tags, ['ranged']) ? leaf('Ranged Only', 2) : undefined,
     },
 }
 

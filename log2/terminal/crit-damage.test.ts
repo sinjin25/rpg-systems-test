@@ -1,7 +1,7 @@
 import { describe, test, expect, assert } from 'vitest'
 import critDamage from './crit-damage'
-import { createDefaultOwner } from '../defaults'
-import { OwnerMaximal, ObjectWithBroadContexts } from '../types'
+import { createDefaultOwner } from '../../actor2'
+import { OwnerLog2, ObjectWithBroadContexts } from '../types'
 import { Weapon } from '../../equipment-sheet'
 import { leatherArmor } from '../../defaults/equipment'
 import { leaf, findNodeMatching } from '..'
@@ -23,7 +23,7 @@ const weapon = (dmg: number, crit?: number): BaseEquipment =>
 } as BaseEquipment)
 
 
-const flatStatOwner = (fs: OwnerMaximal['fs'] = {}) =>
+const flatStatOwner = (fs: OwnerLog2['fs'] = {}) =>
     createDefaultOwner({ cs: { str: 10, dex: 10 }, fs })
 
 const scalingFeat: Feat2 = ({

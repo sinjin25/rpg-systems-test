@@ -1,5 +1,5 @@
 import featContribution from '../../log2/composition/feat-contribution.ts'
-import { createDefaultOwner } from '../../log2/defaults.ts'
+import { createDefaultOwner } from '../../actor2'
 import { findNodeMatching } from '../../log2/index.ts'
 import armorTraining from './armor-training.ts'
 import { describe, test, assert, expect } from 'vitest'

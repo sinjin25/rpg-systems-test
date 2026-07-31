@@ -1,9 +1,9 @@
 import newModNode, { leaf } from "..";
 import { BaseEquipment } from "../../equipment-sheet2/types";
-import { EveryTree, OwnerMaximal } from "../types";
+import { EveryTree, OwnerLog2 } from "../types";
 
 const broadContext: EveryTree = 'ac-of-equipment'
-export default (equipment: BaseEquipment) => (owner: OwnerMaximal) => {
+export default (equipment: BaseEquipment) => (owner: OwnerLog2) => {
     if (!equipment || !equipment.broadContexts[broadContext]) return undefined
 
     // this never requires an owner to be passed

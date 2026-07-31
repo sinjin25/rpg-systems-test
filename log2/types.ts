@@ -5,7 +5,9 @@ import { Tags } from "./tags";
 
 
 
-export type OwnerMaximal = Omit<Owner, 'fs' | 'ss' | 'es'> &
+// the structural contract log2 traversal needs: anything it can walk broadContexts on.
+// the concrete assembled actor lives in actor2/ and is assignable to this.
+export type OwnerLog2 = Omit<Owner, 'fs' | 'ss' | 'es'> &
 {
     fs: Record<string, ObjectWithBroadContexts>,
     ss: Record<string, ObjectWithBroadContexts>,
@@ -16,7 +18,7 @@ export type OwnerMaximal = Omit<Owner, 'fs' | 'ss' | 'es'> &
 
 export type ObjectWithBroadContexts = {
     displayName: string,
-    broadContexts: Partial<Record<EveryTree, (owner: OwnerMaximal) => ModNode | undefined>>
+    broadContexts: Partial<Record<EveryTree, (owner: OwnerLog2) => ModNode | undefined>>
 }
 
 export type AllFeats =

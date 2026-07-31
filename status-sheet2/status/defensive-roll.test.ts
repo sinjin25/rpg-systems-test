@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest'
 import defensiveRoll from './defensive-roll'
-import { createDefaultOwner } from '../../log2/defaults'
+import { createDefaultOwner } from '../../actor2'
 import { findNodeMatching } from '../../log2'
 import { setSeed, clearSeed } from '../../roll'
 

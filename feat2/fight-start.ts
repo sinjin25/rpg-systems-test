@@ -1,7 +1,7 @@
 import { FeatSheet } from "."
 import { CharacterSheet } from "../character-sheet"
 import { EquipmentSheet } from "../equipment-sheet"
-import { OwnerMaximal } from "../log2/types"
+import { OwnerMaximal } from "../actor2"
 import { StatusSheet } from "../status-sheet/types"
 
 

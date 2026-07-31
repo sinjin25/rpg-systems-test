@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest'
 import flatDamage from './flat-damage'
-import { createDefaultOwner } from '../defaults'
+import { createDefaultOwner } from '../../actor2'
 import { ObjectWithBroadContexts } from '../types'
 import { leaf, findNodeMatching } from '..'
 

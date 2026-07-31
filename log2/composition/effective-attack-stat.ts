@@ -1,5 +1,5 @@
 import newModNode, { maxFunc } from "..";
-import { EveryTree, OwnerMaximal } from "../types";
+import { EveryTree, OwnerLog2 } from "../types";
 import moddedCsScore from "./modded-cs-score";
 
 const displayName: EveryTree = 'effective-attack-stat'
@@ -12,7 +12,7 @@ const displayName: EveryTree = 'effective-attack-stat'
 //
 // NOTE: finesse changes only the ATTACK roll. Damage still uses str unless a feat/property says
 // otherwise (Slashing/Fencing Grace, Agile) - so a damage node must NOT reuse this. See damage.ts.
-const effectiveAttackStat = (owner: OwnerMaximal) => {
+const effectiveAttackStat = (owner: OwnerLog2) => {
     const mainhand = owner.es.mainhand
     const isFinesse = !!mainhand?.tags?.includes('finesse')
 

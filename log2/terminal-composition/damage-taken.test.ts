@@ -1,8 +1,8 @@
 import { describe, test, expect, assert } from 'vitest'
 import damageTaken from './damage-taken'
 import critDamage from '../terminal/crit-damage'
-import { createDefaultOwner } from '../defaults'
-import { ObjectWithBroadContexts, OwnerMaximal } from '../types'
+import { createDefaultOwner } from '../../actor2'
+import { ObjectWithBroadContexts, OwnerLog2 } from '../types'
 import { Weapon } from '../../equipment-sheet'
 import studiedTarget from '../../status-sheet2/status/studied-target'
 import defensiveRoll from '../../status-sheet2/status/defensive-roll'
@@ -18,7 +18,7 @@ const dtStatus = (amount: number): ObjectWithBroadContexts => ({
 const weapon = (dmg: number, crit?: number): Weapon =>
     ({ displayName: 'test-weapon', contexts: ['melee'], damage: () => dmg, critMultiplier: crit } as Weapon)
 
-const withSlot = (owner: OwnerMaximal, slot: OwnerMaximal['relevantSlot']): OwnerMaximal =>
+const withSlot = (owner: OwnerLog2, slot: OwnerLog2['relevantSlot']): OwnerLog2 =>
     ({ ...owner, relevantSlot: slot })
 
 describe('damage-taken (terminal)', () => {

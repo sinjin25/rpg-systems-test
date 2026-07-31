@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest'
 import fortitude from './fortitude'
-import { createDefaultOwner } from '../defaults'
+import { createDefaultOwner } from '../../actor2'
 import { findNodeMatching } from '..'
 import { ClassLevels, ClassLevelMember } from '../../character-sheet/class-level/type'
 

@@ -1,9 +1,9 @@
 import newModNode, { ModNode, sumFunc } from "../..";
-import { EveryTree, OwnerMaximal } from "../../types";
+import { EveryTree, OwnerLog2 } from "../../types";
 
 type Member = 'str' | 'con' | 'dex'
 const collectStatusContributions = (
-    owner: OwnerMaximal,
+    owner: OwnerLog2,
     broadContext: EveryTree
 ): ModNode[] => {
     const v = Object.values(owner.ss)
@@ -16,7 +16,7 @@ const collectStatusContributions = (
     return relevant
 }
 
-export default (member: Member) => (owner: OwnerMaximal) => {
+export default (member: Member) => (owner: OwnerLog2) => {
     const treeName: EveryTree = `${member}-from-status`
     return newModNode(treeName, collectStatusContributions(owner, treeName), sumFunc)
 }

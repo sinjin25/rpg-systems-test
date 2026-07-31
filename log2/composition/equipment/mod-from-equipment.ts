@@ -1,9 +1,9 @@
 import newModNode, { ModNode, sumFunc } from "../..";
-import { EquipmentSlot, EveryTree, OwnerMaximal } from "../../types";
+import { EquipmentSlot, EveryTree, OwnerLog2 } from "../../types";
 
 // THIS SHOULD BE LIFTED UP INTO EQUIPMENT2
 export const collectEquipmentTags = (
-    owner: OwnerMaximal,
+    owner: OwnerLog2,
     slots: EquipmentSlot[] = []
 ) => {
     const DEFAULT_SLOTS: EquipmentSlot[] = [
@@ -22,7 +22,7 @@ export const collectEquipmentTags = (
 }
 
 const collectEquipmentContributions = (
-    owner: OwnerMaximal,
+    owner: OwnerLog2,
     broadContext: EveryTree,
     tags: string[] = []
 ): ModNode[] => {
@@ -37,6 +37,6 @@ const collectEquipmentContributions = (
     return relevant
 }
 
-export default (member: EveryTree) => (owner: OwnerMaximal) => {
+export default (member: EveryTree) => (owner: OwnerLog2) => {
     return newModNode(member, collectEquipmentContributions(owner, member), sumFunc)
 }

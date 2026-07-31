@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest'
 import baseAttackBonus from './base-attack-bonus'
-import { createDefaultOwner } from '../defaults'
+import { createDefaultOwner } from '../../actor2'
 import { ClassLevels, ClassLevelMember } from '../../character-sheet/class-level/type'
 
 const member: ClassLevelMember = { attackBonus: 1, fortitudeSave: 0, reflexSave: 0, feats: {} }

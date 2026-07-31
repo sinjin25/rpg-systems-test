@@ -1,7 +1,7 @@
 // the max dex from a piece of equipment
 
 import { default as newModNode, ModNode, sumFunc } from "..";
-import { OwnerMaximal, EveryTree, TreeSubproblems } from "../types";
+import { OwnerLog2, EveryTree, TreeSubproblems } from "../types";
 import acOfEquipment from "../composition/ac/ac-of-equipment";
 import acFromDex from "../composition/ac/ac-from-dex";
 import baseAc from "../bases/base-ac";
@@ -12,7 +12,7 @@ import { EquipmentSheet, EquipmentSlot } from "../../equipment-sheet2/types";
 
 const displayName: EveryTree = 'ac'
 
-export default (owner: OwnerMaximal) => {
+export default (owner: OwnerLog2) => {
     const TERMINAL_TAGS: Tags[] = ['ac']
 
     if (!owner) throw Error('relevant slot was not passed')

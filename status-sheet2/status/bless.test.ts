@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vitest'
 import bless from './bless'
 import attackStatusMod from '../../log2/composition/attack-status-mod'
-import { createDefaultOwner } from '../../log2/defaults'
+import { createDefaultOwner } from '../../actor2'
 
 // LAYER: bless (a status definition). It registers a +2 contribution under the 'attack-status-mod'
 // broad context, unconditionally. Whether the owner actually HAS it is attack-status-mod's job

@@ -1,6 +1,6 @@
 import { describe, test, expect, assert } from 'vitest'
 import acOfEquipment from './ac-of-equipment'
-import { createDefaultOwner } from '../../defaults'
+import { createDefaultOwner } from '../../../actor2'
 import { armors, heavyShield } from '../../../equipment-sheet2/defaults'
 import { findNodeMatching } from '../..'
 

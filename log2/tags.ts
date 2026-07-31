@@ -2,7 +2,7 @@
 // these are intended to be for equipment (trees have access to broadContext to apply on relevant tree mods)
 // this is intended for subrequirements (ex: attack roll when you have a shield. Damage taken when you have heavy armor, etc.)
 
-import { OwnerMaximal } from "./types"
+import { OwnerLog2 } from "./types"
 
 // it is theoretically possible that we can pre-collect some tags based on outside circumstances (ex: "ac WHEN is attacked by ranged") but this is NOT THE CURRENT STATE OF IT
 export type EquipmentTags = | 'melee'
@@ -28,7 +28,7 @@ export const addTags = (list: Tags[], toAdd: Tags | Tags[]) => {
     return [...list, toAdd]
 }
 
-export const mutateOwnerTags = (owner: OwnerMaximal, ...arbitraryTags: Tags[]) => {
+export const mutateOwnerTags = (owner: OwnerLog2, ...arbitraryTags: Tags[]) => {
     const tags = owner?.tags || []
     const eqTags = owner?.relevantSlot?.tags || []
     const tg = Array.from(new Set<Tags>([...tags, ...eqTags, ...arbitraryTags]))

@@ -1,6 +1,6 @@
 import { describe, test, expect, assert } from 'vitest'
 import critConfirm from './crit-confirm'
-import { createDefaultOwner } from '../defaults'
+import { createDefaultOwner } from '../../actor2'
 import critFocus from '../feats/crit-focus'
 import { findNodeMatching } from '..'
 import modNodeToText from '../format'

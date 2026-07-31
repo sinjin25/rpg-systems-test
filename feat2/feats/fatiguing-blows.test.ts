@@ -1,7 +1,7 @@
 import { describe, test, assert } from 'vitest'
 import { runTrigger } from '../../trigger/dispatch.ts'
 import featFatiguingBlows from './fatiguing-blows.ts'
-import { createDefaultOwner } from '../../log2/defaults.ts'
+import { createDefaultOwner } from '../../actor2'
 
 describe('featFatiguingBlows', () => {
     test('onMiss returns an apply-status TriggerEffect targeting the enemy', () => {

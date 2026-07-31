@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest'
 import baseSave from './base-save'
-import { createDefaultOwner } from '../defaults'
+import { createDefaultOwner } from '../../actor2'
 import { ClassLevels, ClassLevelMember } from '../../character-sheet/class-level/type'
 
 

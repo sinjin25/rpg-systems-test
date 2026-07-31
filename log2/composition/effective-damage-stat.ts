@@ -1,10 +1,10 @@
 import newModNode, { maxFunc, ModNode } from "..";
-import { EveryTree, OwnerMaximal } from "../types";
+import { EveryTree, OwnerLog2 } from "../types";
 import moddedCsScore from "./modded-cs-score";
 
 const displayName: EveryTree = 'effective-damage-stat'
 
-export default (owner: OwnerMaximal) => {
+export default (owner: OwnerLog2) => {
     const mainhand = owner.es.mainhand
     const isFinesse = !!mainhand?.tags?.includes('finesse')
     const hasSlashingGrace = owner.fs['slashing grace']

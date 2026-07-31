@@ -1,5 +1,5 @@
 import { leaf } from "..";
-import { AllFeats, ObjectWithBroadContexts, OwnerMaximal } from "../types";
+import { AllFeats, ObjectWithBroadContexts, OwnerLog2 } from "../types";
 
 const displayName: AllFeats = 'crit-focus'
 

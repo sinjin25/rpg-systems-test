@@ -1,12 +1,12 @@
 // the lowest max-dex cap across worn armor
 
 import newModNode, { leaf, minFunc } from "..";
-import { OwnerMaximal, EveryTree } from "../types";
+import { OwnerLog2, EveryTree } from "../types";
 import maxDexOfEquipmentPiece from "../bases/max-dex-of-equipment-piece";
 
 const displayName: EveryTree = 'max-dex-of-equipment'
 
-export default (owner: OwnerMaximal) => {
+export default (owner: OwnerLog2) => {
     // guard: look for flat-footed first
     const flatFooted = owner.ss.flatFooted
 

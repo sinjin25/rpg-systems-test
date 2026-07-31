@@ -1,8 +1,8 @@
-import { FeatBroadContexts, OwnerMaximal } from "../types";
+import { FeatBroadContexts, OwnerLog2 } from "../types";
 import newModNode, { sumFunc, type ModNode } from '../index'
 
 const collectFeatContributions = (
-    owner: OwnerMaximal,
+    owner: OwnerLog2,
     broadContext: FeatBroadContexts, // a subset of EveryTree, so we know where people are getting their shit from
 ): ModNode[] => {
     const entries = Object.values(owner.fs)
@@ -15,7 +15,7 @@ const collectFeatContributions = (
     return relevant
 }
 
-export default (broadContext: FeatBroadContexts) => (owner: OwnerMaximal): ModNode => {
+export default (broadContext: FeatBroadContexts) => (owner: OwnerLog2): ModNode => {
     const children = collectFeatContributions(owner, broadContext)
 
     return newModNode(

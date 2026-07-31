@@ -1,4 +1,4 @@
-import { createDefaultOwner } from '../defaults'
+import { createDefaultOwner } from '../../actor2'
 import rawCsScore from './raw-cs-score.ts'
 import { describe, test, assert, expect } from 'vitest'
 

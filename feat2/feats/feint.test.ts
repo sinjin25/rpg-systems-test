@@ -1,7 +1,7 @@
 import { describe, test, assert } from 'vitest'
 import featFeint from './feint.ts'
 import applyFightStartFeats from '../../feat/fight-start.ts'
-import { createDefaultOwner } from '../../log2/defaults.ts'
+import { createDefaultOwner } from '../../actor2'
 
 describe('featFeint', () => {
     test('grants the Feint status at fight start', () => {

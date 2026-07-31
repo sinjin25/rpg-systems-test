@@ -1,17 +1,17 @@
 import roll from '../../../roll/index.ts'
-import { createDefaultOwner } from '../../defaults.ts'
+import { createDefaultOwner } from '../../../actor2'
 import newModNode, { findNodeMatching } from '../../index.ts'
 import { describe, test, assert, expect } from 'vitest'
-import { BaseEquipment, OwnerMaximal } from '../../types.ts'
+import { BaseEquipment, OwnerLog2 } from '../../types.ts'
 import modFromEquipment from './mod-from-equipment.ts'
 
 const testeq = {
     displayName: 'shortsword',
     broadContexts: {
-        'damage': (owner: OwnerMaximal) => {
+        'damage': (owner: OwnerLog2) => {
             return newModNode('shortsword', [], () => 6)
         },
-        'attack-equipment-mod': (o: OwnerMaximal) => {
+        'attack-equipment-mod': (o: OwnerLog2) => {
             return newModNode('enhancement', [], () => 1)
         }
     }

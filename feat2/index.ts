@@ -1,5 +1,6 @@
 import { FeatPrereqFunction } from "../feat/core-types";
-import { ObjectWithBroadContexts, OwnerMaximal } from "../log2/types";
+import { ObjectWithBroadContexts } from "../log2/types";
+import { OwnerMaximal } from "../actor2";
 import { InterceptRollFunction } from "../roll-intercept";
 import { TriggerHooks } from "../trigger/core-types";
 

@@ -1,8 +1,8 @@
 import newModNode, { sumFunc } from "../..";
-import { EveryTree, OwnerMaximal } from "../../types";
+import { EveryTree, OwnerLog2 } from "../../types";
 import statusContribution from "./status-contribution";
 
 const displayName: EveryTree = 'ac-status-mod'
 
-export default (owner: OwnerMaximal) =>
+export default (owner: OwnerLog2) =>
     statusContribution(displayName)(owner)

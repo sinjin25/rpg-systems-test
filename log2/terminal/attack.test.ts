@@ -1,12 +1,11 @@
 import { describe, test, expect, assert } from 'vitest'
 import attack from './attack'
-import { passesTags, weaponTags } from '../feats/gate'
 import { ClassLevels, ClassLevelMember } from '../../character-sheet/class-level/type'
 import { findNodeMatching, leaf } from '..'
-import { BaseEquipment, ObjectWithBroadContexts, OwnerMaximal } from '../types'
+import { BaseEquipment, ObjectWithBroadContexts, OwnerLog2 } from '../types'
 import { hasAllTags, Tags } from '../tags'
 import modNodeToText from '../format'
-import { createDefaultOwner } from '../defaults'
+import { createDefaultOwner } from '../../actor2'
 import { Feat2 } from '../../feat2'
 
 const babMember: ClassLevelMember = { attackBonus: 1, fortitudeSave: 0, reflexSave: 0, feats: {} }
@@ -33,14 +32,14 @@ const daggerPlusOne: BaseEquipment = {
 const ringPlusOneFinesseAttack: BaseEquipment = {
     displayName: 'ring-plus-one-finesse-attack',
     broadContexts: {
-        'attack-from-equipment': (o: OwnerMaximal) => hasAllTags(o.tags, ['finesse']) ? leaf('ring-plus-one-finesse-attack', 1) : undefined
+        'attack-from-equipment': (o: OwnerLog2) => hasAllTags(o.tags, ['finesse']) ? leaf('ring-plus-one-finesse-attack', 1) : undefined
     }
 }
 
 const finesseWeaponFighting: Feat2 = {
     displayName: 'finesse-weapon-fighting',
     broadContexts: {
-        'attack-feat-mod': (o: OwnerMaximal) => hasAllTags(o.tags, ['melee']) ? leaf('finesse-weapon-fighting', 1) : undefined
+        'attack-feat-mod': (o: OwnerLog2) => hasAllTags(o.tags, ['melee']) ? leaf('finesse-weapon-fighting', 1) : undefined
     }
 }
 

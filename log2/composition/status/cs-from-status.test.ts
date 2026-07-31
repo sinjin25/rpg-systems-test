@@ -1,7 +1,7 @@
 import bearsEndurance from '../../../status-sheet2/status/bears-endurance.ts'
 import bullsStrength from '../../../status-sheet2/status/bulls-strength'
 import catsGrace from '../../../status-sheet2/status/cats-grace'
-import { createDefaultOwner } from '../../defaults'
+import { createDefaultOwner } from '../../../actor2'
 import { findNodeMatching } from '../../index.ts'
 import csFromStatus from './cs-from-status.ts'
 import { describe, test, assert, expect } from 'vitest'

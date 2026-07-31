@@ -1,7 +1,7 @@
 import { describe, test, expect, assert } from 'vitest'
 import critMultiplier from './crit-multiplier'
-import { createDefaultOwner } from '../defaults'
-import { OwnerMaximal, ObjectWithBroadContexts } from '../types'
+import { createDefaultOwner } from '../../actor2'
+import { OwnerLog2, ObjectWithBroadContexts } from '../types'
 import { leaf, findNodeMatching } from '..'
 import { BaseEquipment } from '../../equipment-sheet2/types'
 

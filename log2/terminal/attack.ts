@@ -2,7 +2,7 @@
 // contributions, all summed. See attack-readme.md for which children are still bridged to legacy.
 
 import newModNode, { sumFunc } from "..";
-import { OwnerMaximal, EveryTree, TreeSubproblems } from "../types";
+import { OwnerLog2, EveryTree, TreeSubproblems } from "../types";
 import effectiveAttackStat from "../composition/effective-attack-stat";
 import baseAttackBonus from "../composition/base-attack-bonus";
 import attackStatusMod from "../composition/attack-status-mod";
@@ -12,7 +12,7 @@ import { addTags, mutateOwnerTags, Tags } from "../tags";
 
 const displayName: EveryTree = 'attack'
 
-export default (owner: OwnerMaximal) => {
+export default (owner: OwnerLog2) => {
     // add tags from equipment
     const TERMINAL_TAGS: Tags[] = ['standard-attack']
 

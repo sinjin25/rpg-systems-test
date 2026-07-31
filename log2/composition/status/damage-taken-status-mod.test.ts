@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest'
 import damageTakenStatusMod from './damage-taken-status-mod'
-import { createDefaultOwner } from '../../defaults'
+import { createDefaultOwner } from '../../../actor2'
 import { StatusEffectMaximal } from '../../types'
 import { leaf, findNodeMatching } from '../..'
 

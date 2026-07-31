@@ -9,7 +9,7 @@ import { describe, test, assert, expect } from 'vitest'
 import ac from '../log2/terminal/ac.ts'
 import { createDefaultOwner } from '../defaults'
 import moddedCsScore from '../log2/composition/modded-cs-score.ts'
-import { OwnerMaximal } from '../log2/types'
+import { OwnerMaximal } from '../actor2'
 import type { BaseEquipment } from './types'
 
 // cs scores

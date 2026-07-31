@@ -1,10 +1,10 @@
 import newModNode, { leaf, sumFunc } from "..";
-import { EveryTree, OwnerMaximal, TreeSubproblems } from "../types";
+import { EveryTree, OwnerLog2, TreeSubproblems } from "../types";
 import critThreatRangeMod from "../composition/crit-threat-range-mod";
 
 const displayName: EveryTree = 'crit-threat-range'
 const DEFAULT_THREAT_RANGE = 20
-export default (owner: OwnerMaximal) => {
+export default (owner: OwnerLog2) => {
     const relevantSlot = owner.relevantSlot
     if (!relevantSlot) throw Error('Need to pass in a weapon to relevantSlot')
 

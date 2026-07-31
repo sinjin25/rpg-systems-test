@@ -3,7 +3,7 @@ import { hasAnyTag, hasAllTags, mutateOwnerTags } from './tags'
 import { Feat2 } from '../feat2'
 import { findNodeMatching, leaf } from '.'
 import attack from './terminal/attack'
-import { createDefaultOwner } from './defaults'
+import { createDefaultOwner } from '../actor2'
 import { BaseEquipment } from './types'
 
 describe('hasAnyTag', () => {

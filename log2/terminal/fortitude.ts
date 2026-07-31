@@ -1,6 +1,6 @@
 import newModNode, { sumFunc } from "..";
 import { ContextNames } from "../../contexts";
-import { OwnerMaximal, EveryTree, TreeSubproblems } from "../types";
+import { OwnerLog2, EveryTree, TreeSubproblems } from "../types";
 import baseSave from "../composition/base-save";
 import saveStatusMod from "../composition/status/save-status-mod";
 import featContribution from "../composition/feat-contribution";
@@ -11,7 +11,7 @@ const displayName: EveryTree = 'fortitude'
 
 const FORTITUDE_CONTEXT = ['constitution'] as ContextNames[]
 
-export default (owner: OwnerMaximal) => {
+export default (owner: OwnerLog2) => {
     const subproblems: TreeSubproblems = {
         'base-fortitude': baseSave(owner, 'fortitude'),
         'modded-con': moddedCsScore('con')(owner),

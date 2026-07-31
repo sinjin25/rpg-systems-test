@@ -1,10 +1,10 @@
 import newModNode, { leaf } from "..";
 import { Armor } from "../../equipment-sheet";
 import { BaseEquipment } from "../../equipment-sheet2/types";
-import { EveryTree, OwnerMaximal } from "../types";
+import { EveryTree, OwnerLog2 } from "../types";
 
 const broadContext: EveryTree = 'max-dex-of-equipment'
-export default (equipment: BaseEquipment) => (owner: OwnerMaximal) => {
+export default (equipment: BaseEquipment) => (owner: OwnerLog2) => {
     const handler = equipment.broadContexts[broadContext]
     if (!handler) return undefined
     return handler(owner)

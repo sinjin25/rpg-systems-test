@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest'
 import acStatusMod from './ac-status-mod'
-import { createDefaultOwner } from '../../defaults'
+import { createDefaultOwner } from '../../../actor2'
 import studiedTarget from '../../../status-sheet2/status/studied-target'
 import divineProtection from '../../../status-sheet2/status/divine-protection'
 import bless from '../../../status-sheet2/status/bless'

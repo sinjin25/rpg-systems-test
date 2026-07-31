@@ -1,5 +1,5 @@
 import { findNodeMatching, leaf } from '..'
-import { createDefaultOwner } from '../defaults'
+import { createDefaultOwner } from '../../actor2'
 import featContribution from './feat-contribution.ts'
 import { describe, test, assert, expect } from 'vitest'
 

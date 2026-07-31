@@ -1,5 +1,5 @@
-import { leaf } from "../../";
-import { ObjectWithBroadContexts } from "../../types";
+import { leaf } from "../../log2";
+import { ObjectWithBroadContexts } from "../../log2/types";
 
 const mod = -1
 

@@ -2,7 +2,7 @@ import { describe, test, expect } from 'vitest'
 import attackStatusMod from './attack-status-mod'
 import { createDefaultOwner } from '../defaults'
 import { leaf } from '..'
-import bullsStrength from '../bases/status/bulls-strength'
+import bullsStrength from '../../status-sheet2/status/bulls-strength'
 import { ObjectWithBroadContexts, OwnerMaximal } from '../types'
 import { hasAllTags, mutateOwnerTags } from '../tags'
 

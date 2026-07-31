@@ -1,5 +1,5 @@
-import { leaf } from "../../";
-import { ObjectWithBroadContexts } from "../../types";
+import { leaf } from "../../log2";
+import { ObjectWithBroadContexts } from "../../log2/types";
 
 // divine-protection is a status DEFINITION. It only contributes when it lives in owner.ss - ac-status-mod
 // discovers it there via collectStatusContributions. A flat +acBonus to AC, unconditional (ported from

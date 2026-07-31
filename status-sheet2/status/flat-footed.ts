@@ -1,5 +1,5 @@
-import newModNode, { leaf } from "../../";
-import { AllStatusEffects, OwnerMaximal, ObjectWithBroadContexts } from "../../types";
+import newModNode, { leaf } from "../../log2";
+import { AllStatusEffects, OwnerMaximal, ObjectWithBroadContexts } from "../../log2/types";
 
 const displayName: AllStatusEffects = 'flat-footed'
 

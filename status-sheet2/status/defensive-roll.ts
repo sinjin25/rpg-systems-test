@@ -1,6 +1,6 @@
-import newModNode, { leaf } from "../../";
-import roll from "../../../roll";
-import { ObjectWithBroadContexts } from "../../types";
+import newModNode, { leaf } from "../../log2";
+import roll from "../../roll";
+import { ObjectWithBroadContexts } from "../../log2/types";
 
 const displayName = `Defensive Roll`
 const defensiveRoll: ObjectWithBroadContexts = {

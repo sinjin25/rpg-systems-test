@@ -1,8 +1,8 @@
 import { describe, test, expect } from 'vitest'
 import defensiveRoll from './defensive-roll'
-import { createDefaultOwner } from '../../defaults'
-import { findNodeMatching } from '../../'
-import { setSeed, clearSeed } from '../../../roll'
+import { createDefaultOwner } from '../../log2/defaults'
+import { findNodeMatching } from '../../log2'
+import { setSeed, clearSeed } from '../../roll'
 
 // LAYER: defensive-roll (a status definition). Its damage-taken-status-mod producer returns a node whose
 // total is -(1d4) - a frozen die (resolved once) negated so it REDUCES incoming damage.

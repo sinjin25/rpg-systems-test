@@ -8,15 +8,6 @@ import { StatusSheet } from "../status-sheet/types"
 export const getOnFightStartFeatHandlers = (owner: {
     fs: FeatSheet,
 }) => {
-    /* for (const [key, feat] of Object.entries(owner.fs)) {
-        if (!feat?.onFightStart) continue
-        const result = feat.onFightStart(owner)
-        if (!result) continue
-        const statuses = Array.isArray(result) ? result : [result]
-        statuses.forEach((status, i) => {
-            owner.ss[statuses.length > 1 ? `${key}${i}` : key] = status
-        })
-    } */
     return Object.entries(owner.fs).filter(a => a[1].onFightStart)
 }
 

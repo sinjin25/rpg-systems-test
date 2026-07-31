@@ -1,6 +1,6 @@
 import { describe, test, expect, assert } from 'vitest'
 import maxDexOfEquipment from './max-dex-of-equipment'
-import flatFooted from '../bases/status/flat-footed'
+import flatFooted from '../../status-sheet2/status/flat-footed'
 import modNodeToText from '../format'
 import { armors, heavyShield } from '../../equipment-sheet2/defaults'
 import { createDefaultOwner } from '../defaults'

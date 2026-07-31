@@ -1,8 +1,8 @@
 import { describe, test, expect } from 'vitest'
 import studiedTarget from './studied-target'
-import acStatusMod from '../../composition/status/ac-status-mod'
-import damageTakenStatusMod from '../../composition/status/damage-taken-status-mod'
-import { createDefaultOwner } from '../../defaults'
+import acStatusMod from '../../log2/composition/status/ac-status-mod'
+import damageTakenStatusMod from '../../log2/composition/status/damage-taken-status-mod'
+import { createDefaultOwner } from '../../log2/defaults'
 
 // LAYER: studied-target (a status definition). It registers two unconditional contributions: -1 under
 // 'ac-status-mod' ("easier to hit") and +2 under 'damage-taken-status-mod' ("takes more damage"). Whether

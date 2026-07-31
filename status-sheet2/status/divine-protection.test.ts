@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vitest'
 import divineProtection from './divine-protection'
-import acStatusMod from '../../composition/status/ac-status-mod'
-import { createDefaultOwner } from '../../defaults'
+import acStatusMod from '../../log2/composition/status/ac-status-mod'
+import { createDefaultOwner } from '../../log2/defaults'
 
 // LAYER: divine-protection (a status definition, factory). It registers a +acBonus contribution under the
 // 'ac-status-mod' broad context, unconditionally. Whether the owner HAS it is ac-status-mod's job (it reads

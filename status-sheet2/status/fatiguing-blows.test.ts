@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vitest'
 import fatiguingBlows from './fatiguing-blows'
-import attackStatusMod from '../../composition/attack-status-mod'
-import { createDefaultOwner } from '../../defaults'
+import attackStatusMod from '../../log2/composition/attack-status-mod'
+import { createDefaultOwner } from '../../log2/defaults'
 
 // LAYER: fatiguing-blows (a status definition). It registers a -1 contribution under the
 // 'attack-status-mod' broad context, unconditionally. Whether the owner HAS it is attack-status-mod's

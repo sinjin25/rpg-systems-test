@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest'
 import flatFooted from './flat-footed'
-import { createDefaultOwner } from '../../defaults'
+import { createDefaultOwner } from '../../log2/defaults'
 
 describe("cats-grace", () => {
     test('registers a +4 dex-from-status contribution', () => {

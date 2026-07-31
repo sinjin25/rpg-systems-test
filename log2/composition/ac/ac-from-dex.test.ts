@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest'
 import acFromDex from './ac-from-dex'
-import catsGrace from '../../bases/status/cats-grace'
+import catsGrace from '../../../status-sheet2/status/cats-grace'
 import { createDefaultOwner } from '../../defaults'
 import { bandedMail } from '../../../defaults/equipment'
 import { armors } from '../../../equipment-sheet2/defaults'

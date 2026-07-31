@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest'
-import { createDefaultOwner } from '../../defaults'
+import { createDefaultOwner } from '../../log2/defaults'
 import bearsEndurance from './bears-endurance'
 
 // LAYER: bulls-strength (a status definition). It registers a +4 contribution under the

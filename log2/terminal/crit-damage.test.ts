@@ -1,13 +1,14 @@
 import { describe, test, expect, assert } from 'vitest'
 import critDamage from './crit-damage'
 import { createDefaultOwner } from '../defaults'
-import { OwnerMaximal, FeatMaximal, BaseEquipment } from '../types'
+import { OwnerMaximal, ObjectWithBroadContexts } from '../types'
 import { Weapon } from '../../equipment-sheet'
 import { leatherArmor } from '../../defaults/equipment'
 import { leaf, findNodeMatching } from '..'
 import modNodeToText from '../format'
 import roll from '../../roll'
 import { Feat2 } from '../../feat2'
+import { BaseEquipment } from '../../equipment-sheet2/types'
 
 const weapon = (dmg: number, crit?: number): BaseEquipment =>
 ({

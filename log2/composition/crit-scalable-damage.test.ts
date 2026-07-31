@@ -1,9 +1,9 @@
 import { describe, test, expect } from 'vitest'
 import critScalableDamage from './crit-scalable-damage'
 import { createDefaultOwner } from '../defaults'
-import { OwnerMaximal, FeatMaximal, BaseEquipment } from '../types'
-import { Weapon } from '../../equipment-sheet'
+import { OwnerMaximal, ObjectWithBroadContexts } from '../types'
 import { leaf, findNodeMatching } from '..'
+import { BaseEquipment } from '../../equipment-sheet2/types'
 
 const weapon = (dmg: number): BaseEquipment =>
 ({
@@ -22,7 +22,7 @@ describe('crit-scalable-damage', () => {
     })
 
     test('includes crit-scalable feat mods', () => {
-        const scaler: FeatMaximal = {
+        const scaler: ObjectWithBroadContexts = {
             displayName: 'test-scaler',
             broadContexts: { 'crit-scalable-damage-feat-mod': () => leaf('test-scaler', 3) },
         }

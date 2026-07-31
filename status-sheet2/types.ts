@@ -1,4 +1,4 @@
-import { FeatMaximal, OwnerMaximal } from "../log2/types"
+import { ObjectWithBroadContexts, OwnerMaximal } from "../log2/types"
 import { SaveType } from "../save"
 
 export type StatusExpirationSpeedElapsed = {
@@ -54,7 +54,7 @@ export type StatusPersistTypes = {
 export type StatusEffect = {
     displayName: string,
     description?: string,
-    broadContext: FeatMaximal['broadContexts']
+    broadContext: ObjectWithBroadContexts['broadContexts']
     expiration: StatusExpiration,
     onExpiration?: (data?: Partial<OwnerMaximal>) => StatusEffect | undefined,
     /* interceptRoll?: InterceptRollFunction, */

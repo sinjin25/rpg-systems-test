@@ -3,9 +3,6 @@ import { Owner } from "../character/actor";
 import { BaseEquipment, EquipmentSheet } from "../equipment-sheet2/types";
 import { Tags } from "./tags";
 
-/* export type FeatSheetMaximal = { [key: string]: FeatMaximal }
-
-export type StatusSheetMaximal = { [key: string]: StatusEffectMaximal } */
 
 
 export type OwnerMaximal = Omit<Owner, 'fs' | 'ss' | 'es'> &
@@ -20,11 +17,6 @@ export type OwnerMaximal = Omit<Owner, 'fs' | 'ss' | 'es'> &
 export type ObjectWithBroadContexts = {
     displayName: string,
     broadContexts: Partial<Record<EveryTree, (owner: OwnerMaximal) => ModNode | undefined>>
-}
-
-export type FeatMaximal = {
-    displayName: string,
-    broadContexts: Partial<Record<FeatBroadContexts, (owner: OwnerMaximal) => ModNode | undefined>>
 }
 
 export type AllFeats =

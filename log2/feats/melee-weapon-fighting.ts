@@ -1,10 +1,10 @@
 import { leaf } from "..";
 import { hasAllTags, hasAnyTag } from "../tags";
-import { AllFeats, FeatMaximal } from "../types";
+import { AllFeats, ObjectWithBroadContexts } from "../types";
 
 const displayName: AllFeats = 'melee-weapon-fighting'
 
-const feat: FeatMaximal = {
+const feat: ObjectWithBroadContexts = {
     displayName,
     broadContexts: {
         'attack-feat-mod': (owner) =>

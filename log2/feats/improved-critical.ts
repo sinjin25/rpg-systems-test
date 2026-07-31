@@ -1,9 +1,9 @@
 import { leaf } from "..";
-import { AllFeats, FeatMaximal } from "../types";
+import { AllFeats, ObjectWithBroadContexts } from "../types";
 
 const displayName: AllFeats = 'improved-critical'
 
-const feat: FeatMaximal = {
+const feat: ObjectWithBroadContexts = {
     displayName,
     broadContexts: {
         'crit-threat-range-mod': () => leaf(displayName, -1),

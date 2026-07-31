@@ -1,11 +1,9 @@
 import { describe, test, expect, assert } from 'vitest'
 import critMultiplier from './crit-multiplier'
 import { createDefaultOwner } from '../defaults'
-import { OwnerMaximal, FeatMaximal, BaseEquipment } from '../types'
-import { Weapon } from '../../equipment-sheet'
-import { leatherArmor } from '../../defaults/equipment'
+import { OwnerMaximal, ObjectWithBroadContexts } from '../types'
 import { leaf, findNodeMatching } from '..'
-import modNodeToText from '../format'
+import { BaseEquipment } from '../../equipment-sheet2/types'
 
 const weapon = (crit: number): BaseEquipment =>
 ({
@@ -39,6 +37,7 @@ describe('crit-multiplier', () => {
                 mainhand: weapon(2)
             },
             fs: {
+                // @ts-expect-error
                 'crit-plus': {
                     broadContexts: {
                         'crit-multiplier-mod': () => leaf('crit-plus', 2)

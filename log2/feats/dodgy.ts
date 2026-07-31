@@ -1,10 +1,10 @@
 import { leaf } from "..";
-import { AllFeats, FeatMaximal } from "../types";
+import { AllFeats, ObjectWithBroadContexts } from "../types";
 
 const displayName: AllFeats = 'dodgy'
 
 // +4 AC, unconditional.
-const feat: FeatMaximal = {
+const feat: ObjectWithBroadContexts = {
     displayName,
     broadContexts: {
         'ac-feat-mod': () => leaf(displayName, 4),

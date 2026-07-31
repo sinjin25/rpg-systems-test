@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vitest'
 import flatDamage from './flat-damage'
 import { createDefaultOwner } from '../defaults'
-import { FeatMaximal } from '../types'
+import { ObjectWithBroadContexts } from '../types'
 import { leaf, findNodeMatching } from '..'
 
 describe('flat-damage', () => {
@@ -10,7 +10,7 @@ describe('flat-damage', () => {
     })
 
     test('sums a flat feat mod', () => {
-        const powerAttack: FeatMaximal = {
+        const powerAttack: ObjectWithBroadContexts = {
             displayName: 'power-attack',
             broadContexts: { 'flat-damage-feat-mod': () => leaf('power-attack', 6) },
         }

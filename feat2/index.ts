@@ -1,12 +1,12 @@
 import { FeatPrereqFunction } from "../feat/core-types";
-import { FeatMaximal, OwnerMaximal } from "../log2/types";
+import { ObjectWithBroadContexts, OwnerMaximal } from "../log2/types";
 import { InterceptRollFunction } from "../roll-intercept";
 import { TriggerHooks } from "../trigger/core-types";
 
 type FeatFightStartFunction = (owner: OwnerMaximal) => StatusEffect | StatusEffect[] | undefined
 
 // broadContexts hooks up to log2 tree calcs
-export type Feat2 = FeatMaximal & {
+export type Feat2 = ObjectWithBroadContexts & {
     // replacing from Feat
     // context: FeatContext replaced by broadContexts
     // 

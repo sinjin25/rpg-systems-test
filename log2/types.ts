@@ -14,7 +14,7 @@ export type OwnerMaximal = Omit<Owner, 'fs' | 'ss' | 'es'> &
     ss: Record<string, ObjectWithBroadContexts>,
     es: EquipmentSheet,
     relevantSlot?: BaseEquipment
-    tags: Tags[], // starts empty, a terminal tree should set it. Use the utility functions from tags.ts
+    tags: Tags[], // starts empty, a terminal tree should mutate it. Use the utility functions from tags.ts
 }
 
 export type ObjectWithBroadContexts = {

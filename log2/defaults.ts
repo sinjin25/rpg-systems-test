@@ -11,6 +11,7 @@ const shortsword: BaseEquipment = {
     tags: ['melee']
 }
 
+// still contains some improper types until full xxxx2/ system is in place
 export const createDefaultOwner = (data: Partial<{
     cs: Partial<CharacterSheet>,
     fs: OwnerMaximal['fs'],

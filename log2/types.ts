@@ -45,6 +45,9 @@ export type BaseStateMod = `raw-${CsScore}`
 export type FeatModTypes = 'attack' | 'damage' | 'ac' | 'initiative' | 'health' | 'flat-damage' | 'crit-scalable-damage' | 'damage-taken' | 'max-dex'
 export type FeatMod = `${FeatModTypes}-feat-mod`
 
+type Health = 'base-health' | 'flat-health' | 'health-per-level' | 'health-equipment-mod' | 'base-health-per-level' | 'health-from-levels'
+// | health-feat-mod (see Feats)
+
 // from terminal/ these are end results
 export type TerminalRoutes = 'ac'
     | 'attack'
@@ -57,6 +60,7 @@ export type TerminalRoutes = 'ac'
     | 'damage-taken'
     | 'health'
     | 'initiative'
+    | 'maximum-health'
 
 export type EveryTree =
     BaseStateMod
@@ -76,6 +80,8 @@ export type EveryTree =
     | 'ac-status-mod'
     | 'crit-confirm-mod'
     | 'crit-scalable-damage-status-mod'
+    | Health
+    | 'levels'
     | SaveModSources
     | 'crit-scalable-damage'
     | 'flat-damage'

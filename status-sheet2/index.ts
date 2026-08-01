@@ -13,6 +13,7 @@ export type {
     StatusSheet,
     TickOwnerData,
 } from "./types"
+export * from "./status"
 /* export { calculateStatusMod } from "./status-mod"
 export {
     decaySpeedElapsed,

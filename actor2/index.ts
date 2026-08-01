@@ -7,6 +7,7 @@ import { Tags } from "../log2/tags"
 import { ObjectWithBroadContexts } from "../log2/types"
 import { StatusSheet } from "../status-sheet2"
 import { createDefaultOwner as createLegacyOwner } from "../defaults"
+import { Health, instantiateHealth, instantiateSpeed, Speed } from "./instantiate"
 
 // remove dependency on Owner asap
 export type OwnerMaximal = Omit<Owner, 'fs' | 'ss' | 'es'> &
@@ -16,6 +17,23 @@ export type OwnerMaximal = Omit<Owner, 'fs' | 'ss' | 'es'> &
     es: EquipmentSheet,
     relevantSlot?: BaseEquipment
     tags: Tags[], // starts empty, a terminal tree should mutate it. Use the utility functions from tags.ts
+}
+
+export type Actor2 = {
+    speed: Speed,
+    health: Health,
+    owner: OwnerMaximal,
+}
+
+export const instantiateActor = (owner: OwnerMaximal): Actor2 => {
+    const { health, tree } = instantiateHealth(owner)
+    const { speed, tree: tree2 } = instantiateSpeed(owner)
+
+    return {
+        health,
+        speed,
+        owner,
+    }
 }
 
 export const createDefaultOwner = (data: Partial<{

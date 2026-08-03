@@ -29,43 +29,68 @@ const st: SnapshotStatusEffect = (data) => {
     }
 }
 
-describe('triggerDamage', () => {
-    test('triggerDamage can be calculated and applied', () => {
-        const caster = createDefaultOwner({
-            fs: {
-                'dot-plus': {
-                    displayName: 'dot-plus',
-                    broadContexts: {
-                        'damage-over-time-feat-mod': () => leaf('dot-plus', 2)
-                    }
-                }
-            }
-        })
+const nonSnapshotSt: StatusEffect = {
+    displayName: 'normal dot',
+    broadContexts: {},
+    tick: {
+        calculateDamage(target: OwnerMaximal) {
+            return damageOverTimeTaken({
+                node: leaf('stable dot', 3)
+            })(target)
+        }
+    }
+}
 
-        const receiver = createDefaultOwner({
-            fs: {
-                'dot-defense': {
-                    displayName: 'dot-defense',
-                    broadContexts: {
-                        'damage-over-time-taken-feat-mod': () => leaf('dot-defense', -2)
-                    }
+const mightGoNeg: StatusEffect = {
+    displayName: 'normal dot',
+    broadContexts: {},
+    tick: {
+        calculateDamage(target: OwnerMaximal) {
+            return damageOverTimeTaken({
+                node: leaf('might-go-neg', 1)
+            })(target)
+        }
+    }
+}
+
+describe('damage works', () => {
+    const caster = createDefaultOwner({
+        fs: {
+            'dot-plus': {
+                displayName: 'dot-plus',
+                broadContexts: {
+                    'damage-over-time-feat-mod': () => leaf('dot-plus', 2)
                 }
-            },
-            // this doesn't matter when ran directly
-            ss: {
-                ignite: st({
-                    snapshot: caster,
-                })
             }
-        })
+        }
+    })
+    const receiver = createDefaultOwner({
+        fs: {
+            'dot-defense': {
+                displayName: 'dot-defense',
+                broadContexts: {
+                    'damage-over-time-taken-feat-mod': () => leaf('dot-defense', -2)
+                }
+            }
+        },
+        // this doesn't matter when ran directly
+        ss: {
+            ignite: st({
+                snapshot: caster,
+            }),
+            nonSnapshotSt,
+            mightGoNeg,
+        }
+    })
+    test('calculateDamage works in insolation', () => {
 
         const ct = calculateTick(
             receiver.ss.ignite,
             receiver,
         )
 
-        console.log(ct)
-        console.log(modNodeToText(ct.calculateDamage!))
+        /* console.log(ct) */
+        /* console.log(modNodeToText(ct.calculateDamage!)) */
 
         const f0 = findNodeMatching(ct.calculateDamage!, /damage-over-time-taken/, {
             includeRoot: true
@@ -79,5 +104,39 @@ describe('triggerDamage', () => {
         assert.equal(
             actor.health.curr + ct.calculateDamage!.total(),
             actor.health.max)
+    })
+    test('applyTicks works', () => {
+        const ct = calculateTick(
+            receiver.ss.ignite,
+            receiver,
+        )
+
+        const actor = instantiateActor(receiver)
+        const result = applyTicks(actor)
+
+        // 3 items here
+        assert.equal(result.length, 3)
+        console.log(result)
+
+        // ensure we actually have multiple items with values
+        const sum = result.map(a => a.total()).reduce((acc, a) => acc + a, 0)
+
+        assert.equal(
+            sum > result[0].total(),
+            true
+        )
+        // all three are applied
+        assert.equal(
+            actor.health.curr,
+            actor.health.max -= sum,
+        )
+
+        result.forEach(a => {
+            // make sure damage ticks cant go negative
+            assert.equal(
+                a.total() >= 0,
+                true
+            )
+        })
     })
 })

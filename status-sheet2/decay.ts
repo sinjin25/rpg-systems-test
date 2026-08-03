@@ -3,6 +3,7 @@ import { Actor2, OwnerMaximal } from "../actor2";
 import { applyDamage } from "../health";
 import save from "../log2/terminal/save";
 import roll from "../roll";
+import { calculateTick } from "./tick";
 
 export type DecayOwner = {
     ss: StatusSheet,
@@ -44,17 +45,6 @@ export const decayRoundsElapsed = (owner: OwnerMaximal, elapsed: number, self?: 
         const status = owner.ss[key]
         if (!status.expiration) continue
         if (status.expiration.kind !== 'rounds-elapsed') continue
-
-        /* if (status.expiration.tick && self) {
-            const t = status.expiration.tick(owner)
-            if (t.kind === 'heal') {
-                throw Error('applyHeal has not been refactored')
-                // applyHeal(self.health, t.amount)
-            }
-            else {
-                applyDamage(self.health, t.amount(self).total())
-            }
-        } */
 
         status.expiration.remaining -= elapsed
         if (status.expiration.remaining <= 0) expireStatus(owner, key)

@@ -1,6 +1,9 @@
 import { ObjectWithBroadContexts } from "../log2/types"
-import { OwnerMaximal } from "../actor2"
+import { Actor2, OwnerMaximal } from "../actor2"
 import { SaveType } from "../save"
+import { ModNode } from "../log2"
+import damageOverTime from "../log2/terminal/damage-over-time"
+import damageOverTimeTaken from "../log2/terminal-composition/damage-over-time-taken"
 
 export type StatusExpirationSpeedElapsed = {
     kind: 'speed-elapsed',
@@ -25,20 +28,14 @@ export type StatusExpirationEnemyKilled = {
     enemy: { health: { curr: number } },
 }
 
-export type HealthTickResult = {
-    kind: 'heal' | 'damage',
-    amount: number,
+export type Tick = {
+    calculateDamage?: (target: OwnerMaximal) => ModNode,
+    calculateHeal?: (target: OwnerMaximal) => ModNode,
 }
-
-export type TickOwnerData = OwnerMaximal
 
 export type StatusExpirationRoundsElapsed = {
     kind: 'rounds-elapsed',
     remaining: number,
-    // ex: for heal over time or damage over time
-    // they have access to Owner so feats/status/equipment can affect
-    // CURRENTLY WE ASSUME ONLY THIS STATUS TYPE HAS TICKS
-    tick?: (data: TickOwnerData) => HealthTickResult,
 }
 
 export type StatusExpiration =
@@ -52,14 +49,19 @@ export type StatusPersistTypes = {
     afterBattle: boolean,
 }
 
+export type SnapshotStatusEffect = (data: {
+    snapshot: OwnerMaximal,
+}) => StatusEffect
+
 export type StatusEffect = {
     displayName: string,
     description?: string,
     broadContexts: ObjectWithBroadContexts['broadContexts']
-    expiration?: StatusExpiration,
+    expiration?: StatusExpiration
     onExpiration?: (data?: Partial<OwnerMaximal>) => StatusEffect | undefined,
     /* interceptRoll?: InterceptRollFunction, */
     persists?: Partial<StatusPersistTypes>
+    tick?: Tick
 }
 
 export type StatusSheet = Record<string, StatusEffect>

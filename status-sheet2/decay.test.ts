@@ -1,5 +1,5 @@
 import { StatusEffect } from '.'
-import { createDefaultOwner } from '../actor2'
+import { createDefaultOwner, instantiateActor } from '../actor2'
 import {
     DecayOwner,
     decayActionsElapsed,
@@ -305,8 +305,9 @@ describe('decayRoundsElapsed', () => {
                 }
             }
         })
+        const actor = instantiateActor(owner)
 
-        expect(() => decayRoundsElapsed(owner, 1, owner))
+        expect(() => decayRoundsElapsed(owner, 1, actor))
             .toThrow('applyHeal has not been refactored')
     })
 
@@ -318,13 +319,14 @@ describe('decayRoundsElapsed', () => {
                     expiration: {
                         kind: 'rounds-elapsed',
                         remaining: 3,
-                        tick: () => ({ kind: 'damage', amount: 5 }),
+                        tick: () => { }
                     },
                 }
             }
         })
+        const actor = instantiateActor(owner)
 
-        expect(() => decayRoundsElapsed(owner, 1, owner))
+        expect(() => decayRoundsElapsed(owner, 1, actor))
             .toThrow('applyDamage  has not been refactored')
     })
 

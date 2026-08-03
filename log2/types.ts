@@ -42,7 +42,7 @@ export type BaseStateMod = `raw-${CsScore}`
     | `modded-${CsScore}`
     | `${CsScore}-from-status`
     | `${CsScore}-total` // after all modifiers
-export type FeatModTypes = 'attack' | 'damage' | 'ac' | 'initiative' | 'health' | 'flat-damage' | 'crit-scalable-damage' | 'damage-taken' | 'max-dex'
+export type FeatModTypes = 'attack' | 'damage' | 'ac' | 'initiative' | 'health' | 'flat-damage' | 'crit-scalable-damage' | 'damage-taken' | 'max-dex' | 'damage-over-time' | 'damage-over-time-taken'
 export type FeatMod = `${FeatModTypes}-feat-mod`
 
 type Health = 'base-health' | 'flat-health' | 'health-per-level' | 'health-equipment-mod' | 'base-health-per-level' | 'health-from-levels'
@@ -61,6 +61,8 @@ export type TerminalRoutes = 'ac'
     | 'health'
     | 'initiative'
     | 'maximum-health'
+    | 'damage-over-time'
+    | 'damage-over-time-taken'
 
 export type EveryTree =
     BaseStateMod
@@ -110,6 +112,8 @@ export type FeatBroadContexts = Subset<EveryTree,
     | 'health-feat-mod'
     | 'max-dex-feat-mod'
     | `${Saves}-feat-mod`
+    | 'damage-over-time-feat-mod'
+    | 'damage-over-time-taken-feat-mod'
 >
 
 // convert this into a template literal soon

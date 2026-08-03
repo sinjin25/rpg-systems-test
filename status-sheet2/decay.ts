@@ -1,5 +1,6 @@
-import { StatusSheet } from ".";
-import { OwnerMaximal } from "../actor2";
+import { StatusEffect, StatusSheet } from ".";
+import { Actor2, OwnerMaximal } from "../actor2";
+import { applyDamage } from "../health";
 import save from "../log2/terminal/save";
 import roll from "../roll";
 
@@ -38,23 +39,22 @@ export const decayActionsElapsed = (
     }
 }
 
-export const decayRoundsElapsed = (owner: OwnerMaximal, elapsed: number, self?: OwnerMaximal) => {
+export const decayRoundsElapsed = (owner: OwnerMaximal, elapsed: number, self?: Actor2) => {
     for (const key of Object.keys(owner.ss)) {
         const status = owner.ss[key]
         if (!status.expiration) continue
         if (status.expiration.kind !== 'rounds-elapsed') continue
 
-        if (status.expiration.tick && self) {
+        /* if (status.expiration.tick && self) {
             const t = status.expiration.tick(owner)
             if (t.kind === 'heal') {
                 throw Error('applyHeal has not been refactored')
-                /* applyHeal(self.health, t.amount) */
+                // applyHeal(self.health, t.amount)
             }
             else {
-                throw Error(`applyDamage  has not been refactored`)
-                /* applyDamage(self.health, t.amount) */
+                applyDamage(self.health, t.amount(self).total())
             }
-        }
+        } */
 
         status.expiration.remaining -= elapsed
         if (status.expiration.remaining <= 0) expireStatus(owner, key)

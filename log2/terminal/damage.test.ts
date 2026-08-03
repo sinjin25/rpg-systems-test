@@ -1,12 +1,10 @@
 import { describe, test, expect, assert } from 'vitest'
 import damage from './damage'
 import { createDefaultOwner } from '../../actor2'
-import { BaseEquipment, OwnerLog2 } from '../types'
-import { Weapon } from '../../equipment-sheet'
-import { longSword, daggerPlusOne, leatherArmor } from '../../defaults/equipment'
 import roll, { setSeed, clearSeed } from '../../roll'
 import newModNode, { findNodeMatching, leaf } from '..'
 import modNodeToText from '../format'
+import { BaseEquipment } from '../../equipment-sheet2/types'
 
 const wp = (dmg: number): BaseEquipment => ({
     displayName: 'test-weapon',

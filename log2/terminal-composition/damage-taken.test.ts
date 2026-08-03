@@ -9,6 +9,7 @@ import defensiveRoll from '../../status-sheet2/status/defensive-roll'
 import { leaf, findNodeMatching } from '..'
 import { setSeed, clearSeed } from '../../roll'
 import modNodeToText from '../format'
+import { BaseEquipment } from '../../equipment-sheet2/types'
 
 const dtStatus = (amount: number): ObjectWithBroadContexts => ({
     displayName: 'Test DT',

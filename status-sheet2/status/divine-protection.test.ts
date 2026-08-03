@@ -1,22 +1,42 @@
-import { describe, test, expect } from 'vitest'
+import { describe, test, expect, assert } from 'vitest'
 import divineProtection from './divine-protection'
 import acStatusMod from '../../log2/composition/status/ac-status-mod'
 import { createDefaultOwner } from '../../actor2'
-
-// LAYER: divine-protection (a status definition, factory). It registers a +acBonus contribution under the
-// 'ac-status-mod' broad context, unconditionally. Whether the owner HAS it is ac-status-mod's job (it reads
-// owner.ss); the first test proves the registered contribution matches acBonus, the second proves it folds
-// in when on the sheet.
+import { findNodeMatching } from '../../log2'
+import { iterate } from '../../simulate/util/iterate'
 
 describe('divine-protection', () => {
-    test('registers a +acBonus ac-status-mod contribution', () => {
-        const contribution = divineProtection(4).broadContexts['ac-status-mod']!
-        expect(contribution(createDefaultOwner({}))!.total()).toBe(4)
+    test('Can take in a acBonus and duration', () => {
+        const owner = createDefaultOwner({
+            ss: {
+                dp: divineProtection(4, 3)
+            }
+        })
+        const dp = owner.ss.dp
+        const exp = dp.expiration
+        if (exp === undefined) throw Error('expected an expiration')
+        if (exp.kind !== 'rounds-elapsed') throw Error('expected kind - rounds-elapsed')
+        assert.equal(exp.remaining, 3)
+        const node = dp.broadContexts['ac-status-mod']
+        if (!node) throw Error('expected ac-status-mod to exist')
+        assert.equal(node(owner)!.total(), 4)
+    })
+    test('Defaults to 1d4, 1d4 for duration and range', () => {
+
+        const set = new Set<number>()
+        iterate(20, () => {
+            const st = divineProtection()
+            // @ts-expect-error
+            set.add(st.expiration.remaining)
+        })
+        if (set.size === 1) throw Error('divine protection did not produce a random number by default')
     })
 
-    test('folds into ac-status-mod when on the sheet', () => {
-        const node = acStatusMod(createDefaultOwner({ ss: { divineProtection: divineProtection(2) } }))
+    test('Uses ac-status-mod', () => {
+        const node = acStatusMod(createDefaultOwner({ ss: { divineProtection: divineProtection(2, 2) } }))
         expect(node.total()).toBe(2)
-        expect(node.children.map(c => `${c.displayName} ${c.total()}`)).toEqual(['Divine Protection 2'])
+        const f0 = findNodeMatching(node, /divine/i)
+        assert.exists(f0)
+        assert.equal(f0.total(), 2)
     })
 })

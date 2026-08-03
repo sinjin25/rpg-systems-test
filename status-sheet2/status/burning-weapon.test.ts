@@ -1,14 +1,9 @@
-import { describe, test, assert, expect, afterEach } from 'vitest'
-
+import { iterate } from '../../simulate/util/iterate'
+import { clearSeed, setSeed } from '../../roll'
 import burningWeaponStatus from './burning-weapon'
 import { decaySaveSucceeded } from '../decay'
-import { StatusSheet } from '../types'
-import { defaultCharacterSheet } from '../../character-sheet'
-import { defaultFeatSheet } from '../../feat'
-import { defaultEquipmentSheet } from '../../equipment-sheet'
-import { iterate } from '../../simulate/util/iterate'
-import { createDefaultOwner } from '../../defaults'
-import { clearSeed, setSeed } from '../../roll'
+import { createDefaultOwner } from '../../actor2'
+import { afterEach, assert, describe, expect, test } from 'vitest'
 
 const setupOwner = () => {
     return createDefaultOwner({

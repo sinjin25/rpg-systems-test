@@ -62,6 +62,4 @@ export type StatusEffect = {
     persists?: Partial<StatusPersistTypes>
 }
 
-export type StatusSheet = {
-    [key: string]: StatusEffect
-}
+export type StatusSheet = Record<string, StatusEffect>

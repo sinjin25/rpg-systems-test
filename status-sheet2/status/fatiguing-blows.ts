@@ -1,6 +1,5 @@
 import { StatusEffect } from "..";
 import { leaf } from "../../log2";
-import { ObjectWithBroadContexts } from "../../log2/types";
 
 export const MOD = -1
 export const FATIGUING_BLOWS_ROUNDS = 3

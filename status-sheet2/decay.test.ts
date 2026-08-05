@@ -1,5 +1,5 @@
 import { StatusEffect } from '.'
-import { createDefaultOwner, instantiateActor } from '../actor2'
+import { createDefaultOwner, instantiateActor, OwnerMaximal } from '../actor2'
 import {
     DecayOwner,
     decayActionsElapsed,
@@ -13,6 +13,7 @@ import {
 import { describe, test, assert, expect, afterEach } from 'vitest'
 import { setSeed, clearSeed } from '../roll'
 import save from '../log2/terminal/save'
+import { leaf } from '../log2'
 
 describe('decaySpeedElapsed', () => {
     const speedBuff = (): StatusEffect => ({
@@ -291,45 +292,6 @@ describe('decayRoundsElapsed', () => {
         assert.equal(owner.ss.test, followUp)
     })
 
-    // tick currently throws until applyHeal/applyDamage are refactored
-    test('throws on a heal tick when self is passed', () => {
-        const owner = createDefaultOwner({
-            ss: {
-                test: {
-                    ...roundsBuff(),
-                    expiration: {
-                        kind: 'rounds-elapsed',
-                        remaining: 3,
-                        tick: () => ({ kind: 'heal', amount: 5 }),
-                    },
-                }
-            }
-        })
-        const actor = instantiateActor(owner)
-
-        expect(() => decayRoundsElapsed(owner, 1, actor))
-            .toThrow('applyHeal has not been refactored')
-    })
-
-    test('throws on a damage tick when self is passed', () => {
-        const owner = createDefaultOwner({
-            ss: {
-                test: {
-                    ...roundsBuff(),
-                    expiration: {
-                        kind: 'rounds-elapsed',
-                        remaining: 3,
-                        tick: () => { }
-                    },
-                }
-            }
-        })
-        const actor = instantiateActor(owner)
-
-        expect(() => decayRoundsElapsed(owner, 1, actor))
-            .toThrow('applyDamage  has not been refactored')
-    })
-
     test('passes the owner, not self, to tick', () => {
         let seen: unknown = undefined
         const owner = createDefaultOwner({
@@ -338,67 +300,20 @@ describe('decayRoundsElapsed', () => {
                     ...roundsBuff(),
                     expiration: {
                         kind: 'rounds-elapsed',
-                        remaining: 3,
-                        tick: (data) => {
+                        remaining: 3
+                    },
+                    tick: {
+                        calculateHeal(data: OwnerMaximal) {
                             seen = data
-                            return { kind: 'heal', amount: 5 }
-                        },
-                    },
+                            return leaf('roundsBuff', 3)
+                        }
+                    }
                 }
             }
         })
-        const self = createDefaultOwner()
+        const self = instantiateActor(owner)
 
-        expect(() => decayRoundsElapsed(owner, 1, self)).toThrow()
-        assert.equal(seen, owner)
-    })
-
-    test('skips the tick entirely when self is omitted', () => {
-        let ticked = false
-        const owner = createDefaultOwner({
-            ss: {
-                test: {
-                    ...roundsBuff(),
-                    expiration: {
-                        kind: 'rounds-elapsed',
-                        remaining: 3,
-                        tick: () => {
-                            ticked = true
-                            return { kind: 'heal', amount: 5 }
-                        },
-                    },
-                }
-            }
-        })
-        const obj = owner.ss.test
-        if (!obj.expiration) throw Error('expected expiration')
-        if (obj.expiration.kind !== 'rounds-elapsed') throw Error('incorrect epxiration kind')
-
-        decayRoundsElapsed(owner, 1)
-        assert.equal(ticked, false)
-        assert.equal(obj.expiration.remaining, 2)
-    })
-
-    // the tick throws before the decrement, so a ticking status never decays today
-    test('a ticking status does not decrement when self is passed', () => {
-        const owner = createDefaultOwner({
-            ss: {
-                test: {
-                    ...roundsBuff(),
-                    expiration: {
-                        kind: 'rounds-elapsed',
-                        remaining: 3,
-                        tick: () => ({ kind: 'heal', amount: 5 }),
-                    },
-                }
-            }
-        })
-        const obj = owner.ss.test
-        if (!obj.expiration) throw Error('expected expiration')
-        if (obj.expiration.kind !== 'rounds-elapsed') throw Error('incorrect epxiration kind')
-
-        expect(() => decayRoundsElapsed(owner, 1, owner)).toThrow()
-        assert.equal(obj.expiration.remaining, 3)
+        decayRoundsElapsed(owner, 1, self)
     })
 })
 

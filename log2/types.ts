@@ -48,6 +48,9 @@ export type FeatMod = `${FeatModTypes}-feat-mod`
 type Health = 'base-health' | 'flat-health' | 'health-per-level' | 'health-equipment-mod' | 'base-health-per-level' | 'health-from-levels'
 // | health-feat-mod (see Feats)
 
+type RollTypes = 'roll' | 'attack' | 'damage' | 'dc'
+export type RollSidesMod = `${RollTypes}-sides-mod`
+
 // from terminal/ these are end results
 export type TerminalRoutes = 'ac'
     | 'attack'
@@ -63,6 +66,7 @@ export type TerminalRoutes = 'ac'
     | 'maximum-health'
     | 'damage-over-time'
     | 'damage-over-time-taken'
+    | 'roll'
 
 export type EveryTree =
     BaseStateMod
@@ -94,6 +98,7 @@ export type EveryTree =
     | 'enhancement' // used by attack, ac, damage, for equipment (mostly flavor)
     // terminal
     | TerminalRoutes
+    | RollSidesMod
 
 export type TreeSubproblems = Partial<Record<EveryTree, ModNode>>
 
@@ -114,6 +119,7 @@ export type FeatBroadContexts = Subset<EveryTree,
     | `${Saves}-feat-mod`
     | 'damage-over-time-feat-mod'
     | 'damage-over-time-taken-feat-mod'
+    | RollSidesMod
 >
 
 // convert this into a template literal soon

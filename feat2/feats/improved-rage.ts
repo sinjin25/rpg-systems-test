@@ -1,5 +1,4 @@
 // used by rage.ts status to improve the stats
-// proof of concept for snapshot statuses
 import { Feat2 } from "..";
 
 export const displayName = 'Improved Rage'

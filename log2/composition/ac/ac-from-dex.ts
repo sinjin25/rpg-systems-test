@@ -20,7 +20,7 @@ export default (owner: OwnerLog2) => {
 
     return newModNode(
         displayName,
-        Object.values(subproblems),
+        subpr,
         () => Math.min(...subpr.map(a => a.total()))
     )
 }

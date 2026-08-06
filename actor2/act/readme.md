@@ -1,0 +1,1 @@
+Things that are done during an actor's round. Ex: standard attack, swift action, free action

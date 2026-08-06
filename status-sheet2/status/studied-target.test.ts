@@ -21,14 +21,14 @@ describe('studied-target', () => {
         expect(node.children.map(c => `${c.displayName} ${c.total()}`)).toEqual(['Studied Target -1'])
     })
 
-    test('registers a +2 damage-taken-status-mod contribution', () => {
+    test('registers a +1 damage-taken-status-mod contribution', () => {
         const contribution = studiedTarget.broadContexts['damage-taken-status-mod']!
-        expect(contribution(createDefaultOwner({}))!.total()).toBe(2)
+        expect(contribution(createDefaultOwner({}))!.total()).toBe(1)
     })
 
     test('folds into damage-taken-status-mod when on the sheet', () => {
         const node = damageTakenStatusMod(createDefaultOwner({ ss: { studiedTarget } }))
-        expect(node.total()).toBe(2)
-        expect(node.children.map(c => `${c.displayName} ${c.total()}`)).toEqual(['Studied Target 2'])
+        expect(node.total()).toBe(1)
+        expect(node.children.map(c => `${c.displayName} ${c.total()}`)).toEqual(['Studied Target 1'])
     })
 })

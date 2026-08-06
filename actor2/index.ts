@@ -1,4 +1,3 @@
-import { AbilitySheet, createDefaultAbilitySheet } from "../ability-sheet"
 import { CharacterSheet, defaultCharacterSheet } from "../character-sheet"
 import { shortsword } from "../equipment-sheet2/defaults"
 import { BaseEquipment, EquipmentSheet } from "../equipment-sheet2/types"
@@ -7,6 +6,7 @@ import { StatusSheet } from "../status-sheet2"
 import { Health, instantiateHealth, instantiateSpeed, Speed } from "./instantiate"
 import { FeatSheet } from "../feat2"
 import { cloneClassLevelSheet } from "../character-sheet/class-level"
+import { AbilitySheet, createDefaultAbilitySheet } from "../ability-sheet2"
 
 // remove dependency on Owner asap
 export type OwnerMaximal = {

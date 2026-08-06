@@ -11,7 +11,7 @@ const studiedTarget: ObjectWithBroadContexts = {
     displayName: 'Studied Target',
     broadContexts: {
         'ac-status-mod': () => leaf('Studied Target', mod),
-        'damage-taken-status-mod': () => leaf('Studied Target', 2),
+        'damage-taken-status-mod': () => leaf('Studied Target', 1),
     },
 }
 

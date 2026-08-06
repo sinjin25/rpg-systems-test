@@ -1,11 +1,10 @@
 import { AbilitySheet } from "../../ability-sheet"
+import { OwnerMaximal } from "../../actor2"
+import { FinalStandardActionResult } from "../../actor2/act/attack"
 import { takeNextAbility } from "../actor"
 import useAbility, { AbilityActionResult } from "./ability"
-import useAttack, { AttackRequiredData, StandardActionResult } from "./attack"
 
-export type { StandardActionResult } from "./attack"
-
-type ActRequiredData = AttackRequiredData & { as: AbilitySheet }
+type ActRequiredData = OwnerMaximal & { as: AbilitySheet }
 
 /*
 act will precompute everything but has no opinions on interpreting them
@@ -15,7 +14,7 @@ Ex: crit multiplier is determined but it doesn't know how that's applied to dama
 
 simulate is responsible for interpreting these against targets
 */
-type ActResult = Array<StandardActionResult | AbilityActionResult>
+type ActResult = Array<FinalStandardActionResult | AbilityActionResult>
 export const act = (data: ActRequiredData): ActResult => {
     const results: ActResult = []
 

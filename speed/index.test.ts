@@ -1,8 +1,8 @@
-import { createDefaultOwner } from '../defaults/index.ts'
 import { round, speedRoll, STANDARD_SPEED } from './index.ts'
 import { describe, test, assert, expect } from 'vitest'
-import { StatusSheet } from '../status-sheet/types.ts'
 import { iterate } from '../simulate/util/iterate.ts'
+import { createDefaultOwner } from '../actor2/index.ts'
+import { StatusSheet } from '../status-sheet2/index.ts'
 
 const defaultPerson = createDefaultOwner({})
 
@@ -92,7 +92,14 @@ describe('Round reports participants to act', () => {
 
     test('a speed-elapsed status decays alongside the participant\'s speed rolls', () => {
         const ss: StatusSheet = {
-            test: { displayName: 'test', context: {}, expiration: { kind: 'speed-elapsed', remaining: 1000 } },
+            test: {
+                displayName: 'test',
+                broadContexts: {},
+                expiration: {
+                    remaining: 1000,
+                    kind: 'speed-elapsed'
+                }
+            },
         }
         const roundData = {
             participants: [{

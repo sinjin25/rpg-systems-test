@@ -1,10 +1,7 @@
-import { AbilitySheet } from "../ability-sheet"
-import { CharacterSheet } from "../character-sheet"
-import { EquipmentSheet } from "../equipment-sheet"
+import { OwnerMaximal } from "../actor2"
 import { FeatSheet } from "../feat"
 import roll from "../roll"
-import { decaySpeedElapsed } from "../status-sheet/decay"
-import { StatusSheet } from "../status-sheet"
+import { decaySpeedElapsed } from "../status-sheet2/decay"
 
 export const STANDARD_SPEED = 35 // average of 2d6 is 3.5
 
@@ -16,13 +13,7 @@ export type Speed = {
 export type TurnData = {
     speed: Speed,
     // structural, not Owner, to avoid a circular import (character/actor imports speed)
-    owner: {
-        cs: CharacterSheet,
-        fs: FeatSheet,
-        es: EquipmentSheet,
-        ss: StatusSheet,
-        as: AbilitySheet,
-    },
+    owner: OwnerMaximal,
 }
 
 export type Round = {

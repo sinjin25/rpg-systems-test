@@ -1,7 +1,7 @@
-import { Ability, getAbilityKey } from "../../ability-sheet"
 import { FeatSheet } from "../../feat"
 import type { CharacterSheet } from "../../character-sheet"
 import { ClassLevelMember, ClassLevels, ClassLevelSheet } from "./type"
+import { Ability, getAbilityKey } from "../../ability-sheet2"
 
 // prevent +1/-1 index access
 const clampedLevel = (cl: ClassLevels): number => Math.min(cl.level, cl.data.length)

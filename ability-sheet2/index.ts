@@ -1,7 +1,7 @@
 import { createDefaultOwner, OwnerMaximal } from '../actor2'
 import type { ModNode } from '../log2'
 import { StatusEffect } from '../status-sheet2'
-import type { Ability, AbilityCategory, AbilityModNode, AbilitySheet, SnapshotAbility, } from './types'
+import type { Ability, AbilityCastType, AbilityCategory, AbilityModNode, AbilitySheet, SnapshotAbility, } from './types'
 export { Ability, AbilityCastType, AbilityCatalog, AbilityCategory, AbilityModNode, AbilitySheet, AbilityTags, Handlers } from './types'
 
 
@@ -30,6 +30,24 @@ export const createAbilityCategory = (): AbilityCategory => ({
     priority: [],
     index: 0,
 })
+
+export const resetAbilityCategoryIndex = (owner: OwnerMaximal, category: AbilityCastType) => {
+    const as = owner.as
+    const catalog = as[category]
+    if (!catalog) return
+    catalog.index = 0
+}
+
+export const advanceAbilityCategoryIndex = (owner: OwnerMaximal, category: AbilityCastType) => {
+    const as = owner.as
+    const catalog = as[category]
+    if (!catalog) return
+    catalog.index++
+    // is there an item there?
+    const index = catalog.index
+    const key = catalog.priority[index]
+    if (!key || !catalog.items[key]) catalog.index = -1
+}
 
 export const createDefaultAbilitySheet = (): AbilitySheet => ({
     standard: createAbilityCategory(),

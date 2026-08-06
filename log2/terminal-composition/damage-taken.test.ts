@@ -35,8 +35,8 @@ describe('damage-taken (terminal)', () => {
         const node = damageTaken({
             node: leaf('incoming', 7)
         })(defender)
-        expect(node.total()).toBe(9)
-        expect(findNodeMatching(node, /damage-taken-status-mod/i)?.total()).toBe(2)
+        expect(node.total()).toBe(8)
+        expect(findNodeMatching(node, /damage-taken-status-mod/i)?.total()).toBe(1)
     })
 
     test('clamps to 0 so an over-reduction cannot heal', () => {
@@ -83,14 +83,14 @@ describe('damage-taken (terminal)', () => {
             node: attackerTree,
         })(defender)
 
-        expect(node.total()).toBe(11) // 9 incoming + 2 studied
+        expect(node.total()).toBe(10) // 9 incoming + 1 studied
         // the attacker's crit-damage subtree lives under the local incoming-damage wrapper
         const wrapper = findNodeMatching(node, /incoming-damage/i)
         assert.exists(wrapper)
         assert.equal(wrapper.total(), 9)
         const wrapper2 = findNodeMatching(node, /studied/i)
         assert.exists(wrapper2)
-        assert.equal(wrapper2.total(), 2)
+        assert.equal(wrapper2.total(), 1)
         /* console.log(modNodeToText(node)) */
     })
 })

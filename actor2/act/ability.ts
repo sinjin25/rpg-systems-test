@@ -1,5 +1,5 @@
 import { Actor2, OwnerMaximal } from ".."
-import { Ability, AbilityModNode, abilityModNodePayloadIsStatusEffect } from "../../ability-sheet2"
+import { Ability, AbilityCastType, AbilityModNode, abilityModNodePayloadIsStatusEffect } from "../../ability-sheet2"
 import { applyDamage } from "../../health"
 import { findNodeMatching, ModNode } from "../../log2"
 import { save } from "../../log2/terminal"
@@ -90,4 +90,28 @@ export const handleAbilityModNodes = (caster: Actor2, receiver: Actor2, amnArr: 
             }
         }
     }
+}
+
+// this selects and then does generateAbilityModNodes
+export const selectAndPrepAbility = (
+    caster: Actor2,
+    category: AbilityCastType
+): undefined | AbilityModNode[] => {
+    const { as } = caster.owner
+
+    // do we even have items to pick?
+    const catalog = as[category]
+    const OUT_OF_ITEMS_INDEX = -1
+    const HAS_ITEMS = catalog.priority.length > 0
+    if (!HAS_ITEMS || catalog.index === OUT_OF_ITEMS_INDEX) return undefined
+
+    const key = catalog.priority[catalog.index]
+    if (!key) return undefined
+
+    const item = catalog.items[key]
+    if (!item) return undefined
+
+    // we have out item, calculate
+    const gamn = generateAbilityModNodes(caster.owner, item)
+    return gamn
 }

@@ -1,8 +1,6 @@
 import { FeatSheet } from "."
 import { CharacterSheet } from "../character-sheet"
-import { EquipmentSheet } from "../equipment-sheet"
 import { OwnerMaximal } from "../actor2"
-import { StatusSheet } from "../status-sheet/types"
 
 
 export const getOnFightStartFeatHandlers = (owner: {
@@ -16,11 +14,14 @@ export const applyOnFightStartFeatHandlers = (
     entries: ReturnType<typeof getOnFightStartFeatHandlers>
 ) => {
     for (let [k, v] of entries) {
+        console.log('looking at', k, v)
         const result = v.onFightStart!(owner)
         if (result === undefined) continue
         const statuses = Array.isArray(result) ? result : [result]
+        console.log('statuses', statuses)
         statuses.forEach((status, i) => {
-            owner.ss[statuses.length > 1 ? `${key}${i}` : key] = status
+            console.log('key is', statuses.length > 1 ? `${k}${i}` : k)
+            owner.ss[statuses.length > 1 ? `${k}${i}` : k] = status
         })
     }
 }

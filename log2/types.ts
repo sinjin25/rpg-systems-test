@@ -7,7 +7,7 @@ import { Tags } from "./tags";
 
 // the structural contract log2 traversal needs: anything it can walk broadContexts on.
 // the concrete assembled actor lives in actor2/ and is assignable to this.
-export type OwnerLog2 = Omit<Owner, 'fs' | 'ss' | 'es'> &
+export type OwnerLog2 = Omit<Owner, 'fs' | 'ss' | 'es' | 'as'> &
 {
     fs: Record<string, ObjectWithBroadContexts>,
     ss: Record<string, ObjectWithBroadContexts>,
@@ -34,7 +34,7 @@ export type SaveModSources = `${Saves}-feat-mod`
     | `${Saves}-status-mod`
     | `${Saves}-equipment-mod`
 
-export type CsScore = 'str' | 'dex' | 'con'
+export type CsScore = 'str' | 'dex' | 'con' | 'int'
 
 export type BaseStateMod = `raw-${CsScore}`
     | `status-modded-${CsScore}`
@@ -42,7 +42,7 @@ export type BaseStateMod = `raw-${CsScore}`
     | `modded-${CsScore}`
     | `${CsScore}-from-status`
     | `${CsScore}-total` // after all modifiers
-export type FeatModTypes = 'attack' | 'damage' | 'ac' | 'initiative' | 'health' | 'flat-damage' | 'crit-scalable-damage' | 'damage-taken' | 'max-dex' | 'damage-over-time' | 'damage-over-time-taken'
+export type FeatModTypes = 'attack' | 'damage' | 'ac' | 'initiative' | 'health' | 'flat-damage' | 'crit-scalable-damage' | 'damage-taken' | 'max-dex' | 'damage-over-time' | 'damage-over-time-taken' | 'spell-dc'
 export type FeatMod = `${FeatModTypes}-feat-mod`
 
 type Health = 'base-health' | 'flat-health' | 'health-per-level' | 'health-equipment-mod' | 'base-health-per-level' | 'health-from-levels'
@@ -67,6 +67,7 @@ export type TerminalRoutes = 'ac'
     | 'damage-over-time'
     | 'damage-over-time-taken'
     | 'roll'
+    | 'dc'
 
 export type EveryTree =
     BaseStateMod
@@ -80,12 +81,16 @@ export type EveryTree =
     | 'ac-from-dex'
     | 'effective-attack-stat'
     | 'effective-damage-stat'
+    | 'effective-spell-dc-stat'
     | 'base-attack-bonus'
     | 'attack-status-mod'
     | 'attack-from-equipment'
     | 'ac-status-mod'
     | 'crit-confirm-mod'
     | 'crit-scalable-damage-status-mod'
+    | 'spell-dc-status-mod'
+    | 'spell-dc-from-equipment'
+    | 'base-dc' // gotten from Ability
     | Health
     | 'levels'
     | SaveModSources
@@ -119,6 +124,7 @@ export type FeatBroadContexts = Subset<EveryTree,
     | `${Saves}-feat-mod`
     | 'damage-over-time-feat-mod'
     | 'damage-over-time-taken-feat-mod'
+    | 'spell-dc-feat-mod'
     | RollSidesMod
 >
 
@@ -130,4 +136,5 @@ export type StatusBroadContexts = Subset<EveryTree,
     | `${Saves}-status-mod`
     | 'damage-taken-status-mod'
     | 'crit-scalable-damage-status-mod'
+    | 'spell-dc-status-mod'
 >

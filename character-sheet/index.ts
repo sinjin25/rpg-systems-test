@@ -18,6 +18,7 @@ export interface CharacterSheet {
     str: number,
     dex: number,
     con: number,
+    int: number,
     levels: ClassLevelSheet,
     flavorSheet?: FlavorSheet
 }
@@ -31,6 +32,7 @@ export const defaultCharacterSheet: CharacterSheet = {
     con: 15,
     str: 15,
     dex: 15,
+    int: 15,
     levels: characterLevels(1),
     flavorSheet: {
         displayName: 'Player',
@@ -42,6 +44,7 @@ export const defaultEnemySheet: CharacterSheet = {
     con: 10,
     str: 10,
     dex: 10,
+    int: 10,
     levels: characterLevels(1),
     flavorSheet: {
         ...defaultFlavorSheet,

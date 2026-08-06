@@ -98,7 +98,7 @@ describe('Integration: attack', () => {
                 sumFunc,
             )
             results.add(tree.total())
-            /* console.log(modNodeToText(tree)) */
+            console.log(modNodeToText(tree))
         })
 
         assert.equal(results.size, 22) // d20 + 2 sides

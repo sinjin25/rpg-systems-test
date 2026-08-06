@@ -18,10 +18,16 @@ export type EquipmentTags = | 'melee'
     | 'heavy-armor'
     | 'unarmored'
     | 'ac'
+
+export type AbilityTags = | 'magic'
+    | 'ability'
+    | 'fire'
+    | 'cold'
+    | 'lightning'
 // from terminal branches
 export type TerminalTags = | 'standard-attack'
     | 'crit-confirm'
-export type Tags = EquipmentTags | TerminalTags
+export type Tags = EquipmentTags | TerminalTags | AbilityTags
 
 export const addTags = (list: Tags[], toAdd: Tags | Tags[]) => {
     if (Array.isArray(toAdd)) return [...list, ...toAdd]

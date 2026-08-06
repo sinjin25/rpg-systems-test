@@ -1,7 +1,7 @@
 import newModNode, { ModNode, sumFunc } from "../..";
 import { EveryTree, OwnerLog2 } from "../../types";
 
-type Member = 'str' | 'con' | 'dex'
+type Member = 'str' | 'con' | 'dex' | 'int'
 const collectStatusContributions = (
     owner: OwnerLog2,
     broadContext: EveryTree

@@ -47,8 +47,10 @@ describe('Works with a test feat', () => {
 
     test('Works with one requirement', () => {
         const owner = createDefaultOwner()
+        assert.notExists(owner.fs['A'])
         const result = addFeat(owner, ArequiresB)
         assert.equal(result, false)
+        assert.notExists(owner.fs['A'])
 
         addFeat(owner, B)
         const result2 = addFeat(owner, ArequiresB)
@@ -79,5 +81,23 @@ describe('Works with a test feat', () => {
 
         const result2 = addFeat(owner2, G)
         assert.equal(result2, true)
+    })
+})
+
+describe('add-feat past bug fixes', () => {
+    test('addFeat properly doesnt add feats where prereqs are not met', () => {
+        const ArequiresB: Feat2 = {
+            displayName: 'A',
+            broadContexts: {},
+            prerequisites: (o: OwnerMaximal) => {
+                if ('B' in o.fs) return true
+                return false
+            }
+        }
+
+        const owner = createDefaultOwner()
+        assert.notExists(owner.fs['A'])
+        const result = addFeat(owner, ArequiresB)
+        assert.equal(result, false)
     })
 })

@@ -1,7 +1,6 @@
 import { createDefaultOwner, instantiateActor } from '..'
 import ignite from '../../ability-sheet2/abilities/ignite.ts'
 import { addAbility } from '../../ability-sheet2/index.ts'
-import useAbility from '../../character/act/ability/index.ts'
 import { generateAbilityModNodes, handleAbilityModNodes, selectAndPrepAbility } from './ability.ts'
 import { describe, test, assert, expect } from 'vitest'
 
@@ -13,7 +12,6 @@ describe('Handles damage ModNode and StatusEffect', () => {
 
         const gamn = generateAbilityModNodes(caster, ignite(caster))
 
-        console.log(gamn)
         assert.equal(gamn.length, 2)
 
         const casterA = instantiateActor(caster)
@@ -48,9 +46,21 @@ describe('integration: selectAndPrepAbility', () => {
         const ownerA = instantiateActor(owner)
         const standard = selectAndPrepAbility(ownerA, 'standard')
         assert.exists(standard)
-        console.log(standard)
 
         const standard2 = selectAndPrepAbility(ownerA, 'standard')
-        assert.notExists(standard2)
+
+        // they are different instances
+        assert.notEqual(standard, standard2)
+    })
+    test('Does not advance the picker alone', () => {
+        // see actor2/act/index.ts
+        const owner = createDefaultOwner()
+        addAbility(owner, ignite)
+        const ownerA = instantiateActor(owner)
+
+        for (let a in [0, 1, 2, 3, 4]) {
+            const result = selectAndPrepAbility(ownerA, 'standard')
+            assert.exists(result)
+        }
     })
 })

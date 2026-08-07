@@ -26,7 +26,7 @@ const calculateSave = (owner: OwnerMaximal, opts: {
 
 // a handler still needs to exist to figure out what to do with these AbilityModNodes
 export const generateAbilityModNodes = (owner: OwnerMaximal, ability: Ability): AbilityModNode[] => {
-    console.log('received', ability)
+    /* console.log('received', ability) */
     if (!ability.handlers) return []
 
     const amn: AbilityModNode[] = []

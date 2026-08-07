@@ -1,23 +1,19 @@
-import { CharacterSheet, UseCharacterSheet, calculateModifier } from '../character-sheet'
-import { characterLevels, cloneClassLevelSheet } from '../character-sheet/class-level'
-import { FeatSheet } from '../feat'
-import { EquipmentSheet } from '../equipment-sheet'
-import { dagger, shortsword } from './equipment'
-import { FeatModRequiredData } from '../feat/core-types'
-import { defaultStatusSheet, StatusSheet } from '../status-sheet'
-import { AbilitySheet, createDefaultAbilitySheet } from '../ability-sheet'
-import { Owner } from '../character/actor'
+import { AbilitySheet, createDefaultAbilitySheet } from '../ability-sheet2'
+import { OwnerMaximal } from '../actor2'
+import { CharacterSheet } from '../character-sheet'
+import { cloneClassLevelSheet } from '../character-sheet/class-level'
+import { fakeCharacterLevels } from '../character-sheet/util'
+import { shortsword } from '../equipment-sheet2/defaults'
+import { EquipmentSheet } from '../equipment-sheet2/types'
+import { FeatSheet } from '../feat2'
+import { StatusSheet } from '../status-sheet2'
 
 export const defaultCharacterSheet: CharacterSheet = {
     con: 15,
     str: 15,
     dex: 15,
-    levels: characterLevels(1),
-}
-
-export const defaultUseCharacterSheet: UseCharacterSheet = {
-    cs: defaultCharacterSheet,
-    calculateModifier,
+    int: 15,
+    levels: fakeCharacterLevels(1),
 }
 
 export const defaultFeatSheet: FeatSheet = {}
@@ -32,7 +28,7 @@ export const createDefaultOwner = (data: Partial<{
     es: Partial<EquipmentSheet>,
     ss: Partial<StatusSheet>,
     as: Partial<AbilitySheet>
-}>): Owner => {
+}>): OwnerMaximal => {
     return {
         cs: {
             ...defaultCharacterSheet,
@@ -50,10 +46,9 @@ export const createDefaultOwner = (data: Partial<{
             ...data.fs,
         },
         ss: {
-            ...defaultStatusSheet,
             ...data.ss,
         },
         // fresh per owner - AbilitySheet categories hold mutable state
         as: data.as || createDefaultAbilitySheet(),
-    } as Owner
+    } as OwnerMaximal
 }

@@ -1,12 +1,12 @@
 import { describe, test, assert, afterEach } from 'vitest'
 import { resolveAbility, resolveAction, simulateFight, worldState } from './index.ts'
 import { defaultCharacterSheet, defaultEnemySheet } from '../character-sheet/index.ts'
-import instantiateActor, { Owner } from '../character/actor/index.ts'
 import { setSeed, clearSeed } from '../roll/index.ts'
-import { createDefaultOwner } from '../actor2/index.ts'
+import { createDefaultOwner, instantiateActor, OwnerMaximal } from '../actor2/index.ts'
+import { Ability } from '../ability-sheet2/types.ts'
 
-const defaultPlayer: Owner = createDefaultOwner()
-const defaultEnemy: Owner = createDefaultOwner({
+const defaultPlayer: OwnerMaximal = createDefaultOwner()
+const defaultEnemy: OwnerMaximal = createDefaultOwner({
     cs: {
         con: 10,
         dex: 10,
@@ -27,7 +27,7 @@ describe('simulateFight', () => {
 
     test('decays an actions-elapsed status on an actor once they act', () => {
         const actor = instantiateActor(defaultPlayer)
-        actor.owner.ss.test = { displayName: 'test', context: {}, expiration: { kind: 'actions-elapsed', remaining: 1 } }
+        actor.owner.ss.test = { displayName: 'test', broadContexts: {}, expiration: { kind: 'actions-elapsed', remaining: 1 } }
 
         // a completed fight (>0 rounds) guarantees the player acted at least once
         const result = simulateFight({
@@ -198,7 +198,7 @@ describe('worldState', () => {
     })
 
     test('playerAfterFight rerolls initiative (including feats), discarding the leftover remainder', () => {
-        const owner: Owner = {
+        const owner: OwnerMaximal = {
             cs: { ...defaultCharacterSheet, dex: 10 },
             fs: { featAlert },
             es: {},

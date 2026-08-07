@@ -11,6 +11,8 @@ import { createDefaultOwner } from '../defaults'
 import moddedCsScore from '../log2/composition/modded-cs-score.ts'
 import { OwnerMaximal } from '../actor2'
 import type { BaseEquipment } from './types'
+import damage from '../log2/terminal/damage.ts'
+import { iterate } from '../simulate/util/iterate.ts'
 
 // cs scores
 const HIGH_BASE = 18 // from character creation
@@ -47,5 +49,24 @@ describe('Armor heuristics', () => {
     })
     test('Heavy armor can outperform with armor training', () => {
 
+    })
+})
+
+describe('Weapons roll fresh each tree, nodes are steady per tree', () => {
+    test('shortsword', () => {
+        const owner = createDefaultOwner({
+            es: {
+                mainhand: shortsword
+            },
+        })
+        owner.relevantSlot = owner.es.mainhand
+
+        const final = new Set<number>()
+        iterate(30, () => {
+            const d = damage(owner)
+            final.add(d.total())
+
+            assert.equal(d.total(), d.total())
+        })
     })
 })

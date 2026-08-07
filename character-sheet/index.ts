@@ -20,10 +20,10 @@ export interface CharacterSheet {
     flavorSheet?: FlavorSheet
 }
 
-export interface UseCharacterSheet {
+/* export interface UseCharacterSheet {
     cs: CharacterSheet,
     calculateModifier: (stat: number, bonuses?: number[]) => number,
-}
+} */
 
 export const defaultCharacterSheet: CharacterSheet = {
     con: 15,

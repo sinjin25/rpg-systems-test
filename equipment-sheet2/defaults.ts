@@ -1,8 +1,7 @@
 // default equipment for testing purposes
 import newModNode, { leaf, ModNode } from '../log2'
 import { Tags } from '../log2/tags'
-import { ObjectWithBroadContexts } from '../log2/types'
-import { OwnerMaximal } from '../actor2'
+import { ObjectWithBroadContexts, OwnerLog2 } from '../log2/types'
 import roll from '../roll'
 import type { BaseEquipment, EquipmentSheet, EquipmentSlot } from './types'
 
@@ -43,7 +42,7 @@ export const heavyShield: BaseEquipment = (() => {
     return {
         displayName: dn,
         broadContexts: {
-            "ac-of-equipment": (o: OwnerMaximal) => leaf(
+            "ac-of-equipment": (o: OwnerLog2) => leaf(
                 dn,
                 2,
             )
@@ -57,7 +56,7 @@ export const shortsword: BaseEquipment = (() => {
     return {
         displayName: dn,
         broadContexts: {
-            damage: (o: OwnerMaximal) => {
+            damage: (o: OwnerLog2) => {
                 const sides = 6
                 return leaf(dn, roll(sides))
             }
@@ -71,11 +70,11 @@ export const shortswordPlusOne: BaseEquipment = (() => {
     return {
         displayName: dn,
         broadContexts: {
-            damage: (o: OwnerMaximal) => {
+            damage: (o: OwnerLog2) => {
                 const sides = 6
                 return leaf(dn, roll(sides))
             },
-            enhancement: (o: OwnerMaximal) => {
+            enhancement: (o: OwnerLog2) => {
                 return leaf(dn, 1)
             }
         },
@@ -88,11 +87,11 @@ export const shortswordPlusOneIfFighter: BaseEquipment = (() => {
     return {
         displayName: dn,
         broadContexts: {
-            damage: (o: OwnerMaximal) => {
+            damage: (o: OwnerLog2) => {
                 const sides = 6
                 return leaf(dn, roll(sides))
             },
-            enhancement: (o: OwnerMaximal) => {
+            enhancement: (o: OwnerLog2) => {
                 if (!!o.cs.levels.fighter) return leaf(dn, 1)
                 return undefined
             }
@@ -106,7 +105,7 @@ export const dagger: BaseEquipment = (() => {
     return {
         displayName: dn,
         broadContexts: {
-            damage: (o: OwnerMaximal) => {
+            damage: (o: OwnerLog2) => {
                 const sides = 4
                 return leaf(dn, roll(sides))
             },

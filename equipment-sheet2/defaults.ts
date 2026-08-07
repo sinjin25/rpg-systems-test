@@ -100,6 +100,20 @@ export const shortswordPlusOneIfFighter: BaseEquipment = (() => {
     }
 })()
 
+export const longsword: BaseEquipment = (() => {
+    const dn = 'longsword'
+    return {
+        displayName: dn,
+        broadContexts: {
+            damage: (o: OwnerLog2) => {
+                const sides = 8
+                return leaf(dn, roll(sides))
+            }
+        },
+        tags: ['melee']
+    }
+})()
+
 export const dagger: BaseEquipment = (() => {
     const dn = 'dagger'
     return {

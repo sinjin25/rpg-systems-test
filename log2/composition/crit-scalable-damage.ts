@@ -1,6 +1,5 @@
 import newModNode, { sumFunc } from "..";
 import { EveryTree, OwnerLog2 } from "../types";
-import { equipmentIsWeapon } from "../../equipment-sheet";
 import damageOfEquipmentPiece from "../bases/damage-of-equipment-piece";
 import effectiveDamageStat from "./effective-damage-stat";
 import featContribution from "./feat-contribution";
@@ -15,6 +14,8 @@ export default (owner: OwnerLog2) => {
         damageOfEquipmentPiece(relevantSlot)(owner),
         effectiveDamageStat(owner),
         featContribution('crit-scalable-damage-feat-mod')(owner),
+        // generic damage feats (Power Attack) land here so they multiply on a crit
+        featContribution('damage-feat-mod')(owner),
         statusContribution('crit-scalable-damage-status-mod')(owner),
     ], sumFunc)
 }

@@ -1,5 +1,4 @@
 import newModNode, { leaf } from "..";
-import { Armor } from "../../equipment-sheet";
 import { BaseEquipment } from "../../equipment-sheet2/types";
 import { EveryTree, OwnerLog2 } from "../types";
 

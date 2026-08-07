@@ -8,7 +8,7 @@ import {
     sumFortitudeSaveFromClassLevels,
     sumLevelsFromClassLevels,
     sumReflexSaveFromClassLevels,
-} from '../index'
+} from '../derive/index'
 import { armorTraining, conSaves, deriveFeatName, improvedInitiative, powerAttack } from '../../../feat2/feats'
 
 // +1 attack each and the feats Alert, Con Saves, Power Attack + Armor Training, Measured Strike.

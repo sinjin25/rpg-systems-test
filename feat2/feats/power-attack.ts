@@ -8,4 +8,4 @@ export default {
         'attack-feat-mod': () => leaf(displayName, 2),
         'damage-feat-mod': () => leaf(displayName, 2),
     }
-} as Feat2
+} as const satisfies Feat2

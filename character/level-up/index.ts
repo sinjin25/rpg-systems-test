@@ -2,7 +2,7 @@ import { Ability, addAbility } from '../../ability-sheet2'
 import { instantiateClassLevels } from '../../character-sheet/class-level/registry'
 import { ClassLevels } from '../../character-sheet/class-level/type'
 import possibleFeatKeys, { PossibleFeatKey } from '../../feat2/feats/index'
-import { FeatSheet } from '../../feat2'
+import { Feat2, FeatSheet } from '../../feat2'
 import { OwnerMaximal } from '../../actor2'
 import addFeat from '../../feat2/add-feat'
 
@@ -78,9 +78,10 @@ export const previewLevelUp = (owner: OwnerMaximal, className: string): LevelUpP
     // consider showing feats even if you can't add
     const eligibleFeats = (Object.keys(possibleFeatKeys) as PossibleFeatKey[]).filter((key) => {
         if (temp[key]) return false // already owned (including this level's grants)
-        const prereq = possibleFeatKeys[key].prerequisites
+        const f = possibleFeatKeys[key] as Feat2
+        const prereq = f.prerequisites
         if (!prereq) return true
-        return prereq({ cs: owner.cs, fs: temp })
+        return prereq(owner)
     })
 
     return {
@@ -109,22 +110,25 @@ export const commitLevelUp = (owner: OwnerMaximal, selection: LevelUpSelection):
     if (member.selectBonusFeat && !bonusFeat) return { ok: false, reason: LevelUpError.bonusFeatRequired }
     if (!member.selectBonusFeat && bonusFeat) return { ok: false, reason: LevelUpError.unexpectedBonusFeat }
 
-    // temp copy that can be mutated
-    // class feats are added first so they can satisfy feat prereqs
+    // class feats are added first so they can satisfy the bonus feat's prereqs.
+    // they come straight off the class table, so a class may grant a feat that
+    // isn't a player-selectable pick.
     const grantedKeys = Object.keys(member.feats) as PossibleFeatKey[]
-    const temp: FeatSheet = { ...owner.fs }
     for (const key of grantedKeys) {
-        addFeat(owner, possibleFeats[key])
+        addFeat(owner, member.feats[key])
     }
     if (bonusFeat) {
-        const met = addFeat(owner, possibleFeats[bonusFeat])
+        const feat = possibleFeatKeys[bonusFeat] as Feat2
+        // checked before adding: addFeat writes to owner.fs unconditionally, so
+        // bailing out afterwards would leave the rejected feat attached
+        const met = feat?.prerequisites?.(owner) ?? true
         if (!met) return { ok: false, reason: LevelUpError.prereqUnmet }
+        addFeat(owner, feat)
     }
 
     // commit changes
-    // merge feats, register this level's abilities, increase class level,
+    // register this level's abilities, increase class level,
     // register new class if necessary
-    Object.assign(owner.fs, temp)
     const grantedAbilities = member.abilities ?? []
     for (const ability of grantedAbilities) addAbility(owner, ability)
     cl.level = target + 1

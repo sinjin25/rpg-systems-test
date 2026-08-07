@@ -5,7 +5,7 @@ import { Tags } from "../log2/tags"
 import { StatusSheet } from "../status-sheet2"
 import { Health, instantiateHealth, instantiateSpeed, Speed } from "./instantiate"
 import { FeatSheet } from "../feat2"
-import { cloneClassLevelSheet } from "../character-sheet/class-level"
+import { cloneClassLevelSheet } from "../character-sheet/class-level/derive"
 import { AbilitySheet, createDefaultAbilitySheet } from "../ability-sheet2"
 
 // remove dependency on Owner asap

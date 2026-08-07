@@ -11,7 +11,7 @@ import { featAlert } from '../../feat/feats/index.ts'
 import { createDefaultAbilitySheet } from '../../ability-sheet/index.ts'
 import { createDefaultOwner } from '../../defaults/index.ts'
 import { commitLevelUp } from '../../character/level-up/index.ts'
-import { getCharacterLevel } from '../../character-sheet/class-level/index.ts'
+import { getCharacterLevel } from '../../character-sheet/class-level/derive/index.ts'
 
 const SHOW_DEBUG = true
 

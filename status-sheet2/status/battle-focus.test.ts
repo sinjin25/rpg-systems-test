@@ -2,7 +2,7 @@ import { createDefaultOwner } from '../../actor2'
 import { findNodeMatching } from '../../log2/index.ts'
 import attack from '../../log2/terminal/attack.ts'
 import damage from '../../log2/terminal/damage.ts'
-import { decayRoundsElapsed } from '../../status-sheet/decay.ts'
+import { decayRoundsElapsed } from '../decay.ts'
 import battleFocus, { BATTLE_FOCUS_ATTACK_BONUS, BATTLE_FOCUS_DAMAGE_BONUS, battleFocusActiveStatus, battleFocusChargingStatus } from './battle-focus.ts'
 import { describe, test, assert, expect } from 'vitest'
 

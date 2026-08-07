@@ -6,4 +6,4 @@ export default {
     broadContexts: {
         'fortitude-feat-mod': () => leaf('Hardy', 2)
     }
-} as Feat2
+} as const satisfies Feat2

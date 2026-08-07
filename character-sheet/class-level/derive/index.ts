@@ -1,11 +1,12 @@
-import type { CharacterSheet } from "../../character-sheet"
-import { ClassLevelMember, ClassLevels, ClassLevelSheet } from "./type"
-import { Ability, getAbilityKey } from "../../ability-sheet2"
-import { FeatSheet } from "../../feat2"
+import type { CharacterSheet } from "../.."
+import { ClassLevelMember, ClassLevels, ClassLevelSheet } from "../type"
+import { Ability, getAbilityKey } from "../../../ability-sheet2"
+import { FeatSheet } from "../../../feat2"
 
 // prevent +1/-1 index access
 const clampedLevel = (cl: ClassLevels): number => Math.min(cl.level, cl.data.length)
 
+// slice a class into the relevant levels
 const acquiredMembers = (cl: ClassLevels): ClassLevelMember[] => cl.data.slice(0, clampedLevel(cl))
 
 const sumNumericFromClassLevels = (
@@ -87,7 +88,3 @@ export {
     newClassLevelSheet,
     cloneClassLevelSheet,
 }
-
-/* future utilities */
-// const determineCurrentHealthAfterLevelUp = () => {}
-// const levelUp = () => {} // including select feat

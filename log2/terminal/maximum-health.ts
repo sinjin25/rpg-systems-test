@@ -4,7 +4,7 @@ import { default as newModNode, ModNode, sumFunc, leaf, productFunc } from "..";
 import { OwnerLog2, EveryTree, TreeSubproblems } from "../types";
 import moddedCsScore from "../composition/modded-cs-score";
 import featContribution from "../composition/feat-contribution";
-import { getCharacterLevel } from "../../character-sheet/class-level";
+import { getCharacterLevel } from "../../character-sheet/class-level/derive";
 import flatHealth from "../composition/flat-health";
 import healthPerLevel from "../composition/health-per-level";
 import baseHealth from "../bases/base-health";

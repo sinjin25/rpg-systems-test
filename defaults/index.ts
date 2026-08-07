@@ -1,7 +1,7 @@
 import { AbilitySheet, createDefaultAbilitySheet } from '../ability-sheet2'
 import { OwnerMaximal } from '../actor2'
 import { CharacterSheet } from '../character-sheet'
-import { cloneClassLevelSheet } from '../character-sheet/class-level'
+import { cloneClassLevelSheet } from '../character-sheet/class-level/derive'
 import { fakeCharacterLevels } from '../character-sheet/util'
 import { shortsword } from '../equipment-sheet2/defaults'
 import { EquipmentSheet } from '../equipment-sheet2/types'

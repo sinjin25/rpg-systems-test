@@ -1,5 +1,5 @@
-import { characterLevels } from "./class-level"
 import type { ClassLevelSheet } from "./class-level/type"
+import { fakeCharacterLevels } from "./util"
 
 export interface FlavorSheet {
     displayName: string,
@@ -30,7 +30,7 @@ export const defaultCharacterSheet: CharacterSheet = {
     str: 15,
     dex: 15,
     int: 15,
-    levels: characterLevels(1),
+    levels: fakeCharacterLevels(1),
     flavorSheet: {
         displayName: 'Player',
         description: '',
@@ -42,7 +42,6 @@ export const defaultEnemySheet: CharacterSheet = {
     str: 10,
     dex: 10,
     int: 10,
-    /* levels: characterLevels(1), */
     levels: {},
     flavorSheet: {
         ...defaultFlavorSheet,

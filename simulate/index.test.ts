@@ -1,38 +1,19 @@
 import { describe, test, assert, afterEach } from 'vitest'
 import { resolveAbility, resolveAction, simulateFight, worldState } from './index.ts'
-import useAttack from '../character/act/attack/index.ts'
-import studiedTargetStatus from '../status-sheet/statuses/studied-target.ts'
-import { Ability, addAbility, createDefaultAbilitySheet } from '../ability-sheet/index.ts'
-import ignite from '../ability-sheet/abilities/ignite.ts'
-import useAbility from '../character/act/ability/index.ts'
-import { act } from '../character/act/index.ts'
-import { attackHits } from '../character/act/attack-hits.ts'
 import { defaultCharacterSheet, defaultEnemySheet } from '../character-sheet/index.ts'
-import { defaultFeatSheet } from '../feat/index.ts'
-import { defaultEquipmentSheet } from '../equipment-sheet/index.ts'
 import instantiateActor, { Owner } from '../character/actor/index.ts'
-import { featAlert } from '../feat/feats/index.ts'
-import rollInitiative from '../stat-modifier/initiative/index.ts'
 import { setSeed, clearSeed } from '../roll/index.ts'
-import { round, STANDARD_SPEED } from '../speed/index.ts'
-import { Feat } from '../feat/core-types.ts'
-import { createDefaultOwner } from '../defaults/index.ts'
+import { createDefaultOwner } from '../actor2/index.ts'
 
-const defaultPlayer: Owner = {
-    cs: defaultCharacterSheet,
-    fs: defaultFeatSheet,
-    es: defaultEquipmentSheet,
-    ss: {},
-    as: createDefaultAbilitySheet(),
-}
-
-const defaultEnemy: Owner = {
-    cs: defaultEnemySheet,
-    fs: defaultFeatSheet,
-    es: defaultEquipmentSheet,
-    ss: {},
-    as: createDefaultAbilitySheet(),
-}
+const defaultPlayer: Owner = createDefaultOwner()
+const defaultEnemy: Owner = createDefaultOwner({
+    cs: {
+        con: 10,
+        dex: 10,
+        str: 10,
+        int: 10,
+    }
+})
 
 describe('simulateFight', () => {
     test('runs to completion between a player and an enemy', () => {

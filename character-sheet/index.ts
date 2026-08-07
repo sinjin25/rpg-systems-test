@@ -1,8 +1,5 @@
-import { DEFAULT_STAT, calculateModifier } from "../stat-modifier"
 import { characterLevels } from "./class-level"
 import type { ClassLevelSheet } from "./class-level/type"
-
-export { DEFAULT_STAT, calculateModifier }
 
 export interface FlavorSheet {
     displayName: string,
@@ -45,13 +42,9 @@ export const defaultEnemySheet: CharacterSheet = {
     str: 10,
     dex: 10,
     int: 10,
-    levels: characterLevels(1),
+    /* levels: characterLevels(1), */
+    levels: {},
     flavorSheet: {
         ...defaultFlavorSheet,
     }
-}
-
-export const defaultUseCharacterSheet: UseCharacterSheet = {
-    cs: defaultCharacterSheet,
-    calculateModifier,
 }

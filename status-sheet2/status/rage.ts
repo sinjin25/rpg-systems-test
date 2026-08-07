@@ -30,7 +30,7 @@ export const rageStatus: SnapshotStatusEffect = (data: {
                 return leaf(displayName, bonus)
             }
         }
-    }
+    } as StatusEffect
 }
 
 export default rageStatus

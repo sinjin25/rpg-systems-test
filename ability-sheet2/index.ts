@@ -42,6 +42,10 @@ export const advanceAbilityCategoryIndex = (owner: OwnerMaximal, category: Abili
     const as = owner.as
     const catalog = as[category]
     if (!catalog) return
+
+    // we already ran out (in the past)
+    if (catalog.index === -1) return
+
     catalog.index++
     // is there an item there?
     const index = catalog.index

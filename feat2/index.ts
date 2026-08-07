@@ -1,10 +1,10 @@
-import { FeatPrereqFunction } from "../feat/core-types";
 import { ObjectWithBroadContexts } from "../log2/types";
 import { OwnerMaximal } from "../actor2";
-import { InterceptRollFunction } from "../roll-intercept";
 import { TriggerHooks } from "../trigger/core-types";
 
 type FeatFightStartFunction = (owner: OwnerMaximal) => StatusEffect | StatusEffect[] | undefined
+
+type FeatPrereqFunction = (owner: OwnerMaximal) => boolean
 
 // broadContexts hooks up to log2 tree calcs
 export type Feat2 = ObjectWithBroadContexts & {
@@ -15,14 +15,14 @@ export type Feat2 = ObjectWithBroadContexts & {
     description?: string,
     prerequisites?: FeatPrereqFunction,
     onFightStart?: FeatFightStartFunction,
-    interceptRoll?: InterceptRollFunction,
+    /* interceptRoll?: InterceptRollFunction, */
     trigger?: TriggerHooks,
     // from Feat, dead
     tags?: string[],
 }
 
 import { CharacterSheet } from '../character-sheet'
-import { StatusEffect } from "../status-sheet";
+import { StatusEffect } from "../status-sheet2";
 
 export type FeatSheet = Record<string, Feat2>
 

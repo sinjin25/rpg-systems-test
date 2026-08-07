@@ -1,7 +1,7 @@
-import { FeatSheet } from "../../feat"
 import type { CharacterSheet } from "../../character-sheet"
 import { ClassLevelMember, ClassLevels, ClassLevelSheet } from "./type"
 import { Ability, getAbilityKey } from "../../ability-sheet2"
+import { FeatSheet } from "../../feat2"
 
 // prevent +1/-1 index access
 const clampedLevel = (cl: ClassLevels): number => Math.min(cl.level, cl.data.length)
@@ -74,18 +74,20 @@ const cloneClassLevelSheet = (sheet: ClassLevelSheet): ClassLevelSheet =>
     Object.fromEntries(Object.entries(sheet).map(([name, cl]) => [name, { ...cl }]))
 
 // fake a class for passing tests that don't care about this
-const characterLevels = (n: number): ClassLevelSheet => ({
-    base: {
-        displayName: 'Test Class',
-        level: n,
-        data: Array.from({ length: n }, (): ClassLevelMember => ({
-            attackBonus: 0,
-            fortitudeSave: 0,
-            reflexSave: 0,
-            feats: {},
-        })),
-    },
-})
+const characterLevels = (n: number): ClassLevelSheet => {
+    return {
+        base: {
+            displayName: 'Test Class',
+            level: n,
+            data: Array.from({ length: n }, (): ClassLevelMember => ({
+                attackBonus: 0,
+                fortitudeSave: 0,
+                reflexSave: 0,
+                feats: {},
+            })),
+        },
+    }
+}
 
 export {
     sumAttackBonusFromClassLevels,

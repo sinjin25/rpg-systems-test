@@ -2,7 +2,7 @@ import { Actor2 } from "."
 import roll from "../roll"
 import { decaySpeedElapsed } from "../status-sheet2/decay"
 
-const DEFAULT_SPEED = 35
+export const DEFAULT_SPEED = 35
 
 // move into terminal/ at some point
 export const speedRoll = (

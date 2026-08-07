@@ -1,6 +1,6 @@
 import { leaf } from "../../log2";
 import { Feat2 } from "..";
-import battleFocusChargingStatus, { BATTLE_FOCUS_CHARGE_ROUNDS } from "../../status-sheet/statuses/battle-focus";
+import { BATTLE_FOCUS_CHARGE_ROUNDS, battleFocusChargingStatus } from "../../status-sheet2";
 
 const displayName = 'Battle Focus'
 export default {
@@ -8,4 +8,4 @@ export default {
     description: 'Increases your stats after X rounds',
     broadContexts: {},
     onFightStart: () => battleFocusChargingStatus(BATTLE_FOCUS_CHARGE_ROUNDS),
-} as Feat2
+} as const satisfies Feat2

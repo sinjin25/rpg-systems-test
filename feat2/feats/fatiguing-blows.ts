@@ -1,6 +1,6 @@
 import { leaf } from "../../log2";
 import { Feat2 } from "..";
-import fatiguingBlowsStatus from "../../status-sheet/statuses/fatiguing-blows";
+import fbStatus from '../../status-sheet2/status/fatiguing-blows'
 
 const displayName = 'Fatiguing Blows'
 export default {
@@ -12,7 +12,7 @@ export default {
             kind: 'apply-status',
             recipient: 'target',
             key: 'fatiguingBlows',
-            status: fatiguingBlowsStatus(),
+            status: fbStatus,
         }),
     },
-} as Feat2
+} as const satisfies Feat2

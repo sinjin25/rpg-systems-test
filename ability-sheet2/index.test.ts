@@ -93,5 +93,9 @@ describe('abilityCategoryIndex', () => {
         console.log(std.priority[std.index])
         assert.equal(std.priority[2], 'fake item')
         assert.equal(std.index, -1)
+
+        // confirm that once index is -1 it doesn't advance anymore
+        advanceAbilityCategoryIndex(owner, 'standard')
+        assert.equal(std.index, -1)
     })
 })

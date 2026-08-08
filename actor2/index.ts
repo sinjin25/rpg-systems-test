@@ -53,7 +53,7 @@ export const createDefaultOwner = (data: Partial<{
             ...data.cs,
             // fresh per owner - `levels` is mutable state (level-up writes to it),
             // so it must not alias the shared default sheet's record
-            levels: cloneClassLevelSheet(data.cs?.levels ?? defaultCharacterSheet.levels),
+            levels: [],
         },
         es: {
             mainhand: defaultWp,

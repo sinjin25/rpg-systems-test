@@ -1,4 +1,4 @@
-import type { ClassLevelSheet } from "./class-level/type"
+import { ClassLevelPickLog } from "../class-level2/types"
 import { fakeCharacterLevels } from "./util"
 
 export interface FlavorSheet {
@@ -16,7 +16,7 @@ export interface CharacterSheet {
     dex: number,
     con: number,
     int: number,
-    levels: ClassLevelSheet,
+    levels: ClassLevelPickLog,
     flavorSheet?: FlavorSheet
 }
 

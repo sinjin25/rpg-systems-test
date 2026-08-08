@@ -13,9 +13,7 @@ import { testFeatMeleeWeaponFighting } from './test-feats'
 
 export const deriveFeatName = (feat: Feat2) => feat.displayName
 
-// keyed by displayName, which is how addFeat stores feats on owner.fs
-// each feat is `as const satisfies Feat2` so displayName stays a string literal,
-// which makes the computed keys below literal too
+// 
 export const possibleFeatKeys = {
     [armorTraining.displayName]: armorTraining,
     [battleFocus.displayName]: battleFocus,

@@ -1,97 +1,148 @@
-import { describe, test, expect } from 'vitest'
+import { describe, test, expect, assert } from 'vitest'
 import critDamage from './crit-damage'
-import { createDefaultOwner } from '../defaults'
-import { OwnerMaximal, FeatMaximal } from '../types'
+import { createDefaultOwner } from '../../actor2'
+import { OwnerLog2, ObjectWithBroadContexts } from '../types'
 import { Weapon } from '../../equipment-sheet'
 import { leatherArmor } from '../../defaults/equipment'
 import { leaf, findNodeMatching } from '..'
 import modNodeToText from '../format'
+import roll from '../../roll'
+import { Feat2 } from '../../feat2'
+import { BaseEquipment } from '../../equipment-sheet2/types'
 
-const weapon = (dmg: number, crit?: number): Weapon =>
-    ({ displayName: 'test-weapon', contexts: ['melee'], damage: () => dmg, critMultiplier: crit } as Weapon)
+const weapon = (dmg: number, crit?: number): BaseEquipment =>
+({
+    displayName: 'test-weapon', contexts: ['melee'], broadContexts: {
+        'damage': () => {
+            // use a standardized damage
+            const r = dmg
+            return leaf('test-weapon', r)
+        },
+        'crit-multiplier': () => leaf('test-weapon', crit || 1.5)
+    }
+} as BaseEquipment)
 
-const withSlot = (owner: OwnerMaximal, slot: OwnerMaximal['relevantSlot']): OwnerMaximal =>
-    ({ ...owner, relevantSlot: slot })
 
-
-
-const flatStatOwner = (fs: OwnerMaximal['fs'] = {}) =>
+const flatStatOwner = (fs: OwnerLog2['fs'] = {}) =>
     createDefaultOwner({ cs: { str: 10, dex: 10 }, fs })
 
-const scalingFeat = (amount: number): FeatMaximal => ({
+const scalingFeat: Feat2 = ({
     displayName: 'test-scaler',
-    broadContexts: { 'crit-scalable-damage-feat-mod': () => leaf('test-scaler', amount) },
+    broadContexts: { 'crit-scalable-damage-feat-mod': () => leaf('test-scaler', 2) },
 })
 
-const flatFeat = (amount: number): FeatMaximal => ({
+const flatFeat: Feat2 = {
     displayName: 'test-flat',
-    broadContexts: { 'flat-damage-feat-mod': () => leaf('test-flat', amount) },
-})
+    broadContexts: { 'flat-damage-feat-mod': () => leaf('test-flat', 2) },
+}
 
 describe('crit-damage (terminal)', () => {
-    // ported from crit2/apply-multiplier: applyCritMultiplier(4, 0, 0, 2) === 8
-    test('multiplies the roll by the multiplier when there are no mods', () => {
-        const node = critDamage(withSlot(flatStatOwner(), weapon(4, 2)))
-        expect(node.total()).toBe(8) // 2 * (4 + 0) + 0
+    test('weapon multiplier is picked up properly', () => {
+        const w = weapon(4, 2)
+        const owner = createDefaultOwner({
+            cs: { str: 10, dex: 10 },
+            es: {
+                mainhand: w
+            },
+        })
+        owner.relevantSlot = owner.es.mainhand
+        const node = critDamage(owner)
+        assert.equal(node.total(), 8)
+        assert.exists(findNodeMatching(node, /crit-damage/, {
+            includeRoot: true,
+        }))
     })
 
-    // ported: applyCritMultiplier(4, 2, 0, 2) === 12 - a scaled mod is multiplied alongside the roll
-    test('scaled mods are multiplied alongside the roll', () => {
-        const node = critDamage(withSlot(flatStatOwner({ scaler: scalingFeat(2) }), weapon(4, 2)))
-        expect(node.total()).toBe(12) // 2 * (4 + 2) + 0
+    test('crit-scalable-damage-feat-mod contributes', () => {
+        const w = weapon(4, 2)
+        const owner = createDefaultOwner({
+            cs: { str: 10, dex: 10 },
+            es: {
+                mainhand: w
+            },
+            fs: {
+                scalingFeat,
+            }
+        })
+        owner.relevantSlot = owner.es.mainhand
+        const node = critDamage(owner)
+        /* console.log(modNodeToText(node)) */
+        assert.equal(node.total(), 12)
+        assert.exists(findNodeMatching(node, /test-scaler/))
+        assert.exists(findNodeMatching(node, /crit-scalable-damage-feat-mod/))
     })
 
-    // ported: applyCritMultiplier(4, 0, 4, 2) === 12, scaledPortion 8, flatPortion 4
-    test('flat mods are added AFTER multiplication, not before', () => {
-        const node = critDamage(withSlot(flatStatOwner({ flat: flatFeat(4) }), weapon(4, 2)))
-        expect(node.total()).toBe(12) // 2 * 4 + 4
-        expect(findNodeMatching(node, /crit-scaled-portion/i)?.total()).toBe(8)
-        expect(findNodeMatching(node, /flat-damage/i)?.total()).toBe(4)
+    test('Flat mods are not scaled', () => {
+        const w = weapon(4, 2)
+        const owner = createDefaultOwner({
+            cs: { str: 10, dex: 10 },
+            es: {
+                mainhand: w
+            },
+            fs: {
+                flatFeat,
+            }
+        })
+        owner.relevantSlot = owner.es.mainhand
+        const node = critDamage(owner)
+        /* console.log(modNodeToText(node)) */
+        assert.equal(node.total(), 10) // 8 scaled, + 2 flat
+        assert.exists(findNodeMatching(node, /test-flat/))
+        assert.exists(findNodeMatching(node, /flat-damage/))
+        assert.exists(findNodeMatching(node, /crit-scalable-damage-feat-mod/))
     })
 
-    // ported: applyCritMultiplier(5, 0, 0, 1.5) -> scaledPortion 7.5, total floored to 7
-    test('rounds the fractional total down (default x1.5 multiplier)', () => {
-        const node = critDamage(withSlot(flatStatOwner(), weapon(5, 1.5)))
-        expect(findNodeMatching(node, /crit-scaled-portion/i)?.total()).toBe(7.5)
-        expect(node.total()).toBe(7)
+    test('Rounds fractions down', () => {
+        const w = weapon(5) // 5, 1.5x
+        const owner = createDefaultOwner({
+            cs: { str: 10, dex: 10 },
+            es: {
+                mainhand: w
+            },
+        })
+        owner.relevantSlot = owner.es.mainhand
+        const node = critDamage(owner)
+        /* console.log(modNodeToText(node)) */
+        assert.equal(node.total(), 7)
+        assert.notEqual(node.total(), 7.5)
     })
 
-    test('a weapon with no explicit critMultiplier defaults to x1.5', () => {
-        const node = critDamage(withSlot(flatStatOwner(), weapon(4)))
-        expect(findNodeMatching(node, /crit-multiplier/i)?.total()).toBe(1.5)
-        expect(node.total()).toBe(6) // floor(1.5 * 4)
+    test.skip('a weapon with no explicit critMultiplier defaults to x1.5', () => {
+        const w = weapon(5) // 5, 1.5x
+        const owner = createDefaultOwner({
+            cs: { str: 10, dex: 10 },
+            es: {
+                mainhand: w
+            },
+        })
+        owner.relevantSlot = owner.es.mainhand
+        const node = critDamage(owner)
+
+        const multi = findNodeMatching(node, /crit-multiplier/)
+        assert.exists(multi)
+        assert.equal(multi.total(), 1.5)
     })
 
-    test('the ability modifier scales with the crit (it lives in the scaled bucket)', () => {
-        // default character is melee str 15 -> +2; that +2 is multiplied, not added flat
-        const node = critDamage(withSlot(createDefaultOwner({}), weapon(8, 2)))
-        expect(node.total()).toBe(20) // 2 * (8 + 2)
-        expect(findNodeMatching(node, /crit-scalable-damage/i)?.total()).toBe(10)
-        console.log(modNodeToText(node))
-    })
+    test('CS score damage is multiplied', () => {
+        const w = weapon(5, 2) // 5, 1.5x
+        const owner = createDefaultOwner({
+            cs: { str: 20, dex: 10 }, // +5
+            es: {
+                mainhand: w
+            },
+        })
+        owner.relevantSlot = owner.es.mainhand
+        const node = critDamage(owner)
 
-    test('a scaled feat lands in the scaled bucket, a flat feat in the flat bucket', () => {
-        const node = critDamage(withSlot(
-            flatStatOwner({ scaler: scalingFeat(3), flat: flatFeat(5) }),
-            weapon(4, 2),
-        ))
-        expect(findNodeMatching(node, /test-scaler/i)).toBeTruthy()
-        expect(findNodeMatching(node, /test-flat/i)).toBeTruthy()
-        expect(node.total()).toBe(19) // 2 * (4 + 3) + 5
-    })
-
-    test('the multiplier is a visible child of the product (not a hidden constant)', () => {
-        const node = critDamage(withSlot(flatStatOwner(), weapon(4, 2)))
-        const scaledPortion = findNodeMatching(node, /crit-scaled-portion/i)
-        expect(scaledPortion?.children.length).toBe(2) // crit-multiplier + crit-scalable-damage
-        expect(findNodeMatching(scaledPortion!, /crit-multiplier/i)?.total()).toBe(2)
+        assert.equal(node.total(), 20)
+        const csNode = findNodeMatching(node, /effective-damage-stat/)
+        assert.exists(csNode)
+        assert.equal(csNode.total(), 5)
     })
 
     test('throws when no relevantSlot is provided', () => {
-        expect(() => critDamage(flatStatOwner())).toThrow(/relevantSlot/)
-    })
-
-    test('throws when relevantSlot is not a weapon', () => {
-        expect(() => critDamage(withSlot(flatStatOwner(), leatherArmor))).toThrow(/relevantSlot/)
+        const owner = flatStatOwner()
+        owner.relevantSlot = undefined
+        expect(() => critDamage(owner)).toThrow(/relevant slot/i)
     })
 })

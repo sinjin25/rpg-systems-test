@@ -1,7 +1,7 @@
 import newModNode, { sumFunc } from "..";
-import { EveryTree, OwnerMaximal } from "../types";
-import flatDamageFeatMod from "./flat-damage-feat-mod";
+import { EveryTree, OwnerLog2 } from "../types";
+import featContribution from "./feat-contribution";
 
 const displayName: EveryTree = 'flat-damage'
-export default (owner: OwnerMaximal) =>
-    newModNode(displayName, [flatDamageFeatMod(owner)], sumFunc)
+export default (owner: OwnerLog2) =>
+    newModNode(displayName, [featContribution('flat-damage-feat-mod')(owner)], sumFunc)

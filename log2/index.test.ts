@@ -52,7 +52,7 @@ describe('log2 reproduces scratch.txt', () => {
         assert.equal(ac.total(), 26)
     })
 
-    test('renders the scratch outline', () => {
+    test.skip('renders the scratch outline', () => {
         console.log('\n' + modNodeToText(scratchAcTree()))
     })
 })

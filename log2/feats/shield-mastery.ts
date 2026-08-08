@@ -1,13 +1,13 @@
 import { leaf } from "..";
-import { AllFeats, FeatMaximal } from "../types";
-import { hasEquipmentTag } from "./gate";
+import { hasAllTags } from "../tags";
+import { AllFeats, ObjectWithBroadContexts } from "../types";
 
 const displayName: AllFeats = 'shield-mastery'
 
-const feat: FeatMaximal = {
+const feat: ObjectWithBroadContexts = {
     displayName,
     broadContexts: {
-        'ac-feat-mod': (owner) => hasEquipmentTag(owner, 'shield') ? leaf(displayName, 1) : undefined,
+        'ac-feat-mod': (owner) => hasAllTags(owner.tags, ['shield']) ? leaf(displayName, 1) : undefined,
     },
 }
 

@@ -1,4 +1,4 @@
-import { featAlert, featArmorTraining, featConSaves, featMeasuredStrike, featPowerAttack } from '../../../feat/feats'
+import { improvedInitiative, armorTraining, conSaves, powerAttack, deriveFeatName } from '../../../feat2/feats/index'
 import { ClassLevelMember, ClassLevelSheet, ClassLevels } from '../type'
 
 const ATTACK_BONUS_PER_LEVEL = 1
@@ -9,7 +9,7 @@ export const fighterClassLevels: Array<ClassLevelMember> = []
 fighterClassLevels.push({
     attackBonus: ATTACK_BONUS_PER_LEVEL,
     feats: {
-        featAlert,
+        [deriveFeatName(improvedInitiative)]: improvedInitiative,
     },
     fortitudeSave: 1,
     reflexSave: 0,
@@ -19,7 +19,7 @@ fighterClassLevels.push({
 fighterClassLevels.push({
     attackBonus: ATTACK_BONUS_PER_LEVEL,
     feats: {
-        featConSaves,
+        [deriveFeatName(conSaves)]: conSaves,
     },
     fortitudeSave: 0,
     reflexSave: 0,
@@ -29,8 +29,8 @@ fighterClassLevels.push({
 fighterClassLevels.push({
     attackBonus: ATTACK_BONUS_PER_LEVEL,
     feats: {
-        featPowerAttack,
-        featArmorTraining,
+        [deriveFeatName(powerAttack)]: powerAttack,
+        [deriveFeatName(armorTraining)]: armorTraining,
     },
     fortitudeSave: 1,
     reflexSave: 0,
@@ -40,7 +40,7 @@ fighterClassLevels.push({
 fighterClassLevels.push({
     attackBonus: ATTACK_BONUS_PER_LEVEL,
     feats: {
-        featMeasuredStrike
+        /* featMeasuredStrike */
     },
     fortitudeSave: 0,
     reflexSave: 0,

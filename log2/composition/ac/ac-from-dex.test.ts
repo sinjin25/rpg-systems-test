@@ -1,15 +1,16 @@
-import { describe, test, expect } from 'vitest'
+import { describe, test, expect, assert } from 'vitest'
 import acFromDex from './ac-from-dex'
-import catsGrace from '../../bases/status/cats-grace'
-import { createDefaultOwner } from '../../defaults'
+import catsGrace from '../../../status-sheet2/status/cats-grace'
+import { createDefaultOwner } from '../../../actor2'
 import { bandedMail } from '../../../defaults/equipment'
+import { armors } from '../../../equipment-sheet2/defaults'
 
 describe('ac-from-dex', () => {
     test('the armor cap clamps a higher dex', () => {
         // dex 14 + Cat's Grace 4 -> modded-dex +4, banded mail caps at +1
         const owner = createDefaultOwner({
             cs: { dex: 14 },
-            es: { armor: bandedMail },
+            es: { armor: armors['banded mail'] },
             ss: { catsGrace },
         })
         expect(acFromDex(owner).total()).toBe(1)
@@ -21,5 +22,16 @@ describe('ac-from-dex', () => {
             ss: { catsGrace },
         })
         expect(acFromDex(owner).total()).toBe(4) // full modded-dex (14 + 4 -> +4), no cap in play
+    })
+})
+
+describe('ac-from-dex past issues', () => {
+    test('with no armor, does not pass an undefined max dex node', () => {
+        const owner = createDefaultOwner({})
+        assert.equal(owner.es.armor, undefined)
+        const node = acFromDex(owner)
+        for (let n of node.children) {
+            assert.exists(n)
+        }
     })
 })

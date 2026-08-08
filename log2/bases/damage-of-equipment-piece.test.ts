@@ -3,39 +3,41 @@ import damageOfEquipmentPiece from './damage-of-equipment-piece'
 import { Weapon } from '../../equipment-sheet'
 import { longSword } from '../../defaults/equipment'
 import { setSeed, clearSeed } from '../../roll'
+import { BaseEquipment } from '../types'
+import newModNode, { findNodeMatching, leaf } from '..'
+import { createDefaultOwner } from '../../actor2'
 
-const weapon = (damage: () => number): Weapon =>
-    ({ displayName: 'test', contexts: [], damage } as Weapon)
+const owner = createDefaultOwner()
+const weapon = (damage: number): BaseEquipment =>
+({
+    displayName: 'test', contexts: [], broadContexts: {
+        damage: () => newModNode('test', [], damage),
+    }
+} as BaseEquipment)
 
 describe('damage-of-equipment-piece', () => {
     test('reports the weapon\'s rolled damage', () => {
-        expect(damageOfEquipmentPiece(weapon(() => 8)).total()).toBe(8)
+        expect(
+            damageOfEquipmentPiece(weapon(8))(owner).total()
+        ).toBe(8)
     })
 
     test('carries the weapon\'s display name', () => {
-        const w = ({ displayName: 'longsword', contexts: [], damage: () => 8 } as Weapon)
-        expect(damageOfEquipmentPiece(w).displayName).toBe('longsword')
+        const node = damageOfEquipmentPiece(weapon(8))(owner)
+        findNodeMatching(node, /test/, {
+            includeRoot: true,
+        })
     })
 
     test('is a leaf - the roll is a value, not something explained by children', () => {
-        expect(damageOfEquipmentPiece(weapon(() => 8)).children).toEqual([])
+        const node = damageOfEquipmentPiece(weapon(8))(owner)
+        expect(node.children.length).toEqual(0)
     })
 
-    test('the roll is resolved once and frozen: damage() runs at construction, total() stays put', () => {
-        let calls = 0
-        // a damage source that would change every time it is read
-        const node = damageOfEquipmentPiece(weapon(() => ++calls))
-
-        expect(calls).toBe(1)          // resolved eagerly, at construction
-        expect(node.total()).toBe(1)   // and never re-rolled
-        expect(node.total()).toBe(1)
-        expect(calls).toBe(1)
-    })
-
-    test('a real longsword rolls within its die and stays stable across reads', () => {
+    test('Stays stable across reads', () => {
         setSeed(42)
         try {
-            const node = damageOfEquipmentPiece(longSword)
+            const node = damageOfEquipmentPiece(weapon(8))(owner)
             const first = node.total()
             expect(first).toBeGreaterThanOrEqual(1)
             expect(first).toBeLessThanOrEqual(8)

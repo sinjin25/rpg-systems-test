@@ -1,7 +1,6 @@
 import newModNode, { sumFunc } from "..";
-import { EveryTree, OwnerMaximal } from "../types";
-import { collectFeatContributions } from "../collect-feat-contributions";
+import { EveryTree, OwnerLog2 } from "../types";
+import featContribution from "./feat-contribution";
 
 const displayName: EveryTree = 'crit-threat-range-mod'
-export default (owner: OwnerMaximal) =>
-    newModNode(displayName, collectFeatContributions(owner, 'crit-threat-range-mod'), sumFunc)
+export default (owner: OwnerLog2) => featContribution(displayName)(owner)

@@ -1,9 +1,9 @@
 import { describe, test, expect } from 'vitest'
 import acStatusMod from './ac-status-mod'
-import { createDefaultOwner } from '../../defaults'
-import studiedTarget from '../../bases/status/studied-target'
-import divineProtection from '../../bases/status/divine-protection'
-import bless from '../../bases/status/bless'
+import { createDefaultOwner } from '../../../actor2'
+import studiedTarget from '../../../status-sheet2/status/studied-target'
+import divineProtection from '../../../status-sheet2/status/divine-protection'
+import bless from '../../../status-sheet2/status/bless'
 
 describe('ac-status-mod (native)', () => {
     test('divine protection contributes +acBonus', () => {

@@ -1,7 +1,6 @@
-import { describe, test, expect } from 'vitest'
+import { describe, test, expect, assert } from 'vitest'
 import { newModNode, leaf, findNodeMatching } from './index'
 
-// a small tree: root 'effective-attack-stat' -> 'Modded Dex' -> ['Raw Dex', 'Dex From Status']
 const tree = () => newModNode('effective-attack-stat', [
     newModNode('Modded Dex', [leaf('Raw Dex', 3), leaf('Dex From Status', 0)]),
 ])
@@ -13,12 +12,12 @@ describe('findNodeMatching', () => {
         expect(hit?.total()).toBe(3)
     })
 
-    test('undefined when nothing matches - falsy, so a plain existence check still reads', () => {
-        expect(findNodeMatching(tree(), /dex/i)).toBeTruthy()   // this branch used dex
-        expect(findNodeMatching(tree(), /str/i)).toBeUndefined() // ...not str
+    test('Returns undefined when nothing matches', () => {
+        assert.exists(findNodeMatching(tree(), /dex/i))
+        assert.notExists(findNodeMatching(tree(), /str/i))
     })
 
-    test('root-before-children order: the shallowest match wins', () => {
+    test('Start at root', () => {
         // both the root and a descendant contain 'e'; the root is returned first
         expect(findNodeMatching(tree(), /e/i)?.displayName).toBe('effective-attack-stat')
     })
@@ -29,15 +28,14 @@ describe('findNodeMatching', () => {
     })
 
     test('depth bounds how far it descends', () => {
-        // 'dex' only appears on children, not the root name -> depth 0 sees only the root
-        expect(findNodeMatching(tree(), /dex/i, { depth: 0 })).toBeUndefined()
-        expect(findNodeMatching(tree(), /dex/i, { depth: 1 })?.displayName).toBe('Modded Dex')
-        // 'Raw Dex' lives two levels down
-        expect(findNodeMatching(tree(), /raw dex/i, { depth: 1 })).toBeUndefined()
-        expect(findNodeMatching(tree(), /raw dex/i, { depth: 2 })?.displayName).toBe('Raw Dex')
+        assert.notExists(findNodeMatching(tree(), /dex/i, { depth: 0 }))
+        assert.equal(findNodeMatching(tree(), /dex/i, { depth: 1 })?.displayName, 'Modded Dex')
+
+        assert.notExists(findNodeMatching(tree(), /raw dex/i, { depth: 1 }))
+        assert.equal(findNodeMatching(tree(), /raw dex/i, { depth: 2 })?.displayName, 'Raw Dex')
     })
 
-    test('includeRoot toggles whether the root name itself counts', () => {
+    test('Use includeRoot option to include the root', () => {
         expect(findNodeMatching(tree(), /effective/i)?.displayName).toBe('effective-attack-stat')
         expect(findNodeMatching(tree(), /effective/i, { includeRoot: false })).toBeUndefined()
     })

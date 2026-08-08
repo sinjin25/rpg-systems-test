@@ -1,9 +1,8 @@
-import newModNode, { sumFunc } from "..";
-import { EveryTree, OwnerMaximal } from "../types";
-import baseAttackBonusForClassLevel from "../bases/base-attack-bonus-for-class-level";
+import { deriveBonus } from "../../class-level2/derive";
+import { EveryTree, OwnerLog2 } from "../types";
 
 const displayName: EveryTree = 'base-attack-bonus'
-export default (owner: OwnerMaximal) => {
-    const perClass = Object.values(owner.cs.levels).map(baseAttackBonusForClassLevel)
-    return newModNode(displayName, perClass, sumFunc)
+export default (owner: OwnerLog2) => {
+    /* console.log('owner', owner.cs.levels) */
+    return deriveBonus(owner.cs.levels, 'attackBonus', displayName)
 }

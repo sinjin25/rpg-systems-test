@@ -1,10 +1,10 @@
-import { Ability, addAbility } from '../../ability-sheet'
-import { addFeat, FeatSheet } from '../../feat'
-import { possibleFeats } from '../../feat/feats'
-import { PossibleFeatKeys } from '../../feat/types'
+import { Ability, addAbility } from '../../ability-sheet2'
 import { instantiateClassLevels } from '../../character-sheet/class-level/registry'
 import { ClassLevels } from '../../character-sheet/class-level/type'
-import { Owner } from '../actor'
+import possibleFeatKeys, { PossibleFeatKey } from '../../feat2/feats/index'
+import { Feat2, FeatSheet } from '../../feat2'
+import { OwnerMaximal } from '../../actor2'
+import addFeat from '../../feat2/add-feat'
 
 export type LevelUpPreview = {
     className: string,
@@ -15,17 +15,17 @@ export type LevelUpPreview = {
     grantedFeats: FeatSheet,
     grantedAbilities: Ability[],
     offersBonusFeat: boolean,
-    eligibleFeats: PossibleFeatKeys[],
+    eligibleFeats: PossibleFeatKey[],
 }
 
 // What the UI sends back to commit. bonusFeat is required if the level offers one.
 export type LevelUpSelection = {
     className: string,
-    bonusFeat?: PossibleFeatKeys,
+    bonusFeat?: PossibleFeatKey,
 }
 
 export type LevelUpResult =
-    | { ok: true, className: string, newLevel: number, addedFeats: PossibleFeatKeys[], addedAbilities: Ability[] }
+    | { ok: true, className: string, newLevel: number, addedFeats: PossibleFeatKey[], addedAbilities: Ability[] }
     | { ok: false, reason: LevelUpError }
 
 
@@ -42,7 +42,7 @@ export type LevelUpError = typeof LevelUpError[keyof typeof LevelUpError]
 
 // resolve the class the player is leveling: an existing one on the sheet, or a
 // fresh instance from the registry for a brand-new dip. undefined => unknown class.
-const resolveClass = (owner: Owner, className: string): ClassLevels | undefined =>
+const resolveClass = (owner: OwnerMaximal, className: string): ClassLevels | undefined =>
     owner.cs.levels[className] ?? instantiateClassLevels(className)
 
 // the index of the next member to acquire. clamped so a level past the table end
@@ -61,7 +61,7 @@ const emptyPreview = (className: string, nextLevel: number): LevelUpPreview => (
 
 // BEFORE: describe what the next level in `className` grants, and which feats are
 // currently legal bonus picks. Never mutates the owner.
-export const previewLevelUp = (owner: Owner, className: string): LevelUpPreview => {
+export const previewLevelUp = (owner: OwnerMaximal, className: string): LevelUpPreview => {
     const cl = resolveClass(owner, className)
     if (!cl) return emptyPreview(className, 0)
 
@@ -76,11 +76,12 @@ export const previewLevelUp = (owner: Owner, className: string): LevelUpPreview 
 
     // feats you can add
     // consider showing feats even if you can't add
-    const eligibleFeats = (Object.keys(possibleFeats) as PossibleFeatKeys[]).filter((key) => {
+    const eligibleFeats = (Object.keys(possibleFeatKeys) as PossibleFeatKey[]).filter((key) => {
         if (temp[key]) return false // already owned (including this level's grants)
-        const prereq = possibleFeats[key].prerequisites
+        const f = possibleFeatKeys[key] as Feat2
+        const prereq = f.prerequisites
         if (!prereq) return true
-        return prereq({ cs: owner.cs, fs: temp })
+        return prereq(owner)
     })
 
     return {
@@ -96,7 +97,7 @@ export const previewLevelUp = (owner: Owner, className: string): LevelUpPreview 
 
 // This functions mutates
 // it also does security (ex: prereqs) before comitting
-export const commitLevelUp = (owner: Owner, selection: LevelUpSelection): LevelUpResult => {
+export const commitLevelUp = (owner: OwnerMaximal, selection: LevelUpSelection): LevelUpResult => {
     const { className, bonusFeat } = selection
 
     const cl = resolveClass(owner, className)
@@ -109,24 +110,27 @@ export const commitLevelUp = (owner: Owner, selection: LevelUpSelection): LevelU
     if (member.selectBonusFeat && !bonusFeat) return { ok: false, reason: LevelUpError.bonusFeatRequired }
     if (!member.selectBonusFeat && bonusFeat) return { ok: false, reason: LevelUpError.unexpectedBonusFeat }
 
-    // temp copy that can be mutated
-    // class feats are added first so they can satisfy feat prereqs
-    const grantedKeys = Object.keys(member.feats) as PossibleFeatKeys[]
-    const temp: FeatSheet = { ...owner.fs }
+    // class feats are added first so they can satisfy the bonus feat's prereqs.
+    // they come straight off the class table, so a class may grant a feat that
+    // isn't a player-selectable pick.
+    const grantedKeys = Object.keys(member.feats) as PossibleFeatKey[]
     for (const key of grantedKeys) {
-        addFeat({ cs: owner.cs, fs: temp }, { key })
+        addFeat(owner, member.feats[key])
     }
     if (bonusFeat) {
-        const met = addFeat({ cs: owner.cs, fs: temp }, { key: bonusFeat })
+        const feat = possibleFeatKeys[bonusFeat] as Feat2
+        // checked before adding: addFeat writes to owner.fs unconditionally, so
+        // bailing out afterwards would leave the rejected feat attached
+        const met = feat?.prerequisites?.(owner) ?? true
         if (!met) return { ok: false, reason: LevelUpError.prereqUnmet }
+        addFeat(owner, feat)
     }
 
     // commit changes
-    // merge feats, register this level's abilities, increase class level,
+    // register this level's abilities, increase class level,
     // register new class if necessary
-    Object.assign(owner.fs, temp)
     const grantedAbilities = member.abilities ?? []
-    for (const ability of grantedAbilities) addAbility(owner.as, ability)
+    for (const ability of grantedAbilities) addAbility(owner, ability)
     cl.level = target + 1
     owner.cs.levels[className] = cl
 

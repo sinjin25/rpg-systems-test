@@ -1,14 +1,14 @@
 import { leaf } from "..";
-import { AllFeats, FeatMaximal } from "../types";
-import { passesTags, weaponTags } from "./gate";
+import { hasAllTags, hasAnyTag } from "../tags";
+import { AllFeats, ObjectWithBroadContexts } from "../types";
 
 const displayName: AllFeats = 'melee-weapon-fighting'
 
-const feat: FeatMaximal = {
+const feat: ObjectWithBroadContexts = {
     displayName,
     broadContexts: {
         'attack-feat-mod': (owner) =>
-            passesTags(weaponTags(owner), ['melee'], ['ranged', 'magic']) ? leaf(displayName, 1) : undefined,
+            hasAnyTag(owner.tags, ['melee'], ['ranged', 'magic']) ? leaf(displayName, 1) : undefined,
     },
 }
 

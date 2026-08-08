@@ -1,10 +1,20 @@
 import { describe, test, expect } from 'vitest'
 import effectiveAttackStat from './effective-attack-stat'
-import { createDefaultOwner } from '../defaults'
-import { dagger } from '../../defaults/equipment'
+import { createDefaultOwner } from '../../actor2'
 import modNodeToText from '../format'
-import { findNodeMatching } from '..'
+import { findNodeMatching, leaf } from '..'
+import { BaseEquipment } from '../types'
 
+const dagger: BaseEquipment = {
+    displayName: 'dagger',
+    broadContexts: {
+        damage: (o) => {
+            const r = 4
+            return leaf('dagger', 4)
+        }
+    },
+    tags: ['finesse', 'melee']
+}
 const owner = (extra = {}) => createDefaultOwner({ cs: { str: 20, dex: 10 }, ...extra })
 
 describe('effective-attack-stat', () => {

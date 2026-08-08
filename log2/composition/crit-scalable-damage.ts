@@ -1,19 +1,21 @@
 import newModNode, { sumFunc } from "..";
-import { EveryTree, OwnerMaximal } from "../types";
-import { equipmentIsWeapon } from "../../equipment-sheet";
+import { EveryTree, OwnerLog2 } from "../types";
 import damageOfEquipmentPiece from "../bases/damage-of-equipment-piece";
 import effectiveDamageStat from "./effective-damage-stat";
-import critScalableDamageFeatMod from "./crit-scalable-damage-feat-mod";
+import featContribution from "./feat-contribution";
+import statusContribution from "./status/status-contribution";
 
 const displayName: EveryTree = 'crit-scalable-damage'
-export default (owner: OwnerMaximal) => {
+export default (owner: OwnerLog2) => {
     const relevantSlot = owner.relevantSlot
     if (!relevantSlot) throw Error('Need to pass in a weapon to relevantSlot')
-    if (!equipmentIsWeapon(relevantSlot)) throw Error('Need to pass in a weapon to relevantSlot')
 
     return newModNode(displayName, [
-        damageOfEquipmentPiece(relevantSlot),
+        damageOfEquipmentPiece(relevantSlot)(owner),
         effectiveDamageStat(owner),
-        critScalableDamageFeatMod(owner),
+        featContribution('crit-scalable-damage-feat-mod')(owner),
+        // generic damage feats (Power Attack) land here so they multiply on a crit
+        featContribution('damage-feat-mod')(owner),
+        statusContribution('crit-scalable-damage-status-mod')(owner),
     ], sumFunc)
 }

@@ -1,6 +1,5 @@
-import newModNode, { sumFunc } from "..";
-import { EveryTree, OwnerMaximal } from "../types";
-import baseSaveForClassLevel from "../bases/base-save-for-class-level";
+import { deriveBonus } from "../../class-level2/derive";
+import { EveryTree, OwnerLog2 } from "../types";
 
 export type SaveType = 'fortitude' | 'reflex'
 
@@ -9,7 +8,5 @@ const displayName: Record<SaveType, EveryTree> = {
     reflex: 'base-reflex',
 }
 
-export default (owner: OwnerMaximal, saveType: SaveType) => {
-    const perClass = Object.values(owner.cs.levels).map(cl => baseSaveForClassLevel(cl, saveType))
-    return newModNode(displayName[saveType], perClass, sumFunc)
-}
+export default (owner: OwnerLog2, saveType: SaveType) =>
+    deriveBonus(owner.cs.levels, saveType, displayName[saveType])

@@ -1,8 +1,5 @@
-import { DEFAULT_STAT, calculateModifier } from "../stat-modifier"
-import { characterLevels } from "./class-level"
-import type { ClassLevelSheet } from "./class-level/type"
-
-export { DEFAULT_STAT, calculateModifier }
+import { ClassLevelPickLog } from "../class-level2/types"
+import { fakeCharacterLevels } from "./util"
 
 export interface FlavorSheet {
     displayName: string,
@@ -18,20 +15,22 @@ export interface CharacterSheet {
     str: number,
     dex: number,
     con: number,
-    levels: ClassLevelSheet,
+    int: number,
+    levels: ClassLevelPickLog,
     flavorSheet?: FlavorSheet
 }
 
-export interface UseCharacterSheet {
+/* export interface UseCharacterSheet {
     cs: CharacterSheet,
     calculateModifier: (stat: number, bonuses?: number[]) => number,
-}
+} */
 
 export const defaultCharacterSheet: CharacterSheet = {
     con: 15,
     str: 15,
     dex: 15,
-    levels: characterLevels(1),
+    int: 15,
+    levels: fakeCharacterLevels(1),
     flavorSheet: {
         displayName: 'Player',
         description: '',
@@ -42,13 +41,9 @@ export const defaultEnemySheet: CharacterSheet = {
     con: 10,
     str: 10,
     dex: 10,
-    levels: characterLevels(1),
+    int: 10,
+    levels: {},
     flavorSheet: {
         ...defaultFlavorSheet,
     }
-}
-
-export const defaultUseCharacterSheet: UseCharacterSheet = {
-    cs: defaultCharacterSheet,
-    calculateModifier,
 }

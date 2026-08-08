@@ -1,16 +1,25 @@
-import { createEquipment } from "../../equipment-sheet";
+import { OwnerMaximal } from "../../actor2";
+import { BaseEquipment } from "../../equipment-sheet2/types";
+import { leaf } from "../../log2";
+import { OwnerLog2 } from "../../log2/types";
 import roll from "../../roll";
 
-export const clawSmall = createEquipment({
-    displayName: 'claw (small)',
-    contexts: ['melee', 'natural'],
-    damage: () => roll(6) // a neg to hit reduces damage so early enemies need a slightly higher roll to balance having a low to hit mod while still doing damage
-})
+export const clawSmall: BaseEquipment = (() => {
+    const dn = 'Claw (Small)'
+    return {
+        displayName: dn,
+        broadContexts: {
+            damage: (o: OwnerLog2) => {
+                const sides = 4
+                return leaf(dn, roll(sides))
+            }
+        },
+        tags: ['melee']
+    }
+})()
 
 export const naturalAc = (amnt: number) => {
-    return createEquipment({
-        displayName: 'claw (small)',
-        contexts: ['natural'],
-        ac: amnt
-    })
+    return {
+
+    } as BaseEquipment
 }

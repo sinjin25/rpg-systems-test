@@ -1,18 +1,17 @@
 // this is an attack roll with the possibility of adding confirm modifiers
 
 import newModNode, { sumFunc } from "..";
-import { OwnerMaximal, EveryTree, TreeSubproblems } from "../types";
-import effectiveAttackStat from "../composition/effective-attack-stat";
-import baseAttackBonus from "../composition/base-attack-bonus";
-import attackFeatMod from "../composition/attack-feat-mod";
-import attackStatusMod from "../composition/attack-status-mod";
-import attackEquipmentMod from "../composition/attack-equipment-mod";
+import { OwnerLog2, EveryTree, TreeSubproblems } from "../types";
 import attack from "./attack";
 import critConfirmMod from "../composition/crit-confirm-mod";
+import { mutateOwnerTags, Tags, TerminalTags } from "../tags";
 
 const displayName: EveryTree = 'crit-confirm'
 
-export default (owner: OwnerMaximal) => {
+export default (owner: OwnerLog2) => {
+    const TERMINAL_TAGS: TerminalTags[] = ['crit-confirm']
+    mutateOwnerTags(owner, ...TERMINAL_TAGS)
+
     const subproblems: TreeSubproblems = {
         'attack': attack(owner),
         'crit-confirm-mod': critConfirmMod(owner),

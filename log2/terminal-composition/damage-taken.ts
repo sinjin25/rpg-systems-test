@@ -1,19 +1,22 @@
 import newModNode, { ModNode, mapFunc, sumFunc } from "..";
-import { EveryTree, OwnerMaximal } from "../types";
+import { EveryTree, OwnerLog2 } from "../types";
 import damageTakenStatusMod from "../composition/status/damage-taken-status-mod";
-import damageTakenFeatMod from "../composition/damage-taken-feat-mod";
+import featContribution from "../composition/feat-contribution";
 
 const displayName: EveryTree = 'damage-taken'
 
-export default (defender: OwnerMaximal, incomingDamage: ModNode) => {
-    const incoming = newModNode('incoming-damage', [incomingDamage], sumFunc)
+export default (incomingDamage: {
+    node: ModNode,
+    // any other information that might be required
+}) => (owner: OwnerLog2) => {
+    const incoming = newModNode('incoming-damage', [incomingDamage.node], sumFunc)
 
     return newModNode(
         displayName,
         [
             incoming,
-            damageTakenFeatMod(defender),
-            damageTakenStatusMod(defender),
+            featContribution('damage-taken-feat-mod')(owner),
+            damageTakenStatusMod(owner),
         ],
         mapFunc(v => Math.max(0, v)),
     )

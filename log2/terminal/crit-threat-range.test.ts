@@ -1,59 +1,54 @@
 import { describe, test, expect } from 'vitest'
 import critThreatRange from './crit-threat-range'
-import { createDefaultOwner } from '../defaults'
-import { OwnerMaximal } from '../types'
+import { createDefaultOwner } from '../../actor2'
+import { OwnerLog2 } from '../types'
 import { Weapon } from '../../equipment-sheet'
 import { leatherArmor } from '../../defaults/equipment'
-import { findNodeMatching } from '..'
+import { findNodeMatching, leaf } from '..'
 import improvedCritical from '../feats/improved-critical'
 import modNodeToText from '../format'
 
-const weapon = (critRange?: number): Weapon =>
-    ({ displayName: 'test-weapon', contexts: ['melee'], damage: () => 1, critRange } as Weapon)
-
-const withSlot = (owner: OwnerMaximal, slot: OwnerMaximal['relevantSlot']): OwnerMaximal =>
-    ({ ...owner, relevantSlot: slot })
-
 describe('crit-threat-range (terminal)', () => {
+    const owner = createDefaultOwner()
     test('defaults to 20 when the weapon declares no critRange and no feats apply', () => {
-        const node = critThreatRange(withSlot(createDefaultOwner({}), weapon()))
+        const node = critThreatRange(owner)
         expect(node.total()).toBe(20)
-        expect(node.children.length).toBe(2) // weapon base + crit-threat-range-mod
-        expect(findNodeMatching(node, /crit\-threat\-range\-mod/i)?.total()).toBe(0)
+        expect(node.children.length).toBe(2) // weapon base (or default) and featmod
+        expect(findNodeMatching(node, /crit-threat-range-mod/i)?.total()).toBe(0)
     })
 
-    test('a weapon can declare its own base (keen rapier critRange 18)', () => {
-        const node = critThreatRange(withSlot(createDefaultOwner({}), weapon(18)))
+    test('Weapons can use broadContext to declare a base', () => {
+        const owner = createDefaultOwner({
+            es: {
+                mainhand: {
+                    displayName: 'rapier',
+                    broadContexts: {
+                        'crit-threat-range': (o: OwnerLog2) => leaf('rapier', 18)
+                    }
+                }
+            }
+        })
+        const node = critThreatRange(owner)
         expect(node.total()).toBe(18)
     })
 
-    test('improved-critical widens a base-20 weapon to 19 (negative widens)', () => {
-        const node = critThreatRange(withSlot(
-            createDefaultOwner({ fs: { improvedCritical } }),
-            weapon(),
-        ))
+    test('Feats can modify the range (and are negative)', () => {
+        const owner = createDefaultOwner({
+            fs: {
+                improvedCritical
+            }
+        })
+        const node = critThreatRange(owner)
         expect(node.total()).toBe(19) // base 20 + (-1)
-        const mod = findNodeMatching(node, /crit\-threat\-range\-mod/i)
+        const mod = findNodeMatching(node, /crit-threat-range-mod/i)
         expect(mod?.total()).toBe(-1)
-        expect(findNodeMatching(mod!, /improved\-critical/i)).toBeTruthy()
-        console.log(modNodeToText(node))
-    })
-
-    test('total is exactly the sum of its children (trusts them)', () => {
-        const node = critThreatRange(withSlot(
-            createDefaultOwner({ fs: { improvedCritical } }),
-            weapon(18),
-        ))
-        const childSum = node.children.reduce((acc, c) => acc + c.total(), 0)
-        expect(node.total()).toBe(childSum)
-        expect(node.total()).toBe(17) // 18 + (-1)
+        expect(findNodeMatching(mod!, /improved-critical/i)).toBeTruthy()
+        /* console.log(modNodeToText(node)) */
     })
 
     test('throws when no relevantSlot is provided', () => {
-        expect(() => critThreatRange(createDefaultOwner({}))).toThrow(/relevantSlot/)
-    })
-
-    test('throws when relevantSlot is not a weapon', () => {
-        expect(() => critThreatRange(withSlot(createDefaultOwner({}), leatherArmor))).toThrow(/relevantSlot/)
+        const owner = createDefaultOwner({})
+        owner.relevantSlot = undefined
+        expect(() => critThreatRange(owner)).toThrow(/relevant/i)
     })
 })

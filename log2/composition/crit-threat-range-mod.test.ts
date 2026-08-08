@@ -1,6 +1,6 @@
 import { describe, test, expect, assert } from 'vitest'
 import critThreatRangeMod from './crit-threat-range-mod'
-import { createDefaultOwner } from '../defaults'
+import { createDefaultOwner } from '../../actor2'
 import improvedCritical from '../feats/improved-critical'
 import dodgy from '../feats/dodgy'
 import modNodeToText from '../format'
@@ -12,7 +12,7 @@ describe('crit-threat-range-mod (native)', () => {
             fs: { improvedCritical },
         }))
         expect(node.total()).toBe(-1)
-        console.log(modNodeToText(node))
+        /* console.log(modNodeToText(node)) */
         const find = findNodeMatching(node, /improved\-critical/i)
         assert.exists(find)
     })

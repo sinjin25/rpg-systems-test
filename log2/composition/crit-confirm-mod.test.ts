@@ -1,6 +1,6 @@
 import { describe, test, expect, assert } from 'vitest'
 import critConfirmMod from './crit-confirm-mod'
-import { createDefaultOwner } from '../defaults'
+import { createDefaultOwner } from '../../actor2'
 import critFocus from '../feats/crit-focus'
 import dodgy from '../feats/dodgy'
 import modNodeToText from '../format'
@@ -12,7 +12,7 @@ describe('crit-confirm-mod (native)', () => {
             fs: { critFocus },
         }))
         expect(node.total()).toBe(4)
-        console.log(modNodeToText(node))
+        /* console.log(modNodeToText(node)) */
         const find = findNodeMatching(node, /crit\-focus/i)
         assert.exists(find)
     })

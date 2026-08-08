@@ -1,35 +1,40 @@
 // the lowest max-dex cap across worn armor
 
-import newModNode, { minFunc } from "..";
-import { Armor, equipmentIsArmor } from "../../equipment-sheet";
-import { OwnerMaximal, EveryTree } from "../types";
+import newModNode, { leaf, minFunc, sumFunc } from "..";
+import { OwnerLog2, EveryTree } from "../types";
 import maxDexOfEquipmentPiece from "../bases/max-dex-of-equipment-piece";
-import { collectStatusContributions } from "../collect-status-contributions";
+import featContribution from "./feat-contribution";
 
-const TEMP_MAX = 999
 const displayName: EveryTree = 'max-dex-of-equipment'
 
-export default (owner: OwnerMaximal) => {
+export default (owner: OwnerLog2) => {
     // guard: look for flat-footed first
-    const collection = collectStatusContributions(owner, displayName)
-    const flatFooted = collection.find(a => a.displayName === 'flat-footed')
+    const flatFooted = owner.ss.flatFooted
 
+    const items = Object.values(owner.es)
+    const pieces = items.map(a => maxDexOfEquipmentPiece(a)(owner))
+        .filter(a => !!a)
 
-    const items = Object.values(owner.es).filter((e): e is Armor => !!e && equipmentIsArmor(e))
+    if (flatFooted) pieces.push(leaf('flat-footed', 0))
 
-    if (items.length === 0) return newModNode(displayName, [], () => TEMP_MAX)
+    // no armor worn -> no cap at all. must stay ahead of the feat mod so an
+    // unarmored character doesn't gain a cap out of nowhere.
+    if (pieces.length === 0) return undefined
 
-    const pieces = items.map(a => maxDexOfEquipmentPiece(a))
-        .filter(a => isFinite(a.total()))
+    // the tightest cap across worn pieces, which feats then loosen (Armor Training +1)
+    const cap = newModNode(
+        'max-dex-of-equipment-cap',
+        pieces,
+        () => {
+            return minFunc(pieces)
+        },
+    )
 
-    if (flatFooted) pieces.push(newModNode('flat-footed', [], () => 0))
+    const children = [cap, featContribution('max-dex-feat-mod')(owner)]
 
     return newModNode(
         displayName,
-        pieces,
-        () => {
-            if (pieces.length === 0) return TEMP_MAX
-            return minFunc(pieces)
-        },
+        children,
+        sumFunc,
     )
 }

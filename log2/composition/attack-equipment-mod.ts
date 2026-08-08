@@ -1,18 +1,15 @@
-import { EveryTree, OwnerMaximal } from "../types";
+import { EveryTree, OwnerLog2 } from "../types";
 import { calculateWeaponEquipmentMod } from "../../roll-modifier/equipment-mod";
 import { extractContextsTags } from "../../equipment-sheet/extract";
 import { equipmentIsWeapon, Weapon } from "../../equipment-sheet";
-import { modResultToNode } from "../collect-status-contributions";
+import modFromEquipment from "./equipment/mod-from-equipment";
+import newModNode from "..";
 
-const displayName: EveryTree = 'attack-equipment-mod'
+const displayName: EveryTree = 'attack-from-equipment'
 
-export default (owner: OwnerMaximal) => {
+export default (owner: OwnerLog2) => {
     const mainhand = owner.es.mainhand
-    const weapon = (mainhand && equipmentIsWeapon(mainhand) ? mainhand : undefined) as Weapon
-    const tags = mainhand ? extractContextsTags(mainhand) : []
-    return modResultToNode(displayName, calculateWeaponEquipmentMod(
-        { cs: owner.cs, fs: {}, es: owner.es, weapon },
-        tags,
-        'attack',
-    ))
+    if (!mainhand) throw Error('a weapon was required')
+
+    return modFromEquipment(displayName)(owner)
 }

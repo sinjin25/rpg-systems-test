@@ -1,16 +1,28 @@
-import { describe, test, expect } from 'vitest'
+import { describe, test, expect, assert } from 'vitest'
 import critScalableDamage from './crit-scalable-damage'
-import { createDefaultOwner } from '../defaults'
-import { OwnerMaximal, FeatMaximal } from '../types'
-import { Weapon } from '../../equipment-sheet'
-import { daggerPlusOne, leatherArmor } from '../../defaults/equipment'
+import { createDefaultOwner } from '../../actor2'
+import { OwnerLog2, ObjectWithBroadContexts } from '../types'
 import { leaf, findNodeMatching } from '..'
+import { BaseEquipment } from '../../equipment-sheet2/types'
+import { StatusEffect } from '../../status-sheet2'
 
-const weapon = (dmg: number): Weapon =>
-    ({ displayName: 'test-weapon', contexts: ['melee'], damage: () => dmg } as Weapon)
+const weapon = (dmg: number): BaseEquipment =>
+({
+    displayName: 'test-weapon', tags: ['melee'], broadContexts: {
+        'damage': () => leaf('test-weapon', 8)
+    }
+})
 
-const withSlot = (owner: OwnerMaximal, slot: OwnerMaximal['relevantSlot']): OwnerMaximal =>
+const withSlot = (owner: OwnerLog2, slot: OwnerLog2['relevantSlot']): OwnerLog2 =>
     ({ ...owner, relevantSlot: slot })
+
+const st: StatusEffect = {
+    displayName: 'test-damage-status',
+    broadContexts: {
+        'crit-scalable-damage-status-mod': () => leaf('test-damage-status', 2)
+    },
+    expiration: { kind: 'rounds-elapsed', remaining: 3 },
+}
 
 describe('crit-scalable-damage', () => {
     test('sums weapon roll + effective stat (default melee str +2)', () => {
@@ -19,7 +31,7 @@ describe('crit-scalable-damage', () => {
     })
 
     test('includes crit-scalable feat mods', () => {
-        const scaler: FeatMaximal = {
+        const scaler: ObjectWithBroadContexts = {
             displayName: 'test-scaler',
             broadContexts: { 'crit-scalable-damage-feat-mod': () => leaf('test-scaler', 3) },
         }
@@ -28,20 +40,19 @@ describe('crit-scalable-damage', () => {
         expect(findNodeMatching(node, /test-scaler/i)).toBeTruthy()
     })
 
-    test('the die comes from relevantSlot, the stat from the mainhand', () => {
-        // finesse dagger in the mainhand routes the stat to dex (18 -> +4)
-        const node = critScalableDamage(withSlot(
-            createDefaultOwner({ cs: { dex: 18, str: 10 }, es: { mainhand: daggerPlusOne } }),
-            weapon(8),
-        ))
-        expect(node.total()).toBe(12) // 8 + 4 dex
-    })
+    test('includes crit-scalable status mods', () => {
+        const owner = createDefaultOwner({
+            ss: { st }
+        })
 
+        const node = critScalableDamage(owner)
+        const f0 = findNodeMatching(node, /test-damage-status/)
+        assert.exists(f0)
+        assert.equal(f0.total(), 2)
+    })
     test('throws when no relevantSlot is provided', () => {
-        expect(() => critScalableDamage(createDefaultOwner({}))).toThrow(/relevantSlot/)
-    })
-
-    test('throws when relevantSlot is not a weapon', () => {
-        expect(() => critScalableDamage(withSlot(createDefaultOwner({}), leatherArmor))).toThrow(/relevantSlot/)
+        const owner = createDefaultOwner()
+        owner.relevantSlot = undefined
+        expect(() => critScalableDamage(owner)).toThrow(/relevant/)
     })
 })

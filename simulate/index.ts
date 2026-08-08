@@ -1,24 +1,13 @@
-import { act, StandardActionResult } from "../character/act"
-import { AbilityActionResult } from "../character/act/ability"
-import instantiateActor, { Actor, instantiateHealth, instantiateSpeed, Owner, resetAbilityCursors } from "../character/actor"
 import roll from "../roll"
-import { saveModifierFactories, saveSucceeds } from "../save"
-import { applyCritMultiplier, isThreat } from "../crit2"
-import { applyFightStartFeats } from "../feat/fight-start"
 import { applyDamage } from "../health"
-import { round, STANDARD_SPEED } from "../speed"
-import calculateAc from "../stat-modifier/ac"
-import calculateDamageTaken from "../stat-modifier/damage-taken"
-import { extractContextsTags } from "../equipment-sheet/extract"
-import { decayActionsElapsed, decayEnemyKilled, decayRoundsElapsed, decaySaveSucceeded, expireStatusesAfterFight } from "../status-sheet/decay"
 import { runTrigger } from "../trigger/dispatch"
-import { applyIntercepts, collectIntercepts } from "../roll-intercept"
-import { attackHits } from "../character/act/attack-hits"
+import { Actor2, OwnerMaximal } from "../actor2"
+
 
 const instantiateParticipants = (
-    participants: Owner[],
-): Actor[] => {
-    const actors: Actor[] = []
+    participants: OwnerMaximal[],
+): Actor2[] => {
+    const actors: Actor2[] = []
 
     for (let part of participants) {
         applyFightStartFeats(part)
@@ -32,19 +21,19 @@ const instantiateParticipants = (
     return actors
 }
 
-export const objectIsActor = (d: Record<string, any>): d is Actor => {
+export const objectIsActor = (d: Record<string, any>): d is Actor2 => {
     return 'owner' in d && 'health' in d && 'speed' in d
 }
 
 const resolveParticipants = (
-    participants: Owner[] | Actor[],
-): Actor[] => {
+    participants: OwnerMaximal[] | Actor2[],
+): Actor2[] => {
     if (participants.length === 0) return []
-    if (objectIsActor(participants[0])) return participants as Actor[]
-    return instantiateParticipants(participants as Owner[])
+    if (objectIsActor(participants[0])) return participants as Actor2[]
+    return instantiateParticipants(participants as OwnerMaximal[])
 }
 
-const chooseTarget = (actors: Actor[]) => {
+const chooseTarget = (actors: Actor2[]) => {
     const targets = actors.filter(a => a.speed.canAct)
     if (targets.length === 0) return undefined
     return targets[0]
@@ -52,7 +41,7 @@ const chooseTarget = (actors: Actor[]) => {
 
 // massively simplified and wrong
 const tempAnyActorAlive = (
-    actors: Actor[],
+    actors: Actor2[],
 ) => {
     const canAct = actors.filter(a => a.speed.canAct)
     if (canAct.length > 0) return true
@@ -60,8 +49,8 @@ const tempAnyActorAlive = (
 }
 
 const ownerIsMemberOf = (
-    owner: Owner,
-    actors: Actor[],
+    owner: OwnerMaximal,
+    actors: Actor2[],
 ) => {
     if (actors.find(a => {
         return a.owner === owner
@@ -72,8 +61,8 @@ const ownerIsMemberOf = (
 // resolves a single attack (one entry of act()'s result) against a target
 // handle triggers ex: Feat.triggers
 export const resolveAction = (
-    attacker: Actor,
-    target: Actor,
+    attacker: Actor2,
+    target: Actor2,
     sar: StandardActionResult,
 ) => {
     const targetAc = calculateAc(target.owner).total
@@ -123,8 +112,8 @@ export const resolveAction = (
 // rolls the save against the precalc'd dc (mirroring decaySaveSucceeded), damage
 // picks the full or passed-save roll, and a failed save applies the ability's status
 export const resolveAbility = (
-    attacker: Actor,
-    target: Actor,
+    attacker: Actor2,
+    target: Actor2,
     aar: AbilityActionResult,
 ) => {
     let passed = false
@@ -162,9 +151,9 @@ export const resolveAbility = (
 // killer is omitted for deaths not attributable to an attacker (e.g. a DoT tick),
 // which intentionally skips firing onKill since there's no correct self to attribute it to
 const handleDeath = (
-    actors: Actor[],
-    target: Actor,
-    killer?: Owner,
+    actors: Actor2[],
+    target: Actor2,
+    killer?: OwnerMaximal,
 ) => {
     if (target.health.curr > 0) return
     target.speed.canAct = false
@@ -175,8 +164,8 @@ const handleDeath = (
 export type FightResult = {
     winner: 'player' | 'enemy' | 'draw',
     rounds: number,
-    playerActors: Actor[],
-    enemyActors: Actor[],
+    playerActors: Actor2[],
+    enemyActors: Actor2[],
     debugData: {
         player0HpStart: number,
         player0HpEnd: number,
@@ -187,10 +176,10 @@ export type FightResult = {
 // this type will probably change - I don't know what we need
 export const worldState = (
     participants: {
-        player: Owner[],
+        player: OwnerMaximal[],
     }
 ) => {
-    const playerActors: Actor[] = instantiateParticipants(participants.player)
+    const playerActors: Actor2[] = instantiateParticipants(participants.player)
 
     return {
         playerActors,
@@ -209,8 +198,8 @@ export const worldState = (
 
 export const simulateFight = (
     participants: {
-        player: Owner[] | Actor[],
-        enemy: Owner[],
+        player: OwnerMaximal[] | Actor2[],
+        enemy: OwnerMaximal[],
     },
     options?: {
         verbose?: boolean,

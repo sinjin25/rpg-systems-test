@@ -1,4 +1,4 @@
-import { AllFeats, FeatMaximal } from "../types";
+import { AllFeats, ObjectWithBroadContexts } from "../types";
 import finesseWeaponFighting from "./finesse-weapon-fighting";
 import meleeWeaponFighting from "./melee-weapon-fighting";
 import dodgy from "./dodgy";
@@ -15,7 +15,7 @@ export {
     heavyArmorMastery,
 }
 
-export const nativeFeats: Record<AllFeats, FeatMaximal> = {
+export const nativeFeats: Record<AllFeats, ObjectWithBroadContexts> = {
     'finesse-weapon-fighting': finesseWeaponFighting,
     'melee-weapon-fighting': meleeWeaponFighting,
     'dodgy': dodgy,

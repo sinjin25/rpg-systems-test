@@ -1,9 +1,9 @@
-import { Ability } from "../../ability-sheet"
-import { FeatSheet } from "../../feat"
-import { Feat } from "../../feat/feats"
+import { Ability } from "../../ability-sheet2"
+import { Feat2, FeatSheet } from "../../feat2"
+import { PossibleFeatKey } from "../../feat2/feats"
 
 export type ClassLevelMember = {
-    feats: FeatSheet, // a feature is just a feat but can have ranks I guess?
+    feats: FeatSheet,
     abilities?: Ability[],
     attackBonus: number,
     fortitudeSave: number,
@@ -12,12 +12,19 @@ export type ClassLevelMember = {
     selectBonusFeat?: boolean,
 }
 
-// stateful
 export type ClassLevels = {
     displayName: string,
     data: Array<ClassLevelMember>,
-    level: number,
+    level: number, // when counting shit, functions will read up to this index
 }
 
-// stateful
-export type ClassLevelSheet = Record<string, ClassLevels>
+// an arbitrary list of the levels a user has
+export type ClassLevelLog = Array<
+    {
+        registryKey: string, // 'fighter'
+        level: 0, // slice indexes for CLassLevels['data']
+        picks: {
+            feats: PossibleFeatKey[],
+        }
+    }
+>

@@ -2,24 +2,25 @@
 
 import { default as newModNode, ModNode } from "../..";
 import maxDexOfEquipment from "../max-dex-of-equipment";
-import { OwnerMaximal, EveryTree, TreeSubproblems } from "../../types"
-import moddedDex from "../modded-dex";
+import { OwnerLog2, EveryTree, TreeSubproblems } from "../../types"
+import moddedCsScore from "../modded-cs-score";
 
 const displayName: EveryTree = 'ac-from-dex'
 
-export default (owner: OwnerMaximal) => {
+export default (owner: OwnerLog2) => {
 
     const subproblems: TreeSubproblems = {
         // solve modded dex
-        'modded-dex': moddedDex(owner),
+        'modded-dex': moddedCsScore('dex')(owner),
         'max-dex-of-equipment': maxDexOfEquipment(owner)
     }
 
     const subpr = Object.values(subproblems)
+        .filter(a => !!a)
 
     return newModNode(
         displayName,
-        Object.values(subproblems),
+        subpr,
         () => Math.min(...subpr.map(a => a.total()))
     )
 }

@@ -1,1 +1,0 @@
-This is functionally no different than an attack

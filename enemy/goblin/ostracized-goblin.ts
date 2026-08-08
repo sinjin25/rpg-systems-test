@@ -1,13 +1,10 @@
+import { createDefaultAbilitySheet } from "../../ability-sheet2";
+import { OwnerMaximal } from "../../actor2";
 import { defaultCharacterSheet, defaultEnemySheet } from "../../character-sheet";
-import { Owner } from "../../character/actor";
-import { defaultEquipmentSheet } from "../../equipment-sheet";
-import { defaultFeatSheet } from "../../feat";
-import { defaultStatusSheet } from "../../status-sheet";
-import { createDefaultAbilitySheet } from "../../ability-sheet";
 import { clawSmall, naturalAc } from "../common/equipment";
 import { ambush } from "./feats";
 
-const ostracizedGoblin: Owner = {
+const ostracizedGoblin: OwnerMaximal = {
     cs: {
         ...defaultEnemySheet,
         dex: 8,
@@ -15,18 +12,16 @@ const ostracizedGoblin: Owner = {
         con: 8,
     },
     fs: {
-        ...defaultFeatSheet,
         ambush,
     },
     es: {
-        ...defaultEquipmentSheet,
         mainhand: clawSmall,
         armor: naturalAc(8)
     },
     ss: {
-        ...defaultStatusSheet,
     },
     as: createDefaultAbilitySheet(),
+    tags: [],
 }
 
 export default ostracizedGoblin

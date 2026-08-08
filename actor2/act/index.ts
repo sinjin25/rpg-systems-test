@@ -7,6 +7,13 @@ export { FinalStandardActionResult, StandardActionResult, calculateAc, calculate
 
 export { generateAbilityModNodes, handleAbilityModNodes, selectAndPrepAbility } from './ability'
 
+export const actionIsAbilityModNode = (
+    a: StandardActionResult | AbilityModNode
+): a is AbilityModNode => {
+    if ('payload' in a) return true
+    return false
+}
+
 export const act = (actor: Actor2) => {
     // figure out what this guy is going to do (before resolving it)
 

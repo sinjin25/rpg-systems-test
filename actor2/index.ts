@@ -49,9 +49,11 @@ export const createDefaultOwner = (data: Partial<{
     const fs = data.fs ?? {}
     const ss = data.ss ?? {}
     const cloneLevels = (d: ClassLevelPickLog): ClassLevelPickLog => {
-        // clone
+        // deep clone: spread alone shares the freeFeats array by reference, so
+        // owners cloned from the same source would alias (and corrupt) each other
         return d.map(a => ({
             ...a,
+            freeFeats: [...a.freeFeats],
         }))
     }
     const owner: OwnerMaximal = {

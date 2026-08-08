@@ -3,19 +3,15 @@ import { simulateFight, worldState } from '../../simulate/index.ts'
 import { iterate } from '../../simulate/util/iterate.ts'
 import { boxPlotStats } from '../../simulate/util/box-plot.ts'
 import { defaultCharacterSheet } from '../../character-sheet/index.ts'
-import { defaultFeatSheet } from '../../feat/index.ts'
-import { defaultEquipmentSheet } from '../../equipment-sheet/index.ts'
-import instantiateActor, { Owner } from '../../character/actor/index.ts'
 import { describe, test, expect, assert } from 'vitest'
-import { featAlert } from '../../feat/feats/index.ts'
-import { createDefaultAbilitySheet } from '../../ability-sheet/index.ts'
-import { createDefaultOwner } from '../../defaults/index.ts'
-import { commitLevelUp } from '../../character/level-up/index.ts'
-import { getCharacterLevel } from '../../character-sheet/class-level/derive/index.ts'
+
+import { createDefaultOwner, OwnerMaximal } from '../../defaults/index.ts'
+import { instantiateActor } from '../../actor2/index.ts'
+import { chooseOptionAndMutate, presentOptions } from '../../class-level2/level-up2/present-options.ts'
 
 const SHOW_DEBUG = true
 
-const defaultPlayer: Owner = createDefaultOwner({})
+const defaultPlayer: OwnerMaximal = createDefaultOwner({})
 
 describe('A default player can win', () => {
     test('simulate', () => {
@@ -167,23 +163,25 @@ describe('Difficulty Level 4', () => {
 
     test('Fighter: Expect to be trivial'/* , { timeout: 10_000 } */, () => {
         const EXPECTED_MEDIAN = 22
-        const fighter = createDefaultOwner({ cs: { ...defaultCharacterSheet, levels: {} } })
-        commitLevelUp(fighter, {
-            className: 'fighter',
-            bonusFeat: 'featDodgy'
+        const pickFighter = (options: ReturnType<typeof presentOptions>) => {
+            return options.find(a => a.key === 'fighter')
+        }
+
+        const fighter = createDefaultOwner({ cs: { ...defaultCharacterSheet } })
+        chooseOptionAndMutate(fighter, {
+            clp: pickFighter(presentOptions(fighter.cs.levels)),
+            freeFeat: 'Power Attack',
         })
-        commitLevelUp(fighter, {
-            className: 'fighter',
+        chooseOptionAndMutate(fighter, {
+            clp: pickFighter(presentOptions(fighter.cs.levels)),
+            freeFeat: 'Power Attack',
         })
-        commitLevelUp(fighter, {
-            className: 'fighter',
-            bonusFeat: 'featRage'
-        })
-        commitLevelUp(fighter, {
-            className: 'fighter',
+        chooseOptionAndMutate(fighter, {
+            clp: pickFighter(presentOptions(fighter.cs.levels)),
+            freeFeat: 'Power Attack',
         })
 
-        expect(getCharacterLevel(fighter.cs)).toEqual(4)
+        expect(fighter.cs.levels.length).toEqual(4)
         const winsPerRun = iterate(ITERATIONS, () => {
             const ws = worldState({ player: [fighter] })
             let wins = 0

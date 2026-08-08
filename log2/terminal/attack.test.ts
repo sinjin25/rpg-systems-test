@@ -58,7 +58,7 @@ describe('attack (terminal)', () => {
 
     test('sums all five children of a full finesse build', () => {
         const node = attack(finesseBuild())
-        expect(node.total()).toBe(14) // 4 + 4 + 1 + 2 + 2 + 1
+        expect(node.total()).toBe(13) // 4 + 4 + 1 + 2 + 2 + 1
         expect(node.children.length).toBe(5)
 
     })

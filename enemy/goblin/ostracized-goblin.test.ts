@@ -1,21 +1,16 @@
 import ostracizedGoblin from './ostracized-goblin.ts'
-import { simulateFight, worldState } from '../../simulate/index.ts'
 import { iterate } from '../../simulate/util/iterate.ts'
 import { boxPlotStats } from '../../simulate/util/box-plot.ts'
 import { defaultCharacterSheet } from '../../character-sheet/index.ts'
-import { defaultFeatSheet } from '../../feat/index.ts'
-import { defaultEquipmentSheet } from '../../equipment-sheet/index.ts'
-import instantiateActor, { Owner } from '../../character/actor/index.ts'
 import { describe, test, expect, assert } from 'vitest'
-import { featAlert } from '../../feat/feats/index.ts'
-import { createDefaultAbilitySheet } from '../../ability-sheet/index.ts'
 import { createDefaultOwner } from '../../defaults/index.ts'
-import { commitLevelUp } from '../../character/level-up/index.ts'
-import { getCharacterLevel } from '../../character-sheet/class-level/derive/index.ts'
+import { instantiateActor, OwnerMaximal } from '../../actor2/index.ts'
+import { simulateFight } from '../../simulate2/index.ts'
+import { setupWorldState } from '../../simulate2/setup.ts'
 
 const SHOW_DEBUG = true
 
-const defaultPlayer: Owner = createDefaultOwner({})
+const defaultPlayer: OwnerMaximal = createDefaultOwner({})
 
 describe('A default player can win', () => {
     test('simulate', () => {
@@ -45,7 +40,7 @@ describe('Expected Difficulty: Level 1', () => {
     const MAX_CONSECUTIVE_FIGHTS = 100
     test('how many consecutive fights a player can win in a row', () => {
         const winsPerRun = iterate(ITERATIONS, () => {
-            const ws = worldState({ player: [defaultPlayer] })
+            const ws = setupWorldState({ player: defaultPlayer })
             let wins = 0
 
             while (wins < MAX_CONSECUTIVE_FIGHTS) {
@@ -55,7 +50,7 @@ describe('Expected Difficulty: Level 1', () => {
                 })
                 if (result.winner !== 'player') break
                 wins++
-                ws.playerAfterFight()
+                ws.playersAfterFight()
             }
             return wins
         })
@@ -72,7 +67,7 @@ describe('Expected Difficulty: Level 1', () => {
 
     test('how many consecutive fights a player can win in a row against two goblins', () => {
         const winsPerRun = iterate(ITERATIONS, () => {
-            const ws = worldState({ player: [defaultPlayer] })
+            const ws = setupWorldState({ player: [defaultPlayer] })
             let wins = 0
             while (wins < MAX_CONSECUTIVE_FIGHTS) {
                 const result = simulateFight({
@@ -81,7 +76,7 @@ describe('Expected Difficulty: Level 1', () => {
                 })
                 if (result.winner !== 'player') break
                 wins++
-                ws.playerAfterFight()
+                ws.playersAfterFight()
             }
             return wins
         })
@@ -167,25 +162,11 @@ describe('Difficulty Level 4', () => {
 
     test('Fighter: Expect to be trivial'/* , { timeout: 10_000 } */, () => {
         const EXPECTED_MEDIAN = 22
-        const fighter = createDefaultOwner({ cs: { ...defaultCharacterSheet, levels: {} } })
-        commitLevelUp(fighter, {
-            className: 'fighter',
-            bonusFeat: 'featDodgy'
-        })
-        commitLevelUp(fighter, {
-            className: 'fighter',
-        })
-        commitLevelUp(fighter, {
-            className: 'fighter',
-            bonusFeat: 'featRage'
-        })
-        commitLevelUp(fighter, {
-            className: 'fighter',
-        })
+        const fighter = createDefaultOwner({ cs: { ...defaultCharacterSheet, levels: [] } })
 
-        expect(getCharacterLevel(fighter.cs)).toEqual(4)
+        expect(fighter.cs.levels.length).toEqual(4)
         const winsPerRun = iterate(ITERATIONS, () => {
-            const ws = worldState({ player: [fighter] })
+            const ws = setupWorldState({ player: [fighter] })
             let wins = 0
             while (wins < MAX_CONSECUTIVE_FIGHTS) {
                 const result = simulateFight({
@@ -194,7 +175,7 @@ describe('Difficulty Level 4', () => {
                 })
                 if (result.winner !== 'player') break
                 wins++
-                ws.playerAfterFight()
+                ws.playersAfterFight()
             }
             return wins
         })

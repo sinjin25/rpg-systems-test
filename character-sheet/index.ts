@@ -42,7 +42,7 @@ export const defaultEnemySheet: CharacterSheet = {
     str: 10,
     dex: 10,
     int: 10,
-    levels: {},
+    levels: fakeCharacterLevels(1),
     flavorSheet: {
         ...defaultFlavorSheet,
     }

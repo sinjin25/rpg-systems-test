@@ -1,5 +1,5 @@
 import { ModNode } from ".";
-import { Owner } from "../character/actor";
+import { OwnerMaximal } from "../actor2";
 import { BaseEquipment, EquipmentSheet } from "../equipment-sheet2/types";
 import { Tags } from "./tags";
 
@@ -7,7 +7,15 @@ import { Tags } from "./tags";
 
 // the structural contract log2 traversal needs: anything it can walk broadContexts on.
 // the concrete assembled actor lives in actor2/ and is assignable to this.
-export type OwnerLog2 = Omit<Owner, 'fs' | 'ss' | 'es' | 'as'> &
+/* export type OwnerLog2 = Omit<Owner, 'fs' | 'ss' | 'es' | 'as'> &
+{
+    fs: Record<string, ObjectWithBroadContexts>,
+    ss: Record<string, ObjectWithBroadContexts>,
+    es: EquipmentSheet,
+    relevantSlot?: BaseEquipment
+    tags: Tags[], // starts empty, a terminal tree should mutate it. Use the utility functions from tags.ts
+} */
+export type OwnerLog2 = Omit<OwnerMaximal, 'fs' | 'ss' | 'es' | 'as'> &
 {
     fs: Record<string, ObjectWithBroadContexts>,
     ss: Record<string, ObjectWithBroadContexts>,

@@ -1,25 +1,35 @@
-import { describe, test, expect } from 'vitest'
+import { describe, test, expect, assert } from 'vitest'
 import baseAttackBonus from './base-attack-bonus'
 import { createDefaultOwner } from '../../actor2'
-import { ClassLevels, ClassLevelMember } from '../../character-sheet/class-level/type'
+import { ClassKeys, ClassLevelPickLog } from '../../class-level2/types'
+import modNodeToText from '../format'
+import { findNodeMatching } from '..'
 
-const member: ClassLevelMember = { attackBonus: 1, fortitudeSave: 0, reflexSave: 0, feats: {} }
-const bab = (displayName: string, levels: number): ClassLevels => ({
-    displayName, level: levels, data: Array.from({ length: levels }, () => member),
-})
+// n levels of a single class, no picks
+const dip = (key: ClassKeys, n: number): ClassLevelPickLog =>
+    Array.from({ length: n }, () => ({ key, freeFeats: [] }))
 
 describe('base-attack-bonus', () => {
-    test('one child per class (Fighter 4, Slayer 2), summed to +6', () => {
+    test('one leaf per class (fighter 4, rogue 2), summed to +5', () => {
         const owner = createDefaultOwner({
-            cs: { levels: { fighter: bab('Fighter', 4), slayer: bab('Slayer', 2) } },
+            cs: { levels: [...dip('fighter', 4), ...dip('rogue', 2)] },
         })
         const node = baseAttackBonus(owner)
-        expect(node.total()).toBe(6)
-        expect(node.children.map(c => `${c.displayName} ${c.total()}`)).toEqual(['Fighter 4', 'Slayer 2'])
+        // fighter [1,1,1,1] = 4, rogue [0,1] = 1
+        expect(node.total()).toBe(5)
+        expect(node.displayName).toBe('base-attack-bonus')
+
+        const f0 = findNodeMatching(node, /fighter/)
+        assert.exists(f0)
+        assert.equal(f0.total(), 4)
+        const f1 = findNodeMatching(node, /rogue/)
+        assert.exists(f1)
+        assert.equal(f1.total(), 1)
+        console.log(modNodeToText(node))
     })
 
     test('an empty class sheet contributes 0', () => {
-        const owner = createDefaultOwner({ cs: { levels: {} } })
+        const owner = createDefaultOwner({ cs: { levels: [] } })
         expect(baseAttackBonus(owner).total()).toBe(0)
         expect(baseAttackBonus(owner).children).toEqual([])
     })

@@ -1,4 +1,5 @@
 import { PossibleFeatKey } from "../feat2/feats"
+import newModNode, { leaf, ModNode, sumFunc } from "../log2"
 import fighter from "./fighter"
 import rogue from "./rogue"
 import { ClassKeys, ClassLevel, ClassLevelPickLog, ClassLevelSumKeys } from "./types"
@@ -18,12 +19,17 @@ export const classLevelCounts = (clpl: ClassLevelPickLog): Partial<Record<ClassK
     return freq
 }
 
-// total of one numeric column across the whole log: for each class in it, sum
-// that class's table down to however many levels of it were taken.
-export const deriveBonus = (clpl: ClassLevelPickLog, key: ClassLevelSumKeys): number => {
+// total of one numeric column across the whole log, as a ModNode: one leaf per
+// class, each holding that class's table summed down to however many levels of
+// it were taken. The parent sums the leaves.
+export const deriveBonus = (
+    clpl: ClassLevelPickLog,
+    key: ClassLevelSumKeys,
+    displayName: string = key,
+): ModNode => {
     const freq = classLevelCounts(clpl)
 
-    let sum = 0
+    const children: ModNode[] = []
     for (const clKey in freq) {
         const cl = registry[clKey as ClassKeys]
         if (!cl) throw Error(`Could not find class for class key ${clKey}`)
@@ -37,12 +43,13 @@ export const deriveBonus = (clpl: ClassLevelPickLog, key: ClassLevelSumKeys): nu
             throw Error(`log has ${levels} levels of ${clKey}, but its table only defines ${column.length}`)
         }
 
-        sum += column.slice(0, levels).reduce((acc, curr) => {
+        const sum = column.slice(0, levels).reduce((acc, curr) => {
             return acc + curr
         }, 0)
+        children.push(leaf(clKey, sum))
     }
 
-    return sum
+    return newModNode(displayName, children, sumFunc)
 }
 
 // PROBABLY THROW THIS AWAY FUCK IT

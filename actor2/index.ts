@@ -7,6 +7,7 @@ import { Health, instantiateHealth, instantiateSpeed, Speed } from "./instantiat
 import { FeatSheet } from "../feat2"
 import { cloneClassLevelSheet } from "../character-sheet/class-level/derive"
 import { AbilitySheet, createDefaultAbilitySheet } from "../ability-sheet2"
+import { ClassLevelPickLog } from "../class-level2/types"
 
 // remove dependency on Owner asap
 export type OwnerMaximal = {
@@ -47,13 +48,20 @@ export const createDefaultOwner = (data: Partial<{
     const defaultWp = shortsword
     const fs = data.fs ?? {}
     const ss = data.ss ?? {}
+    const cloneLevels = (d: ClassLevelPickLog): ClassLevelPickLog => {
+        // clone
+        return d.map(a => ({
+            ...a,
+        }))
+    }
     const owner: OwnerMaximal = {
         cs: {
             ...defaultCharacterSheet,
             ...data.cs,
-            // fresh per owner - `levels` is mutable state (level-up writes to it),
-            // so it must not alias the shared default sheet's record
-            levels: [],
+            levels: cloneLevels(data?.cs?.levels || [{
+                key: 'fighter',
+                freeFeats: [],
+            }]),
         },
         es: {
             mainhand: defaultWp,

@@ -1,7 +1,8 @@
+import { ClassLevelPickLog } from "../class-level2/types"
 import { ClassLevelMember, ClassLevelSheet } from "./class-level/type"
 
 // fake a class for passing tests that don't care about levels
-export const fakeCharacterLevels = (n: number): ClassLevelSheet => {
+/* export const fakeCharacterLevels = (n: number): ClassLevelSheet => {
     return {
         base: {
             displayName: 'Test Class',
@@ -14,4 +15,29 @@ export const fakeCharacterLevels = (n: number): ClassLevelSheet => {
             })),
         },
     }
+} */
+
+export const fakeCharacterLevels = (n: number): ClassLevelPickLog => {
+    return [
+        {
+            key: 'fighter',
+            freeFeats: [],
+        },
+        {
+            key: 'fighter',
+            freeFeats: [],
+        },
+        {
+            key: 'fighter',
+            freeFeats: [],
+        },
+        {
+            key: 'fighter',
+            freeFeats: [],
+        },
+        {
+            key: 'fighter',
+            freeFeats: [],
+        },
+    ]
 }

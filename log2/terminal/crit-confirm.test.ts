@@ -18,7 +18,7 @@ const shortsword: BaseEquipment = {
 describe('crit-confirm (terminal)', () => {
     test('adds the crit-confirm-mod child (crit-focus, +4) on top of the attack', () => {
         const node = critConfirm(createDefaultOwner({ fs: { critFocus } }))
-        expect(node.total()).toBe(6) // attack 2 + crit-confirm-mod 4
+        expect(node.total()).toBe(7) // attack 2 + crit-confirm-mod 4 + bab 1
         expect(node.children.length).toBe(2)
     })
 
@@ -32,7 +32,7 @@ describe('crit-confirm (terminal)', () => {
 
     test('without a confirm feat, the crit-confirm-mod child is 0 and the total is just the attack', () => {
         const node = critConfirm(createDefaultOwner({}))
-        expect(node.total()).toBe(2) // attack 2 + crit-confirm-mod 0
+        expect(node.total()).toBe(3) // attack 2 + crit-confirm-mod 0
         expect(findNodeMatching(node, /crit\-confirm\-mod/i)?.total()).toBe(0)
     })
 

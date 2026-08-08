@@ -20,7 +20,7 @@ export default (owner: OwnerLog2) => {
             'health-from-levels',
             [
                 healthPerLevel(owner),
-                leaf('levels', getCharacterLevel(owner.cs))
+                leaf('levels', owner.cs.levels.length)
             ],
             productFunc,
         )

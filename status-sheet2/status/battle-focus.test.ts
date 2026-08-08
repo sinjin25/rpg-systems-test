@@ -17,7 +17,7 @@ describe('battle-focus', () => {
             },
         })
         const atk = attack(owner)
-        assert.equal(atk.total(), 0)
+        assert.equal(atk.total(), 1) // + 1 bab
 
         assert.exists(owner.ss.battleFocus)
     })

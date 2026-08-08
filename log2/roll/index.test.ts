@@ -88,8 +88,7 @@ describe('Integration: attack', () => {
         })
 
         const results = new Set<number>()
-        iterate(200, () => {
-
+        iterate(200, (i) => {
             const attackMod = attack(owner)
             const attackRoll = rollTree(20, 1, 'attack-sides-mod')(owner)
             const tree = newModNode(
@@ -98,7 +97,7 @@ describe('Integration: attack', () => {
                 sumFunc,
             )
             results.add(tree.total())
-            console.log(modNodeToText(tree))
+            if (i === 0) console.log(modNodeToText(attackMod))
         })
 
         assert.equal(results.size, 22) // d20 + 2 sides
@@ -109,7 +108,7 @@ describe('Integration: attack', () => {
             if (a <= min) min = a
             if (a >= max) max = a
         }
-        assert.equal(max, 22 + 2 + 2)
-        assert.equal(min, 1 + 2 + 2)
+        assert.equal(max, 22 + 2 + 2 + 1)
+        assert.equal(min, 1 + 2 + 2 + 1)
     })
 })

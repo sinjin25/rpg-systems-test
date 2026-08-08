@@ -18,7 +18,7 @@ import { ac, attack, damage, maximumHealth, save } from '../../../log2/terminal'
 // below - this benchmark measures the class chassis plus Power Attack and Hardy.
 const buildLevel4Fighter = () => {
     const fighter = createDefaultOwner({
-        cs: { str: 16, dex: 14, levels: {} },
+        cs: { str: 16, dex: 14 },
         es: {
             mainhand: longsword,
             offhand: heavyShield,

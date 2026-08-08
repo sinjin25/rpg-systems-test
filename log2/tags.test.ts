@@ -4,7 +4,7 @@ import { Feat2 } from '../feat2'
 import { findNodeMatching, leaf } from '.'
 import attack from './terminal/attack'
 import { createDefaultOwner } from '../actor2'
-import { BaseEquipment } from './types'
+import { BaseEquipment } from '../equipment-sheet2/types'
 
 describe('hasAnyTag', () => {
     test('passes when a whitelist tag is present and no blacklist tag is', () => {
@@ -62,6 +62,7 @@ describe('Integration: works with feats and broadContext', () => {
             },
         })
         owner.relevantSlot = owner.es.mainhand
+        console.log('owner', owner.cs.levels)
         const node = attack(owner)
         const matchingNode = findNodeMatching(node, /test-feat/)
         assert.exists(matchingNode)

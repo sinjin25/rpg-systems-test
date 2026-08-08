@@ -27,13 +27,13 @@ describe('registry', () => {
 describe('deriveBonus: table slicing', () => {
     test('sums only as deep as the log goes', () => {
         // fighter attackBonus is [1,1,1,1,1]
-        expect(deriveBonus(dip('fighter', 0), 'attackBonus')).toEqual(0)
-        expect(deriveBonus(dip('fighter', 3), 'attackBonus')).toEqual(3)
+        expect(deriveBonus(dip('fighter', 0), 'attackBonus').total()).toEqual(0)
+        expect(deriveBonus(dip('fighter', 3), 'attackBonus').total()).toEqual(3)
     })
 
     test('a log exactly as deep as the table is allowed (boundary)', () => {
         const len = registry.fighter.fortitude.length
-        expect(deriveBonus(dip('fighter', len), 'fortitude')).toEqual(3) // 1+0+1+0+1
+        expect(deriveBonus(dip('fighter', len), 'fortitude').total()).toEqual(3) // 1+0+1+0+1
     })
 
     test('throws past the end of the table rather than silently under-summing', () => {
@@ -54,9 +54,9 @@ describe('deriveBonus: single class', () => {
     })
 
     test('sums the first three rows of the fighter table', () => {
-        expect(deriveBonus(fighter3, 'attackBonus')).toEqual(3) // 1+1+1
-        expect(deriveBonus(fighter3, 'fortitude')).toEqual(2)   // 1+0+1
-        expect(deriveBonus(fighter3, 'reflex')).toEqual(1)      // 0+0+1
+        expect(deriveBonus(fighter3, 'attackBonus').total()).toEqual(3) // 1+1+1
+        expect(deriveBonus(fighter3, 'fortitude').total()).toEqual(2)   // 1+0+1
+        expect(deriveBonus(fighter3, 'reflex').total()).toEqual(1)      // 0+0+1
     })
 
     test('collects class grants and picks in acquisition order', () => {
@@ -85,11 +85,19 @@ describe('deriveBonus: multiclass', () => {
 
     test('each class contributes only its own slice', () => {
         // fighter [1,1] + rogue [0]
-        expect(deriveBonus(mixed, 'attackBonus')).toEqual(2)
+        expect(deriveBonus(mixed, 'attackBonus').total()).toEqual(2)
         // fighter [1,0] + rogue [0]
-        expect(deriveBonus(mixed, 'fortitude')).toEqual(1)
+        expect(deriveBonus(mixed, 'fortitude').total()).toEqual(1)
         // fighter [0,0] + rogue [2] - the rogue dip is where reflex comes from
-        expect(deriveBonus(mixed, 'reflex')).toEqual(2)
+        expect(deriveBonus(mixed, 'reflex').total()).toEqual(2)
+    })
+
+    test('one leaf per class, in first-appearance order', () => {
+        const node = deriveBonus(mixed, 'attackBonus')
+        expect(node.children.map((c) => [c.displayName, c.total()])).toEqual([
+            ['fighter', 2],
+            ['rogue', 0],
+        ])
     })
 
     test('the rogue level adds no feats', () => {
@@ -108,22 +116,26 @@ describe('deriveBonus: multiclass', () => {
             { key: 'fighter', freeFeats: [] },
         ]
         for (const key of sumKeys) {
-            expect(deriveBonus(interleaved, key)).toEqual(deriveBonus(mixed, key))
+            expect(deriveBonus(interleaved, key).total()).toEqual(deriveBonus(mixed, key).total())
         }
     })
 
     test('a rogue-first dip pulls from the rogue table, not the fighter one', () => {
         // rogue 1 alone: reflex +2, attack +0
         const rogue1: ClassLevelPickLog = [{ key: 'rogue', freeFeats: [] }]
-        expect(deriveBonus(rogue1, 'reflex')).toEqual(2)
-        expect(deriveBonus(rogue1, 'attackBonus')).toEqual(0)
+        expect(deriveBonus(rogue1, 'reflex').total()).toEqual(2)
+        expect(deriveBonus(rogue1, 'attackBonus').total()).toEqual(0)
         expect(featsFromLog(rogue1)).toEqual([])
     })
 })
 
 describe('deriveBonus: empty log', () => {
     test('a level 0 character sums to nothing', () => {
-        for (const key of sumKeys) expect(deriveBonus([], key)).toEqual(0)
+        for (const key of sumKeys) {
+            const node = deriveBonus([], key)
+            expect(node.total()).toEqual(0)
+            expect(node.children).toEqual([])
+        }
         expect(featsFromLog([])).toEqual([])
         expect(classLevelCounts([])).toEqual({})
     })

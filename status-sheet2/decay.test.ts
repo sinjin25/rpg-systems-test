@@ -13,7 +13,8 @@ import {
 import { describe, test, assert, expect, afterEach } from 'vitest'
 import { setSeed, clearSeed } from '../roll'
 import save from '../log2/terminal/save'
-import { leaf } from '../log2'
+import newModNode, { leaf, ModNode, sumFunc } from '../log2'
+import { iterate } from '../simulate/util/iterate'
 
 describe('decaySpeedElapsed', () => {
     const speedBuff = (): StatusEffect => ({
@@ -328,7 +329,7 @@ describe('decaySaveSucceeded', () => {
 
     afterEach(() => clearSeed())
 
-    const saveBuff = (dc: number): StatusEffect => ({
+    const saveBuff = (dc: ModNode): StatusEffect => ({
         displayName: 'saveBuff',
         broadContexts: {},
         expiration: {
@@ -341,20 +342,34 @@ describe('decaySaveSucceeded', () => {
     // the dc is picked relative to the owner's actual reflex mod so these tests
     // don't break when the default character sheet changes
     const reflexMod = (owner: ReturnType<typeof createDefaultOwner>) =>
-        save('reflex')(owner).total()
+        save('reflex')(owner)
 
     test('removes the status when total meets or beats the dc', () => {
         const owner = createDefaultOwner()
-        owner.ss.test = saveBuff(10 + reflexMod(owner))
+        const mod = reflexMod(owner).total()
+        owner.ss.test = saveBuff(
+            newModNode('saveBuffDc', [leaf('who cares', 10), reflexMod(owner)], sumFunc)
+        )
 
         setSeed(NAT_10)
-        decaySaveSucceeded(owner)
+        const result = decaySaveSucceeded(owner)
         assert.notExists(owner.ss.test)
+
+        // decaySaveSucceeded returns a log
+        assert.isTrue(Array.isArray(result))
+        assert.equal(result.length, 1)
+        const item0 = result[0]
+        assert.exists(item0)
+        // we manually named this key
+        assert.equal(item0.key, 'test')
+        // both the dc and the save carry the reflex mod, so they tie exactly
+        assert.equal(item0.dc.total(), 10 + mod)
+        assert.equal(item0.save.total(), 10 + mod)
     })
 
     test('keeps the status when total is under the dc', () => {
         const owner = createDefaultOwner()
-        owner.ss.test = saveBuff(11 + reflexMod(owner))
+        owner.ss.test = saveBuff(newModNode('saveBuffDc', [leaf('who cares', 11), reflexMod(owner)], sumFunc))
 
         setSeed(NAT_10)
         decaySaveSucceeded(owner)
@@ -363,16 +378,16 @@ describe('decaySaveSucceeded', () => {
 
     test('removes on a natural 20 even when total is under the dc', () => {
         const owner = createDefaultOwner()
-        owner.ss.test = saveBuff(100 + reflexMod(owner))
+        owner.ss.test = saveBuff(newModNode('saveBuffDc', [leaf('who cares', 100), reflexMod(owner)], sumFunc))
 
         setSeed(NAT_20)
-        decaySaveSucceeded(owner)
+        const result = decaySaveSucceeded(owner)
         assert.notExists(owner.ss.test)
     })
 
     test('keeps the status on a natural 1 even when total beats the dc', () => {
         const owner = createDefaultOwner()
-        owner.ss.test = saveBuff(1)
+        owner.ss.test = saveBuff(leaf('who cares', 1))
 
         setSeed(NAT_1)
         decaySaveSucceeded(owner)
@@ -401,7 +416,7 @@ describe('decaySaveSucceeded', () => {
             broadContexts: {},
         }
         const owner = createDefaultOwner()
-        owner.ss.test = { ...saveBuff(1), onExpiration: () => followUp }
+        owner.ss.test = { ...saveBuff(leaf('who cares', 1)), onExpiration: () => followUp }
 
         setSeed(NAT_20)
         decaySaveSucceeded(owner)

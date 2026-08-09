@@ -1,6 +1,5 @@
-import { ObjectWithBroadContexts } from "../log2/types"
+import { ObjectWithBroadContexts, Saves } from "../log2/types"
 import { Actor2, OwnerMaximal } from "../actor2"
-import { SaveType } from "../save"
 import { ModNode } from "../log2"
 import damageOverTime from "../log2/terminal/damage-over-time"
 import damageOverTimeTaken from "../log2/terminal-composition/damage-over-time-taken"
@@ -18,8 +17,8 @@ export type StatusExpirationActionsElapsed = {
 export type StatusExpirationSaveSucceeded = {
     kind: 'save-succeeded',
     // changes which characterSheet vals are used for bonuses
-    saveType: SaveType,
-    dc: number,
+    saveType: Saves,
+    dc: ModNode,
 }
 
 export type StatusExpirationEnemyKilled = {

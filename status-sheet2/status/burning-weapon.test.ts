@@ -7,6 +7,7 @@ import { afterEach, assert, describe, expect, test } from 'vitest'
 import { findNodeMatching, leaf } from '../../log2'
 import modNodeToText from '../../log2/format'
 
+const KEY = 'burning'
 const setupOwner = () => {
     const creator = createDefaultOwner({
         fs: {
@@ -20,7 +21,7 @@ const setupOwner = () => {
     })
     return createDefaultOwner({
         ss: {
-            burning: burningWeaponStatus({
+            [KEY]: burningWeaponStatus({
                 snapshot: creator,
             }),
         }
@@ -55,15 +56,18 @@ describe('burningWeaponStatus wires into decaySaveSucceeded', () => {
         const outcomes = iterate(60, () => {
             const owner = setupOwner()
             assert.exists(owner.ss.burning)
-            decaySaveSucceeded(owner)
-            return !!owner.ss.burning
+            const result = decaySaveSucceeded(owner)
+            const found = result.find(a => a.key === KEY && a.kind === 'succeeded')
+            return !found
         })
 
         const total = outcomes.length
+        const threshold = .05
         const expectedFailProportion = .6 // DC 15, +2 to save, don't want to do a billion tests
         const realFailProportion = outcomes.filter(a => a === true).length
 
-        expect(realFailProportion / total).toBeGreaterThanOrEqual(expectedFailProportion)
+        expect(realFailProportion / total).toBeGreaterThanOrEqual(expectedFailProportion - threshold)
+        expect(realFailProportion / total).toBeLessThanOrEqual(expectedFailProportion + threshold)
     })
 
     test('Has a tick', () => {

@@ -1,14 +1,17 @@
 import { StatusEffect, StatusSheet } from ".";
 import { Actor2, OwnerMaximal } from "../actor2";
 import { applyDamage } from "../health";
+import newModNode, { ModNode, sumFunc } from "../log2";
+import roll from "../log2/roll";
 import save from "../log2/terminal/save";
-import roll from "../roll";
 import { calculateTick } from "./tick";
 
 export type DecayOwner = {
     ss: StatusSheet,
 }
 
+// should be split into two things (expire and add status)
+// onExpiration should return a log
 export const expireStatus = (owner: DecayOwner, key: string) => {
     const status = owner.ss[key]
     if (!status) return
@@ -52,7 +55,16 @@ export const decayRoundsElapsed = (owner: OwnerMaximal, elapsed: number, self?: 
 }
 
 // technically, it should run a handler for maximum flexibility
-export const decaySaveSucceeded = (owner: OwnerMaximal) => {
+type DecaySaveSucceededLog = {
+    key: string,
+    kind: 'succeeded' | 'failed' // | 'mitigated' etc
+    result?: 'expired' | 'replaced' // | 'mitigated' | 'transformed'
+    dc: ModNode,
+    save: ModNode,
+}
+export const decaySaveSucceeded = (owner: OwnerMaximal): DecaySaveSucceededLog[] => {
+    const log: DecaySaveSucceededLog[] = []
+
     for (const key of Object.keys(owner.ss)) {
         const status = owner.ss[key]
         if (!status.expiration) continue
@@ -60,12 +72,24 @@ export const decaySaveSucceeded = (owner: OwnerMaximal) => {
 
         const { saveType, dc } = status.expiration
         const saveMod = save(saveType)(owner)
-        const natural = roll(20)
-        const total = natural + saveMod.total()
+        const natural = roll(20, 1)(owner)
+        const saveTotal = newModNode('save', [saveMod, natural], sumFunc)
 
-        if (natural === 1) continue
-        if (natural === 20 || total >= dc) expireStatus(owner, key)
+        let pass: boolean
+        if (natural.total() === 1) pass = false
+        else if (natural.total() === 20) pass = true
+        else if (saveTotal.total() < dc.total()) pass = false
+        else pass = true
+        log.push({
+            key,
+            kind: pass ? 'succeeded' : 'failed',
+            dc,
+            save: saveTotal,
+        })
+        if (pass) expireStatus(owner, key)
     }
+
+    return log
 }
 
 export const decayEnemyKilled = (

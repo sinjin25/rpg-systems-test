@@ -1,8 +1,8 @@
 import { AbilitySheet, createDefaultAbilitySheet } from '../ability-sheet2'
 import { OwnerMaximal } from '../actor2'
 import { CharacterSheet } from '../character-sheet'
-import { cloneClassLevelSheet } from '../character-sheet/class-level/derive'
 import { fakeCharacterLevels } from '../character-sheet/util'
+import { ClassLevelPickLog } from '../class-level2/types'
 import { shortsword } from '../equipment-sheet2/defaults'
 import { EquipmentSheet } from '../equipment-sheet2/types'
 import { FeatSheet } from '../feat2'
@@ -20,6 +20,17 @@ export const defaultFeatSheet: FeatSheet = {}
 
 export const defaultEquipmentSheet: EquipmentSheet = {
     mainhand: shortsword,
+}
+
+const cloneClassLevelSheet = (clpl: ClassLevelPickLog) => {
+    const m: ClassLevelPickLog = []
+    for (let a of clpl) {
+        m.push({
+            key: a.key,
+            freeFeats: [...a.freeFeats]
+        })
+    }
+    return m
 }
 
 export const createDefaultOwner = (data: Partial<{

@@ -1,24 +1,26 @@
 import { describe, test, assert } from 'vitest'
 import { createDefaultOwner } from '../defaults/index.ts'
 import { runTrigger } from './dispatch.ts'
-import { Feat } from '../feat/core-types.ts'
-import { StatusEffect } from '../status-sheet/core-types.ts'
+import { Feat2 } from '../feat2/index.ts'
+import { StatusEffect } from '../status-sheet2/types.ts'
 
-const featOnMiss: Feat = {
+const featOnMiss: Feat2 = {
     displayName: 'Test Feat On Miss',
-    context: {},
+    broadContexts: {},
     trigger: {
-        onMiss: () => ({ kind: 'apply-status', recipient: 'target', key: 'testStatus', status: {
-            displayName: 'Test Status',
-            context: {},
-            expiration: { kind: 'rounds-elapsed', remaining: 1 },
-        } }),
+        onMiss: () => ({
+            kind: 'apply-status', recipient: 'target', key: 'testStatus', status: {
+                displayName: 'Test Status',
+                context: {},
+                expiration: { kind: 'rounds-elapsed', remaining: 1 },
+            }
+        }),
     },
 }
 
-const featOnHitMultiple: Feat = {
+const featOnHitMultiple: Feat2 = {
     displayName: 'Test Feat On Hit Multiple',
-    context: {},
+    broadContexts: {},
     trigger: {
         onHit: () => [
             { kind: 'apply-status', recipient: 'self', key: 'statusA', status: { displayName: 'A', context: {}, expiration: { kind: 'rounds-elapsed', remaining: 1 } } },
@@ -29,14 +31,16 @@ const featOnHitMultiple: Feat = {
 
 const statusOnKill: StatusEffect = {
     displayName: 'Status That Reacts To Kill',
-    context: {},
+    broadContexts: {},
     expiration: { kind: 'rounds-elapsed', remaining: 1 },
     trigger: {
-        onKill: () => ({ kind: 'apply-status', recipient: 'self', key: 'killBonus', status: {
-            displayName: 'Kill Bonus',
-            context: {},
-            expiration: { kind: 'rounds-elapsed', remaining: 1 },
-        } }),
+        onKill: () => ({
+            kind: 'apply-status', recipient: 'self', key: 'killBonus', status: {
+                displayName: 'Kill Bonus',
+                context: {},
+                expiration: { kind: 'rounds-elapsed', remaining: 1 },
+            }
+        }),
     },
 }
 

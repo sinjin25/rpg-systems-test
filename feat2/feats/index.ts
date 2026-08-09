@@ -10,6 +10,7 @@ import conSaves from './con-saves'
 import powerAttack from './power-attack'
 // do not include in possibleFeatKeys
 import { testFeatMeleeWeaponFighting } from './test-feats'
+import dodge from './dodge'
 
 export const deriveFeatName = (feat: Feat2) => feat.displayName
 
@@ -24,6 +25,7 @@ export const possibleFeatKeys = {
     [rage.displayName]: rage,
     [conSaves.displayName]: conSaves,
     [powerAttack.displayName]: powerAttack,
+    [dodge.displayName]: dodge,
 } satisfies Record<string, Feat2>
 
 // 'Armor Training' | 'Battle Focus' | ... etc

@@ -18,8 +18,9 @@ export const clawSmall: BaseEquipment = (() => {
     }
 })()
 
-export const naturalAc = (amnt: number) => {
+export const naturalAc = (amnt: number): BaseEquipment => {
     return {
-
-    } as BaseEquipment
+        displayName: `Natural Armor +${amnt}`,
+        broadContexts: {},
+    }
 }

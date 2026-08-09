@@ -75,10 +75,6 @@ export const simulateFight = (
             const actions = act(theActor)
 
             decayActionsElapsed(theActor.owner, 1)
-            /* if (verbose) {
-                console.log(`${theActor.owner.cs?.flavorSheet?.displayName || 'Someone'} is acting`)
-                console.table(actions)
-            } */
 
             // find the first alive person (target)
             const targetTeam = ownerIsMemberOf(theActor.owner, playerActors) ? enemyActors : playerActors

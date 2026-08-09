@@ -1,0 +1,1 @@
+Contains the information required to playback a simulation

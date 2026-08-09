@@ -1,12 +1,10 @@
 import { deriveBonus } from "../../class-level2/derive";
-import { EveryTree, OwnerLog2 } from "../types";
-
-export type SaveType = 'fortitude' | 'reflex'
-
-const displayName: Record<SaveType, EveryTree> = {
+import { BaseSaves, EveryTree, OwnerLog2, Saves } from "../types";
+const displayName: Record<Saves, BaseSaves> = {
     fortitude: 'base-fortitude',
     reflex: 'base-reflex',
+    will: 'base-will',
 }
 
-export default (owner: OwnerLog2, saveType: SaveType) =>
+export default (owner: OwnerLog2, saveType: Saves) =>
     deriveBonus(owner.cs.levels, saveType, displayName[saveType])

@@ -6,7 +6,7 @@ import moddedCsScore from "../composition/modded-cs-score";
 import featContribution from "../composition/feat-contribution";
 import modFromEquipment from "../composition/equipment/mod-from-equipment";
 
-type Member = 'reflex' | 'fortitude' // | 'will''
+type Member = 'reflex' | 'fortitude' | 'will'
 export default (member: Member) => (owner: OwnerLog2) => {
     const base = baseSave(owner, member)
     const cs = member === 'reflex' ? 'dex' : member === 'fortitude' ? 'con' : 'int'

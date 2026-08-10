@@ -1,6 +1,5 @@
 import { describe, test, expect, assert } from 'vitest'
 import attack from './attack'
-import { ClassLevels, ClassLevelMember } from '../../character-sheet/class-level/type'
 import { findNodeMatching, leaf } from '..'
 import { ObjectWithBroadContexts, OwnerLog2 } from '../types'
 import { hasAllTags, Tags } from '../tags'
@@ -10,7 +9,6 @@ import { Feat2 } from '../../feat2'
 import { BaseEquipment } from '../../equipment-sheet2/types'
 import { fakeCharacterLevels } from '../../character-sheet/util'
 
-const babMember: ClassLevelMember = { attackBonus: 1, fortitudeSave: 0, reflexSave: 0, feats: {} }
 // +2 attack on a finesse weapon
 const finesseBless: ObjectWithBroadContexts = {
     displayName: 'Finesse Bless',

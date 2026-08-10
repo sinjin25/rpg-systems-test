@@ -21,8 +21,21 @@ import { StatusEffect } from "../../status-sheet2"
 type TimeTravelLogs = TimeTravelLog[]
 type TimeTravelLog = SARLog | DecayRoundsElapsedLog
 
+// if it happens in simulate2, there needs to be a key here
+type TimeTravelLogType = | 'resolve-participants'
+    | 'round' // ex: people's speed moving
+    | 'decay-save-succeeded'
+    | 'handle-potential-death'
+    | 'act-start'
+    | 'decay-rounds-elapsed'
+    | 'decay-actions-elapsed'
+    | 'ability' // what about the ability though?
+    | 'standard-action-result' // an attack
+    | 'team-victory' // anyActorAlive
+    | 'damage-over-time' // pretty sure this doesn't happen in the simulation rn?
+
 type SARLog = {
-    kind: 'sar',
+    kind: TimeTravelLogType,
     source: number, // actorId
     target: Actor2Snapshot, // ?
     modNodes: FrozenStandardActionResult,
@@ -30,7 +43,7 @@ type SARLog = {
 }
 
 type DecayRoundsElapsedLog = {
-    kind: 'decay-rounds-elapsed',
+    kind: TimeTravelLogType,
     source: number, // actorId
     affectedActor: Actor2Snapshot,
 }

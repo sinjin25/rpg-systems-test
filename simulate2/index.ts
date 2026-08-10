@@ -9,7 +9,7 @@ import runTrigger from "../trigger/dispatch"
 import { anyActorAlive, chooseTarget, handlePotentialDeath, ownerIsMemberOf } from "./helpers"
 import { /* instantiateParticipants */resolveParticipants } from "./setup"
 
-const VERBOSE = true
+const VERBOSE = false
 
 export type FightResult = {
     winner: 'player' | 'enemy' | 'draw',
@@ -32,7 +32,8 @@ export const simulateFight = (
     }
     // stageRules:
 ): FightResult => {
-    const verbose = options?.verbose ?? false
+    /* const verbose = options?.verbose ?? false */
+    const verbose = false
 
     const debugData: FightResult['debugData'] = {
         player0HpEnd: 0,
@@ -66,8 +67,6 @@ export const simulateFight = (
             const theActor = acting.pop()
             if (!theActor) continue
 
-            /* const found = actors.find(a => a.owner === theActor.owner)
-            if (found) decayRoundsElapsed(found.owner, 1, found) */
             decayRoundsElapsed(theActor.owner, 1, theActor)
             if (!theActor.speed.canAct) continue
 

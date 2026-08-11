@@ -3,6 +3,7 @@ import { fakeCharacterLevels } from '../character-sheet/util.ts'
 import { simulateFight } from './index.ts'
 import { describe, test, assert, expect } from 'vitest'
 import newTimeTravelLogReplayer from './time-travel/replay/index.ts'
+import ttrvTextVisualizer from './time-travel/replay/text-visualizer.ts'
 
 describe('simulateFight', () => {
     test('', () => {
@@ -54,7 +55,7 @@ describe('Integration: TimeTravel', () => {
         )
     })
     test('Works with a ttr passed', () => {
-        const ttr = newTimeTravelLogReplayer()
+        const ttr = newTimeTravelLogReplayer(ttrvTextVisualizer)
         simulateFight(
             {
                 enemy: [owner2],
@@ -65,9 +66,10 @@ describe('Integration: TimeTravel', () => {
             }
         )
         assert.isTrue(ttr.logs.length > 2)
-        for (let i = 0; i < ttr.logs.length; i++) {
+        /* for (let i = 0; i < ttr.logs.length; i++) {
             const res = ttr.replayStep()
             console.log(res)
-        }
+        } */
+        ttr.playback()
     })
 })

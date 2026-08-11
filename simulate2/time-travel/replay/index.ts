@@ -1,15 +1,11 @@
 import { TimeTravelLog } from "../types"
+import { TimeTravelReplayer, TimeTravelReplayerVisualizer } from "./types"
 
-export type TimeTravelReplayer = {
-    logs: TimeTravelLog[]
-    // cursor: number,
-    appendLog(...ttls: TimeTravelLog[]): void,
-    replayStep(): TimeTravelLog | null,
-    replayCursor: number,
-}
-
-const newTimeTravelLogReplayer = (): TimeTravelReplayer => {
+const newTimeTravelLogReplayer = (
+    visualizer: TimeTravelReplayerVisualizer,
+): TimeTravelReplayer => {
     return {
+        visualizer,
         logs: [],
         appendLog(...ttls: TimeTravelLog[]) {
             for (let ttl of ttls) {
@@ -22,6 +18,22 @@ const newTimeTravelLogReplayer = (): TimeTravelReplayer => {
             if (l === null) return l
             this.replayCursor++
             return l
+        },
+        async playback() {
+            // walk the logs, dispatch each to its visualizer handler, and await before advancing.
+            // the switch narrows log per case so visualizer[log.kind](log) typechecks without casts.
+            let log = this.replayStep()
+            while (log !== null) {
+                switch (log.kind) {
+                    case 'standard-action-result':
+                        await this.visualizer[log.kind](log)
+                        break
+                    case 'decay-rounds-elapsed':
+                        await this.visualizer[log.kind](log)
+                        break
+                }
+                log = this.replayStep()
+            }
         }
     }
 }

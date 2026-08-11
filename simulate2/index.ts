@@ -9,7 +9,7 @@ import runTrigger from "../trigger/dispatch"
 import { anyActorAlive, chooseTarget, handlePotentialDeath, ownerIsMemberOf } from "./helpers"
 import { /* instantiateParticipants */resolveParticipants } from "./setup"
 import { toTimeTravelLog } from "./time-travel"
-import { TimeTravelReplayer } from "./time-travel/replay"
+import { TimeTravelReplayer } from "./time-travel/replay/types"
 import snapshotActor from "./time-travel/snapshot/actor"
 import { EveryTimeTravelLog, TimeTravelContext, TimeTravelLog } from "./time-travel/types"
 
@@ -52,7 +52,7 @@ export const simulateFight = (
         source: snapshotActor(0)(source),
         to: to.map(a => snapshotActor(0)(a))
     })
-    const finishTTRLog = (kind: EveryTimeTravelLog['kind']) => (log: Omit<EveryTimeTravelLog, 'kind'>): EveryTimeTravelLog => ({
+    const finishTTRLog = (kind: EveryTimeTravelLog['kind']) => (log: Omit<EveryTimeTravelLog, 'kind' | 'context'>): EveryTimeTravelLog => ({
         // omit collapses to {} as there's "nothing in common" aside from 'kind'
         // idk if there's a better way to write it
         kind,

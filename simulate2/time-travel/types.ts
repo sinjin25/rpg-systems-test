@@ -3,6 +3,8 @@ import { Actor2 } from "../../actor2"
 import { StandardActionResult } from "../../actor2/act"
 import { BaseEquipment } from "../../equipment-sheet2/types"
 import { StatusEffect } from "../../status-sheet2"
+import { DecayKinds } from "../../status-sheet2/decay"
+import { Actor2Snapshot } from "./snapshot/actor"
 
 // commented out below is a first attempt, for reference. It is insufficient
 /* export type TimeTravelLog = {
@@ -19,10 +21,13 @@ import { StatusEffect } from "../../status-sheet2"
     }>
 } */
 type TimeTravelLogs = TimeTravelLog[]
-type TimeTravelLog = SARLog | DecayRoundsElapsedLog
+export type TimeTravelLog = SARLog | DecayRoundsElapsedLog
+
+type DecayTimeTravelLogKinds = DecayKinds
 
 // if it happens in simulate2, there needs to be a key here
-type TimeTravelLogType = | 'resolve-participants'
+export type TimeTravelLogType = | DecayTimeTravelLogKinds
+    | 'resolve-participants'
     | 'round' // ex: people's speed moving
     | 'decay-save-succeeded'
     | 'handle-potential-death'
@@ -34,27 +39,22 @@ type TimeTravelLogType = | 'resolve-participants'
     | 'team-victory' // anyActorAlive
     | 'damage-over-time' // pretty sure this doesn't happen in the simulation rn?
 
-type SARLog = {
+type TimeTravelLogMinimum = {
     kind: TimeTravelLogType,
-    source: number, // actorId
-    target: Actor2Snapshot, // ?
+}
+
+export type SARLog = {
+    kind: 'standard-action-result',
     modNodes: FrozenStandardActionResult,
-    affectedActors: Actor2Snapshot[], // probably triggers would be split out from this (ex: cleaving finish)
 }
 
 type DecayRoundsElapsedLog = {
-    kind: TimeTravelLogType,
+    kind: 'decay-rounds-elapsed',
     source: number, // actorId
     affectedActor: Actor2Snapshot,
 }
 
-type Actor2Snapshot = {
-    // minimum information that can be changed
-    // as can change due to pick order index
-    id: number,
-} & Pick<Actor2, 'health' | 'speed'> & Pick<Actor2['owner'], 'fs' | 'as' | 'ss'>
-
-type FrozenModNode = {
+export type FrozenModNode = {
     displayName: string,
     children: FrozenModNode[],
     total: number,
@@ -65,17 +65,24 @@ const modNodeToFrozenModNode = () => {
     // simply take the evaluation of total() and replace it with total for each step
 }
 
-type FrozenStandardActionResult = {
+export type FrozenStandardActionResult = Partial<{
     relevantSlot: BaseEquipment;
     attackResult: FrozenModNode;
     damageResult: FrozenModNode;
     threatResult: FrozenModNode;
     critConfirmResult: FrozenModNode;
     critDamageResult: FrozenModNode;
-}
+}>
 
 type FrozenAbilityModNode = {
     // this cannot be solved until Ability exposes additional information about the process (it only does outcomes, unless it's damage)
     payload: StatusEffect | FrozenModNode;
     target: "ally" | "target" | "self";
+}
+
+export type EveryTimeTravelLog = SARLog | DecayRoundsElapsedLog
+
+export type TimeTravelContext = {
+    source: Actor2Snapshot,
+    to?: Actor2Snapshot[],
 }

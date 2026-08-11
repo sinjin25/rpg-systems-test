@@ -46,7 +46,5 @@ describe('standardActionResultToTT', () => {
             theAttack.total(),
             asLog.modNodes.attackResult!.total
         )
-        /* console.log(modNodeToText(asLog.modNodes.attackResult!))
-        console.log(modNodeToText(theAttack)) */
     })
 })

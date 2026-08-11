@@ -8,6 +8,10 @@ import { decayActionsElapsed, decayEnemyKilled, decayRoundsElapsed, decaySaveSuc
 import runTrigger from "../trigger/dispatch"
 import { anyActorAlive, chooseTarget, handlePotentialDeath, ownerIsMemberOf } from "./helpers"
 import { /* instantiateParticipants */resolveParticipants } from "./setup"
+import { toTimeTravelLog } from "./time-travel"
+import { TimeTravelReplayer } from "./time-travel/replay"
+import snapshotActor from "./time-travel/snapshot/actor"
+import { EveryTimeTravelLog, TimeTravelContext, TimeTravelLog } from "./time-travel/types"
 
 const VERBOSE = false
 
@@ -29,11 +33,32 @@ export const simulateFight = (
     },
     options?: {
         verbose?: boolean,
+        timeTravelReplayer?: TimeTravelReplayer,
     }
     // stageRules:
 ): FightResult => {
     /* const verbose = options?.verbose ?? false */
     const verbose = false
+    const ttr = options?.timeTravelReplayer
+
+    // ====== TTR HELPERS EXTRACT LATER ====== //
+    const ttrAppendLog = (log: TimeTravelLog) => {
+        // literally just shorten code or loop
+        if (!ttr) return
+        ttr.appendLog(log)
+    }
+    const ttrActorContext = (source: Actor2, to: Actor2[]) => () => ({
+        // WE HAVE NOT CONSIDERED IDS YET
+        source: snapshotActor(0)(source),
+        to: to.map(a => snapshotActor(0)(a))
+    })
+    const finishTTRLog = (kind: EveryTimeTravelLog['kind']) => (log: Omit<EveryTimeTravelLog, 'kind'>): EveryTimeTravelLog => ({
+        // omit collapses to {} as there's "nothing in common" aside from 'kind'
+        // idk if there's a better way to write it
+        kind,
+        ...log,
+    } as EveryTimeTravelLog)
+    // ====== TTR HELPERS EXTRACT LATER ====== //
 
     const debugData: FightResult['debugData'] = {
         player0HpEnd: 0,
@@ -78,6 +103,9 @@ export const simulateFight = (
             // find the first alive person (target)
             const targetTeam = ownerIsMemberOf(theActor.owner, playerActors) ? enemyActors : playerActors
             const target = chooseTarget(targetTeam)
+            const snapshotActors = ttrActorContext(theActor, [target])
+
+            // setup ttActorContext
 
             actions.forEach(a => {
                 if (!target) return
@@ -88,29 +116,15 @@ export const simulateFight = (
                     // resolve action
                     const finalSar = outputFinalSar([a], target)
                     for (let fs of finalSar) {
-                        // should only be 1
-                        /* console.log('fs', fs) */
-                        if (verbose) console.log(
-                            '\x1b[31m',
-                            theActor.owner.cs.flavorSheet.displayName,
-                            '\x1b[0m\nattacks\n',
-                            modNodeToText(fs.attackResult),
-                            '\nvs\n', modNodeToText(fs.acResult)
-                        )
-                        if (fs.critDamageResult) {
-                            if (verbose) console.log(
-                                '\x1b[31m',
-                                theActor.owner.cs.flavorSheet.displayName, 'crits', modNodeToText(fs.critDamageResult),
-                                '\x1b[0m\n')
+                        if (!fs.critDamageResult && !fs.damageResult) {
+                        } else if (fs.critDamageResult) {
                             applyDamage(target.health, fs.critDamageResult.total())
                         }
                         else if (fs.damageResult) {
-                            if (verbose) console.log(theActor.owner.cs.flavorSheet.displayName, 'hits', modNodeToText(fs.damageResult))
                             applyDamage(target.health, fs.damageResult.total())
                         }
-                        else {
-                            // we missed
-                        }
+                        const ttLog = toTimeTravelLog(snapshotActors(), finishTTRLog('standard-action-result')(fs))
+                        ttrAppendLog(ttLog)
                     }
                 }
 

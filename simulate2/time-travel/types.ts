@@ -41,14 +41,15 @@ export type TimeTravelLogType = | DecayTimeTravelLogKinds
 
 type TimeTravelLogMinimum = {
     kind: TimeTravelLogType,
+    context: TimeTravelContext,
 }
 
-export type SARLog = {
+export type SARLog = TimeTravelLogMinimum & {
     kind: 'standard-action-result',
     modNodes: FrozenStandardActionResult,
 }
 
-type DecayRoundsElapsedLog = {
+type DecayRoundsElapsedLog = TimeTravelLogMinimum & {
     kind: 'decay-rounds-elapsed',
     source: number, // actorId
     affectedActor: Actor2Snapshot,

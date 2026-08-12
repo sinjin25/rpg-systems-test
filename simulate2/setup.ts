@@ -1,18 +1,6 @@
 import { Actor2, instantiateActor, OwnerMaximal } from "../actor2"
 import { instantiateSpeed } from "../actor2/instantiate"
 import { participantIsActor } from "./type-guard"
-/* export const instantiateParticipants = (
-    participants: OwnerMaximal[],
-): Actor2[] => {
-    const actors: Actor2[] = []
-
-    for (let part of participants) {
-        // applyFightStartFeats(part)
-        actors.push(instantiateActor(part))
-    }
-
-    return actors
-} */
 
 // for things that persist between battles
 export const setupWorldState = (
@@ -20,7 +8,7 @@ export const setupWorldState = (
         player: OwnerMaximal,
     }
 ) => {
-    const playerActors = resolveParticipants([participants.player])
+    const playerActors = [instantiateActor(participants.player, true)]
 
     return {
         playerActors,

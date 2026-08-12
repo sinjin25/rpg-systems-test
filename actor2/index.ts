@@ -5,7 +5,6 @@ import { Tags } from "../log2/tags"
 import { StatusSheet } from "../status-sheet2"
 import { Health, instantiateHealth, instantiateSpeed, Speed } from "./instantiate"
 import { FeatSheet } from "../feat2"
-import { cloneClassLevelSheet } from "../character-sheet/class-level/derive"
 import { AbilitySheet, createDefaultAbilitySheet } from "../ability-sheet2"
 import { ClassLevelPickLog } from "../class-level2/types"
 
@@ -21,17 +20,34 @@ export type OwnerMaximal = {
     as: AbilitySheet,
 }
 
+export const generatePlayerId = (() => {
+    const RESERVED_PLAYER_ID = 1
+    return () => RESERVED_PLAYER_ID
+})()
+export const generateNonPlayerId = (() => {
+    // prevent a collision with the only reserved id
+    let id = generatePlayerId() + 1
+
+    return () => {
+        const idToReturn = id
+        id++
+        return idToReturn
+    }
+})()
+
 export type Actor2 = {
+    id: number,
     speed: Speed,
     health: Health,
     owner: OwnerMaximal,
 }
 
-export const instantiateActor = (owner: OwnerMaximal): Actor2 => {
+export const instantiateActor = (owner: OwnerMaximal, isPlayer = false): Actor2 => {
     const { health, tree } = instantiateHealth(owner)
     const { speed, tree: tree2 } = instantiateSpeed(owner)
 
     return {
+        id: isPlayer ? generatePlayerId() : generateNonPlayerId(),
         health,
         speed,
         owner,

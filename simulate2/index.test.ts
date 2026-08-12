@@ -54,7 +54,7 @@ describe('Integration: TimeTravel', () => {
             }
         )
     })
-    test('Works with a ttr passed', () => {
+    test('Works with a ttr passed', async () => {
         const ttr = newTimeTravelLogReplayer(ttrvTextVisualizer)
         simulateFight(
             {
@@ -70,6 +70,8 @@ describe('Integration: TimeTravel', () => {
             const res = ttr.replayStep()
             console.log(res)
         } */
-        ttr.playback()
+        // this can timeout (vitest) right now
+        assert.equal(ttr.logs[0]!.kind, 'fight-start')
+        await ttr.playback()
     })
 })

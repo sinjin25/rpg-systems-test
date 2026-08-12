@@ -31,6 +31,37 @@ const newTimeTravelLogReplayer = (
                     case 'decay-rounds-elapsed':
                         await this.visualizer[log.kind](log)
                         break
+                    case 'fight-start':
+                        await this.visualizer[log.kind](log)
+                        break
+                    case 'team-victory':
+                        await this.visualizer[log.kind](log)
+                        break
+                    // ======= below is unimplemented =======
+                    case 'resolve-participants':
+                        await this.visualizer[log.kind](log)
+                        break
+                    case 'round':
+                        await this.visualizer[log.kind](log)
+                        break
+                    case 'decay-save-succeeded':
+                        await this.visualizer[log.kind](log)
+                        break
+                    case 'handle-potential-death':
+                        await this.visualizer[log.kind](log)
+                        break
+                    case 'act-start':
+                        await this.visualizer[log.kind](log)
+                        break
+                    case 'decay-actions-elapsed':
+                        await this.visualizer[log.kind](log)
+                        break
+                    case 'ability':
+                        await this.visualizer[log.kind](log)
+                        break
+                    case 'damage-over-time':
+                        await this.visualizer[log.kind](log)
+                        break
                 }
                 log = this.replayStep()
             }

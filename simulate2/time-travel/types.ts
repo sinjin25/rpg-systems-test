@@ -6,27 +6,26 @@ import { StatusEffect } from "../../status-sheet2"
 import { DecayKinds } from "../../status-sheet2/decay"
 import { Actor2Snapshot } from "./snapshot/actor"
 
-// commented out below is a first attempt, for reference. It is insufficient
-/* export type TimeTravelLog = {
-    actorStartState: Actor2[]
-    actorEndState: Actor2[] // feed into next palyback
-    // probably this is insufficient something like finishing cleave would have a hard time being interpretted
-    actions: Array<{
-        actor: Actor2,
-        data: FrozenStandardActionResult | FrozenAbilityModNode,
-        // possible to cut down on this if the size gets too large but the complexity is higher
-        actorsEndState: Actor2[],
-        // I suppose the target could be inferred by who has an endstate different that before the action?
-        // might be easier to just explicitly write it?
-    }>
-} */
 type TimeTravelLogs = TimeTravelLog[]
-export type TimeTravelLog = SARLog | DecayRoundsElapsedLog
+export type TimeTravelLog =
+    | FightStartLog
+    | SARLog
+    | DecayRoundsElapsedLog
+    | ResolveParticipantsLog
+    | RoundLog
+    | DecaySaveSucceededLog
+    | HandlePotentialDeathLog
+    | ActStartLog
+    | DecayActionsElapsedLog
+    | AbilityLog
+    | TeamVictoryLog
+    | DamageOverTimeLog
 
 type DecayTimeTravelLogKinds = DecayKinds
 
 // if it happens in simulate2, there needs to be a key here
-export type TimeTravelLogType = | DecayTimeTravelLogKinds
+export type TimeTravelLogType = | 'fight-start'
+    | DecayTimeTravelLogKinds
     | 'resolve-participants'
     | 'round' // ex: people's speed moving
     | 'decay-save-succeeded'
@@ -44,6 +43,10 @@ type TimeTravelLogMinimum = {
     context: TimeTravelContext,
 }
 
+export type FightStartLog = TimeTravelLogMinimum & {
+    kind: 'fight-start',
+} // need a snapshot of the actors at the start so we can "go to the start" of a fight
+
 export type SARLog = TimeTravelLogMinimum & {
     kind: 'standard-action-result',
     modNodes: FrozenStandardActionResult,
@@ -55,15 +58,47 @@ type DecayRoundsElapsedLog = TimeTravelLogMinimum & {
     affectedActor: Actor2Snapshot,
 }
 
+export type ResolveParticipantsLog = TimeTravelLogMinimum & {
+    kind: 'resolve-participants',
+}
+
+export type RoundLog = TimeTravelLogMinimum & {
+    kind: 'round',
+}
+
+export type DecaySaveSucceededLog = TimeTravelLogMinimum & {
+    kind: 'decay-save-succeeded',
+}
+
+export type HandlePotentialDeathLog = TimeTravelLogMinimum & {
+    kind: 'handle-potential-death',
+}
+
+export type ActStartLog = TimeTravelLogMinimum & {
+    kind: 'act-start',
+}
+
+export type DecayActionsElapsedLog = TimeTravelLogMinimum & {
+    kind: 'decay-actions-elapsed',
+}
+
+export type AbilityLog = TimeTravelLogMinimum & {
+    kind: 'ability',
+}
+
+export type TeamVictoryLog = TimeTravelLogMinimum & {
+    kind: 'team-victory',
+    team: 'player' | 'enemy' | 'draw'
+}
+
+export type DamageOverTimeLog = TimeTravelLogMinimum & {
+    kind: 'damage-over-time',
+}
+
 export type FrozenModNode = {
     displayName: string,
     children: FrozenModNode[],
     total: number,
-}
-
-const modNodeToFrozenModNode = () => {
-    // stub
-    // simply take the evaluation of total() and replace it with total for each step
 }
 
 export type FrozenStandardActionResult = Partial<{
@@ -81,7 +116,7 @@ type FrozenAbilityModNode = {
     target: "ally" | "target" | "self";
 }
 
-export type EveryTimeTravelLog = SARLog | DecayRoundsElapsedLog
+/* export type EveryTimeTravelLog = SARLog | DecayRoundsElapsedLog */
 
 export type TimeTravelContext = {
     source: Actor2Snapshot,

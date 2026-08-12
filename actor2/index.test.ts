@@ -1,8 +1,29 @@
-import { createDefaultOwner, instantiateActor } from './index.ts'
+import { createDefaultOwner, generateNonPlayerId, generatePlayerId, instantiateActor } from './index.ts'
 import { describe, test, assert, expect } from 'vitest'
 import { applyDamage, applyHeal } from '../health'
 
 describe('instantiateActor', () => {
+    test('Singleton: generate actor ids', () => {
+        const playerId = generatePlayerId()
+        const enemyId = generateNonPlayerId()
+        const enemyId2 = generateNonPlayerId()
+
+        assert.notEqual(playerId, enemyId)
+        assert.notEqual(enemyId, enemyId2)
+
+        // ticks up
+        assert.equal(enemyId + 1, enemyId2)
+        // we cannot predict what these ids are without knowing test execution order
+
+        // playerId is reused (could be bad if not used correctly)
+        const owner = createDefaultOwner()
+        assert.equal(
+            instantiateActor(owner, true).id,
+            1
+        )
+        assert.isTrue(
+            instantiateActor(owner).id >= 2)
+    })
     test('Creates an Actor2', () => {
         const owner = createDefaultOwner()
         const actor = instantiateActor(owner)

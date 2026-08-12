@@ -3,28 +3,6 @@ import { /* instantiateParticipants, */ resolveParticipants, setupWorldState } f
 import { describe, test, assert, expect } from 'vitest'
 import { participantIsActor } from './type-guard.ts'
 
-/* describe('instantiateParticipants', () => {
-    test('Works', () => {
-        const o = createDefaultOwner()
-        const o2 = createDefaultOwner()
-
-        const part = [o, o2]
-
-        const inst = instantiateParticipants(part)
-        assert.isTrue(Array.isArray(inst))
-
-        assert.equal(
-            inst[0].owner,
-            o
-        )
-
-        assert.equal(
-            inst[1].owner,
-            o2
-        )
-    })
-}) */
-
 describe('resolveParticipants', () => {
     test('works', () => {
         const o = createDefaultOwner()
@@ -34,6 +12,14 @@ describe('resolveParticipants', () => {
         const oA = instantiateActor(o)
 
         const res = resolveParticipants([oA, o2])
+        for (let i = 1; i < res.length; i++) {
+            const prev = res[i - 1]!
+            const curr = res[i]!
+
+            // make sure ids are not colliding
+            assert.notEqual(prev.id, curr.id)
+            assert.isTrue(participantIsActor(curr))
+        }
         for (let r of res) {
             assert.isTrue(participantIsActor(r))
         }
@@ -51,6 +37,15 @@ describe('setupWorldState', () => {
         assert.exists(ws.playerActors)
         assert.exists(ws.playersAfterFight)
         assert.equal(player, ws.playerActors[0]!.owner)
+    })
+    test('Uses playerId for instantiated actor always (id === 1)', () => {
+        const player = createDefaultOwner()
+
+        const ws = setupWorldState({ player })
+        assert.equal(ws.playerActors[0]!.id, 1)
+
+        const ws2 = setupWorldState({ player })
+        assert.equal(ws2.playerActors[0]!.id, 1)
     })
     test.skip('.playerAfterFight')
 })

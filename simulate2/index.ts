@@ -8,10 +8,10 @@ import { decayActionsElapsed, decayEnemyKilled, decayRoundsElapsed, decaySaveSuc
 import runTrigger from "../trigger/dispatch"
 import { anyActorAlive, chooseTarget, handlePotentialDeath, ownerIsMemberOf } from "./helpers"
 import { /* instantiateParticipants */resolveParticipants } from "./setup"
-import { toTimeTravelLog } from "./time-travel"
 import { TimeTravelReplayer } from "./time-travel/replay/types"
 import snapshotActor from "./time-travel/snapshot/actor"
-import { EveryTimeTravelLog, TimeTravelContext, TimeTravelLog } from "./time-travel/types"
+import toTimeTravelLog from "./time-travel/to-time-travel"
+import { TimeTravelContext, TimeTravelLog } from "./time-travel/types"
 
 const VERBOSE = false
 
@@ -49,15 +49,16 @@ export const simulateFight = (
     }
     const ttrActorContext = (source: Actor2, to: Actor2[]) => () => ({
         // WE HAVE NOT CONSIDERED IDS YET
-        source: snapshotActor(0)(source),
-        to: to.map(a => snapshotActor(0)(a))
+        source: snapshotActor(source.id)(source),
+        to: to.map(a => snapshotActor(a.id)(a))
     })
-    const finishTTRLog = (kind: EveryTimeTravelLog['kind']) => (log: Omit<EveryTimeTravelLog, 'kind' | 'context'>): EveryTimeTravelLog => ({
-        // omit collapses to {} as there's "nothing in common" aside from 'kind'
-        // idk if there's a better way to write it
-        kind,
-        ...log,
-    } as EveryTimeTravelLog)
+    const finishTTRLogInput = <K extends TimeTravelLog['kind']>(kind: K) =>
+        (log: Omit<Extract<TimeTravelLog, { kind: K }>, 'kind' | 'context'>): Extract<TimeTravelLog, { kind: K }> => ({
+            // Extract narrows the union to the one member with this kind, so the
+            // log arg only asks for that variant's own fields (context is added later)
+            kind,
+            ...log,
+        } as Extract<TimeTravelLog, { kind: K }>)
     // ====== TTR HELPERS EXTRACT LATER ====== //
 
     const debugData: FightResult['debugData'] = {
@@ -72,6 +73,11 @@ export const simulateFight = (
     debugData.player0HpStart = playerActors[0]!.health.curr
 
     let rounds = 0
+    {
+        const snapshot = ttrActorContext(playerActors[0]!, [...actors])
+        const ttLog = toTimeTravelLog(snapshot(), finishTTRLogInput('fight-start')({}))
+        ttrAppendLog(ttLog)
+    }
 
     while (
         // while someone's team has someone alive
@@ -123,7 +129,7 @@ export const simulateFight = (
                         else if (fs.damageResult) {
                             applyDamage(target.health, fs.damageResult.total())
                         }
-                        const ttLog = toTimeTravelLog(snapshotActors(), finishTTRLog('standard-action-result')(fs))
+                        const ttLog = toTimeTravelLog(snapshotActors(), finishTTRLogInput('standard-action-result')(fs))
                         ttrAppendLog(ttLog)
                     }
                 }
@@ -136,6 +142,14 @@ export const simulateFight = (
     const playerAlive = anyActorAlive(playerActors)
     const enemyAlive = anyActorAlive(enemyActors)
     const winner = playerAlive && !enemyAlive ? 'player' : enemyAlive && !playerAlive ? 'enemy' : 'draw'
+    if (ttr) {
+        const snapshot = ttrActorContext(playerActors[0]!, [])
+        const log = finishTTRLogInput('team-victory')({
+            team: winner
+        })
+        const ttLog = toTimeTravelLog(snapshot(), log)
+        ttrAppendLog(ttLog)
+    }
 
     debugData.player0HpEnd = Math.max(playerActors[0]!.health.curr, 0)
     return {

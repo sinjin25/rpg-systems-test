@@ -1,8 +1,21 @@
+import { AbilityModNode } from "../ability-sheet2"
 import { FinalStandardActionResult } from "../actor2/act"
 import { BaseEquipment } from "../equipment-sheet2/types"
 import { ModNode } from "../log2"
+import { Saves } from "../log2/types"
 import { StatusEffect } from "../status-sheet2"
 import { Actor2Snapshot } from "./snapshot/actor"
+
+export type FrozenExpiration = {
+    dc?: FrozenModNode,
+    kind: StatusEffect['expiration']['kind'],
+    remaining?: number,
+    saveType?: Saves
+    /* enemy?: {} */
+}
+export type FrozenStatus = Pick<StatusEffect, 'description' | 'displayName'> & {
+    expiration?: FrozenExpiration,
+}
 
 export type FrozenModNode = {
     displayName: string
@@ -18,6 +31,13 @@ export type FrozenStandardActionResult = Partial<{
     critConfirmResult: FrozenModNode
     critDamageResult: FrozenModNode
 }>
+
+export type FrozenAbilityNode = {
+    payload: FrozenModNode | FrozenStatus,
+    dc?: FrozenModNode,
+    save?: FrozenModNode,
+    target: AbilityModNode['target'],
+}
 
 export type TimeTravelContext = {
     source: Actor2Snapshot

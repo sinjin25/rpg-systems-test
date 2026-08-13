@@ -1,6 +1,10 @@
 import { AbilityCatalog, AbilitySheet } from "../../ability-sheet2";
 import type { Actor2, OwnerMaximal } from "../../actor2";
 import { StatusEffect, StatusSheet } from "../../status-sheet2";
+import { FrozenStatus } from "../types";
+import freezeStatus from "./status";
+
+type SnapshotStatusSheet = Record<string, FrozenStatus>
 
 export type Actor2Snapshot = {
     id: number,
@@ -9,7 +13,9 @@ export type Actor2Snapshot = {
 } & Pick<Actor2, 'speed' | 'health'>
 
 type OwnerMaximalStableReferences = Pick<OwnerMaximal, 'es' | 'cs' | 'fs' | 'relevantSlot'>
-type OwnerMaximalUnstableReferences = Pick<OwnerMaximal, 'ss' | 'as' | 'relevantSlot' | 'tags'>
+type OwnerMaximalUnstableReferences = Pick<OwnerMaximal, /* 'ss' |  */'as' | 'relevantSlot' | 'tags'> & {
+    ss: SnapshotStatusSheet
+}
 
 // structured clone doesn't work on things like functions
 // some keys are mixes of stable references (ex: parts of StatusEffect) and key value pairs
@@ -56,10 +62,10 @@ const cloneAbilitySheet = (as: Actor2['owner']['as']) => {
 
 const cloneStatusSheet = (ss: Actor2['owner']['ss']) => {
     // WE CANNOT TELL IF SOMETHING WAS SNAPSHOTTED RIGHT NOW
-    const clone: StatusSheet = {}
+    const clone: SnapshotStatusSheet = {}
     for (let key in ss) {
         const v = ss[key]!
-        clone[key] = {
+        /* clone[key] = {
             ...v,
             // some of these will be live references, but we only care about freezing some
         }
@@ -70,7 +76,8 @@ const cloneStatusSheet = (ss: Actor2['owner']['ss']) => {
             }
             if (exp.kind === 'save-succeeded') throw Error('We need to freeze the dc and save')
 
-        }
+        } */
+        clone[key] = freezeStatus(v)
     }
 
     return clone

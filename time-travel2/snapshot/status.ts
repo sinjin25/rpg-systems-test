@@ -2,6 +2,9 @@ import { StatusEffect } from "../../status-sheet2"
 import { FrozenExpiration, FrozenStatus } from "../types"
 import freezeModNodeRecursive from "./mod-node"
 
+// we've left a lot of keys out which causes problems when you try to plug a snapshotted actor into anything wanting an Actor2
+// If we wanna do something about it we need the shapes to match better
+
 const freezeStatus = (st: StatusEffect): FrozenStatus => {
     const { broadContexts, displayName, description, expiration, onExpiration, persists, tick } = st
 

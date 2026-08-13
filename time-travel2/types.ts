@@ -6,6 +6,12 @@ import { Saves } from "../log2/types"
 import { StatusEffect } from "../status-sheet2"
 import { Actor2Snapshot } from "./snapshot/actor"
 
+export type FrozenModNode = {
+    displayName: string
+    children: FrozenModNode[]
+    total: number
+}
+
 export type FrozenExpiration = {
     dc?: FrozenModNode,
     kind: StatusEffect['expiration']['kind'],
@@ -15,12 +21,6 @@ export type FrozenExpiration = {
 }
 export type FrozenStatus = Pick<StatusEffect, 'description' | 'displayName'> & {
     expiration?: FrozenExpiration,
-}
-
-export type FrozenModNode = {
-    displayName: string
-    children: FrozenModNode[]
-    total: number
 }
 
 export type FrozenStandardActionResult = Partial<{

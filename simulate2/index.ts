@@ -66,8 +66,10 @@ export const simulateFight = (
     let rounds = 0
     {
         ttrAppendLog(timeTravel['fight-start']({
-            source: playerActors[0]!,
-            to: [...actors]
+            source: snapshotActor(playerActors[0]!.id)(playerActors[0]!),
+            to: [
+                ...actors.map(a => snapshotActor(a.id)(a))
+            ]
         }))
     }
 
@@ -95,7 +97,7 @@ export const simulateFight = (
             const theActor = acting.pop()
             if (!theActor) continue
             ttrAppendLog(timeTravel['act-start']({
-                source: theActor
+                source: snapshotActor(theActor.id)(theActor)
             }))
 
             decayRoundsElapsed(theActor.owner, 1, theActor)
@@ -117,7 +119,7 @@ export const simulateFight = (
                 ttr.appendLog(timeTravel["damage-over-time-taken"]({
                     modNode: node,
                     statusSource: source,
-                    to: [theActor],
+                    to: [snapshotActor(theActor.id)(theActor)],
                 }))
             }
 

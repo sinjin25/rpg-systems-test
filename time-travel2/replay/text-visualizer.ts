@@ -53,7 +53,7 @@ const ttrvTextVisualizer: TimeTravelReplayerVisualizer = {
     },
     'damage-over-time': async (log) => {
         const actor = log.to[0]!
-        console.log(`${displayActor(actor)} takes`, log.modNode.total, `damage from ${log.statusSource.displayName}`, cc.reset)
+        console.log(`${displayActor(actor)} takes`, log.modNode.total, `damage from ${log.statusSource.displayName}`, `health is now ${actor.health.curr}`, cc.reset)
     }
 }
 

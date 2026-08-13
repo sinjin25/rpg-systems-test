@@ -11,7 +11,7 @@ import { /* instantiateParticipants */resolveParticipants } from "./setup"
 import { snapshotActor, timeTravel } from "../time-travel2"
 import { AnyStoredLog, TimeTravelReplayer } from "../time-travel2/replay/types"
 import { TimeTravelContext, TTLogMap } from "../time-travel2/types"
-import { applyTicks, calculateTick } from "../status-sheet2/tick"
+import { applyTicks, calculateDamageTicks, calculateTick } from "../status-sheet2/tick"
 import damageOverTimeTaken from "../log2/terminal-composition/damage-over-time-taken"
 
 const VERBOSE = false
@@ -113,22 +113,14 @@ export const simulateFight = (
             const snapshotActors = ttrActorContext(theActor, [target])
 
             // replacing tick.ts applyTicks so we have finer control
-            for (let key in theActor.owner.ss) {
-                const st = theActor.owner.ss[key]!
-                if (st.tick.calculateDamage) {
-                    console.log('found a tick status', st)
-                    const cd = calculateTick(st, theActor.owner)
-                    const dott = damageOverTimeTaken({
-                        node: cd!.calculateDamage,
-                    })(theActor.owner)
-                    applyDamage(theActor.health, dott.total())
-                    ttr.appendLog(timeTravel["damage-over-time"]({
-                        modNode: dott,
-                        statusSource: cd.source,
-                        to: [theActor],
-                    }))
-                }
-                // handle calculateHeal here
+            const cdt = calculateDamageTicks(theActor)
+            for (let { node, source } of cdt) {
+                applyDamage(theActor.health, node.total())
+                ttr.appendLog(timeTravel["damage-over-time"]({
+                    modNode: node,
+                    statusSource: source,
+                    to: [theActor],
+                }))
             }
 
             actions.forEach(a => {

@@ -60,6 +60,10 @@ describe('Integration: TimeTravel', () => {
     test('Works with a ttr passed', async () => {
         const onFireEnemy = createDefaultOwner()
         addStatusToStatusSheet(onFireEnemy, ignite)
+        // add second for more testing
+        onFireEnemy.ss['ignite2'] = ignite({
+            snapshot: owner,
+        })
         const ttr = newTimeTravelLogReplayer(ttrvTextVisualizer)
         simulateFight(
             {

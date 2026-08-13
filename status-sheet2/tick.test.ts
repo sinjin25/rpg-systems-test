@@ -3,8 +3,8 @@ import modNodeToText from '../log2/format.ts'
 import newModNode, { findNodeMatching, leaf, ModNode, sumFunc } from '../log2/index.ts'
 import damageOverTimeTaken from '../log2/terminal-composition/damage-over-time-taken.ts'
 import damageOverTime from '../log2/terminal/damage-over-time.ts'
-import { StatusEffect } from './index.ts'
-import { applyTicks, calculateTick } from './tick.ts'
+import { addStatusToStatusSheet, ignite, StatusEffect } from './index.ts'
+import { applyTicks, calculateDamageTicks, calculateTick } from './tick.ts'
 import { describe, test, assert, expect } from 'vitest'
 import { SnapshotStatusEffect } from './types.ts'
 import applyDamage from '../health/apply-damage.ts'
@@ -141,5 +141,19 @@ describe('damage works', () => {
                 true
             )
         })
+    })
+})
+
+describe('calculateDamageTicks', () => {
+    test('Returns all damage-over-time-taken calculations for each', () => {
+        const owner = createDefaultOwner()
+        addStatusToStatusSheet(owner, ignite)
+        // make another
+        owner.ss['ign'] = ignite({
+            snapshot: owner
+        })
+        const actor = instantiateActor(owner)
+        const cdt = calculateDamageTicks(actor)
+        assert.equal(cdt.length, 2)
     })
 })

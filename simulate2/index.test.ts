@@ -2,8 +2,8 @@ import { createDefaultOwner } from '../actor2/index.ts'
 import { fakeCharacterLevels } from '../character-sheet/util.ts'
 import { simulateFight } from './index.ts'
 import { describe, test, assert, expect } from 'vitest'
-import newTimeTravelLogReplayer from './time-travel/replay/index.ts'
-import ttrvTextVisualizer from './time-travel/replay/text-visualizer.ts'
+import newTimeTravelLogReplayer from './time-travel2/replay/index.ts'
+import ttrvTextVisualizer from './time-travel2/replay/text-visualizer.ts'
 
 describe('simulateFight', () => {
     test('', () => {

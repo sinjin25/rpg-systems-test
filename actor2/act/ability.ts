@@ -19,7 +19,7 @@ const calculateDc = (owner: OwnerMaximal, opts: {
 }
 
 const calculateSave = (owner: OwnerMaximal, opts: {
-    saveType: 'reflex' | 'fortitude'
+    saveType: 'reflex' | 'fortitude' | 'will'
 }): ModNode => {
     return save(opts.saveType)(owner)
 }

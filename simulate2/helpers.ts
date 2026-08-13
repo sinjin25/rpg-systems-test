@@ -46,3 +46,19 @@ export const handlePotentialDeath = (
     // ?????????
     if (killer) runTrigger({ self: killer, target: target.owner }, 'onKill')
 }
+
+export const determineFightWinner = (
+    players: Actor2[],
+    enemies: Actor2[],
+): {
+    winner: 'player' | 'enemy' | 'draw'
+} => {
+    const playerAlive = anyActorAlive(players)
+    const enemyAlive = anyActorAlive(enemies)
+
+    const winner = playerAlive && !enemyAlive ? 'player' : enemyAlive && !playerAlive ? 'enemy' : 'draw'
+
+    return {
+        winner,
+    }
+}

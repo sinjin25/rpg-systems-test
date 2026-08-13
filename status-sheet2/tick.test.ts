@@ -104,6 +104,9 @@ describe('damage works', () => {
         assert.equal(
             actor.health.curr + ct.calculateDamage!.total(),
             actor.health.max)
+
+        // returns the statuseffect
+        assert.exists(ct.source)
     })
     test('applyTicks works', () => {
         const ct = calculateTick(
@@ -116,13 +119,13 @@ describe('damage works', () => {
 
         // 3 items here
         assert.equal(result.length, 3)
-        console.log(result)
+        /* console.log(result) */
 
         // ensure we actually have multiple items with values
-        const sum = result.map(a => a.total()).reduce((acc, a) => acc + a, 0)
+        const sum = result.map(a => a.calculateDamage.total()).reduce((acc, a) => acc + a, 0)
 
         assert.equal(
-            sum > result[0].total(),
+            sum > result[0].calculateDamage.total(),
             true
         )
         // all three are applied
@@ -134,7 +137,7 @@ describe('damage works', () => {
         result.forEach(a => {
             // make sure damage ticks cant go negative
             assert.equal(
-                a.total() >= 0,
+                a.calculateDamage.total() >= 0,
                 true
             )
         })

@@ -1,4 +1,4 @@
-import { anyActorAlive, chooseTarget, handlePotentialDeath, ownerIsMemberOf, targetIsAlive } from './helpers.ts'
+import { anyActorAlive, chooseTarget, determineFightWinner, handlePotentialDeath, ownerIsMemberOf, targetIsAlive } from './helpers.ts'
 import { describe, test, assert, expect } from 'vitest'
 import { resolveParticipants } from './setup.ts'
 import { createDefaultOwner, instantiateActor } from '../actor2/index.ts'
@@ -81,5 +81,53 @@ describe('anyActorAlive', () => {
         assert.isFalse(anyActorAlive([
             actors[0]
         ]))
+    })
+})
+
+describe('determineFightWinner', () => {
+    test('', () => {
+        const owner = createDefaultOwner()
+        const players = [
+            instantiateActor(owner),
+        ]
+        const enemies = [
+            instantiateActor(owner),
+            instantiateActor(owner),
+        ]
+        const actors = [...players, ...enemies]
+        // should be a draw by default
+        const result0 = determineFightWinner(players, enemies)
+        assert.equal(result0.winner, 'draw')
+
+        enemies[1]!.health.curr = 0
+        enemies[0]!.health.curr = 0
+        const result1 = determineFightWinner(players, enemies)
+        assert.equal(result1.winner, 'draw')
+
+        // they need to die to be "dead"
+        actors.forEach(a => handlePotentialDeath(actors, a))
+        const result2 = determineFightWinner(players, enemies)
+        assert.equal(result2.winner, 'player')
+
+        players[0].health.curr = 0
+        actors.forEach(a => handlePotentialDeath(actors, a))
+        const result3 = determineFightWinner(players, enemies)
+        assert.equal(result3.winner, 'draw')
+    })
+    test('player can lose', () => {
+        const owner = createDefaultOwner()
+        const players = [
+            instantiateActor(owner),
+        ]
+        const enemies = [
+            instantiateActor(owner),
+        ]
+        const actors = [...players, ...enemies]
+
+        players[0].health.curr = 0
+        actors.forEach(a => handlePotentialDeath(actors, a))
+
+        const result0 = determineFightWinner(players, enemies)
+        assert.equal(result0.winner, 'enemy')
     })
 })

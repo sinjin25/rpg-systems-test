@@ -1,8 +1,8 @@
-import { createDefaultOwner } from '../../../actor2/index.ts'
-import newModNode, { leaf, sumFunc, productFunc, maxFunc } from '../../../log2'
-import type { ModNode } from '../../../log2'
-import modNodeToText from '../../../log2/format.ts'
-import attack from '../../../log2/terminal/attack.ts'
+import { createDefaultOwner } from '../../actor2/index.ts'
+import newModNode, { leaf, sumFunc, productFunc, maxFunc } from '../../log2'
+import type { ModNode } from '../../log2'
+import modNodeToText from '../../log2/format.ts'
+import attack from '../../log2/terminal/attack.ts'
 import freezeModNodeRecursive from './mod-node.ts'
 import { describe, test, assert } from 'vitest'
 

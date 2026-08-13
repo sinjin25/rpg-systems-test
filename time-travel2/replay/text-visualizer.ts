@@ -37,9 +37,24 @@ const ttrvTextVisualizer: TimeTravelReplayerVisualizer = {
         await delay(DELAY)
         return log.modNodes.attackResult
     },
+    "speed": async (log) => {
+        console.log(
+            cc.dim,
+            'Speed order:',
+            log.actors.map(a => displayActor(a)).join(' '),
+            cc.reset,
+        )
+    },
     "team-victory": async (log) => {
         console.log(cc.BgGreen, `Victory: ${log.winner}`, cc.reset)
     },
+    "act-start": async (log) => {
+        console.log(`${displayActor(log.source)} acts`, cc.reset)
+    },
+    'damage-over-time': async (log) => {
+        const actor = log.to[0]!
+        console.log(`${displayActor(actor)} takes`, log.modNode.total, `damage from ${log.statusSource.displayName}`, cc.reset)
+    }
 }
 
 export default ttrvTextVisualizer

@@ -15,6 +15,14 @@ export type Round = {
     participants: Actor2[],
     speedSum: number, // default 35
 }
+
+export const roundOrderBySpeed = (actors: Actor2[]) => {
+    const orderBySpeed = actors.sort((a, b) => {
+        return b.speed.remainder - a.speed.remainder
+    })
+
+    return orderBySpeed
+}
 export const round = (
     data: Round
 ) => {
@@ -32,9 +40,5 @@ export const round = (
     }
 
     // reorder based on excess speed
-    const orderBySpeed = acting.sort((a, b) => {
-        return b.speed.remainder - a.speed.remainder
-    })
-
-    return orderBySpeed
+    return roundOrderBySpeed(acting)
 }

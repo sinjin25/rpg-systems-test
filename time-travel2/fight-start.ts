@@ -1,10 +1,11 @@
 import { Handlers } from "./types";
 
 const fightStart: Handlers['fight-start'] = (input) => {
-    const { playerIds } = input
+    const { source, to } = input
     return {
         kind: 'fight-start',
-        fightStartCheck: true,
+        source,
+        to,
     }
 }
 

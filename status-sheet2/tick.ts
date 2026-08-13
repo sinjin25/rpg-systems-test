@@ -3,12 +3,17 @@ import { applyDamage, applyHeal } from "../health";
 import { ModNode } from "../log2";
 import { StatusEffect, Tick } from "./types";
 
-export const calculateTick = (status: StatusEffect, receiver: OwnerMaximal): {
-    [K in keyof Tick]: ModNode | undefined
-} => {
-    const ret: { [K in keyof Tick]: ModNode | undefined } = {
+type TickInstance = {
+    source: StatusEffect
+    calculateDamage?: ModNode,
+    calculateHeal?: ModNode,
+}
+
+export const calculateTick = (status: StatusEffect, receiver: OwnerMaximal): TickInstance => {
+    const ret: TickInstance = {
         calculateDamage: undefined,
         calculateHeal: undefined,
+        source: status,
     }
     const t = status?.tick
     if (t === undefined) return ret
@@ -26,19 +31,25 @@ export const calculateTick = (status: StatusEffect, receiver: OwnerMaximal): {
 export const applyTicks = (
     actor: Actor2
 ) => {
-    const ticks: ModNode[] = []
+    const ticks: TickInstance[] = []
     for (const key of Object.keys(actor.owner.ss)) {
         const st = actor.owner.ss[key]!
 
         if (!st.tick) continue
-        const { calculateDamage, calculateHeal } = calculateTick(st, actor.owner)
+        const { calculateDamage, calculateHeal, source } = calculateTick(st, actor.owner)
         if (calculateDamage) {
             applyDamage(actor.health, calculateDamage.total())
-            ticks.push(calculateDamage)
+            ticks.push({
+                calculateDamage,
+                source,
+            })
         }
         if (calculateHeal) {
             applyHeal(actor.health, calculateHeal.total())
-            ticks.push(calculateHeal)
+            ticks.push({
+                source,
+                calculateHeal,
+            })
         }
     }
 

@@ -18,9 +18,6 @@ const newTimeTravelLogReplayer = (
     async playback() {
         let log = this.replayStep()
         while (log !== null) {
-            // one central cast: safe because log.kind selects the matching handler.
-            // dispatching a union-typed log into the handler map otherwise hits TS's
-            // "union of functions -> never param" wall.
             const handler = this.visualizer[log.kind] as (l: AnyStoredLog) => Promise<unknown>
             await handler(log)
             log = this.replayStep()

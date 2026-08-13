@@ -1,6 +1,6 @@
-import { AbilityCatalog, AbilitySheet } from "../../../ability-sheet2";
-import type { Actor2, OwnerMaximal } from "../../../actor2";
-import { StatusEffect, StatusSheet } from "../../../status-sheet2";
+import { AbilityCatalog, AbilitySheet } from "../../ability-sheet2";
+import type { Actor2, OwnerMaximal } from "../../actor2";
+import { StatusEffect, StatusSheet } from "../../status-sheet2";
 
 export type Actor2Snapshot = {
     id: number,

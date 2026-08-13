@@ -22,9 +22,9 @@ describe('Ignite', () => {
         const results = applyTicks(receiverActor)
 
         for (let res of results) {
-            console.log(modNodeToText(res))
+            console.log(modNodeToText(res.calculateDamage))
         }
-        const igNode = results[0]!
+        const igNode = results[0]!.calculateDamage
         const f0 = findNodeMatching(igNode, /damage-over-time-taken/, {
             includeRoot: true,
         })

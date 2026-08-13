@@ -6,11 +6,13 @@ import { applyDamage } from "../health"
 import modNodeToText from "../log2/format"
 import { decayActionsElapsed, decayEnemyKilled, decayRoundsElapsed, decaySaveSucceeded } from "../status-sheet2/decay"
 import runTrigger from "../trigger/dispatch"
-import { anyActorAlive, chooseTarget, handlePotentialDeath, ownerIsMemberOf } from "./helpers"
+import { anyActorAlive, chooseTarget, determineFightWinner, handlePotentialDeath, ownerIsMemberOf } from "./helpers"
 import { /* instantiateParticipants */resolveParticipants } from "./setup"
-import { snapshotActor, timeTravel } from "./time-travel2"
-import { AnyStoredLog, TimeTravelReplayer } from "./time-travel2/replay/types"
-import { TimeTravelContext, TTLogMap } from "./time-travel2/types"
+import { snapshotActor, timeTravel } from "../time-travel2"
+import { AnyStoredLog, TimeTravelReplayer } from "../time-travel2/replay/types"
+import { TimeTravelContext, TTLogMap } from "../time-travel2/types"
+import { applyTicks, calculateTick } from "../status-sheet2/tick"
+import damageOverTimeTaken from "../log2/terminal-composition/damage-over-time-taken"
 
 const VERBOSE = false
 
@@ -50,14 +52,6 @@ export const simulateFight = (
         source: snapshotActor(source.id)(source),
         to: to.map(a => snapshotActor(a.id)(a))
     } as TimeTravelContext)
-    /* const finishTTRLogInput = <K extends TimeTravelLog['kind']>(kind: K) =>
-        (log: Omit<Extract<TimeTravelLog, { kind: K }>, 'kind' | 'context'>): Extract<TimeTravelLog, { kind: K }> => ({
-            // Extract narrows the union to the one member with this kind, so the
-            // log arg only asks for that variant's own fields (context is added later)
-            kind,
-            ...log,
-        } as Extract<TimeTravelLog, { kind: K }>) */
-    // ====== TTR HELPERS EXTRACT LATER ====== //
 
     const debugData: FightResult['debugData'] = {
         player0HpEnd: 0,
@@ -92,10 +86,18 @@ export const simulateFight = (
             participants: actors,
             speedSum: STD_SPEED,
         })
+        {
+            ttrAppendLog(timeTravel["speed"]({
+                actors: acting.map(a => snapshotActor(a.id)(a)),
+            }))
+        }
 
         while (acting.length > 0) {
             const theActor = acting.pop()
             if (!theActor) continue
+            ttrAppendLog(timeTravel['act-start']({
+                source: theActor
+            }))
 
             decayRoundsElapsed(theActor.owner, 1, theActor)
             if (!theActor.speed.canAct) continue
@@ -110,29 +112,47 @@ export const simulateFight = (
             const target = chooseTarget(targetTeam)
             const snapshotActors = ttrActorContext(theActor, [target])
 
-            // setup ttActorContext
+            // replacing tick.ts applyTicks so we have finer control
+            for (let key in theActor.owner.ss) {
+                const st = theActor.owner.ss[key]!
+                if (st.tick.calculateDamage) {
+                    console.log('found a tick status', st)
+                    const cd = calculateTick(st, theActor.owner)
+                    const dott = damageOverTimeTaken({
+                        node: cd!.calculateDamage,
+                    })(theActor.owner)
+                    applyDamage(theActor.health, dott.total())
+                    ttr.appendLog(timeTravel["damage-over-time"]({
+                        modNode: dott,
+                        statusSource: cd.source,
+                        to: [theActor],
+                    }))
+                }
+                // handle calculateHeal here
+            }
 
             actions.forEach(a => {
                 if (!target) return
                 if (actionIsAbilityModNode(a)) {
                     // resolve ability
                     handleAbilityModNodes(theActor, target, [a])
-                } else {
-                    // resolve action
-                    const finalSar = outputFinalSar([a], target)
-                    for (let fs of finalSar) {
-                        if (!fs.critDamageResult && !fs.damageResult) {
-                        } else if (fs.critDamageResult) {
-                            applyDamage(target.health, fs.critDamageResult.total())
-                        }
-                        else if (fs.damageResult) {
-                            applyDamage(target.health, fs.damageResult.total())
-                        }
-                        ttrAppendLog(timeTravel["standard-action-result"]({
-                            ...snapshotActors(),
-                            ...fs,
-                        }))
+                    return
+                }
+                // resolve action
+                const finalSar = outputFinalSar([a], target)
+                for (let fs of finalSar) {
+                    if (!fs.critDamageResult && !fs.damageResult) {
                     }
+                    else if (fs.critDamageResult) {
+                        applyDamage(target.health, fs.critDamageResult.total())
+                    }
+                    else if (fs.damageResult) {
+                        applyDamage(target.health, fs.damageResult.total())
+                    }
+                    ttrAppendLog(timeTravel["standard-action-result"]({
+                        ...snapshotActors(),
+                        ...fs,
+                    }))
                 }
 
                 if (target) handlePotentialDeath(actors, target, theActor.owner)
@@ -140,15 +160,12 @@ export const simulateFight = (
         }
     }
 
-    const playerAlive = anyActorAlive(playerActors)
-    const enemyAlive = anyActorAlive(enemyActors)
-    const winner = playerAlive && !enemyAlive ? 'player' : enemyAlive && !playerAlive ? 'enemy' : 'draw'
-    if (ttr) {
-        const snapshot = ttrActorContext(playerActors[0]!, [])
+    const { winner } = determineFightWinner(playerActors, enemyActors)
+    {
         ttrAppendLog(
             timeTravel["team-victory"]({
-                ...snapshot(),
-                winner,
+                ...ttrActorContext(playerActors[0]!, [])(),
+                winner: winner,
             })
         )
     }

@@ -1,5 +1,7 @@
-import { FinalStandardActionResult } from "../../actor2/act"
-import { BaseEquipment } from "../../equipment-sheet2/types"
+import { FinalStandardActionResult } from "../actor2/act"
+import { BaseEquipment } from "../equipment-sheet2/types"
+import { ModNode } from "../log2"
+import { StatusEffect } from "../status-sheet2"
 import { Actor2Snapshot } from "./snapshot/actor"
 
 export type FrozenModNode = {
@@ -24,7 +26,8 @@ export type TimeTravelContext = {
 
 type TimeTravelKind = | 'fight-start'
     | 'resolve-participants'
-    | 'round' // ex: people's speed moving
+    | 'round'
+    | 'speed' // people moving, regardless of if they act
     | 'decay-save-succeeded'
     | 'handle-potential-death'
     | 'act-start'
@@ -52,6 +55,38 @@ export interface TTLogMap {
     'team-victory': {
         input: TimeTravelContext & { winner: 'player' | 'enemy' | 'draw' },
         output: TimeTravelContext & { kind: 'team-victory', winner: 'player' | 'enemy' | 'draw' }
+    }
+    'speed': {
+        input: {
+            actors: Actor2Snapshot[],
+        },
+        output: {
+            kind: 'speed',
+            // but in speed order
+            actors: Actor2Snapshot[],
+        }
+    },
+    'act-start': {
+        input: {
+            source: Actor2Snapshot,
+        },
+        output: {
+            kind: 'act-start'
+            source: Actor2Snapshot,
+        },
+    },
+    'damage-over-time': {
+        input: {
+            statusSource: StatusEffect,
+            modNode: ModNode,
+            to: Actor2Snapshot[],
+        },
+        output: {
+            kind: 'damage-over-time',
+            statusSource: StatusEffect,
+            modNode: FrozenModNode,
+            to: Actor2Snapshot[],
+        },
     }
 }
 

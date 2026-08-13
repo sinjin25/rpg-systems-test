@@ -24,6 +24,24 @@ const calculateSave = (owner: OwnerMaximal, opts: {
     return save(opts.saveType)(owner)
 }
 
+const augmentModNodeForSaves = (data?: {
+    dc: ModNode,
+    save: ModNode,
+}) => (
+    source: AbilityModNode,
+) => {
+        if (!data) return source
+        const newModNode: AbilityModNode = {
+            payload: source.payload,
+            target: source.target,
+        }
+        const { dc, save } = data
+        if (dc) newModNode.dc = dc
+        if (save) newModNode.save = save
+
+        return newModNode
+    }
+
 // a handler still needs to exist to figure out what to do with these AbilityModNodes
 export const generateAbilityModNodes = (owner: OwnerMaximal, ability: Ability): AbilityModNode[] => {
     /* console.log('received', ability) */
@@ -43,8 +61,24 @@ export const generateAbilityModNodes = (owner: OwnerMaximal, ability: Ability): 
             saveType: ability.dc.saveType
         })
         const didSave = save.total() >= dc.total()
-        if (!didSave && onFailedSave) amn.push(...onFailedSave())
-        if (didSave && onSave) amn.push(...onSave())
+        if (!didSave && onFailedSave) {
+            amn.push(
+                ...onFailedSave()
+                    .map(augmentModNodeForSaves({
+                        dc,
+                        save
+                    }))
+            )
+        }
+        if (didSave && onSave) {
+            amn.push(
+                ...onSave()
+                    .map(augmentModNodeForSaves({
+                        dc,
+                        save
+                    }))
+            )
+        }
     }
 
     return amn

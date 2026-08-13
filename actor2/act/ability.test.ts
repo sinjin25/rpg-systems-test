@@ -1,6 +1,8 @@
 import { createDefaultOwner, instantiateActor } from '..'
 import ignite from '../../ability-sheet2/abilities/ignite.ts'
-import { addAbility } from '../../ability-sheet2/index.ts'
+import { abilityModNodePayloadIsStatusEffect, addAbility } from '../../ability-sheet2/index.ts'
+import modNodeToText from '../../log2/format.ts'
+import { findNodeMatching } from '../../log2/index.ts'
 import { generateAbilityModNodes, handleAbilityModNodes, selectAndPrepAbility } from './ability.ts'
 import { describe, test, assert, expect } from 'vitest'
 
@@ -23,6 +25,23 @@ describe('Handles damage ModNode and StatusEffect', () => {
 
         assert(receiverA.health.curr <= receiverA.health.max)
         assert.exists(receiverA.owner.ss['ignite'])
+    })
+    test('DC check abilities properly report the rolls in addition to the payload', () => {
+        const caster = createDefaultOwner()
+        const receiver = createDefaultOwner()
+
+        const gamn = generateAbilityModNodes(caster, ignite(caster))
+        const status = gamn[1].payload
+        if (!abilityModNodePayloadIsStatusEffect(status)) throw Error('Expected a StatusEffect here')
+
+        const f0 = findNodeMatching(gamn[1].dc!, /dc/, {
+            includeRoot: true,
+        })
+        const f1 = findNodeMatching(gamn[1].save!, /(reflex)|(fortitude)|(will)/, {
+            includeRoot: true,
+        })
+        assert.exists(f0)
+        assert.exists(f1)
     })
 })
 

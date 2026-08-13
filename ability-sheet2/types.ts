@@ -10,6 +10,8 @@ export type AbilityTags = string[]
 // there's a faulty assumption right now that a modnode should have a dc and a status effect never has a dc
 // we will have to address this eventually
 export type AbilityModNode = {
+    dc?: ModNode,
+    save?: ModNode,
     payload: ModNode | StatusEffect,
     target: 'ally' | 'target' | 'self'
 }

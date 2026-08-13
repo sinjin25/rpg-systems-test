@@ -44,7 +44,6 @@ describe('ignite: integration test', () => {
 
         receiverActor.owner.ss['ignite'] = st
         const result = applyTicks(receiverActor)
-        console.log('result', result)
         assert.equal(result.length, 1)
 
         const f0 = findNodeMatching(result[0].calculateDamage, /damage/, {

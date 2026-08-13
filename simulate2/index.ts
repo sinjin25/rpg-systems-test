@@ -11,8 +11,7 @@ import { /* instantiateParticipants */resolveParticipants } from "./setup"
 import { snapshotActor, timeTravel } from "../time-travel2"
 import { AnyStoredLog, TimeTravelReplayer } from "../time-travel2/replay/types"
 import { TimeTravelContext, TTLogMap } from "../time-travel2/types"
-import { applyTicks, calculateDamageTicks, calculateTick } from "../status-sheet2/tick"
-import damageOverTimeTaken from "../log2/terminal-composition/damage-over-time-taken"
+import { calculateDamageTicks } from "../status-sheet2/tick"
 
 const VERBOSE = false
 
@@ -112,11 +111,10 @@ export const simulateFight = (
             const target = chooseTarget(targetTeam)
             const snapshotActors = ttrActorContext(theActor, [target])
 
-            // replacing tick.ts applyTicks so we have finer control
             const cdt = calculateDamageTicks(theActor)
             for (let { node, source } of cdt) {
                 applyDamage(theActor.health, node.total())
-                ttr.appendLog(timeTravel["damage-over-time"]({
+                ttr.appendLog(timeTravel["damage-over-time-taken"]({
                     modNode: node,
                     statusSource: source,
                     to: [theActor],

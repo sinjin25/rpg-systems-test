@@ -75,7 +75,7 @@ export interface TTLogMap {
             source: Actor2Snapshot,
         },
     },
-    'damage-over-time': {
+    'damage-over-time-taken': {
         input: {
             statusSource: StatusEffect,
             modNode: ModNode,

@@ -1,7 +1,8 @@
 import { createDefaultOwner, instantiateActor } from '../../actor2/index.ts'
 import modNodeToText from '../../log2/format.ts'
 import { findNodeMatching } from '../../log2/index.ts'
-import { applyTicks } from '../../status-sheet2/tick.ts'
+import { calculateDamageTicks } from '../../status-sheet2/tick.ts'
+import { applyDamage } from '../../health/index.ts'
 import { abilityModNodePayloadIsModNode, abilityModNodePayloadIsStatusEffect } from '../index.ts'
 import ignite from './ignite.ts'
 import { describe, test, assert, expect } from 'vitest'
@@ -27,7 +28,7 @@ describe('Handlers produce outputs', () => {
 })
 
 describe('ignite: integration test', () => {
-    test('works with applyTicks', () => {
+    test('Works. StatusEffect also applies damageOverTimeTaken itself', () => {
         const owner = createDefaultOwner()
         const ig = ignite(owner)
 
@@ -42,14 +43,21 @@ describe('ignite: integration test', () => {
         const st = igOnFailedSave[0]!.payload
         if (!abilityModNodePayloadIsStatusEffect(st)) throw Error('expected status effect')
 
-        receiverActor.owner.ss['ignite'] = st
-        const result = applyTicks(receiverActor)
-        assert.equal(result.length, 1)
 
-        const f0 = findNodeMatching(result[0].calculateDamage, /damage/, {
+        receiverActor.owner.ss['ignite'] = st
+        const result = calculateDamageTicks(receiverActor)
+        assert.equal(result.length, 1)
+        for (const r of result) {
+            applyDamage(receiverActor.health, r.node.total())
+        }
+
+        // dott (which is a terminal composition tree) is handled by the StatusEffect so it has additional control
+        const f0 = findNodeMatching(result[0].node, /damage-over-time-taken/i, {
             includeRoot: true,
         })
         assert.exists(f0)
-        console.log(modNodeToText(f0))
+
+        const f1 = findNodeMatching(result[0].node, 'damage-over-time')
+        assert.exists(f1)
     })
 })

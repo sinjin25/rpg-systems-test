@@ -4,7 +4,7 @@ import newModNode, { findNodeMatching, leaf, ModNode, sumFunc } from '../log2/in
 import damageOverTimeTaken from '../log2/terminal-composition/damage-over-time-taken.ts'
 import damageOverTime from '../log2/terminal/damage-over-time.ts'
 import { addStatusToStatusSheet, ignite, StatusEffect } from './index.ts'
-import { applyTicks, calculateDamageTicks, calculateTick } from './tick.ts'
+import { calculateDamageTicks, calculateTick } from './tick.ts'
 import { describe, test, assert, expect } from 'vitest'
 import { SnapshotStatusEffect } from './types.ts'
 import applyDamage from '../health/apply-damage.ts'
@@ -108,24 +108,27 @@ describe('damage works', () => {
         // returns the statuseffect
         assert.exists(ct.source)
     })
-    test('applyTicks works', () => {
+    test('calculateDamageTicks works', () => {
         const ct = calculateTick(
             receiver.ss.ignite,
             receiver,
         )
 
         const actor = instantiateActor(receiver)
-        const result = applyTicks(actor)
+        const result = calculateDamageTicks(actor)
 
         // 3 items here
         assert.equal(result.length, 3)
         /* console.log(result) */
 
+        // apply all the ticks manually
+        result.forEach(a => applyDamage(actor.health, a.node.total()))
+
         // ensure we actually have multiple items with values
-        const sum = result.map(a => a.calculateDamage.total()).reduce((acc, a) => acc + a, 0)
+        const sum = result.map(a => a.node.total()).reduce((acc, a) => acc + a, 0)
 
         assert.equal(
-            sum > result[0].calculateDamage.total(),
+            sum > result[0].node.total(),
             true
         )
         // all three are applied
@@ -137,7 +140,7 @@ describe('damage works', () => {
         result.forEach(a => {
             // make sure damage ticks cant go negative
             assert.equal(
-                a.calculateDamage.total() >= 0,
+                a.node.total() >= 0,
                 true
             )
         })

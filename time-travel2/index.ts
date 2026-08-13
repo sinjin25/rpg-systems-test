@@ -4,7 +4,7 @@ import standardActionResult from "./standard-action-result";
 import speed from "./speed";
 import actStart from "./act-start";
 import teamVictory from "./team-victory";
-import damageOverTime from "./damage-over-time";
+import damageOverTime from "./damage-over-time-taken";
 export { default as snapshotActor } from './snapshot/actor'
 
 export const timeTravel: Handlers = {
@@ -14,5 +14,5 @@ export const timeTravel: Handlers = {
     // minimal passthrough for now; flesh out alongside the other converters
     "team-victory": teamVictory,
     'act-start': actStart,
-    'damage-over-time': damageOverTime,
+    'damage-over-time-taken': damageOverTime,
 }

@@ -2,7 +2,7 @@ import snapshotActor from "./snapshot/actor";
 import freezeModNodeRecursive from "./snapshot/mod-node";
 import { Handlers } from "./types";
 
-const damageOverTime: Handlers['damage-over-time'] = (input) => {
+const damageOverTime: Handlers['damage-over-time-taken'] = (input) => {
     const { modNode, statusSource, to } = input
     return {
         kind: 'damage-over-time',

@@ -83,11 +83,11 @@ const cloneStatusSheet = (ss: Actor2['owner']['ss']) => {
     return clone
 }
 
-const snapshotActor = (id: number) => (actor: Actor2): Actor2Snapshot => {
+const snapshotActor = (actor: Actor2): Actor2Snapshot => {
     return {
         health: cloneHealth(actor.health),
         speed: cloneSpeed(actor.speed),
-        id,
+        id: actor.id,
         owner: {
             // stable
             ...actor.owner,

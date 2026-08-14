@@ -3,14 +3,23 @@ import ignite from '../../ability-sheet2/abilities/ignite.ts'
 import { abilityModNodePayloadIsStatusEffect, addAbility } from '../../ability-sheet2/index.ts'
 import modNodeToText from '../../log2/format.ts'
 import { findNodeMatching } from '../../log2/index.ts'
+import { clearSeed, setSeed } from '../../roll/index.ts'
 import { generateAbilityModNodes, handleAbilityModNodes, selectAndPrepAbility } from './ability.ts'
-import { describe, test, assert, expect } from 'vitest'
+import { describe, test, assert, expect, afterEach } from 'vitest'
 
 describe('Handles damage ModNode and StatusEffect', () => {
+    afterEach(() => {
+        clearSeed()
+    })
     test('integration: ignite test', () => {
+        setSeed(0)
         // run gamn, run hamn(actorA, actorB, gamn)
         const caster = createDefaultOwner()
-        const receiver = createDefaultOwner()
+        const receiver = createDefaultOwner({
+            cs: {
+                dex: -999
+            }
+        })
 
         const gamn = generateAbilityModNodes(caster, receiver, ignite(caster))
 
@@ -28,7 +37,9 @@ describe('Handles damage ModNode and StatusEffect', () => {
     })
     test('DC check abilities properly report the rolls in addition to the payload', () => {
         const caster = createDefaultOwner()
-        const receiver = createDefaultOwner()
+        const receiver = createDefaultOwner({
+            cs: { dex: -999 }
+        })
 
         const gamn = generateAbilityModNodes(caster, receiver, ignite(caster))
         const status = gamn[1].payload
@@ -42,6 +53,22 @@ describe('Handles damage ModNode and StatusEffect', () => {
         })
         assert.exists(f0)
         assert.exists(f1)
+    })
+
+    test('BEHAVIOR: a pass/fail with no relevant handler does not create a AbilityModNode', () => {
+        setSeed(0)
+        const caster = createDefaultOwner()
+        const willMiss = createDefaultOwner({
+            cs: { dex: 999 }
+        })
+        const willHit = createDefaultOwner({
+            cs: { dex: -999 }
+        })
+
+        const gamnMiss = generateAbilityModNodes(caster, willMiss, ignite(caster))
+        assert.equal(gamnMiss.length, 1)
+        const gamnHit = generateAbilityModNodes(caster, willHit, ignite(caster))
+        assert.equal(gamnHit.length, 2)
     })
 })
 

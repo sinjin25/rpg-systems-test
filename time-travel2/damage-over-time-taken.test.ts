@@ -4,6 +4,7 @@ import { calculateDamageTicks } from "../status-sheet2/tick.ts";
 import { applyDamage } from "../health/index.ts";
 import damageOverTime from './damage-over-time-taken.ts'
 import { describe, test, assert, expect } from 'vitest'
+import snapshotActor from "./snapshot/actor.ts";
 
 describe('damage-over-time', () => {
     test('Snapshots after all ticks have ran', () => {
@@ -21,7 +22,7 @@ describe('damage-over-time', () => {
         const record = damageOverTime({
             statusSource: r0.source,
             modNode: r0!.node,
-            to: [actor],
+            to: [snapshotActor(actor)],
         })
 
         // confirm freeze on actor

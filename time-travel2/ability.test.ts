@@ -3,11 +3,16 @@ import ignite from '../ability-sheet2/abilities/ignite'
 import { createDefaultOwner, instantiateActor } from '../actor2'
 import { generateAbilityModNodes, handleAbilityModNodes } from '../actor2/act'
 import ability from './ability.ts'
-import { describe, test, assert, expect } from 'vitest'
+import { describe, test, assert, expect, afterEach } from 'vitest'
 import snapshotActor from './snapshot/actor.ts'
+import { clearSeed, setSeed } from '../roll/index.ts'
 
 describe('Integration: works with ignite', () => {
+    afterEach(() => {
+        clearSeed()
+    })
     test('Can create multiple events per singular ability', () => {
+        setSeed(0)
         const owner = createDefaultOwner()
         addAbility(
             owner,
@@ -24,14 +29,14 @@ describe('Integration: works with ignite', () => {
 
         const logs: Array<ReturnType<typeof ability>> = []
 
-        const actor1Snapshot = snapshotActor(actor1.id)(actor1)
+        const actor1Snapshot = snapshotActor(actor1)
 
         for (let g of gamn) {
             handleAbilityModNodes(actor1, actor2, [g])
             // create log
             const ab = ability({
-                source: snapshotActor(actor1.id)(actor1),
-                to: [snapshotActor(actor2.id)(actor2)],
+                source: snapshotActor(actor1),
+                to: [snapshotActor(actor2)],
                 abilityModNode: g,
             })
             logs.push(ab)

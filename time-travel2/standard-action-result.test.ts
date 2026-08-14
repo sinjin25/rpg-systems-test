@@ -28,8 +28,8 @@ describe('standardActionResult (time-travel2)', () => {
         const theAttack = finalSar[0].attackResult!
 
         const asLog = standardActionResult({
-            source: snapshotActor(0)(actor),
-            to: [snapshotActor(0)(actor)], // technically didn't apply the damage but w/e
+            source: snapshotActor(actor),
+            to: [snapshotActor(actor)], // technically didn't apply the damage but w/e
             ...finalSar[0],
         })
         assert.equal(

@@ -20,7 +20,7 @@ describe('snapshotActor Stable References', () => {
         const owner = createDefaultOwner()
         const actor = instantiateActor(owner)
 
-        const ttSnapshot = snapshotActor(0)(actor)
+        const ttSnapshot = snapshotActor(actor)
 
         // the host object is unique
         // @ts-expect-error
@@ -38,7 +38,7 @@ describe('snapshotActor Stable References', () => {
     test('cloneRelevantSlot (temp?)', () => {
         const { actor, owner } = ownerActorUtil()
 
-        const ttSnapshot = snapshotActor(0)(actor)
+        const ttSnapshot = snapshotActor(actor)
         assert.equal(ttSnapshot.owner.relevantSlot, actor.owner.relevantSlot)
     })
 })
@@ -48,7 +48,7 @@ describe('Actor simple snapshotted elements', () => {
         const { actor, owner } = ownerActorUtil()
 
         // take a snapshot, speed should be equal
-        const ttSnapshot = snapshotActor(0)(actor)
+        const ttSnapshot = snapshotActor(actor)
         assert.equal(ttSnapshot.speed.remainder, actor.speed.remainder)
         // they do not point to the same object
         assert.notEqual(ttSnapshot.speed, actor.speed)
@@ -59,7 +59,7 @@ describe('Actor simple snapshotted elements', () => {
             speedSum: DEFAULT_SPEED
         })
         // take a snapshot, speed should be equal
-        const ttSnapshot2 = snapshotActor(0)(actor)
+        const ttSnapshot2 = snapshotActor(actor)
         assert.equal(ttSnapshot2.speed.remainder, actor.speed.remainder)
 
         assert.notEqual(actor.speed.remainder, ttSnapshot.speed.remainder)
@@ -68,7 +68,7 @@ describe('Actor simple snapshotted elements', () => {
         const { actor, owner } = ownerActorUtil()
 
         // take a snapshot, health should be equal
-        const ttSnapshot = snapshotActor(0)(actor)
+        const ttSnapshot = snapshotActor(actor)
         assert.equal(ttSnapshot.health.curr, actor.health.curr)
         // they do not point to the same object
         assert.notEqual(ttSnapshot.health, actor.health)
@@ -77,7 +77,7 @@ describe('Actor simple snapshotted elements', () => {
         applyDamage(actor.health, 1)
 
         // take a snapshot, health should be equal
-        const ttSnapshot2 = snapshotActor(0)(actor)
+        const ttSnapshot2 = snapshotActor(actor)
         assert.equal(ttSnapshot2.health.curr, actor.health.curr)
 
         assert.notEqual(actor.health.curr, ttSnapshot.health.curr)
@@ -88,13 +88,13 @@ describe('OwnerMaximalUnstableReferences (mostly proper clones)', () => {
     // most of these, theoretically, should be mostly snapshotted (as in same values, different references). This is not entirely true for some of them.
     test('cloneTags', () => {
         const { actor, owner } = ownerActorUtil()
-        const ttSnapshot = snapshotActor(0)(actor)
+        const ttSnapshot = snapshotActor(actor)
         assert.notEqual(ttSnapshot.owner.tags, owner.tags)
 
         // this mutates tags
         const node = attack(actor.owner)
         // snapshot looks similar
-        const ttSnapshot2 = snapshotActor(0)(actor)
+        const ttSnapshot2 = snapshotActor(actor)
         assert.equal(owner.tags.length, 2)
         assert.equal(ttSnapshot2.owner.tags.length, 2)
 
@@ -108,7 +108,7 @@ describe('cloneStatusSheet is rough', () => {
         const { actor, owner } = ownerActorUtil()
         addStatusToStatusSheet(owner, burningWeaponStatus)
 
-        assert.throws(() => snapshotActor(0)(actor), /need to freeze the dc and save/)
+        assert.throws(() => snapshotActor(actor), /need to freeze the dc and save/)
     }) */
 
     test('Record reference behavior', () => {
@@ -123,7 +123,7 @@ describe('cloneStatusSheet is rough', () => {
         }
         addStatusToStatusSheet(owner, myStatus)
 
-        const tt0 = snapshotActor(0)(actor)
+        const tt0 = snapshotActor(actor)
 
         // host is not the same (good)
         // @ts-expect-error

@@ -63,12 +63,14 @@ const ttrvTextVisualizer: TimeTravelReplayerVisualizer = {
             const didSave = log.save.total >= log.dc.total
             if (didSave) {
                 console.log(
-                    `${displayActor(to)} saves against ${displayActor(source)}`
+                    `${displayActor(to)} saves against ${displayActor(source)} (${log.save.total} vs ${log.dc.total})`,
+                    `${log.payload.displayName}`
                 )
                 console.log
             } else {
                 console.log(
-                    `${displayActor(to)} fails to save against ${displayActor(source)}`
+                    `${displayActor(to)} fails to save against ${displayActor(source)} (${log.save.total} vs ${log.dc.total})`,
+                    `${log.payload.displayName}`
                 )
             }
         } else {

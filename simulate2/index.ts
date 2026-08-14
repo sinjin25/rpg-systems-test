@@ -48,8 +48,8 @@ export const simulateFight = (
         ttr.appendLog(log)
     }
     const ttrActorContext = (source: Actor2, to: Actor2[]) => () => ({
-        source: snapshotActor(source.id)(source),
-        to: to.map(a => snapshotActor(a.id)(a))
+        source: snapshotActor(source),
+        to: to.map(a => snapshotActor(a))
     } as TimeTravelContext)
 
     const debugData: FightResult['debugData'] = {
@@ -66,9 +66,9 @@ export const simulateFight = (
     let rounds = 0
     {
         ttrAppendLog(timeTravel['fight-start']({
-            source: snapshotActor(playerActors[0]!.id)(playerActors[0]!),
+            source: snapshotActor(playerActors[0]!),
             to: [
-                ...actors.map(a => snapshotActor(a.id)(a))
+                ...actors.map(a => snapshotActor(a))
             ]
         }))
     }
@@ -89,7 +89,7 @@ export const simulateFight = (
         })
         {
             ttrAppendLog(timeTravel["speed"]({
-                actors: acting.map(a => snapshotActor(a.id)(a)),
+                actors: acting.map(a => snapshotActor(a)),
             }))
         }
 
@@ -97,7 +97,7 @@ export const simulateFight = (
             const theActor = acting.pop()
             if (!theActor) continue
             ttrAppendLog(timeTravel['act-start']({
-                source: snapshotActor(theActor.id)(theActor)
+                source: snapshotActor(theActor)
             }))
 
             decayRoundsElapsed(theActor.owner, 1, theActor)
@@ -119,7 +119,7 @@ export const simulateFight = (
                 ttrAppendLog(timeTravel["damage-over-time-taken"]({
                     modNode: node,
                     statusSource: source,
-                    to: [snapshotActor(theActor.id)(theActor)],
+                    to: [snapshotActor(theActor)],
                 }))
             }
 
@@ -131,8 +131,8 @@ export const simulateFight = (
                     for (let amnf of raw) {
                         handleAbilityModNodes(theActor, target, [amnf])
                         ttrAppendLog(timeTravel['ability']({
-                            source: snapshotActor(theActor.id)(theActor),
-                            to: [snapshotActor(target.id)(target)],
+                            source: snapshotActor(theActor),
+                            to: [snapshotActor(target)],
                             abilityModNode: amnf,
                         }))
                     }

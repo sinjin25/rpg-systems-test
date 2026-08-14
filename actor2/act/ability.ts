@@ -1,7 +1,8 @@
 import { Actor2, OwnerMaximal } from ".."
 import { Ability, AbilityCastType, AbilityModNode, abilityModNodePayloadIsStatusEffect } from "../../ability-sheet2"
 import { applyDamage } from "../../health"
-import { findNodeMatching, ModNode } from "../../log2"
+import newModNode, { findNodeMatching, ModNode, sumFunc } from "../../log2"
+import roll from "../../log2/roll"
 import { save } from "../../log2/terminal"
 import dc from "../../log2/terminal/dc"
 import { addStatusToStatusSheet, StatusEffect } from "../../status-sheet2"
@@ -21,7 +22,11 @@ const calculateDc = (owner: OwnerMaximal, opts: {
 const calculateSave = (owner: OwnerMaximal, opts: {
     saveType: 'reflex' | 'fortitude' | 'will'
 }): ModNode => {
-    return save(opts.saveType)(owner)
+    return newModNode(
+        opts.saveType,
+        [save(opts.saveType)(owner), roll(20, 1)(owner)],
+        sumFunc
+    )
 }
 
 const augmentAbilityModNode = (amn: AbilityModNode, dc: ModNode, save: ModNode): AbilityModNode => {

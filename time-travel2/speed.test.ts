@@ -23,7 +23,7 @@ describe('Replayer recreates turn order', () => {
 
             // log the step: freeze the acting actors so the replayer only ever
             // sees snapshots, then let the speed handler re-derive their order
-            replayer.appendLog(speed({ actors: acting.map(a => snapshotActor(a.id)(a)) }))
+            replayer.appendLog(speed({ actors: acting.map(a => snapshotActor(a)) }))
         }
 
         // replay: drain the tape and rebuild turn order from each stored speed log

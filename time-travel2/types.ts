@@ -107,6 +107,14 @@ export interface TTLogMap {
             modNode: FrozenModNode,
             to: Actor2Snapshot[],
         },
+    },
+    'ability': {
+        input: TimeTravelContext & {
+            abilityModNode: AbilityModNode,
+        },
+        output: TimeTravelContext & {
+            kind: 'ability',
+        } & FrozenAbilityNode
     }
 }
 

@@ -15,9 +15,11 @@ const freezeAbilityModNode = (root: AbilityModNode): FrozenAbilityNode => {
     const { payload, target, dc, save } = root
 
     return {
-        dc: freezeModNodeRecursive(dc),
-        save: freezeModNodeRecursive(save),
+        dc: dc ? freezeModNodeRecursive(dc) : undefined,
+        save: save ? freezeModNodeRecursive(save) : undefined,
         payload: handlePayload(payload),
         target: target,
     }
 }
+
+export default freezeAbilityModNode

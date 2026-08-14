@@ -126,8 +126,11 @@ export const simulateFight = (
             actions.forEach(a => {
                 if (!target) return
                 if (actionIsAbilityModNode(a)) {
-                    // resolve ability
+                    // see time-travel/ability.test.ts
+                    // we probably need a gamn before a hamn?
+                    // alternatively, a is the gamn so we just hamn
                     handleAbilityModNodes(theActor, target, [a])
+                    ttrAppendLog(timeTravel[''])
                     return
                 }
                 // resolve action

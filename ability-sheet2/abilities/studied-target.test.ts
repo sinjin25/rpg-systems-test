@@ -11,9 +11,9 @@ import { describe, test, assert, expect } from 'vitest'
 describe('studied-target ability', () => {
     test('applies', () => {
         const owner = createDefaultOwner()
-        const gamn = generateAbilityModNodes(owner, studiedTarget)
-
         const receiver = createDefaultOwner()
+        const gamn = generateAbilityModNodes(owner, receiver, studiedTarget)
+
         const receiverA = instantiateActor(receiver)
         const ownerA = instantiateActor(owner)
         assert.equal(gamn.length, 1)

@@ -12,7 +12,7 @@ describe('Handles damage ModNode and StatusEffect', () => {
         const caster = createDefaultOwner()
         const receiver = createDefaultOwner()
 
-        const gamn = generateAbilityModNodes(caster, ignite(caster))
+        const gamn = generateAbilityModNodes(caster, receiver, ignite(caster))
 
         assert.equal(gamn.length, 2)
 
@@ -30,7 +30,7 @@ describe('Handles damage ModNode and StatusEffect', () => {
         const caster = createDefaultOwner()
         const receiver = createDefaultOwner()
 
-        const gamn = generateAbilityModNodes(caster, ignite(caster))
+        const gamn = generateAbilityModNodes(caster, receiver, ignite(caster))
         const status = gamn[1].payload
         if (!abilityModNodePayloadIsStatusEffect(status)) throw Error('Expected a StatusEffect here')
 
@@ -65,11 +65,12 @@ describe('integration: selectAndPrepAbility', () => {
         const ownerA = instantiateActor(owner)
         const standard = selectAndPrepAbility(ownerA, 'standard')
         assert.exists(standard)
+        assert.equal(standard!.displayName, ignite(owner).displayName)
 
         const standard2 = selectAndPrepAbility(ownerA, 'standard')
 
-        // they are different instances
-        assert.notEqual(standard, standard2)
+        // selection returns the shared catalog template; effects are generated later
+        assert.equal(standard, standard2)
     })
     test('Does not advance the picker alone', () => {
         // see actor2/act/index.ts

@@ -1,5 +1,5 @@
 import { Actor2, instantiateActor, OwnerMaximal } from "../actor2"
-import { act, actionIsAbilityModNode, handleAbilityModNodes, outputFinalSar } from "../actor2/act"
+import { act, actionIsAbility, generateAbilityModNodes, handleAbilityModNodes, outputFinalSar } from "../actor2/act"
 import { instantiateSpeed, STD_SPEED } from "../actor2/instantiate"
 import { round } from "../actor2/round"
 import { applyDamage } from "../health"
@@ -116,7 +116,7 @@ export const simulateFight = (
             const cdt = calculateDamageTicks(theActor)
             for (let { node, source } of cdt) {
                 applyDamage(theActor.health, node.total())
-                ttr.appendLog(timeTravel["damage-over-time-taken"]({
+                ttrAppendLog(timeTravel["damage-over-time-taken"]({
                     modNode: node,
                     statusSource: source,
                     to: [snapshotActor(theActor.id)(theActor)],
@@ -125,12 +125,17 @@ export const simulateFight = (
 
             actions.forEach(a => {
                 if (!target) return
-                if (actionIsAbilityModNode(a)) {
-                    // see time-travel/ability.test.ts
-                    // we probably need a gamn before a hamn?
-                    // alternatively, a is the gamn so we just hamn
-                    handleAbilityModNodes(theActor, target, [a])
-                    ttrAppendLog(timeTravel[''])
+                if (actionIsAbility(a)) {
+                    // this doesn't support targetting yourself because the target is wrong?
+                    const raw = generateAbilityModNodes(theActor.owner, target.owner, a)
+                    for (let amnf of raw) {
+                        handleAbilityModNodes(theActor, target, [amnf])
+                        ttrAppendLog(timeTravel['ability']({
+                            source: snapshotActor(theActor.id)(theActor),
+                            to: [snapshotActor(target.id)(target)],
+                            abilityModNode: amnf,
+                        }))
+                    }
                     return
                 }
                 // resolve action

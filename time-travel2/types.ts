@@ -56,7 +56,7 @@ type TimeTravelKind = | 'fight-start'
     | 'ability' // what about the ability though?
     | 'standard-action-result' // an attack
     | 'team-victory' // anyActorAlive
-    | 'damage-over-time' // pretty sure this doesn't happen in the simulation rn?
+    | 'damage-over-time-taken'
 
 export interface TTLogMap {
     'fight-start': {
@@ -102,7 +102,7 @@ export interface TTLogMap {
             to: Actor2Snapshot[],
         },
         output: {
-            kind: 'damage-over-time',
+            kind: 'damage-over-time-taken',
             statusSource: StatusEffect,
             modNode: FrozenModNode,
             to: Actor2Snapshot[],

@@ -20,7 +20,7 @@ describe('Integration: works with ignite', () => {
         const ign = owner.as.standard.items[getAbilityKey(ignite)]
         assert.exists(ign)
 
-        const gamn = generateAbilityModNodes(owner, ign)
+        const gamn = generateAbilityModNodes(owner, actor2.owner, ign)
 
         const logs: Array<ReturnType<typeof ability>> = []
 

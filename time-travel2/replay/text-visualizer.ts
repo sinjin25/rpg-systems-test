@@ -2,7 +2,7 @@ import { setTimeout as delay } from 'node:timers/promises'
 import { Actor2Snapshot } from '../snapshot/actor'
 import { TimeTravelReplayerVisualizer } from './types'
 
-const DELAY = 300
+const DELAY = 100
 const cc = {
     // https://github.com/dazecoop/nodejs-console-colors
     reset: '\x1b[0m',
@@ -51,9 +51,35 @@ const ttrvTextVisualizer: TimeTravelReplayerVisualizer = {
     "act-start": async (log) => {
         console.log(`${displayActor(log.source)} acts`, cc.reset)
     },
-    'damage-over-time': async (log) => {
+    'damage-over-time-taken': async (log) => {
         const actor = log.to[0]!
         console.log(`${displayActor(actor)} takes`, log.modNode.total, `damage from ${log.statusSource.displayName}`, `health is now ${actor.health.curr}`, cc.reset)
+        await delay(DELAY)
+    },
+    'ability': async (log) => {
+        const source = log.source
+        const to = log.to[0]!
+        if (log.dc && log.save) {
+            const didSave = log.save.total >= log.dc.total
+            if (didSave) {
+                console.log(
+                    `${displayActor(to)} saves against ${displayActor(source)}`
+                )
+                console.log
+            } else {
+                console.log(
+                    `${displayActor(to)} fails to save against ${displayActor(source)}`
+                )
+            }
+        } else {
+            // probably a damage node
+            console.log(
+                `${displayActor(source)} takes`,
+                log.payload!.total,
+                `damage`
+            )
+        }
+        await delay(DELAY)
     }
 }
 

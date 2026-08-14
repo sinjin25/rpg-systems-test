@@ -24,59 +24,43 @@ const calculateSave = (owner: OwnerMaximal, opts: {
     return save(opts.saveType)(owner)
 }
 
-const augmentModNodeForSaves = (data?: {
-    dc: ModNode,
-    save: ModNode,
-}) => (
-    source: AbilityModNode,
-) => {
-        if (!data) return source
-        const newModNode: AbilityModNode = {
-            payload: source.payload,
-            target: source.target,
-        }
-        const { dc, save } = data
-        if (dc) newModNode.dc = dc
-        if (save) newModNode.save = save
-
-        return newModNode
+const augmentAbilityModNode = (amn: AbilityModNode, dc: ModNode, save: ModNode): AbilityModNode => {
+    return {
+        ...amn,
+        dc,
+        save,
     }
+}
 
 // a handler still needs to exist to figure out what to do with these AbilityModNodes
-export const generateAbilityModNodes = (owner: OwnerMaximal, ability: Ability): AbilityModNode[] => {
+// caster computes the dc; target rolls the save
+export const generateAbilityModNodes = (caster: OwnerMaximal, target: OwnerMaximal, ability: Ability): AbilityModNode[] => {
     /* console.log('received', ability) */
     if (!ability.handlers) return []
 
     const amn: AbilityModNode[] = []
     const { onFailedSave, onSave, onUse } = ability.handlers
 
-    if (!ability.dc) {
-        if (onUse) amn.push(...onUse())
-    } else {
-        if (onUse) amn.push(...onUse())
-        const dc = calculateDc(owner, {
+    if (onUse) amn.push(...onUse())
+
+    if (ability.dc) {
+        const dc = calculateDc(caster, {
             ability
         })
-        const save = calculateSave(owner, {
+        const save = calculateSave(target, {
             saveType: ability.dc.saveType
         })
         const didSave = save.total() >= dc.total()
         if (!didSave && onFailedSave) {
             amn.push(
                 ...onFailedSave()
-                    .map(augmentModNodeForSaves({
-                        dc,
-                        save
-                    }))
+                    .map(a => augmentAbilityModNode(a, dc, save))
             )
         }
         if (didSave && onSave) {
             amn.push(
                 ...onSave()
-                    .map(augmentModNodeForSaves({
-                        dc,
-                        save
-                    }))
+                    .map(a => augmentAbilityModNode(a, dc, save))
             )
         }
     }
@@ -130,7 +114,7 @@ export const handleAbilityModNodes = (caster: Actor2, receiver: Actor2, amnArr: 
 export const selectAndPrepAbility = (
     caster: Actor2,
     category: AbilityCastType
-): undefined | AbilityModNode[] => {
+): undefined | Ability => {
     const { as } = caster.owner
 
     // do we even have items to pick?
@@ -146,6 +130,7 @@ export const selectAndPrepAbility = (
     if (!item) return undefined
 
     // we have out item, calculate
-    const gamn = generateAbilityModNodes(caster.owner, item)
-    return gamn
+    /* const gamn = generateAbilityModNodes(caster.owner, item) */
+    /* return gamn */
+    return item
 }

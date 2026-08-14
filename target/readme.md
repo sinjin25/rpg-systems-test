@@ -1,0 +1,1 @@
+Used as a piece of other systems. Figure out who the enemy is from a list of participants

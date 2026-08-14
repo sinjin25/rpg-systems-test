@@ -12,6 +12,8 @@ import { snapshotActor, timeTravel } from "../time-travel2"
 import { AnyStoredLog, TimeTravelReplayer } from "../time-travel2/replay/types"
 import { TimeTravelContext, TTLogMap } from "../time-travel2/types"
 import { calculateDamageTicks } from "../status-sheet2/tick"
+import { TargetPriority } from "../target/types"
+import pickTarget2 from '../target/index'
 
 const VERBOSE = false
 
@@ -24,6 +26,13 @@ export type FightResult = {
         player0HpStart: number,
         player0HpEnd: number,
     }
+}
+
+// picks the first available target
+const dumbTargeting: TargetPriority = {
+    filters: [],
+    simple: 'first',
+    team: 'enemy',
 }
 
 export const simulateFight = (
@@ -109,8 +118,16 @@ export const simulateFight = (
             decayActionsElapsed(theActor.owner, 1)
 
             // find the first alive person (target)
-            const targetTeam = ownerIsMemberOf(theActor.owner, playerActors) ? enemyActors : playerActors
+            /* const targetTeam = ownerIsMemberOf(theActor.owner, playerActors) ? enemyActors : playerActors
             const target = chooseTarget(targetTeam)
+            const snapshotActors = ttrActorContext(theActor, [target]) */
+            const targetTeam = ownerIsMemberOf(theActor.owner, playerActors) ? enemyActors : playerActors
+            const allyTeam = ownerIsMemberOf(theActor.owner, playerActors) ? playerActors : enemyActors
+            const target = pickTarget2(
+                targetTeam,
+                allyTeam,
+                dumbTargeting,
+            )[0]! // because it's always first
             const snapshotActors = ttrActorContext(theActor, [target])
 
             const cdt = calculateDamageTicks(theActor)

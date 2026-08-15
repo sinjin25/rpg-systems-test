@@ -21,6 +21,6 @@ export default (broadContext: FeatBroadContexts) => (owner: OwnerLog2): ModNode 
     return newModNode(
         broadContext,
         children,
-        () => sumFunc(children)
+        sumFunc,
     )
 }

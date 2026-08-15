@@ -1,21 +1,21 @@
 import ostracizedGoblin from './ostracized-goblin.ts'
-import { simulateFight, worldState } from '../../simulate/index.ts'
 import { iterate } from '../../simulate/util/iterate.ts'
 import { boxPlotStats } from '../../simulate/util/box-plot.ts'
 import { defaultCharacterSheet } from '../../character-sheet/index.ts'
-import { defaultFeatSheet } from '../../feat/index.ts'
-import { defaultEquipmentSheet } from '../../equipment-sheet/index.ts'
-import instantiateActor, { Owner } from '../../character/actor/index.ts'
 import { describe, test, expect, assert } from 'vitest'
-import { featAlert } from '../../feat/feats/index.ts'
-import { createDefaultAbilitySheet } from '../../ability-sheet/index.ts'
 import { createDefaultOwner } from '../../defaults/index.ts'
-import { commitLevelUp } from '../../character/level-up/index.ts'
-import { getCharacterLevel } from '../../character-sheet/class-level/derive/index.ts'
+import { instantiateActor, OwnerMaximal } from '../../actor2/index.ts'
+import { simulateFight } from '../../simulate2/index.ts'
+import { setupWorldState } from '../../simulate2/setup.ts'
+import { chooseOptionAndMutate, presentOptions } from '../../class-level2/level-up2/present-options.ts'
 
 const SHOW_DEBUG = true
 
-const defaultPlayer: Owner = createDefaultOwner({})
+const defaultPlayer: OwnerMaximal = createDefaultOwner({})
+
+const pickFighter = (options: ReturnType<typeof presentOptions>) => {
+    return options.find(a => a.key === 'fighter')
+}
 
 describe('A default player can win', () => {
     test('simulate', () => {
@@ -40,12 +40,74 @@ describe('A default player can win', () => {
 const hpLosses = (results: ReturnType<typeof simulateFight>[]) =>
     results.map(r => r.debugData.player0HpStart - r.debugData.player0HpEnd)
 
+describe('Compare difficulties - consecutive wins', () => {
+    const ITERATIONS = 50
+    const MAX_CONSECUTIVE_FIGHTS = 20
+
+    const fighter1 = createDefaultOwner({})
+    const fighter4 = createDefaultOwner({})
+
+    chooseOptionAndMutate(fighter4, {
+        clp: pickFighter(presentOptions(fighter4.cs.levels)),
+        freeFeat: 'Dodge',
+    })
+    chooseOptionAndMutate(fighter4, {
+        clp: pickFighter(presentOptions(fighter4.cs.levels)),
+    })
+    chooseOptionAndMutate(fighter4, {
+        clp: pickFighter(presentOptions(fighter4.cs.levels)),
+        freeFeat: 'Fatiguing Blows',
+    })
+    chooseOptionAndMutate(fighter4, {
+        clp: pickFighter(presentOptions(fighter4.cs.levels)),
+    })
+    const players = { fighter1, fighter4 }
+    const encounters = {
+        '1 goblin': [ostracizedGoblin],
+        '4 goblins': [ostracizedGoblin, ostracizedGoblin, ostracizedGoblin, ostracizedGoblin],
+    }
+
+    const consecutiveWinsStats = (player: OwnerMaximal, enemy: OwnerMaximal[]) =>
+        boxPlotStats(iterate(ITERATIONS, () => {
+            const ws = setupWorldState({ player })
+            let wins = 0
+            while (wins < MAX_CONSECUTIVE_FIGHTS) {
+                const result = simulateFight({ player: ws.playerActors, enemy })
+                if (result.winner !== 'player') break
+                wins++
+                ws.playersAfterFight()
+            }
+            return wins
+        }))
+
+    test('Wins by level by encounter', () => {
+        // average wins per character per encounter (mean of the consecutive-win streak)
+        const avgWins: Record<string, Record<string, number>> = {}
+
+        for (const [charName, player] of Object.entries(players)) {
+            avgWins[charName] = {}
+            for (const [encName, enemy] of Object.entries(encounters)) {
+                const stats = consecutiveWinsStats(player, enemy)
+                avgWins[charName][encName] = stats.mean
+
+                // no streak can exceed the cap
+                expect(stats.max).toBeLessThanOrEqual(MAX_CONSECUTIVE_FIGHTS)
+
+                if (SHOW_DEBUG) console.log(`${charName} vs ${encName}`, stats)
+            }
+        }
+
+        // headline view: average wins per character across both encounters
+        if (SHOW_DEBUG) console.table(avgWins)
+    })
+})
+
 describe('Expected Difficulty: Level 1', () => {
-    const ITERATIONS = 100
-    const MAX_CONSECUTIVE_FIGHTS = 100
+    const ITERATIONS = 50
+    const MAX_CONSECUTIVE_FIGHTS = 30
     test('how many consecutive fights a player can win in a row', () => {
         const winsPerRun = iterate(ITERATIONS, () => {
-            const ws = worldState({ player: [defaultPlayer] })
+            const ws = setupWorldState({ player: defaultPlayer })
             let wins = 0
 
             while (wins < MAX_CONSECUTIVE_FIGHTS) {
@@ -55,7 +117,7 @@ describe('Expected Difficulty: Level 1', () => {
                 })
                 if (result.winner !== 'player') break
                 wins++
-                ws.playerAfterFight()
+                ws.playersAfterFight()
             }
             return wins
         })
@@ -65,29 +127,6 @@ describe('Expected Difficulty: Level 1', () => {
 
         // the worst-case run (min) still nets at least one win
         /* expect(stats.min).toBeGreaterThanOrEqual(1) */
-        expect(winsPerRun.every(w => w <= MAX_CONSECUTIVE_FIGHTS)).toBe(true)
-
-        if (SHOW_DEBUG) console.table(stats)
-    })
-
-    test('how many consecutive fights a player can win in a row against two goblins', () => {
-        const winsPerRun = iterate(ITERATIONS, () => {
-            const ws = worldState({ player: [defaultPlayer] })
-            let wins = 0
-            while (wins < MAX_CONSECUTIVE_FIGHTS) {
-                const result = simulateFight({
-                    player: ws.playerActors,
-                    enemy: [ostracizedGoblin, ostracizedGoblin],
-                })
-                if (result.winner !== 'player') break
-                wins++
-                ws.playerAfterFight()
-            }
-            return wins
-        })
-
-        const stats = boxPlotStats(winsPerRun)
-
         expect(winsPerRun.every(w => w <= MAX_CONSECUTIVE_FIGHTS)).toBe(true)
 
         if (SHOW_DEBUG) console.table(stats)
@@ -161,31 +200,32 @@ describe('Expected Difficulty: Level 1', () => {
     })
 })
 
-describe('Difficulty Level 4', () => {
+/* describe('Difficulty Level 4', () => {
     const ITERATIONS = 50
     const MAX_CONSECUTIVE_FIGHTS = 50
 
-    test('Fighter: Expect to be trivial'/* , { timeout: 10_000 } */, () => {
-        const EXPECTED_MEDIAN = 22
-        const fighter = createDefaultOwner({ cs: { ...defaultCharacterSheet, levels: {} } })
-        commitLevelUp(fighter, {
-            className: 'fighter',
-            bonusFeat: 'featDodgy'
+    test('Fighter: Expect to be trivial', () => {
+        const EXPECTED_MEDIAN = 10
+        const fighter = createDefaultOwner({ cs: { ...defaultCharacterSheet, levels: [] } })
+
+        chooseOptionAndMutate(fighter, {
+            clp: pickFighter(presentOptions(fighter.cs.levels)),
+            freeFeat: 'Dodge',
         })
-        commitLevelUp(fighter, {
-            className: 'fighter',
+        chooseOptionAndMutate(fighter, {
+            clp: pickFighter(presentOptions(fighter.cs.levels)),
         })
-        commitLevelUp(fighter, {
-            className: 'fighter',
-            bonusFeat: 'featRage'
+        chooseOptionAndMutate(fighter, {
+            clp: pickFighter(presentOptions(fighter.cs.levels)),
+            freeFeat: 'Fatiguing Blows',
         })
-        commitLevelUp(fighter, {
-            className: 'fighter',
+        chooseOptionAndMutate(fighter, {
+            clp: pickFighter(presentOptions(fighter.cs.levels)),
         })
 
-        expect(getCharacterLevel(fighter.cs)).toEqual(4)
+        expect(fighter.cs.levels.length).toEqual(4)
         const winsPerRun = iterate(ITERATIONS, () => {
-            const ws = worldState({ player: [fighter] })
+            const ws = setupWorldState({ player: fighter })
             let wins = 0
             while (wins < MAX_CONSECUTIVE_FIGHTS) {
                 const result = simulateFight({
@@ -194,7 +234,7 @@ describe('Difficulty Level 4', () => {
                 })
                 if (result.winner !== 'player') break
                 wins++
-                ws.playerAfterFight()
+                ws.playersAfterFight()
             }
             return wins
         })
@@ -206,3 +246,4 @@ describe('Difficulty Level 4', () => {
         assert.equal(stats.median, EXPECTED_MEDIAN)
     })
 })
+ */

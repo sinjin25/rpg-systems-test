@@ -1,8 +1,9 @@
 import { addStatusToStatusSheet } from '..'
 import { createDefaultOwner, instantiateActor } from '../../actor2'
+import { applyDamage } from '../../health'
 import { findNodeMatching } from '../../log2'
 import modNodeToText from '../../log2/format'
-import { applyTicks } from '../tick'
+import { calculateDamageTicks } from '../tick'
 import ignite from './ignite.ts'
 import { describe, test, assert, expect } from 'vitest'
 
@@ -19,12 +20,13 @@ describe('Ignite', () => {
         const receiverActor = instantiateActor(receiver)
         assert.equal(receiverActor.health.curr, receiverActor.health.max)
 
-        const results = applyTicks(receiverActor)
+        const results = calculateDamageTicks(receiverActor)
 
         for (let res of results) {
-            console.log(modNodeToText(res))
+            console.log(modNodeToText(res.node))
+            applyDamage(receiverActor.health, res.node.total())
         }
-        const igNode = results[0]!
+        const igNode = results[0]!.node
         const f0 = findNodeMatching(igNode, /damage-over-time-taken/, {
             includeRoot: true,
         })

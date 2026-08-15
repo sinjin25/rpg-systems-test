@@ -1,10 +1,11 @@
-import type { Actor } from "../character/actor"
-
 // the point of this is to create testable, pure functions for things like status effects. This handles the actual mutation after they are computed
 // intent is explicit: this only ever reduces health. A non-positive amount deals 0
+
+import { Actor2 } from "../actor2"
+
 // (rather than the old signed convention, where a negative "damage" would heal).
 export const applyDamage = (
-    health: Actor['health'],
+    health: Actor2['health'],
     amount: number,
 ): void => {
     let remaining = Math.max(0, amount)

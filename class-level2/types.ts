@@ -2,7 +2,7 @@ import { PossibleFeatKey } from "../feat2/feats"
 
 export type ClassKeys = 'fighter' | 'rogue'
 
-export type ClassLevelSumKeys = 'fortitude' | 'reflex' | 'attackBonus'
+export type ClassLevelSumKeys = 'fortitude' | 'reflex' | 'attackBonus' | 'will'
 
 export type ClassLevel = {
     [K in ClassLevelSumKeys]: number[]

@@ -2,7 +2,7 @@ import { createDefaultOwner } from '../../actor2'
 import { findNodeMatching } from '../../log2/index.ts'
 import attack from '../../log2/terminal/attack.ts'
 import damage from '../../log2/terminal/damage.ts'
-import { decayRoundsElapsed } from '../decay.ts'
+import { decayRoundsElapsed } from '../decay'
 import battleFocus, { BATTLE_FOCUS_ATTACK_BONUS, BATTLE_FOCUS_DAMAGE_BONUS, battleFocusActiveStatus, battleFocusChargingStatus } from './battle-focus.ts'
 import { describe, test, assert, expect } from 'vitest'
 
@@ -38,9 +38,9 @@ describe('battle-focus', () => {
         assert.equal(obj?.expiration?.remaining, 1)
 
         decayRoundsElapsed(owner, 1)
-        console.log(owner.ss)
         // should be replaced by a new status under a new key
-        const obj2 = owner.ss.battleFocus
+        assert.notExists(owner.ss.battleFocus)
+        const obj2 = owner.ss['Battle Focus (Active)']
         assert.notEqual(obj.displayName, obj2.displayName)
         assert.equal(obj2.displayName, 'Battle Focus (Active)')
     })

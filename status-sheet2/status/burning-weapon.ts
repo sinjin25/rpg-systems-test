@@ -1,4 +1,4 @@
-import { StatusEffect, TickOwnerData } from ".."
+import { StatusEffect } from ".."
 import { Actor2, OwnerMaximal } from "../../actor2"
 import { leaf } from "../../log2"
 import damageOverTimeTaken from "../../log2/terminal-composition/damage-over-time-taken"
@@ -13,7 +13,8 @@ export const BURNING_WEAPON_SAVE_DC = 15
 export const burningWeaponStatus: SnapshotStatusEffect = (data: {
     snapshot: OwnerMaximal,
 }): StatusEffect => {
-    const dc = 15 // figure out the dc with a tree=
+    const dc = leaf('Burning (Burning Weapon)', 15)
+
     return {
         displayName: 'Burning (Burning Weapon)',
         broadContexts: {},

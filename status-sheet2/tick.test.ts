@@ -3,8 +3,8 @@ import modNodeToText from '../log2/format.ts'
 import newModNode, { findNodeMatching, leaf, ModNode, sumFunc } from '../log2/index.ts'
 import damageOverTimeTaken from '../log2/terminal-composition/damage-over-time-taken.ts'
 import damageOverTime from '../log2/terminal/damage-over-time.ts'
-import { StatusEffect } from './index.ts'
-import { applyTicks, calculateTick } from './tick.ts'
+import { addStatusToStatusSheet, ignite, StatusEffect } from './index.ts'
+import { calculateDamageTicks, calculateTick } from './tick.ts'
 import { describe, test, assert, expect } from 'vitest'
 import { SnapshotStatusEffect } from './types.ts'
 import applyDamage from '../health/apply-damage.ts'
@@ -104,25 +104,31 @@ describe('damage works', () => {
         assert.equal(
             actor.health.curr + ct.calculateDamage!.total(),
             actor.health.max)
+
+        // returns the statuseffect
+        assert.exists(ct.source)
     })
-    test('applyTicks works', () => {
+    test('calculateDamageTicks works', () => {
         const ct = calculateTick(
             receiver.ss.ignite,
             receiver,
         )
 
         const actor = instantiateActor(receiver)
-        const result = applyTicks(actor)
+        const result = calculateDamageTicks(actor)
 
         // 3 items here
         assert.equal(result.length, 3)
-        console.log(result)
+        /* console.log(result) */
+
+        // apply all the ticks manually
+        result.forEach(a => applyDamage(actor.health, a.node.total()))
 
         // ensure we actually have multiple items with values
-        const sum = result.map(a => a.total()).reduce((acc, a) => acc + a, 0)
+        const sum = result.map(a => a.node.total()).reduce((acc, a) => acc + a, 0)
 
         assert.equal(
-            sum > result[0].total(),
+            sum > result[0].node.total(),
             true
         )
         // all three are applied
@@ -134,9 +140,23 @@ describe('damage works', () => {
         result.forEach(a => {
             // make sure damage ticks cant go negative
             assert.equal(
-                a.total() >= 0,
+                a.node.total() >= 0,
                 true
             )
         })
+    })
+})
+
+describe('calculateDamageTicks', () => {
+    test('Returns all damage-over-time-taken calculations for each', () => {
+        const owner = createDefaultOwner()
+        addStatusToStatusSheet(owner, ignite)
+        // make another
+        owner.ss['ign'] = ignite({
+            snapshot: owner
+        })
+        const actor = instantiateActor(owner)
+        const cdt = calculateDamageTicks(actor)
+        assert.equal(cdt.length, 2)
     })
 })

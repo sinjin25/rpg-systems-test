@@ -1,25 +1,30 @@
-import { createDefaultOwner, OwnerMaximal } from '../actor2'
-import type { ModNode } from '../log2'
-import { StatusEffect } from '../status-sheet2'
-import type { Ability, AbilityCastType, AbilityCategory, AbilityModNode, AbilitySheet, SnapshotAbility, } from './types'
-export { Ability, AbilityCastType, AbilityCatalog, AbilityCategory, AbilityModNode, AbilitySheet, AbilityTags, Handlers } from './types'
+import { OwnerMaximal } from '../actor2'
+import type { AbilityCastType, AbilityCategory, AbilitySheet } from './types'
+import type { AbilitySheetDefinition } from './abilities2/types'
+export { AbilityCastType, AbilityCatalog, AbilityCategory, AbilitySheet, AbilityTags } from './types'
+export { resolveAbility } from './abilities2'
+export type { Participants } from './abilities2'
+export type {
+    Ability,
+    AbilityPayload,
+    AbilitySheetDefinition,
+    DiscreteTargetGroup,
+    DiscreteTargetGroupPayload,
+    DiscreteTargetGroupPayloadResolution,
+} from './abilities2/types'
 
 
-export const getAbilityKey = (ability: Ability | SnapshotAbility) => {
-    if (typeof ability === 'function') return ability(createDefaultOwner()).displayName
-    return ability.displayName
-}
+export const getAbilityKey = (ability: AbilitySheetDefinition) => ability.displayName
 
 export const addAbility = (
     owner: OwnerMaximal,
-    ability: Ability | SnapshotAbility,
+    ability: AbilitySheetDefinition,
 ) => {
-    const ab = typeof ability === 'function' ? ability(owner) : ability
-    const category = owner.as[ab.castType]
+    const category = owner.as[ability.castType]
 
-    const key = getAbilityKey(ab)
+    const key = getAbilityKey(ability)
     const isNew = !category.items[key]
-    category.items[key] = ab
+    category.items[key] = ability
 
     // if ability is new, add it to the end of the priority queue
     if (isNew) category.priority.push(key)
@@ -58,15 +63,3 @@ export const createDefaultAbilitySheet = (): AbilitySheet => ({
     swift: createAbilityCategory(),
     free: createAbilityCategory(),
 })
-
-export const abilityModNodePayloadIsModNode = (
-    a: AbilityModNode['payload']
-): a is ModNode => {
-    return 'total' in a
-}
-
-export const abilityModNodePayloadIsStatusEffect = (
-    a: AbilityModNode['payload']
-): a is StatusEffect => {
-    return 'total' in a === false
-}

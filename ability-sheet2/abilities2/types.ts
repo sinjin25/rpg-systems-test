@@ -29,12 +29,14 @@ export type DiscreteTargetGroupPayloadResolution = {
 } & AbilityPayload
 
 export type DiscreteTargetGroupPayload = {
+    chainOnly?: boolean, // subsequent items only resolve if the defender failed their save (see shouldTGPRContinue)
     dc?: {
         base: number,
         saveType: 'reflex' | 'fortitude' | 'will',
     }, // base dc
-    onSuccess: (source: Actor2, target: Actor2) => AbilityPayload
-    onFailure?: (source: Actor2, target: Actor2) => AbilityPayload
+    // or if no dc, always run onSaveFailure
+    onSaveFailure: (source: Actor2, target: Actor2) => AbilityPayload
+    onSavePass?: (source: Actor2, target: Actor2) => AbilityPayload
 }
 
 export type DiscreteTargetGroup = {

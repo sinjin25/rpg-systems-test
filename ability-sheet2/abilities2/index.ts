@@ -29,14 +29,24 @@ export const resolveAbility = (
     return resolutions
 }
 
+const shouldTGPRContinue = (incoming: {
+    defenderSuccess: boolean,
+}, payload: DiscreteTargetGroupPayload) => {
+    // if the payload is chainOnly and the defender succeeded on defending, stop
+    if (payload.chainOnly && incoming.defenderSuccess) return false
+    return true
+}
+
 // ex: a DiscreteTargetGroup
-const resolveStep = (p: Participants, source: Actor2, step: DiscreteTargetGroup) => {
+export const resolveStep = (p: Participants, source: Actor2, step: DiscreteTargetGroup) => {
     const resolutions: DiscreteTargetGroupPayloadResolution[] = []
     const targets = target(p.enemy, p.ally, step.tp)
     for (let t of targets) {
         for (let payload of step.payload) {
-            const result = resolvePayload(source, t, payload)
+            const { defenderSuccess, result } = resolvePayload(source, t, payload)
             resolutions.push(result)
+
+            if (!shouldTGPRContinue({ defenderSuccess }, payload)) break
         }
     }
 
@@ -48,7 +58,10 @@ const resolvePayload = (
     source: Actor2,
     target: Actor2,
     payload: DiscreteTargetGroupPayload,
-): DiscreteTargetGroupPayloadResolution => {
+): {
+    defenderSuccess: boolean,
+    result: DiscreteTargetGroupPayloadResolution,
+} => {
     if (payload.dc) {
         // do a save and stuff
         const endDc = dc({
@@ -63,30 +76,39 @@ const resolvePayload = (
 
         const saveSucceeded = endSave.total() >= endDc.total()
         if (saveSucceeded) return {
-            ...payload.onSuccess(source, target),
+            defenderSuccess: true,
+            result: {
+                ...(payload.onSavePass?.(source, target) ?? {}),
+                source,
+                target,
+                type: 'success',
+                save: endSave,
+                saveType: payload.dc.saveType,
+                dc: endDc,
+            }
+        }
+        return {
+            defenderSuccess: false,
+            result: {
+                ...payload.onSaveFailure(source, target),
+                source,
+                target,
+                type: 'failure',
+                save: endSave,
+                saveType: payload.dc.saveType,
+                dc: endDc,
+            }
+        }
+    }
+    // no dc: the effect always lands
+    return {
+        defenderSuccess: false,
+        result: {
+            ...payload.onSaveFailure(source, target),
             source,
             target,
             type: 'success',
-            save: endSave,
-            saveType: payload.dc.saveType,
-            dc: endDc,
         }
-        return {
-            ...payload.onFailure(source, target),
-            source,
-            target,
-            type: 'failure',
-            save: endSave,
-            saveType: payload.dc.saveType,
-            dc: endDc,
-        }
-    }
-    // succeed
-    return {
-        ...payload.onSuccess(source, target),
-        source,
-        target,
-        type: 'success',
     }
 }
 

@@ -1,6 +1,5 @@
 import newModNode, { leaf, sumFunc } from "..";
 import { EveryTree, OwnerLog2 } from "../types";
-import { equipmentIsWeapon } from "../../equipment-sheet";
 import critMultiplierMod from "./crit-multiplier-mod";
 
 const displayName: EveryTree = 'crit-multiplier'

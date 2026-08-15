@@ -12,7 +12,7 @@ const factory: AbilitySheetDefinition['factory'] = () => {
         },
         payload: [
             {
-                onSuccess: () => ({
+                onSaveFailure: () => ({
                     statusEffect: [stStatus],
                 }),
             },

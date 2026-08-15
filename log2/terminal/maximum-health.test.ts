@@ -33,7 +33,7 @@ describe('maximum-health (terminal)', () => {
             fs: { toughness },
         })
         const node = maximumHealth(owner)
-        console.log(modNodeToText(node,))
+        /* console.log(modNodeToText(node,)) */
         // 80 from the level case + 3 flat
         expect(node.total()).toBe(83)
     })

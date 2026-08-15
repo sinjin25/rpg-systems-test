@@ -62,7 +62,7 @@ describe('Integration: works with feats and broadContext', () => {
             },
         })
         owner.relevantSlot = owner.es.mainhand
-        console.log('owner', owner.cs.levels)
+        /* console.log('owner', owner.cs.levels) */
         const node = attack(owner)
         const matchingNode = findNodeMatching(node, /test-feat/)
         assert.exists(matchingNode)

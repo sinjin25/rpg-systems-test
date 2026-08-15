@@ -48,11 +48,11 @@ describe('roll works', () => {
         })
 
         const node = rollTree(6, 1, 'attack-sides-mod')(owner)
-        console.log(modNodeToText(node))
+        /* console.log(modNodeToText(node)) */
         const f0 = findNodeMatching(node, /1d8/)
         const f1 = findNodeMatching(node, /attack-sides-mod/)
         const f2 = findNodeMatching(node, /attack-sides-plus/)
-        console.log(modNodeToText(node))
+        /* console.log(modNodeToText(node)) */
         assert.exists(f0)
         assert.exists(f1)
         assert.exists(f2)
@@ -95,7 +95,7 @@ describe('Integration: attack', () => {
                 sumFunc,
             )
             results.add(tree.total())
-            if (i === 0) console.log(modNodeToText(attackMod))
+            /* if (i === 0) console.log(modNodeToText(attackMod)) */
         })
 
         assert.equal(results.size, 22) // d20 + 2 sides

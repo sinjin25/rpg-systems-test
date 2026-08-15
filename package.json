@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "vitest"
+    "test": "vitest",
+    "test:fast": "vitest run --exclude \"**/*.simulation.test.ts\" --exclude \"*.simulation.test.ts\"",
+    "test:slow": "vitest run --passWithNoTests --testTimeout=30000 simulation.test"
   },
   "keywords": [],
   "author": "",

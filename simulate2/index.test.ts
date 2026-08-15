@@ -8,7 +8,7 @@ import { addStatusToStatusSheet } from '../status-sheet2/add-status-to-status-sh
 import { ignite, StatusEffect } from '../status-sheet2/index.ts'
 import { Handlers } from '../time-travel2/types.ts'
 import { addAbility } from '../ability-sheet2/index.ts'
-import { default as igniteAbility } from '../ability-sheet2/abilities/ignite.ts'
+import { default as igniteAbility } from '../ability-sheet2/abilities2/ignite.ts'
 import { leaf } from '../log2/index.ts'
 
 describe('simulateFight', () => {

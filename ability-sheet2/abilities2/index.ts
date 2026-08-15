@@ -11,12 +11,12 @@ import { DiscreteTargetGroup, DiscreteTargetGroupPayload, DiscreteTargetGroupPay
 // ability -> steps[] -> payloads[] where steps are a DiscreteTargetGroup (ex: all substeps target the same guy(s))
 
 // from the perspective of the source
-type Participants = {
+export type Participants = {
     enemy: Actor2[],
     ally: Actor2[],
 }
 
-const resolveAbility = (
+export const resolveAbility = (
     p: Participants, source: Actor2, ability: Ability
 ) => {
     const resolutions: DiscreteTargetGroupPayloadResolution[] = []

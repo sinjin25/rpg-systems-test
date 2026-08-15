@@ -1,9 +1,9 @@
-import { addAbility, getAbilityKey } from '../ability-sheet2'
-import ignite from '../ability-sheet2/abilities/ignite'
+import { addAbility, getAbilityKey, resolveAbility } from '../ability-sheet2'
+import ignite from '../ability-sheet2/abilities2/ignite'
 import { createDefaultOwner, instantiateActor } from '../actor2'
-import { generateAbilityModNodes, handleAbilityModNodes } from '../actor2/act'
+import { applyResolutions } from '../actor2/act'
 import ability from './ability.ts'
-import { describe, test, assert, expect, afterEach } from 'vitest'
+import { describe, test, assert, afterEach } from 'vitest'
 import snapshotActor from './snapshot/actor.ts'
 import { clearSeed, setSeed } from '../roll/index.ts'
 
@@ -11,51 +11,47 @@ describe('Integration: works with ignite', () => {
     afterEach(() => {
         clearSeed()
     })
-    test('Can create multiple events per singular ability', () => {
+    test('Can create multiple logs per singular ability', () => {
         setSeed(0)
         const owner = createDefaultOwner()
-        addAbility(
-            owner,
-            ignite
-        )
+        addAbility(owner, ignite)
 
-        const actor1 = instantiateActor(owner)
-        const actor2 = instantiateActor(owner)
+        const caster = instantiateActor(owner)
+        const receiver = instantiateActor(createDefaultOwner({ cs: { dex: -999 } }))
 
         const ign = owner.as.standard.items[getAbilityKey(ignite)]
         assert.exists(ign)
 
-        const gamn = generateAbilityModNodes(owner, actor2.owner, ign)
+        const resolutions = resolveAbility(
+            { enemy: [receiver], ally: [caster] },
+            caster,
+            ign!.factory(),
+        )
+        assert.equal(resolutions.length, 2)
 
+        const receiverBefore = snapshotActor(receiver)
         const logs: Array<ReturnType<typeof ability>> = []
 
-        const actor1Snapshot = snapshotActor(actor1)
-
-        for (let g of gamn) {
-            handleAbilityModNodes(actor1, actor2, [g])
-            // create log
-            const ab = ability({
-                source: snapshotActor(actor1),
-                to: [snapshotActor(actor2)],
-                abilityModNode: g,
-            })
-            logs.push(ab)
+        for (let r of resolutions) {
+            applyResolutions([r])
+            logs.push(ability({
+                source: snapshotActor(caster),
+                to: [snapshotActor(r.target)],
+                resolution: r,
+            }))
         }
-        const log0ActorSnap = logs[0]!.to[0]!
-        const log1ActorSnap = logs[1]!.to[0]!
-        assert.equal(logs.length, 2)
-        // the onUse damage happens
-        assert.notEqual(actor1Snapshot.health.curr, log0ActorSnap.health.curr)
-        // the status effect happens
-        assert.equal(log0ActorSnap.health.curr, log1ActorSnap.health.curr)
 
-        // status effect was not handled at this point
-        assert.notExists(
-            log0ActorSnap.owner.ss['ignite']
-        )
-        // status effect was handled at this point
-        assert.exists(
-            log1ActorSnap.owner.ss['ignite']
-        )
+        assert.equal(logs.length, 2)
+
+        // the always-on damage log records reduced health on the target
+        const dmgLog = logs.find(l => l.damage && l.damage.length)
+        assert.exists(dmgLog)
+        assert.notEqual(receiverBefore.health.curr, dmgLog!.to![0]!.health.curr)
+
+        // the failed-save log records the ignite status on the target
+        const statusLog = logs.find(l => l.statusEffect && l.statusEffect.length)
+        assert.exists(statusLog)
+        assert.equal(statusLog!.type, 'failure')
+        assert.exists(statusLog!.to![0]!.owner.ss['ignite'])
     })
 })

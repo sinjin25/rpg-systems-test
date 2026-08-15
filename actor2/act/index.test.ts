@@ -1,6 +1,6 @@
 import { createDefaultOwner, instantiateActor } from '..'
-import ignite from '../../ability-sheet2/abilities/ignite.ts'
-import studiedTarget from '../../ability-sheet2/abilities/studied-target'
+import ignite from '../../ability-sheet2/abilities2/ignite.ts'
+import studiedTarget from '../../ability-sheet2/abilities2/studied-target'
 import { addAbility } from '../../ability-sheet2/index.ts'
 import { act, actionIsAbility } from './index.ts'
 import { describe, test, assert, expect } from 'vitest'

@@ -1,125 +1,20 @@
-import { Actor2, OwnerMaximal } from ".."
-import { Ability, AbilityCastType, AbilityModNode, abilityModNodePayloadIsStatusEffect } from "../../ability-sheet2"
-import { applyDamage } from "../../health"
-import newModNode, { findNodeMatching, ModNode, sumFunc } from "../../log2"
-import roll from "../../log2/roll"
-import { save } from "../../log2/terminal"
-import dc from "../../log2/terminal/dc"
-import { addStatusToStatusSheet, StatusEffect } from "../../status-sheet2"
+import { Actor2 } from ".."
+import { AbilityCastType, AbilitySheetDefinition, DiscreteTargetGroupPayloadResolution } from "../../ability-sheet2"
+import { applyDamage, applyHeal } from "../../health"
+import { addStatusToStatusSheet } from "../../status-sheet2"
 
-const calculateDc = (owner: OwnerMaximal, opts: {
-    ability: Ability
-}): ModNode => {
-    const { ability } = opts
-    const node = dc({
-        baseDc: ability.dc!.baseDc,
-        tags: ability.dc!.tags,
-    })(owner)
-
-    return node
-}
-
-const calculateSave = (owner: OwnerMaximal, opts: {
-    saveType: 'reflex' | 'fortitude' | 'will'
-}): ModNode => {
-    return newModNode(
-        opts.saveType,
-        [save(opts.saveType)(owner), roll(20, 1)(owner)],
-        sumFunc
-    )
-}
-
-const augmentAbilityModNode = (amn: AbilityModNode, dc: ModNode, save: ModNode): AbilityModNode => {
-    return {
-        ...amn,
-        dc,
-        save,
+export const applyResolutions = (resolutions: DiscreteTargetGroupPayloadResolution[]) => {
+    for (const r of resolutions) {
+        if (r.damage) for (const node of r.damage) applyDamage(r.target.health, node.total())
+        if (r.heal) for (const node of r.heal) applyHeal(r.target.health, node.total())
+        if (r.statusEffect) addStatusToStatusSheet(r.target.owner, ...r.statusEffect)
     }
 }
 
-// a handler still needs to exist to figure out what to do with these AbilityModNodes
-// caster computes the dc; target rolls the save
-export const generateAbilityModNodes = (caster: OwnerMaximal, target: OwnerMaximal, ability: Ability): AbilityModNode[] => {
-    /* console.log('received', ability) */
-    if (!ability.handlers) return []
-
-    const amn: AbilityModNode[] = []
-    const { onFailedSave, onSave, onUse } = ability.handlers
-
-    if (onUse) amn.push(...onUse())
-
-    if (ability.dc) {
-        const dc = calculateDc(caster, {
-            ability
-        })
-        const save = calculateSave(target, {
-            saveType: ability.dc.saveType
-        })
-        const didSave = save.total() >= dc.total()
-        if (!didSave && onFailedSave) {
-            amn.push(
-                ...onFailedSave()
-                    .map(a => augmentAbilityModNode(a, dc, save))
-            )
-        }
-        if (didSave && onSave) {
-            amn.push(
-                ...onSave()
-                    .map(a => augmentAbilityModNode(a, dc, save))
-            )
-        }
-    }
-
-    return amn
-}
-
-const handleAmnModNode = (
-    receiver: Actor2,
-    node: ModNode, // currently only damage exists
-) => {
-    applyDamage(receiver.health, node.total())
-}
-
-const handleAmnStatusEffect = (receiver: Actor2, st: StatusEffect) => {
-    addStatusToStatusSheet(receiver.owner, st)
-}
-
-export const handleAbilityModNodes = (caster: Actor2, receiver: Actor2, amnArr: AbilityModNode[]) => {
-    for (const amn of amnArr) {
-        const { payload, target } = amn
-        if (abilityModNodePayloadIsStatusEffect(payload)) {
-            switch (target) {
-                case 'ally':
-                    throw Error('not implemented')
-                    break
-                case 'self':
-                    handleAmnStatusEffect(caster, payload)
-                    break
-                case 'target':
-                    handleAmnStatusEffect(receiver, payload)
-                    break
-            }
-        } else {
-            switch (target) {
-                case 'ally':
-                    throw Error('not implemented')
-                    break
-                case 'self':
-                    handleAmnModNode(caster, payload)
-                    break
-                case 'target':
-                    handleAmnModNode(receiver, payload)
-                    break
-            }
-        }
-    }
-}
-
-// this selects and then does generateAbilityModNodes
 export const selectAndPrepAbility = (
     caster: Actor2,
     category: AbilityCastType
-): undefined | Ability => {
+): undefined | AbilitySheetDefinition => {
     const { as } = caster.owner
 
     // do we even have items to pick?
@@ -134,8 +29,5 @@ export const selectAndPrepAbility = (
     const item = catalog.items[key]
     if (!item) return undefined
 
-    // we have out item, calculate
-    /* const gamn = generateAbilityModNodes(caster.owner, item) */
-    /* return gamn */
     return item
 }

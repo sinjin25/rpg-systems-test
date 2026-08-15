@@ -1,4 +1,4 @@
-import { AbilityModNode } from "../ability-sheet2"
+import { DiscreteTargetGroupPayloadResolution } from "../ability-sheet2"
 import { FinalStandardActionResult } from "../actor2/act"
 import { BaseEquipment } from "../equipment-sheet2/types"
 import { ModNode } from "../log2"
@@ -33,10 +33,13 @@ export type FrozenStandardActionResult = Partial<{
 }>
 
 export type FrozenAbilityNode = {
-    payload: FrozenModNode | FrozenStatus,
+    type: DiscreteTargetGroupPayloadResolution['type'],
     dc?: FrozenModNode,
     save?: FrozenModNode,
-    target: AbilityModNode['target'],
+    saveType?: DiscreteTargetGroupPayloadResolution['saveType'],
+    damage?: FrozenModNode[],
+    heal?: FrozenModNode[],
+    statusEffect?: FrozenStatus[],
 }
 
 export type TimeTravelContext = {
@@ -110,7 +113,7 @@ export interface TTLogMap {
     },
     'ability': {
         input: TimeTravelContext & {
-            abilityModNode: AbilityModNode,
+            resolution: DiscreteTargetGroupPayloadResolution,
         },
         output: TimeTravelContext & {
             kind: 'ability',

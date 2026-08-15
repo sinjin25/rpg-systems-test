@@ -9,7 +9,7 @@ import { AbilityCastType } from "../types"
 export type AbilitySheetDefinition = {
     castType: AbilityCastType,
     displayName: string,
-    description: string,
+    description?: string,
     factory: () => Ability
 }
 

@@ -1,5 +1,6 @@
 import { Actor2, instantiateActor, OwnerMaximal } from "../actor2"
-import { act, actionIsAbility, generateAbilityModNodes, handleAbilityModNodes, outputFinalSar } from "../actor2/act"
+import { act, actionIsAbility, applyResolutions, outputFinalSar } from "../actor2/act"
+import { resolveAbility } from "../ability-sheet2"
 import { instantiateSpeed, STD_SPEED } from "../actor2/instantiate"
 import { round } from "../actor2/round"
 import { applyDamage } from "../health"
@@ -141,20 +142,26 @@ export const simulateFight = (
             }
 
             actions.forEach(a => {
-                if (!target) return
                 if (actionIsAbility(a)) {
-                    // this doesn't support targetting yourself because the target is wrong?
-                    const raw = generateAbilityModNodes(theActor.owner, target.owner, a)
-                    for (let amnf of raw) {
-                        handleAbilityModNodes(theActor, target, [amnf])
+                    // targeting now lives inside the ability's steps
+                    const ability = a.factory()
+                    const resolutions = resolveAbility(
+                        { enemy: targetTeam, ally: allyTeam },
+                        theActor,
+                        ability,
+                    )
+                    for (let r of resolutions) {
+                        applyResolutions([r])
                         ttrAppendLog(timeTravel['ability']({
                             source: snapshotActor(theActor),
-                            to: [snapshotActor(target)],
-                            abilityModNode: amnf,
+                            to: [snapshotActor(r.target)],
+                            resolution: r,
                         }))
+                        handlePotentialDeath(actors, r.target, theActor.owner)
                     }
                     return
                 }
+                if (!target) return
                 // resolve action
                 const finalSar = outputFinalSar([a], target)
                 for (let fs of finalSar) {

@@ -58,27 +58,22 @@ const ttrvTextVisualizer: TimeTravelReplayerVisualizer = {
     },
     'ability': async (log) => {
         const source = log.source
-        const to = log.to[0]!
+        const to = log.to?.[0]!
         if (log.dc && log.save) {
-            const didSave = log.save.total >= log.dc.total
-            if (didSave) {
-                console.log(
-                    `${displayActor(to)} saves against ${displayActor(source)} (${log.save.total} vs ${log.dc.total})`,
-                    `${log.payload.displayName}`
-                )
-                console.log
-            } else {
-                console.log(
-                    `${displayActor(to)} fails to save against ${displayActor(source)} (${log.save.total} vs ${log.dc.total})`,
-                    `${log.payload.displayName}`
-                )
-            }
-        } else {
-            // probably a damage node
+            const saved = log.type === 'success'
+            const verb = saved ? 'saves against' : 'fails to save against'
             console.log(
-                `${displayActor(source)} takes`,
-                log.payload!.total,
-                `damage`
+                `${displayActor(to, cc.BgRed)} ${verb} ${displayActor(source)} (${log.save.total} vs ${log.dc.total})`,
+            )
+        }
+        const dmg = log.damage?.reduce((sum, n) => sum + n.total, 0)
+        if (dmg) console.log(`${displayActor(to, cc.BgRed)} takes ${dmg} damage`)
+        const heal = log.heal?.reduce((sum, n) => sum + n.total, 0)
+        if (heal) console.log(`${displayActor(to, cc.BgGreen)} heals ${heal}`)
+        if (log.statusEffect?.length) {
+            console.log(
+                `${displayActor(to, cc.BgRed)} gains`,
+                log.statusEffect.map(s => s.displayName).join(', '),
             )
         }
         await delay(DELAY)

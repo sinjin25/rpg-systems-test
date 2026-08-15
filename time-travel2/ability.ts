@@ -1,11 +1,11 @@
 import { Handlers } from "./types"
-import freezeAbilityModNode from "./snapshot/ability"
+import freezeResolution from "./snapshot/ability"
 
 const ability: Handlers['ability'] = (input) => {
-    const { abilityModNode, source, to } = input
-    const famn = freezeAbilityModNode(abilityModNode)
+    const { resolution, source, to } = input
+    const frozen = freezeResolution(resolution)
 
-    return { kind: 'ability', ...famn, source, to }
+    return { kind: 'ability', ...frozen, source, to }
 }
 
 export default ability

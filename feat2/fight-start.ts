@@ -14,13 +14,13 @@ export const applyOnFightStartFeatHandlers = (
     entries: ReturnType<typeof getOnFightStartFeatHandlers>
 ) => {
     for (let [k, v] of entries) {
-        console.log('looking at', k, v)
+        /* console.log('looking at', k, v) */
         const result = v.onFightStart!(owner)
         if (result === undefined) continue
         const statuses = Array.isArray(result) ? result : [result]
-        console.log('statuses', statuses)
+        /* console.log('statuses', statuses) */
         statuses.forEach((status, i) => {
-            console.log('key is', statuses.length > 1 ? `${k}${i}` : k)
+            /* console.log('key is', statuses.length > 1 ? `${k}${i}` : k) */
             owner.ss[statuses.length > 1 ? `${k}${i}` : k] = status
         })
     }

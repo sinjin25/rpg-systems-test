@@ -4,8 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "vitest",
-    "test:fast": "vitest run --exclude \"**/*.simulation.test.ts\" --exclude \"*.simulation.test.ts\"",
-    "test:slow": "vitest run --passWithNoTests --testTimeout=30000 simulation.test"
+    "test:fast": "vitest --exclude \"**/*.simulation.test.ts\" --exclude \"*.simulation.test.ts\"",
+    "test:slow": "vitest --passWithNoTests --testTimeout=30000 simulation.test"
   },
   "keywords": [],
   "author": "",

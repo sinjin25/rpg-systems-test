@@ -17,8 +17,6 @@ describe('roll works', () => {
             DICE,
         )(owner)
 
-        /* console.log(modNodeToText(node)) */
-
         const f0 = findNodeMatching(node, 'roll', {
             includeRoot: true,
         })

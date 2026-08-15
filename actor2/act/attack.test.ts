@@ -1,6 +1,6 @@
 import { describe, test, expect, assert } from 'vitest'
 import { createDefaultOwner, instantiateActor, Actor2, OwnerMaximal } from '..'
-import { leaf, ModNode } from '../../log2'
+import newModNode, { leaf, ModNode, sumFunc } from '../../log2'
 import modNodeToText from '../../log2/format'
 import { BaseEquipment } from '../../equipment-sheet2/types'
 import { iterate } from '../../simulate/util/iterate'
@@ -15,6 +15,7 @@ import {
     outputRawSar,
     sarAgainstTarget,
 } from './attack'
+import rollTree from '../../log2/roll'
 
 // --- fixtures -------------------------------------------------------------
 
@@ -23,7 +24,10 @@ const testWeapon = (displayName: string): BaseEquipment => ({
     displayName,
     tags: ['melee'],
     broadContexts: {
-        'damage': () => leaf(displayName, 4),
+        damage: (o) => {
+            const sides = 6
+            return newModNode(displayName, [rollTree(sides)(o)], sumFunc)
+        },
         'crit-multiplier': () => leaf(displayName, 2),
     },
 })
@@ -49,7 +53,7 @@ const findRun = <T>(
 }
 
 const rollOf = (node: ModNode) => {
-    const rollChild = node.children.find(c => c.displayName === 'roll')
+    const rollChild = node.children.find(c => c.displayName === 'roll-total')
     if (!rollChild) throw Error(`no roll child on:\n${modNodeToText(node)}`)
     return rollChild.total()
 }
@@ -95,7 +99,7 @@ describe('calculateAttack', () => {
         assert.equal(node.children.length, 2)
         const [attackChild, rollChild] = node.children
         assert.equal(attackChild.displayName, 'attack')
-        assert.equal(rollChild.displayName, 'roll')
+        assert.equal(rollChild.displayName, 'roll-total')
         assert.equal(node.total(), attackChild.total() + rollChild.total())
     })
 
@@ -120,7 +124,7 @@ describe('calculateCritConfirm', () => {
         assert.equal(node.children.length, 2)
         const [confirmChild, rollChild] = node.children
         assert.equal(confirmChild.displayName, 'crit-confirm')
-        assert.equal(rollChild.displayName, 'roll')
+        assert.equal(rollChild.displayName, 'roll-total')
         assert.equal(node.total(), confirmChild.total() + rollChild.total())
     })
 

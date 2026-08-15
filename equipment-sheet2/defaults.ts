@@ -1,8 +1,8 @@
 // default equipment for testing purposes
-import newModNode, { leaf, ModNode } from '../log2'
+import newModNode, { leaf, ModNode, sumFunc } from '../log2'
 import { Tags } from '../log2/tags'
 import { ObjectWithBroadContexts, OwnerLog2 } from '../log2/types'
-import roll from '../roll'
+import rollTree from '../log2/roll'
 import type { BaseEquipment, EquipmentSheet, EquipmentSlot } from './types'
 
 // generic is to provide inference
@@ -58,7 +58,7 @@ export const shortsword: BaseEquipment = (() => {
         broadContexts: {
             damage: (o: OwnerLog2) => {
                 const sides = 6
-                return leaf(dn, roll(sides))
+                return newModNode(dn, [rollTree(sides)(o)], sumFunc)
             }
         },
         tags: ['melee']
@@ -72,7 +72,7 @@ export const shortswordPlusOne: BaseEquipment = (() => {
         broadContexts: {
             damage: (o: OwnerLog2) => {
                 const sides = 6
-                return leaf(dn, roll(sides))
+                return newModNode(dn, [rollTree(sides)(o)], sumFunc)
             },
             enhancement: (o: OwnerLog2) => {
                 return leaf(dn, 1)
@@ -89,7 +89,7 @@ export const shortswordPlusOneIfFighter: BaseEquipment = (() => {
         broadContexts: {
             damage: (o: OwnerLog2) => {
                 const sides = 6
-                return leaf(dn, roll(sides))
+                return newModNode(dn, [rollTree(sides)(o)], sumFunc)
             },
             enhancement: (o: OwnerLog2) => {
                 if (!!o.cs.levels.fighter) return leaf(dn, 1)
@@ -107,7 +107,7 @@ export const longsword: BaseEquipment = (() => {
         broadContexts: {
             damage: (o: OwnerLog2) => {
                 const sides = 8
-                return leaf(dn, roll(sides))
+                return newModNode(dn, [rollTree(sides)(o)], sumFunc)
             }
         },
         tags: ['melee']
@@ -121,7 +121,7 @@ export const dagger: BaseEquipment = (() => {
         broadContexts: {
             damage: (o: OwnerLog2) => {
                 const sides = 4
-                return leaf(dn, roll(sides))
+                return newModNode(dn, [rollTree(sides)(o)], sumFunc)
             },
         },
         tags: ['melee', 'finesse']

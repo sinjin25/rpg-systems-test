@@ -1,11 +1,11 @@
-import { describe, test, expect } from 'vitest'
+import { describe, test, expect, assert } from 'vitest'
 import damageOfEquipmentPiece from './damage-of-equipment-piece'
-import { Weapon } from '../../equipment-sheet'
-import { longSword } from '../../defaults/equipment'
+import { shortsword } from '../../equipment-sheet2/defaults'
 import { setSeed, clearSeed } from '../../roll'
-import { BaseEquipment } from '../types'
+import { BaseEquipment } from '../../equipment-sheet2/types'
 import newModNode, { findNodeMatching, leaf } from '..'
 import { createDefaultOwner } from '../../actor2'
+import modNodeToText from '../format'
 
 const owner = createDefaultOwner()
 const weapon = (damage: number): BaseEquipment =>
@@ -29,9 +29,12 @@ describe('damage-of-equipment-piece', () => {
         })
     })
 
-    test('is a leaf - the roll is a value, not something explained by children', () => {
-        const node = damageOfEquipmentPiece(weapon(8))(owner)
-        expect(node.children.length).toEqual(0)
+    test('exposes the roll + sides via children', () => {
+        const node = damageOfEquipmentPiece(shortsword)(owner)
+        const rollNode = findNodeMatching(node, 'roll-total', { includeRoot: true })
+        assert.exists(rollNode)
+        const sidesNode = findNodeMatching(node, /1d6/)
+        assert.exists(sidesNode)
     })
 
     test('Stays stable across reads', () => {

@@ -56,7 +56,7 @@ export type FeatMod = `${FeatModTypes}-feat-mod`
 type Health = 'base-health' | 'flat-health' | 'health-per-level' | 'health-equipment-mod' | 'base-health-per-level' | 'health-from-levels'
 // | health-feat-mod (see Feats)
 
-type RollTypes = 'roll' | 'attack' | 'damage' | 'dc'
+type RollTypes = 'roll' | 'attack' | 'damage' | 'dc' | 'roll-total'
 export type RollSidesMod = `${RollTypes}-sides-mod`
 
 // from terminal/ these are end results
@@ -74,7 +74,7 @@ export type TerminalRoutes = 'ac'
     | 'maximum-health'
     | 'damage-over-time'
     | 'damage-over-time-taken'
-    | 'roll'
+    | 'roll-total'
     | 'dc'
 
 export type EveryTree =

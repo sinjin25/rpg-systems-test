@@ -5,7 +5,7 @@ import { OwnerLog2, EveryTree, RollSidesMod } from "../types";
 import sides from "./sides";
 import roll from "../../roll";
 
-const displayName: EveryTree = 'roll'
+const displayName: EveryTree = 'roll-total'
 
 export default (diceSides = 20, diceNumber = 1, member?: RollSidesMod,) => (owner: OwnerLog2): ModNode => {
 
@@ -14,16 +14,23 @@ export default (diceSides = 20, diceNumber = 1, member?: RollSidesMod,) => (owne
         const sideBoost = member ? sides(member)(owner) : undefined
 
         if (sideBoost) {
-            const total = diceSides + sideBoost.total()
+            const BASE_SIDES = leaf('base-sides', diceSides)
+            const total = BASE_SIDES.total() + sideBoost.total()
             const r = roll(total)
             subtree.push({
-                displayName: `1d${total}`,
-                children: [sideBoost],
+                displayName: `roll 1d${total}`,
+                children: [sideBoost, BASE_SIDES],
                 total: () => r,
             })
         } else {
+            const BASE_SIDES = leaf('base-sides', diceSides)
+            const total = BASE_SIDES.total() + 0
             const r = roll(diceSides)
-            subtree.push(leaf(`1d${diceSides}`, r))
+            subtree.push({
+                displayName: `roll 1d${total}`,
+                children: [BASE_SIDES],
+                total: () => r,
+            })
         }
     }
 

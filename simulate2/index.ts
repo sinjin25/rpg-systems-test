@@ -119,9 +119,6 @@ export const simulateFight = (
             decayActionsElapsed(theActor.owner, 1)
 
             // find the first alive person (target)
-            /* const targetTeam = ownerIsMemberOf(theActor.owner, playerActors) ? enemyActors : playerActors
-            const target = chooseTarget(targetTeam)
-            const snapshotActors = ttrActorContext(theActor, [target]) */
             const targetTeam = ownerIsMemberOf(theActor.owner, playerActors) ? enemyActors : playerActors
             const allyTeam = ownerIsMemberOf(theActor.owner, playerActors) ? playerActors : enemyActors
             const target = pickTarget2(

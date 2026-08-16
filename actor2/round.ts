@@ -1,6 +1,7 @@
 import { Actor2 } from "."
 import roll from "../roll"
 import { decaySpeedElapsed } from "../status-sheet2/decay"
+import { Speed } from "./instantiate"
 
 export const DEFAULT_SPEED = 35
 
@@ -16,7 +17,9 @@ export type Round = {
     speedSum: number, // default 35
 }
 
-export const roundOrderBySpeed = (actors: Actor2[]) => {
+export const roundOrderBySpeed = <A extends {
+    speed: Speed,
+}>(actors: A[]) => {
     const orderBySpeed = actors.sort((a, b) => {
         return b.speed.remainder - a.speed.remainder
     })

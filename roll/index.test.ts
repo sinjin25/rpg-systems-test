@@ -27,7 +27,7 @@ describe('seeded rolls', () => {
     test('different seeds produce different sequences', () => {
         const sequence = (seed: number) => {
             setSeed(seed)
-            const rolls = []
+            const rolls: number[] = []
             for (let i = 0; i < 20; i++) rolls.push(roll(20))
             return rolls.join(',')
         }
@@ -52,10 +52,10 @@ describe('seeded rolls', () => {
         // an unseeded sequence should not replay the seeded one;
         // 20 consecutive matches by chance is ~20^-20
         setSeed(42)
-        const replay = []
+        const replay: number[] = []
         for (let i = 0; i < 20; i++) replay.push(roll(20))
         clearSeed()
-        const fresh = []
+        const fresh: number[] = []
         for (let i = 0; i < 20; i++) fresh.push(roll(20))
 
         assert.equal(typeof seeded, 'number')

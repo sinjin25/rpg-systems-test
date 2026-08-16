@@ -4,6 +4,7 @@ import { Tags } from '../log2/tags'
 import { ObjectWithBroadContexts, OwnerLog2 } from '../log2/types'
 import rollTree from '../log2/roll'
 import type { BaseEquipment, EquipmentSheet, EquipmentSlot } from './types'
+import { classLevelCounts } from '../class-level2/derive'
 
 // generic is to provide inference
 const buildOutBaseArmor = <const T extends readonly (readonly [string, number, number])[]>(
@@ -92,8 +93,9 @@ export const shortswordPlusOneIfFighter: BaseEquipment = (() => {
                 return newModNode(dn, [rollTree(sides)(o)], sumFunc)
             },
             enhancement: (o: OwnerLog2) => {
-                if (!!o.cs.levels.fighter) return leaf(dn, 1)
-                return undefined
+                const fLevelCnt = classLevelCounts(o.cs.levels).fighter
+                if (fLevelCnt === undefined) return leaf(dn, 0)
+                return leaf(dn, fLevelCnt)
             }
         },
         tags: ['melee']

@@ -3,7 +3,6 @@ import damageTaken from './damage-taken'
 import critDamage from '../terminal/crit-damage'
 import { createDefaultOwner } from '../../actor2'
 import { ObjectWithBroadContexts, OwnerLog2 } from '../types'
-import { Weapon } from '../../equipment-sheet'
 import studiedTarget from '../../status-sheet2/status/studied-target'
 import defensiveRoll from '../../status-sheet2/status/defensive-roll'
 import { leaf, findNodeMatching } from '..'
@@ -16,9 +15,15 @@ const dtStatus = (amount: number): ObjectWithBroadContexts => ({
     broadContexts: { 'damage-taken-status-mod': () => leaf('Test DT', amount) },
 })
 
-const weapon = (dmg: number, crit?: number): Weapon =>
-    ({ displayName: 'test-weapon', contexts: ['melee'], damage: () => dmg, critMultiplier: crit } as Weapon)
-
+const weapon = (dmg: number, crit?: number): BaseEquipment => {
+    return {
+        displayName: 'test-weapon', tags: ['melee'],
+        broadContexts: {
+            'damage': () => leaf('test-weapon', dmg),
+            'crit-multiplier': () => leaf('test-weapon', crit || 1.5)
+        }
+    }
+}
 const withSlot = (owner: OwnerLog2, slot: OwnerLog2['relevantSlot']): OwnerLog2 =>
     ({ ...owner, relevantSlot: slot })
 

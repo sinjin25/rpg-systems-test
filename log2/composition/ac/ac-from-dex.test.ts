@@ -2,7 +2,6 @@ import { describe, test, expect, assert } from 'vitest'
 import acFromDex from './ac-from-dex'
 import catsGrace from '../../../status-sheet2/status/cats-grace'
 import { createDefaultOwner } from '../../../actor2'
-import { bandedMail } from '../../../defaults/equipment'
 import { armors } from '../../../equipment-sheet2/defaults'
 
 describe('ac-from-dex', () => {

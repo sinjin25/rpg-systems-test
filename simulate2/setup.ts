@@ -30,7 +30,6 @@ export const setupWorldState = (
 export const resolveParticipants = (
     participants: Array<OwnerMaximal | Actor2>
 ) => {
-    if (participants.length === 0) return
     const part: Actor2[] = []
     for (let p of participants) {
         if (!participantIsActor(p)) part.push(instantiateActor(p))

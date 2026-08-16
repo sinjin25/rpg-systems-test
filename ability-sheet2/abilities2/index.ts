@@ -42,6 +42,7 @@ export const resolveStep = (p: Participants, source: Actor2, step: DiscreteTarge
     const resolutions: DiscreteTargetGroupPayloadResolution[] = []
     const targets = target(p.enemy, p.ally, step.tp)
     for (let t of targets) {
+        if (!t) continue
         for (let payload of step.payload) {
             const { defenderSuccess, result } = resolvePayload(source, t, payload)
             resolutions.push(result)

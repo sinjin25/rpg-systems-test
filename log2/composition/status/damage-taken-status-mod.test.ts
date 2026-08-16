@@ -1,10 +1,10 @@
 import { describe, test, expect } from 'vitest'
 import damageTakenStatusMod from './damage-taken-status-mod'
 import { createDefaultOwner } from '../../../actor2'
-import { StatusEffectMaximal } from '../../types'
 import { leaf, findNodeMatching } from '../..'
+import { StatusEffect } from '../../../status-sheet2'
 
-const dtStatus = (amount: number): StatusEffectMaximal => ({
+const dtStatus = (amount: number): StatusEffect => ({
     displayName: 'Test DT',
     broadContexts: { 'damage-taken-status-mod': () => leaf('Test DT', amount) },
 })

@@ -13,8 +13,7 @@ export const registry: Record<ClassKeys, ClassLevel> = {
 export const classLevelCounts = (clpl: ClassLevelPickLog): Partial<Record<ClassKeys, number>> => {
     const freq: Partial<Record<ClassKeys, number>> = {}
     for (const entry of clpl) {
-        if (!freq[entry.key]) freq[entry.key] = 0
-        freq[entry.key]++
+        freq[entry.key] = (freq[entry.key] ?? 0) + 1
     }
     return freq
 }
@@ -37,7 +36,7 @@ export const deriveBonus = (
         const column = cl[key]
         if (!column) throw Error(`improper key for deriveBonus ${key}`)
 
-        const levels = freq[clKey as ClassKeys]
+        const levels = freq[clKey as ClassKeys]!
         // a log deeper than the table would silently under-sum otherwise
         if (levels > column.length) {
             throw Error(`log has ${levels} levels of ${clKey}, but its table only defines ${column.length}`)

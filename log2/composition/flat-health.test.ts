@@ -1,8 +1,9 @@
 import { describe, test, expect, assert } from 'vitest'
 import flatHealth from './flat-health'
 import { createDefaultOwner } from '../../actor2'
-import { BaseEquipment, ObjectWithBroadContexts } from '../types'
+import { ObjectWithBroadContexts } from '../types'
 import { leaf, findNodeMatching } from '..'
+import { BaseEquipment } from '../../equipment-sheet2/types'
 
 const toughness: ObjectWithBroadContexts = {
     displayName: 'toughness',

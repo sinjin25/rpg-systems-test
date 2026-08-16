@@ -26,6 +26,7 @@ export const presentOptions = (clpl: ClassLevelPickLog): ClassLevelProposal[] =>
 
         proposals.push({
             attackBonus: cl.attackBonus[level],
+            will: cl.will[level],
             fortitude: cl.attackBonus[level],
             reflex: cl.attackBonus[level],
             classFeats: cl.classFeats[level],

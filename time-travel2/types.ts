@@ -14,7 +14,7 @@ export type FrozenModNode = {
 
 export type FrozenExpiration = {
     dc?: FrozenModNode,
-    kind: StatusEffect['expiration']['kind'],
+    kind: NonNullable<StatusEffect['expiration']>['kind'],
     remaining?: number,
     saveType?: Saves
     /* enemy?: {} */

@@ -21,7 +21,7 @@ describe('chainStatus', () => {
         const owner = createDefaultOwner()
         assert.notExists(owner.ss[getStatusKey(st)])
         const log = chainStatus(owner, st)
-        assert.exists(owner.ss, log.key)
+        assert.exists(owner.ss, log!.key)
     })
 
     test('chainStatus returns a log on success or undefined when nothing happens', () => {

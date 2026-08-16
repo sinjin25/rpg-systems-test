@@ -1,7 +1,7 @@
 // remove this later
 
 import newModNode from "../..";
-import { BaseEquipment } from "../../types";
+import { BaseEquipment } from "../../../equipment-sheet2/types";
 
 export const dexAmulet: BaseEquipment = {
     displayName: 'dex amulet',

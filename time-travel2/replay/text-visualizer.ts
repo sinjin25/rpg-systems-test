@@ -15,7 +15,7 @@ const cc = {
 }
 
 const displayActor = (actor: Actor2Snapshot, color = cc.BgBlue) => {
-    return `${color}${actor.owner.cs.flavorSheet?.displayName + actor.id}${cc.reset}`
+    return `${color}${(actor.owner.cs.flavorSheet?.displayName ?? '') + actor.id}${cc.reset}`
 }
 
 const ttrvTextVisualizer: TimeTravelReplayerVisualizer = {

@@ -3,6 +3,7 @@ import featImprovedRage from '../../feat2/feats/improved-rage'
 import { addStatusToStatusSheet } from '..'
 import { leaf, findNodeMatching } from '../../log2'
 import { BaseEquipment } from '../../equipment-sheet2/types'
+import { FeatSheet } from '../../feat2'
 import attack from '../../log2/terminal/attack.ts'
 import damage from '../../log2/terminal/damage.ts'
 import critDamage from '../../log2/terminal/crit-damage.ts'
@@ -22,7 +23,7 @@ const testWeapon: BaseEquipment = {
 } as BaseEquipment
 
 const makeOwner = (data: { improved?: boolean, raging?: boolean, weapon?: BaseEquipment } = {}) => {
-    const fs = data.improved ? { [featImprovedRage.displayName]: featImprovedRage } : {}
+    const fs: FeatSheet = data.improved ? { [featImprovedRage.displayName]: featImprovedRage } : {}
     const owner = createDefaultOwner({
         cs: { str: 10, dex: 10 },
         fs,

@@ -2,8 +2,9 @@ import roll from '../../../roll/index.ts'
 import { createDefaultOwner } from '../../../actor2'
 import newModNode, { findNodeMatching } from '../../index.ts'
 import { describe, test, assert, expect } from 'vitest'
-import { BaseEquipment, OwnerLog2 } from '../../types.ts'
+import { OwnerLog2 } from '../../types.ts'
 import modFromEquipment from './mod-from-equipment.ts'
+import { BaseEquipment } from '../../../equipment-sheet2/types.ts'
 
 const testeq = {
     displayName: 'shortsword',

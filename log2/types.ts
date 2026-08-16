@@ -92,7 +92,7 @@ export type EveryTree =
     | 'effective-spell-dc-stat'
     | 'base-attack-bonus'
     | 'attack-status-mod'
-    | 'attack-from-equipment'
+    | 'attack-equipment-mod'
     | 'ac-status-mod'
     | 'crit-confirm-mod'
     | 'crit-scalable-damage-status-mod'

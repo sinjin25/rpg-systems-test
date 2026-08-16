@@ -37,7 +37,7 @@ export const calculateDamageTicks = (
     }[] = []
     for (let key in actor.owner.ss) {
         const st = actor.owner.ss[key]!
-        if (st.tick.calculateDamage) {
+        if (st.tick?.calculateDamage) {
             const cd = calculateTick(st, actor.owner)
             ret.push({
                 node: cd.calculateDamage!,

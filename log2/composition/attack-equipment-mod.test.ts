@@ -1,9 +1,10 @@
 import { describe, test, expect } from 'vitest'
 import attackEquipmentMod from './attack-equipment-mod'
 import { createDefaultOwner } from '../../actor2'
-import { BaseEquipment, OwnerLog2 } from '../types'
 import newModNode, { leaf } from '..'
 import { collectEquipmentTags } from './equipment/mod-from-equipment'
+import { BaseEquipment } from '../../equipment-sheet2/types'
+import { OwnerLog2 } from '../types'
 
 const dagger: BaseEquipment = {
     displayName: 'dagger',
@@ -15,7 +16,7 @@ const daggerPlusOne: BaseEquipment = {
     displayName: 'dagger plus one',
     tags: ['finesse'],
     broadContexts: {
-        "attack-from-equipment": () => newModNode('dagger plus one', [], 1)
+        "attack-equipment-mod": () => newModNode('dagger plus one', [], 1)
     }
 }
 
@@ -23,7 +24,7 @@ const daggerPlusOne: BaseEquipment = {
 const ringPlusOneFinesseAttack: BaseEquipment = {
     displayName: 'ring plus one finesse attack',
     broadContexts: {
-        'attack-from-equipment': (o: OwnerLog2) => collectEquipmentTags(o).includes('finesse') ? leaf('ring plus one finesse attack', 1) : undefined
+        'attack-equipment-mod': (o: OwnerLog2) => collectEquipmentTags(o).includes('finesse') ? leaf('ring plus one finesse attack', 1) : undefined
     }
 }
 

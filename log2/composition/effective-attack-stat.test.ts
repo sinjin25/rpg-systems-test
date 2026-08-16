@@ -3,7 +3,7 @@ import effectiveAttackStat from './effective-attack-stat'
 import { createDefaultOwner } from '../../actor2'
 import modNodeToText from '../format'
 import { findNodeMatching, leaf } from '..'
-import { BaseEquipment } from '../types'
+import { BaseEquipment } from '../../equipment-sheet2/types'
 
 const dagger: BaseEquipment = {
     displayName: 'dagger',

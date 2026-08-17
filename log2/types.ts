@@ -50,7 +50,7 @@ export type BaseStateMod = `raw-${CsScore}`
     | `modded-${CsScore}`
     | `${CsScore}-from-status`
     | `${CsScore}-total` // after all modifiers
-export type FeatModTypes = 'attack' | 'damage' | 'ac' | 'initiative' | 'health' | 'flat-damage' | 'crit-scalable-damage' | 'damage-taken' | 'max-dex' | 'damage-over-time' | 'damage-over-time-taken' | 'spell-dc'
+export type FeatModTypes = 'attack' | 'damage' | 'ac' | 'initiative' | 'health' | 'flat-damage' | 'crit-scalable-damage' | 'damage-taken' | 'max-dex' | 'damage-over-time' | 'damage-over-time-taken' | 'heal-over-time' | 'heal-over-time-taken' | 'spell-dc'
 export type FeatMod = `${FeatModTypes}-feat-mod`
 
 type Health = 'base-health' | 'flat-health' | 'health-per-level' | 'health-equipment-mod' | 'base-health-per-level' | 'health-from-levels'
@@ -74,6 +74,8 @@ export type TerminalRoutes = 'ac'
     | 'maximum-health'
     | 'damage-over-time'
     | 'damage-over-time-taken'
+    | 'heal-over-time'
+    | 'heal-over-time-taken'
     | 'roll-total'
     | 'dc'
 
@@ -132,6 +134,8 @@ export type FeatBroadContexts = Subset<EveryTree,
     | `${Saves}-feat-mod`
     | 'damage-over-time-feat-mod'
     | 'damage-over-time-taken-feat-mod'
+    | 'heal-over-time-feat-mod'
+    | 'heal-over-time-taken-feat-mod'
     | 'spell-dc-feat-mod'
     | RollSidesMod
 >

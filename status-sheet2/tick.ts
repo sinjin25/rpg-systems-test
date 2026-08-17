@@ -48,31 +48,22 @@ export const calculateDamageTicks = (
     return ret
 }
 
-// DEPRECATE
-export const applyTicks = (
+export const calculateHealTicks = (
     actor: Actor2
 ) => {
-    const ticks: TickInstance[] = []
-    for (const key of Object.keys(actor.owner.ss)) {
+    const ret: {
+        source: StatusEffect,
+        node: ModNode,
+    }[] = []
+    for (let key in actor.owner.ss) {
         const st = actor.owner.ss[key]!
-
-        if (!st.tick) continue
-        const { calculateDamage, calculateHeal, source } = calculateTick(st, actor.owner)
-        if (calculateDamage) {
-            applyDamage(actor.health, calculateDamage.total())
-            ticks.push({
-                calculateDamage,
-                source,
-            })
-        }
-        if (calculateHeal) {
-            applyHeal(actor.health, calculateHeal.total())
-            ticks.push({
-                source,
-                calculateHeal,
+        if (st.tick?.calculateHeal) {
+            const ch = calculateTick(st, actor.owner)
+            ret.push({
+                node: ch.calculateHeal!,
+                source: st,
             })
         }
     }
-
-    return ticks
+    return ret
 }

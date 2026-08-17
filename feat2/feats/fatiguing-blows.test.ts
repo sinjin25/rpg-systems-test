@@ -13,7 +13,6 @@ describe('featFatiguingBlows', () => {
     test('applies Fatiguing Blows to the enemy when the attacker misses', () => {
         const self = createDefaultOwner({ fs: { featFatiguingBlows } })
         const target = createDefaultOwner({})
-        // @ts-expect-error
         runTrigger({ self, target }, 'onMiss')
         assert.property(target.ss, 'fatiguingBlows')
         assert.equal(
@@ -25,10 +24,8 @@ describe('featFatiguingBlows', () => {
     test('is non-stacking: a second miss does not overwrite the existing status', () => {
         const self = createDefaultOwner({ fs: { featFatiguingBlows } })
         const target = createDefaultOwner({})
-        // @ts-expect-error
         runTrigger({ self, target }, 'onMiss')
         const firstInstance = target.ss.fatiguingBlows
-        // @ts-expect-error
         runTrigger({ self, target }, 'onMiss')
         assert.equal(target.ss.fatiguingBlows, firstInstance)
     })

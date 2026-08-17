@@ -15,7 +15,7 @@ const cc = {
 }
 
 const displayActor = (actor: Actor2Snapshot, color = cc.BgBlue) => {
-    return `${color}${actor.owner.cs.flavorSheet?.displayName + actor.id}${cc.reset}`
+    return `${color}${(actor.owner.cs.flavorSheet?.displayName ?? '') + actor.id}${cc.reset}`
 }
 
 const ttrvTextVisualizer: TimeTravelReplayerVisualizer = {
@@ -54,6 +54,11 @@ const ttrvTextVisualizer: TimeTravelReplayerVisualizer = {
     'damage-over-time-taken': async (log) => {
         const actor = log.to[0]!
         console.log(`${displayActor(actor)} takes`, log.modNode.total, `damage from ${log.statusSource.displayName}`, `health is now ${actor.health.curr}`, cc.reset)
+        await delay(DELAY)
+    },
+    'heal-over-time-taken': async (log) => {
+        const actor = log.to[0]!
+        console.log(`${displayActor(actor, cc.BgGreen)} heals`, log.modNode.total, `from ${log.statusSource.displayName}`, `health is now ${actor.health.curr}`, cc.reset)
         await delay(DELAY)
     },
     'ability': async (log) => {

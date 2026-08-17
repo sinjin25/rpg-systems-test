@@ -37,6 +37,7 @@ coverage/
 
 # Personal
 design-docs/
+content/
 
 # Debug output
 act-result.debug.json

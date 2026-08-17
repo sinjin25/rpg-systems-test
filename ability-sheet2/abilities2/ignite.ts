@@ -14,7 +14,7 @@ const factory: AbilitySheetDefinition['factory'] = () => {
         },
         payload: [
             {
-                onSuccess: () => ({
+                onSaveFailure: () => ({
                     damage: [leaf('ignite', 3)],
                 }),
             },
@@ -23,8 +23,7 @@ const factory: AbilitySheetDefinition['factory'] = () => {
                     base: 10,
                     saveType: 'reflex',
                 },
-                onSuccess: () => ({}),
-                onFailure: (source: Actor2) => ({
+                onSaveFailure: (source: Actor2) => ({
                     statusEffect: [igniteStatus({ snapshot: source.owner })],
                 }),
             },

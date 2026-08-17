@@ -1,4 +1,4 @@
-import { CharacterSheet, UseCharacterSheet, defaultCharacterSheet } from './index'
+import { CharacterSheet, defaultCharacterSheet } from './index'
 import { describe, test, assert, expect } from 'vitest'
 
 describe('Test defaults', () => {

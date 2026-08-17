@@ -3,7 +3,7 @@ import { act, actionIsAbility, applyResolutions, outputFinalSar } from "../actor
 import { resolveAbility } from "../ability-sheet2"
 import { instantiateSpeed, STD_SPEED } from "../actor2/instantiate"
 import { round } from "../actor2/round"
-import { applyDamage } from "../health"
+import { applyDamage, applyHeal } from "../health"
 import modNodeToText from "../log2/format"
 import { decayActionsElapsed, decayEnemyKilled, decayRoundsElapsed, decaySaveSucceeded } from "../status-sheet2/decay"
 import runTrigger from "../trigger/dispatch"
@@ -12,7 +12,7 @@ import { /* instantiateParticipants */resolveParticipants } from "./setup"
 import { snapshotActor, timeTravel } from "../time-travel2"
 import { AnyStoredLog, TimeTravelReplayer } from "../time-travel2/replay/types"
 import { TimeTravelContext, TTLogMap } from "../time-travel2/types"
-import { calculateDamageTicks } from "../status-sheet2/tick"
+import { calculateDamageTicks, calculateHealTicks } from "../status-sheet2/tick"
 import { TargetPriority } from "../target/types"
 import pickTarget2 from '../target/index'
 
@@ -119,9 +119,6 @@ export const simulateFight = (
             decayActionsElapsed(theActor.owner, 1)
 
             // find the first alive person (target)
-            /* const targetTeam = ownerIsMemberOf(theActor.owner, playerActors) ? enemyActors : playerActors
-            const target = chooseTarget(targetTeam)
-            const snapshotActors = ttrActorContext(theActor, [target]) */
             const targetTeam = ownerIsMemberOf(theActor.owner, playerActors) ? enemyActors : playerActors
             const allyTeam = ownerIsMemberOf(theActor.owner, playerActors) ? playerActors : enemyActors
             const target = pickTarget2(
@@ -135,6 +132,16 @@ export const simulateFight = (
             for (let { node, source } of cdt) {
                 applyDamage(theActor.health, node.total())
                 ttrAppendLog(timeTravel["damage-over-time-taken"]({
+                    modNode: node,
+                    statusSource: source,
+                    to: [snapshotActor(theActor)],
+                }))
+            }
+
+            const cht = calculateHealTicks(theActor)
+            for (let { node, source } of cht) {
+                applyHeal(theActor.health, node.total())
+                ttrAppendLog(timeTravel["heal-over-time-taken"]({
                     modNode: node,
                     statusSource: source,
                     to: [snapshotActor(theActor)],

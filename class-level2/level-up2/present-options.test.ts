@@ -3,7 +3,7 @@ import { chooseOptionAndMutate, presentOptions, } from './present-options.ts'
 import { describe, test, assert, expect } from 'vitest'
 
 const pickFighter = (options: ReturnType<typeof presentOptions>) => {
-    return options.find(a => a.key === 'fighter')
+    return options.find(a => a.key === 'fighter')!
 }
 
 describe('Proposes the correct items', () => {

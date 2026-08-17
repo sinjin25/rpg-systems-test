@@ -79,7 +79,7 @@ describe('burningWeaponStatus wires into decaySaveSucceeded', () => {
         // calculates properly
         setSeed(0)
         const damageTaken = obj.tick.calculateDamage!(owner)
-        console.log(modNodeToText(damageTaken))
+        /* console.log(modNodeToText(damageTaken)) */
 
         const f0 = findNodeMatching(damageTaken, /damage-over-time-taken/, {
             includeRoot: true,

@@ -4,10 +4,12 @@ import newModNode, { findNodeMatching, leaf, ModNode, sumFunc } from '../log2/in
 import damageOverTimeTaken from '../log2/terminal-composition/damage-over-time-taken.ts'
 import damageOverTime from '../log2/terminal/damage-over-time.ts'
 import { addStatusToStatusSheet, ignite, StatusEffect } from './index.ts'
-import { calculateDamageTicks, calculateTick } from './tick.ts'
+import { calculateDamageTicks, calculateHealTicks, calculateTick } from './tick.ts'
 import { describe, test, assert, expect } from 'vitest'
 import { SnapshotStatusEffect } from './types.ts'
 import applyDamage from '../health/apply-damage.ts'
+import { Feat2 } from '../feat2/index.ts'
+import addFeat from '../feat2/add-feat/index.ts'
 
 const st: SnapshotStatusEffect = (data) => {
     return {
@@ -158,5 +160,46 @@ describe('calculateDamageTicks', () => {
         const actor = instantiateActor(owner)
         const cdt = calculateDamageTicks(actor)
         assert.equal(cdt.length, 2)
+    })
+})
+
+describe('calculateHealTicks', () => {
+    test('Returns all heal-over-time-taken calculations', () => {
+        const owner = createDefaultOwner()
+        const status: StatusEffect = {
+            displayName: 'test-heal-status',
+            broadContexts: {},
+            tick: {
+                calculateHeal: () => leaf('test-heal-status', 4)
+            }
+        }
+        const status2: StatusEffect = {
+            displayName: 'test-heal-status2',
+            broadContexts: {},
+            tick: {
+                calculateHeal: () => leaf('test-heal-status2', 4)
+            }
+        }
+        const feat: Feat2 = {
+            displayName: 'hott-plus',
+            broadContexts: {
+                'heal-over-time-taken-feat-mod': () => leaf('hott-plus', 2)
+            }
+        }
+
+        addFeat(owner, feat)
+        addStatusToStatusSheet(owner, status, status2)
+        const actor = instantiateActor(owner)
+
+        const cht = calculateHealTicks(actor)
+        assert.equal(cht.length, 2)
+
+        const displayNames = new Set<string>()
+        for (let c of cht) {
+            displayNames.add(c.node.displayName)
+        }
+        assert.equal(displayNames.size, 2)
+        assert.isTrue(displayNames.has('test-heal-status2'))
+        assert.isTrue(displayNames.has('test-heal-status'))
     })
 })

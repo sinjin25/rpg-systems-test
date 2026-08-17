@@ -12,7 +12,7 @@ const factory: AbilitySheetDefinition['factory'] = () => {
         },
         payload: [
             {
-                onSuccess: (s: Actor2, t: Actor2) => {
+                onSaveFailure: (s: Actor2, t: Actor2) => {
                     let heal = 10
                     if (t.owner.cs.dex <= 10) heal *= 2
                     return {
@@ -33,15 +33,15 @@ const factory: AbilitySheetDefinition['factory'] = () => {
                 base: 17,
                 saveType: 'will',
             }, // hard dc
-            onFailure: () => {
+            onSaveFailure: () => {
                 return {
                     statusEffect: [/* whatever here */]
                 }
             },
-            onSuccess: (s: Actor2, t: Actor2) => ({}) // do nothing
+            onSavePass: (s: Actor2, t: Actor2) => ({}) // do nothing
         },
         {
-            onSuccess: (s: Actor2, t: Actor2) => {
+            onSaveFailure: (s: Actor2, t: Actor2) => {
                 return {
                     damage: [leaf('demoDoALot', 10)]
                 }
@@ -59,12 +59,12 @@ const factory: AbilitySheetDefinition['factory'] = () => {
                 base: 10,
                 saveType: 'reflex',
             }, // easy dc
-            onFailure: (s: Actor2, t: Actor2) => {
+            onSaveFailure: (s: Actor2, t: Actor2) => {
                 return {
                     statusEffect: [/* whatever here */]
                 }
             },
-            onSuccess: (s: Actor2, t: Actor2) => ({}) // do nothing}]
+            onSavePass: (s: Actor2, t: Actor2) => ({}) // do nothing
         },
         ]
     }

@@ -51,7 +51,7 @@ describe('terminal: dc', () => {
             tags: ['ability', 'magic']
         })(owner)
 
-        console.log(modNodeToText(node))
+        /* console.log(modNodeToText(node)) */
 
         // provides a base dc
         const f0 = findNodeMatching(node, /base-dc/)

@@ -3,6 +3,8 @@ import { AnyStoredLog } from './types'
 import newTimeTravelLogReplayer from './index.ts'
 import ttrvTextVisualizer from './text-visualizer.ts'
 import { describe, test, assert } from 'vitest'
+import { createDefaultOwner, instantiateActor } from '../../actor2/index.ts'
+import snapshotActor from '../snapshot/actor.ts'
 
 // a minimal valid stored log (modNodes is a Partial, so {} is fine; context is a
 // throwaway) - contents don't matter here, these tests only exercise the
@@ -10,7 +12,7 @@ import { describe, test, assert } from 'vitest'
 const aSARLog = (): AnyStoredLog => ({
     kind: 'standard-action-result',
     modNodes: {},
-    context: {} as TimeTravelContext,
+    source: snapshotActor(instantiateActor(createDefaultOwner())),
 })
 
 describe('newTimeTravelLogReplayer (time-travel2)', () => {

@@ -1,12 +1,7 @@
 import { createDefaultOwner } from '../../actor2'
-import { ClassLevelMember, ClassLevels } from '../../character-sheet/class-level/type.ts'
 import { findNodeMatching } from '../index.ts'
 import save from './save.ts'
 import { describe, test, assert, expect } from 'vitest'
-
-const classLevels = (displayName: string, members: ClassLevelMember[]): ClassLevels =>
-    ({ displayName, level: members.length, data: members })
-
 
 describe('Too lazy to do this rn', () => {
     test('Works with classes', () => {

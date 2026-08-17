@@ -1,5 +1,6 @@
 import newModNode, { ModNode, sumFunc } from "../..";
-import { EquipmentSlot, EveryTree, OwnerLog2 } from "../../types";
+import { EquipmentSlot } from "../../../equipment-sheet2/types";
+import { EveryTree, OwnerLog2 } from "../../types";
 
 // THIS SHOULD BE LIFTED UP INTO EQUIPMENT2
 export const collectEquipmentTags = (

@@ -5,7 +5,7 @@ import critFocus from '../feats/crit-focus'
 import { findNodeMatching } from '..'
 import modNodeToText from '../format'
 import { TerminalTags } from '../tags'
-import { BaseEquipment } from '../types'
+import { BaseEquipment } from '../../equipment-sheet2/types'
 
 const shortsword: BaseEquipment = {
     displayName: 'shortsword',

@@ -3,7 +3,6 @@ import damageTaken from './damage-taken'
 import critDamage from '../terminal/crit-damage'
 import { createDefaultOwner } from '../../actor2'
 import { ObjectWithBroadContexts, OwnerLog2 } from '../types'
-import { Weapon } from '../../equipment-sheet'
 import studiedTarget from '../../status-sheet2/status/studied-target'
 import defensiveRoll from '../../status-sheet2/status/defensive-roll'
 import { leaf, findNodeMatching } from '..'
@@ -44,7 +43,7 @@ describe('damage-taken (terminal)', () => {
             node: dotNode,
         })(receiver)
 
-        console.log(modNodeToText(node))
+        /* console.log(modNodeToText(node)) */
 
         // prints expected tag
         const f0 = findNodeMatching(node, /damage-over-time-taken/, {

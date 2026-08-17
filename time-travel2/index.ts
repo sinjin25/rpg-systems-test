@@ -5,6 +5,7 @@ import speed from "./speed";
 import actStart from "./act-start";
 import teamVictory from "./team-victory";
 import damageOverTime from "./damage-over-time-taken";
+import healOverTime from "./heal-over-time-taken";
 import ability from "./ability";
 export { default as snapshotActor } from './snapshot/actor'
 
@@ -16,5 +17,6 @@ export const timeTravel: Handlers = {
     "team-victory": teamVictory,
     'act-start': actStart,
     'damage-over-time-taken': damageOverTime,
+    'heal-over-time-taken': healOverTime,
     'ability': ability,
 }

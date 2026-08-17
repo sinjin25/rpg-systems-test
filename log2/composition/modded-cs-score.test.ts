@@ -6,7 +6,8 @@ import bearsEndurance from '../../status-sheet2/status/bears-endurance'
 import { createDefaultOwner } from '../../actor2'
 import { dexAmulet, strAmulet } from './equipment/demo-equips'
 import { findNodeMatching } from '..'
-import { BaseEquipment, CsScore, ObjectWithBroadContexts } from '../types'
+import { CsScore, ObjectWithBroadContexts } from '../types'
+import { BaseEquipment } from '../../equipment-sheet2/types'
 
 describe('Works', () => {
     test('Confirm name', () => {

@@ -14,7 +14,7 @@ const SHOW_DEBUG = true
 const defaultPlayer: OwnerMaximal = createDefaultOwner({})
 
 const pickFighter = (options: ReturnType<typeof presentOptions>) => {
-    return options.find(a => a.key === 'fighter')
+    return options.find(a => a.key === 'fighter')!
 }
 
 describe('A default player can win', () => {

@@ -20,7 +20,7 @@ const finesseBless: ObjectWithBroadContexts = {
 const daggerPlusOne: BaseEquipment = {
     displayName: 'dagger-plus-one',
     broadContexts: {
-        'attack-from-equipment': () => leaf('dagger-plus-one', 1)
+        'attack-equipment-mod': () => leaf('dagger-plus-one', 1)
     },
     tags: ['finesse', 'melee'],
 }
@@ -28,7 +28,7 @@ const daggerPlusOne: BaseEquipment = {
 const ringPlusOneFinesseAttack: BaseEquipment = {
     displayName: 'ring-plus-one-finesse-attack',
     broadContexts: {
-        'attack-from-equipment': (o: OwnerLog2) => hasAllTags(o.tags, ['finesse']) ? leaf('ring-plus-one-finesse-attack', 1) : undefined
+        'attack-equipment-mod': (o: OwnerLog2) => hasAllTags(o.tags, ['finesse']) ? leaf('ring-plus-one-finesse-attack', 1) : undefined
     }
 }
 

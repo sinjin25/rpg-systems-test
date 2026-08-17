@@ -14,7 +14,7 @@ export type FrozenModNode = {
 
 export type FrozenExpiration = {
     dc?: FrozenModNode,
-    kind: StatusEffect['expiration']['kind'],
+    kind: NonNullable<StatusEffect['expiration']>['kind'],
     remaining?: number,
     saveType?: Saves
     /* enemy?: {} */
@@ -60,6 +60,7 @@ type TimeTravelKind = | 'fight-start'
     | 'standard-action-result' // an attack
     | 'team-victory' // anyActorAlive
     | 'damage-over-time-taken'
+    | 'heal-over-time-taken'
 
 export interface TTLogMap {
     'fight-start': {
@@ -106,6 +107,19 @@ export interface TTLogMap {
         },
         output: {
             kind: 'damage-over-time-taken',
+            statusSource: StatusEffect,
+            modNode: FrozenModNode,
+            to: Actor2Snapshot[],
+        },
+    },
+    'heal-over-time-taken': {
+        input: {
+            statusSource: StatusEffect,
+            modNode: ModNode,
+            to: Actor2Snapshot[],
+        },
+        output: {
+            kind: 'heal-over-time-taken',
             statusSource: StatusEffect,
             modNode: FrozenModNode,
             to: Actor2Snapshot[],

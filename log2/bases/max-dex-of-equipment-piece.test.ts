@@ -1,7 +1,6 @@
 import { describe, test, expect, assert } from 'vitest'
 import maxDexOfEquipmentPiece from './max-dex-of-equipment-piece'
 import { armors } from '../../equipment-sheet2/defaults'
-import { BaseEquipment } from '../../equipment-sheet'
 import { createDefaultOwner } from '../../actor2'
 import { findNodeMatching } from '..'
 

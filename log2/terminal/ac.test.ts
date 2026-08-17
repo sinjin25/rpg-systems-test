@@ -5,7 +5,6 @@ import divineProtection from '../../status-sheet2/status/divine-protection'
 import { createDefaultOwner } from '../../actor2'
 import dodgy from '../feats/dodgy'
 import shieldMastery from '../feats/shield-mastery'
-import { modLogToText } from '../../stat-modifier/log/format'
 import modNodeToText from '../format'
 import { armors, heavyShield } from '../../equipment-sheet2/defaults'
 

@@ -1,7 +1,7 @@
-import type { Actor } from "../character/actor"
+import { Actor2 } from "../actor2"
 
 export const applyHeal = (
-    health: Actor['health'],
+    health: Actor2['health'],
     amount: number,
 ): void => {
     const heal = Math.max(0, amount)

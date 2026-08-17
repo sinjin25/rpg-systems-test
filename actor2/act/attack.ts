@@ -147,9 +147,8 @@ export const hitDidConfirm = (
     attackResult: ReturnType<typeof calculateAttack>,
     targetAc: ReturnType<typeof calculateAc>
 ) => {
-    const rollChild = attackResult.children.find(a => a.displayName === 'roll')
+    const rollChild = attackResult.children.find(a => a.displayName === 'roll-total')
     if (!rollChild) {
-        console.log(modNodeToText(attackResult))
         throw Error('Did not find roll child. Confirm the name.')
     }
 
@@ -162,9 +161,8 @@ export const critDidConfirm = (
     critConfirmResult: ReturnType<typeof calculateCritConfirm>,
     targetAc: ReturnType<typeof calculateAc>
 ) => {
-    const rollChild = critConfirmResult.children.find(a => a.displayName === 'roll')
+    const rollChild = critConfirmResult.children.find(a => a.displayName === 'roll-total')
     if (!rollChild) {
-        console.log(modNodeToText(critConfirmResult))
         throw Error('Did not find roll child. Confirm the name.')
     }
 
@@ -176,9 +174,8 @@ export const critDidConfirm = (
 export const sarAgainstTarget = (sar: StandardActionResult, targetAc: ReturnType<typeof calculateAc>): FinalStandardActionResult => {
     const { attackResult, critConfirmResult, critDamageResult, damageResult, relevantSlot, threatResult } = sar
 
-    const rollChild = attackResult.children.find(a => a.displayName === 'roll')
+    const rollChild = attackResult.children.find(a => a.displayName === 'roll-total')
     if (!rollChild) {
-        console.log(modNodeToText(attackResult))
         throw Error('Did not find roll child. Confirm the name.')
     }
 

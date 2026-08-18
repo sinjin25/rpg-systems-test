@@ -4,7 +4,7 @@ import { StatusEffect, StatusSheet } from "../../status-sheet2";
 import { FrozenStatus } from "../types";
 import freezeStatus from "./status";
 
-type SnapshotStatusSheet = Record<string, FrozenStatus>
+type SnapshotStatusSheet = Record<string, FrozenStatus[]>
 
 export type Actor2Snapshot = {
     id: number,
@@ -61,23 +61,9 @@ const cloneAbilitySheet = (as: Actor2['owner']['as']) => {
 }
 
 const cloneStatusSheet = (ss: Actor2['owner']['ss']) => {
-    // WE CANNOT TELL IF SOMETHING WAS SNAPSHOTTED RIGHT NOW
     const clone: SnapshotStatusSheet = {}
     for (let key in ss) {
-        const v = ss[key]!
-        /* clone[key] = {
-            ...v,
-            // some of these will be live references, but we only care about freezing some
-        }
-        if (clone[key].expiration) {
-            const exp = v.expiration!
-            clone[key].expiration = {
-                ...exp,
-            }
-            if (exp.kind === 'save-succeeded') throw Error('We need to freeze the dc and save')
-
-        } */
-        clone[key] = freezeStatus(v)
+        clone[key] = ss[key]!.map(freezeStatus)
     }
 
     return clone

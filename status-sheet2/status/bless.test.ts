@@ -2,6 +2,7 @@ import { describe, test, expect } from 'vitest'
 import bless from './bless'
 import attackStatusMod from '../../log2/composition/attack-status-mod'
 import { createDefaultOwner } from '../../actor2'
+import { inst } from '../testing'
 
 // LAYER: bless (a status definition). It registers a +2 contribution under the 'attack-status-mod'
 // broad context, unconditionally. Whether the owner actually HAS it is attack-status-mod's job
@@ -15,7 +16,7 @@ describe('bless', () => {
     })
 
     test('folds into attack-status-mod when on the sheet', () => {
-        const node = attackStatusMod(createDefaultOwner({ ss: { bless } }))
+        const node = attackStatusMod(createDefaultOwner({ ss: { bless: [inst(bless)] } }))
         expect(node.total()).toBe(2)
         expect(node.children.map(c => `${c.displayName} ${c.total()}`)).toEqual(['Bless 2'])
     })

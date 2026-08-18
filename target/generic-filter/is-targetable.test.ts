@@ -11,7 +11,7 @@ describe('is-targetable', () => {
         const isOkay = isTargetable(actor)
         assert.isTrue(isOkay)
 
-        addStatusToStatusSheet(owner, demoUntargetable)
+        addStatusToStatusSheet(owner, owner, demoUntargetable)
 
         const isNotOkay = isTargetable(actor)
         assert.isNotTrue(isNotOkay)

@@ -3,26 +3,28 @@ import attackStatusMod from './attack-status-mod'
 import { createDefaultOwner } from '../../actor2'
 import { leaf } from '..'
 import bullsStrength from '../../status-sheet2/status/bulls-strength'
-import { ObjectWithBroadContexts, OwnerLog2 } from '../types'
+import { makeWrapper } from '../../status-sheet2'
+import { inst } from '../../status-sheet2/testing'
+import { OwnerLog2 } from '../types'
 import { hasAllTags, mutateOwnerTags } from '../tags'
 
 // +2 attack, but only on a melee weapon
-const meleeBless: ObjectWithBroadContexts = {
+const meleeBless = makeWrapper({
     displayName: 'Melee Bless',
     broadContexts: {
         'attack-status-mod': o => hasAllTags(o.tags, ['melee']) ? leaf('Melee Bless', 2) : undefined,
     },
-}
+})
 
-const rangedOnly: ObjectWithBroadContexts = {
+const rangedOnly = makeWrapper({
     displayName: 'Ranged Only',
     broadContexts: {
         'attack-status-mod': (o: OwnerLog2) => hasAllTags(o.tags, ['ranged']) ? leaf('Ranged Only', 2) : undefined,
     },
-}
+})
 
 describe('attack-status-mod (native)', () => {
-    const o = createDefaultOwner({ ss: { meleeBless } })
+    const o = createDefaultOwner({ ss: { meleeBless: [inst(meleeBless)] } })
     mutateOwnerTags(o)
 
     test('an applying status becomes a summed child leaf', () => {
@@ -32,7 +34,7 @@ describe('attack-status-mod (native)', () => {
     })
 
     test('tag filtering: a ranged-only status is skipped against the melee shortsword', () => {
-        const o = createDefaultOwner({ ss: { rangedOnly } })
+        const o = createDefaultOwner({ ss: { rangedOnly: [inst(rangedOnly)] } })
         mutateOwnerTags(o)
         const node = attackStatusMod(o)
         expect(node.total()).toBe(0)
@@ -46,7 +48,7 @@ describe('attack-status-mod (native)', () => {
     })
 
     test('a stat-boost status (no attack-status-mod contribution) contributes 0 here', () => {
-        const node = attackStatusMod(createDefaultOwner({ ss: { bullsStrength } }))
+        const node = attackStatusMod(createDefaultOwner({ ss: { bullsStrength: [inst(bullsStrength)] } }))
         expect(node.total()).toBe(0)
     })
 })

@@ -1,6 +1,7 @@
 import { createDefaultOwner, instantiateActor } from '../actor2/index.ts'
 import { round } from '../actor2/round.ts'
 import actStart from './act-start.ts'
+import snapshotActor from './snapshot/actor.ts'
 import { describe, test, assert, expect } from 'vitest'
 
 describe('act-start', () => {
@@ -18,7 +19,7 @@ describe('act-start', () => {
         // record
         // I don't even know what we're testing
         const as = actStart({
-            source: r[0],
+            source: snapshotActor(r[0]!),
         })
     })
 })

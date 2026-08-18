@@ -4,22 +4,23 @@ import { createDefaultOwner } from '../../../actor2'
 import studiedTarget from '../../../status-sheet2/status/studied-target'
 import divineProtection from '../../../status-sheet2/status/divine-protection'
 import bless from '../../../status-sheet2/status/bless'
+import { inst } from '../../../status-sheet2/testing'
 
 describe('ac-status-mod (native)', () => {
     test('divine protection contributes +acBonus', () => {
-        const node = acStatusMod(createDefaultOwner({ ss: { divineProtection: divineProtection(2) } }))
+        const node = acStatusMod(createDefaultOwner({ ss: { divineProtection: [inst(divineProtection(2))] } }))
         expect(node.total()).toBe(2)
         expect(node.children.map(c => `${c.displayName} ${c.total()}`)).toEqual(['Divine Protection 2'])
     })
 
     test('studied target contributes -1 (the studied creature is easier to hit)', () => {
-        const node = acStatusMod(createDefaultOwner({ ss: { studiedTarget } }))
+        const node = acStatusMod(createDefaultOwner({ ss: { studiedTarget: [inst(studiedTarget)] } }))
         expect(node.total()).toBe(-1)
     })
 
     test('statuses stack', () => {
         const node = acStatusMod(createDefaultOwner({
-            ss: { divineProtection: divineProtection(3), studiedTarget },
+            ss: { divineProtection: [inst(divineProtection(3))], studiedTarget: [inst(studiedTarget)] },
         }))
         expect(node.total()).toBe(2) // +3 - 1
     })
@@ -32,7 +33,7 @@ describe('ac-status-mod (native)', () => {
 
     test('an attack-only status does not leak into the ac status mod', () => {
         // bless declares only 'attack-status-mod', so it is filtered out here entirely
-        const node = acStatusMod(createDefaultOwner({ ss: { bless } }))
+        const node = acStatusMod(createDefaultOwner({ ss: { bless: [inst(bless)] } }))
         expect(node.total()).toBe(0)
         expect(node.children).toEqual([])
     })

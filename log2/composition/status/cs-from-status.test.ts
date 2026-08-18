@@ -4,15 +4,16 @@ import catsGrace from '../../../status-sheet2/status/cats-grace'
 import { createDefaultOwner } from '../../../actor2'
 import { findNodeMatching } from '../../index.ts'
 import csFromStatus from './cs-from-status.ts'
+import { inst } from '../../../status-sheet2/testing.ts'
 import { describe, test, assert, expect } from 'vitest'
 
 describe('Works', () => {
     test('str-from-status, dex-from-status, con-from-status', () => {
         const owner = createDefaultOwner({
             ss: {
-                bullsStrength: bullsStrength,
-                catsGrace: catsGrace,
-                /* bearsEndurance: bearsEndurance, */
+                bullsStrength: [inst(bullsStrength)],
+                catsGrace: [inst(catsGrace)],
+                /* bearsEndurance: [inst(bearsEndurance)], */
             }
         })
         const str = csFromStatus('str')(owner)

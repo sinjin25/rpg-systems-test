@@ -1,5 +1,5 @@
-import { StatusEffect } from '..'
-import { createDefaultOwner } from '../../actor2'
+import { makeWrapper, StatusEffectInstance, StatusEffectWrapper } from '..'
+import { createDefaultOwner, OwnerMaximal } from '../../actor2'
 import { decaySaveSucceeded } from './decay-save-succeeded'
 import { describe, test, assert, afterEach } from 'vitest'
 import { setSeed, clearSeed } from '../../roll'
@@ -17,14 +17,10 @@ describe('decaySaveSucceeded', () => {
 
     afterEach(() => clearSeed())
 
-    const saveBuff = (dc: ModNode): StatusEffect => ({
-        displayName: 'saveBuff',
-        broadContexts: {},
-        expiration: {
-            kind: 'save-succeeded',
-            saveType: 'reflex',
-            dc,
-        }
+    const saveBuff = (dc: ModNode, onExpiration?: () => StatusEffectWrapper): StatusEffectInstance => ({
+        pointer: { displayName: 'saveBuff', broadContexts: {}, stack: { kind: 'highest' }, onExpiration },
+        source: {} as OwnerMaximal,
+        expiration: { kind: 'save-succeeded', saveType: 'reflex', dc },
     })
 
     // the dc is picked relative to the owner's actual reflex mod so these tests
@@ -35,9 +31,9 @@ describe('decaySaveSucceeded', () => {
     test('removes the status when total meets or beats the dc', () => {
         const owner = createDefaultOwner()
         const mod = reflexMod(owner).total()
-        owner.ss.test = saveBuff(
+        owner.ss.test = [saveBuff(
             newModNode('saveBuffDc', [leaf('who cares', 10), reflexMod(owner)], sumFunc)
-        )
+        )]
 
         setSeed(NAT_10)
         const result = decaySaveSucceeded(owner)
@@ -57,7 +53,7 @@ describe('decaySaveSucceeded', () => {
 
     test('keeps the status when total is under the dc', () => {
         const owner = createDefaultOwner()
-        owner.ss.test = saveBuff(newModNode('saveBuffDc', [leaf('who cares', 11), reflexMod(owner)], sumFunc))
+        owner.ss.test = [saveBuff(newModNode('saveBuffDc', [leaf('who cares', 11), reflexMod(owner)], sumFunc))]
 
         setSeed(NAT_10)
         decaySaveSucceeded(owner)
@@ -66,7 +62,7 @@ describe('decaySaveSucceeded', () => {
 
     test('removes on a natural 20 even when total is under the dc', () => {
         const owner = createDefaultOwner()
-        owner.ss.test = saveBuff(newModNode('saveBuffDc', [leaf('who cares', 100), reflexMod(owner)], sumFunc))
+        owner.ss.test = [saveBuff(newModNode('saveBuffDc', [leaf('who cares', 100), reflexMod(owner)], sumFunc))]
 
         setSeed(NAT_20)
         const result = decaySaveSucceeded(owner)
@@ -75,7 +71,7 @@ describe('decaySaveSucceeded', () => {
 
     test('keeps the status on a natural 1 even when total beats the dc', () => {
         const owner = createDefaultOwner()
-        owner.ss.test = saveBuff(leaf('who cares', 1))
+        owner.ss.test = [saveBuff(leaf('who cares', 1))]
 
         setSeed(NAT_1)
         decaySaveSucceeded(owner)
@@ -85,11 +81,11 @@ describe('decaySaveSucceeded', () => {
     test('dni with different kinds of statuses', () => {
         const owner = createDefaultOwner({
             ss: {
-                test: {
-                    displayName: 'roundsBuff',
-                    broadContexts: {},
+                test: [{
+                    pointer: { displayName: 'roundsBuff', broadContexts: {}, stack: { kind: 'highest' } },
+                    source: {} as OwnerMaximal,
                     expiration: { kind: 'rounds-elapsed', remaining: 3 },
-                }
+                }]
             }
         })
 
@@ -99,16 +95,13 @@ describe('decaySaveSucceeded', () => {
     })
 
     test('runs onExpiration when the save succeeds', () => {
-        const followUp: StatusEffect = {
-            displayName: 'follow up',
-            broadContexts: {},
-        }
+        const followUp = makeWrapper({ displayName: 'follow up', broadContexts: {} })
         const owner = createDefaultOwner()
-        owner.ss.test = { ...saveBuff(leaf('who cares', 1)), onExpiration: () => followUp }
+        owner.ss.test = [saveBuff(leaf('who cares', 1), () => followUp)]
 
         setSeed(NAT_20)
         decaySaveSucceeded(owner)
         assert.notExists(owner.ss.test)
-        assert.equal(owner.ss['follow up'], followUp)
+        assert.equal(owner.ss['follow up']![0]!.pointer.displayName, 'follow up')
     })
 })

@@ -3,6 +3,7 @@ import studiedTarget from './studied-target'
 import acStatusMod from '../../log2/composition/status/ac-status-mod'
 import damageTakenStatusMod from '../../log2/composition/status/damage-taken-status-mod'
 import { createDefaultOwner } from '../../actor2'
+import { inst } from '../testing'
 
 // LAYER: studied-target (a status definition). It registers two unconditional contributions: -1 under
 // 'ac-status-mod' ("easier to hit") and +2 under 'damage-taken-status-mod' ("takes more damage"). Whether
@@ -16,7 +17,7 @@ describe('studied-target', () => {
     })
 
     test('folds into ac-status-mod when on the sheet', () => {
-        const node = acStatusMod(createDefaultOwner({ ss: { studiedTarget } }))
+        const node = acStatusMod(createDefaultOwner({ ss: { studiedTarget: [inst(studiedTarget)] } }))
         expect(node.total()).toBe(-1)
         expect(node.children.map(c => `${c.displayName} ${c.total()}`)).toEqual(['Studied Target -1'])
     })
@@ -27,7 +28,7 @@ describe('studied-target', () => {
     })
 
     test('folds into damage-taken-status-mod when on the sheet', () => {
-        const node = damageTakenStatusMod(createDefaultOwner({ ss: { studiedTarget } }))
+        const node = damageTakenStatusMod(createDefaultOwner({ ss: { studiedTarget: [inst(studiedTarget)] } }))
         expect(node.total()).toBe(1)
         expect(node.children.map(c => `${c.displayName} ${c.total()}`)).toEqual(['Studied Target 1'])
     })

@@ -1,46 +1,34 @@
-import { createDefaultOwner, OwnerMaximal } from '../actor2'
-import { addStatusToStatusSheet, SnapshotStatusEffect, StatusEffect } from './index.ts'
-import { describe, test, assert, expect } from 'vitest'
+import { createDefaultOwner } from '../actor2'
+import { addStatusToStatusSheet, getStatusKey, makeWrapper } from './index.ts'
+import { describe, test, assert } from 'vitest'
+
+const buff = makeWrapper({ displayName: 'buff', broadContexts: {} })
+const other = makeWrapper({ displayName: 'other', broadContexts: {} })
 
 describe('addStatusToStatusSheet', () => {
-    const st: SnapshotStatusEffect = (data: {
-        snapshot: OwnerMaximal
-    }) => {
-        return {
-            displayName: 'snapshot',
-            broadContexts: {},
-        }
-    }
-    const st2: StatusEffect = {
-        displayName: 'status',
-        broadContexts: {}
-    }
-    test('works with SnapshotStatusEffect', () => {
+    test('mints an instance under the displayName key, recording the creator as source', () => {
         const owner = createDefaultOwner()
+        const creator = createDefaultOwner()
+        assert.notExists(owner.ss[getStatusKey(buff)])
 
-        const missing = owner.ss['snapshot']
-        assert.notExists(missing)
-        addStatusToStatusSheet(owner, st)
-        const status = owner.ss['snapshot']
-        assert.exists(status)
-        assert.equal(status.displayName, 'snapshot')
+        addStatusToStatusSheet(owner, creator, buff)
+
+        const instances = owner.ss[getStatusKey(buff)]!
+        assert.equal(instances.length, 1)
+        assert.equal(instances[0]!.pointer.displayName, 'buff')
+        assert.equal(instances[0]!.source, creator)
     })
 
-    test('works with StatusEffect', () => {
+    test('falls back to the owner as source when no creator is given', () => {
         const owner = createDefaultOwner()
-
-        const missing = owner.ss['status']
-        assert.notExists(missing)
-        addStatusToStatusSheet(owner, st2)
-        const status = owner.ss['status']
-        assert.exists(status)
-        assert.equal(status.displayName, 'status')
+        addStatusToStatusSheet(owner, undefined, buff)
+        assert.equal(owner.ss[getStatusKey(buff)]![0]!.source, owner)
     })
 
-    test('works with multiple', () => {
+    test('stacks repeated applications into the key and adds distinct statuses separately', () => {
         const owner = createDefaultOwner()
-        addStatusToStatusSheet(owner, st, st2)
-        assert.exists(owner.ss['snapshot'])
-        assert.exists(owner.ss['status'])
+        addStatusToStatusSheet(owner, owner, buff, buff, other)
+        assert.equal(owner.ss['buff']!.length, 2)
+        assert.equal(owner.ss['other']!.length, 1)
     })
 })

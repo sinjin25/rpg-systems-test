@@ -1,24 +1,23 @@
-import { StatusEffect } from '..'
-import { createDefaultOwner } from '../../actor2'
+import { makeWrapper, StatusEffectInstance, StatusEffectWrapper } from '..'
+import { createDefaultOwner, OwnerMaximal } from '../../actor2'
 import { decayEnemyKilled } from './decay-enemy-killed'
 import { describe, test, assert } from 'vitest'
 
 describe('decayEnemyKilled', () => {
     const goblin = () => ({ health: { curr: 0 } })
 
-    const killedBuff = (enemy: { health: { curr: number } }): StatusEffect => ({
-        displayName: 'killedBuff',
-        broadContexts: {},
+    const killedBuff = (
+        enemy: { health: { curr: number } },
+        onExpiration?: () => StatusEffectWrapper,
+    ): StatusEffectInstance => ({
+        pointer: { displayName: 'killedBuff', broadContexts: {}, stack: { kind: 'highest' }, onExpiration },
+        source: {} as OwnerMaximal,
         expiration: { kind: 'enemy-killed', enemy },
     })
 
     test('removes the status whose enemy matches the killed target', () => {
         const enemy = goblin()
-        const owner = createDefaultOwner({
-            ss: {
-                test: killedBuff(enemy)
-            }
-        })
+        const owner = createDefaultOwner({ ss: { test: [killedBuff(enemy)] } })
 
         decayEnemyKilled([owner], enemy)
         assert.notExists(owner.ss.test)
@@ -26,11 +25,7 @@ describe('decayEnemyKilled', () => {
 
     test('keeps the status when a different enemy is killed', () => {
         const enemy = goblin()
-        const owner = createDefaultOwner({
-            ss: {
-                test: killedBuff(enemy)
-            }
-        })
+        const owner = createDefaultOwner({ ss: { test: [killedBuff(enemy)] } })
 
         // structurally identical, but a different object: the check is by reference
         decayEnemyKilled([owner], goblin())
@@ -39,8 +34,8 @@ describe('decayEnemyKilled', () => {
 
     test('removes matching statuses across every owner passed in', () => {
         const enemy = goblin()
-        const a = createDefaultOwner({ ss: { test: killedBuff(enemy) } })
-        const b = createDefaultOwner({ ss: { test: killedBuff(enemy) } })
+        const a = createDefaultOwner({ ss: { test: [killedBuff(enemy)] } })
+        const b = createDefaultOwner({ ss: { test: [killedBuff(enemy)] } })
 
         decayEnemyKilled([a, b], enemy)
         assert.notExists(a.ss.test)
@@ -51,11 +46,11 @@ describe('decayEnemyKilled', () => {
         const enemy = goblin()
         const owner = createDefaultOwner({
             ss: {
-                test: {
-                    displayName: 'roundsBuff',
-                    broadContexts: {},
+                test: [{
+                    pointer: { displayName: 'roundsBuff', broadContexts: {}, stack: { kind: 'highest' } },
+                    source: {} as OwnerMaximal,
                     expiration: { kind: 'rounds-elapsed', remaining: 3 },
-                }
+                }]
             }
         })
 
@@ -65,18 +60,11 @@ describe('decayEnemyKilled', () => {
 
     test('runs onExpiration when the enemy dies', () => {
         const enemy = goblin()
-        const followUp: StatusEffect = {
-            displayName: 'follow up',
-            broadContexts: {},
-        }
-        const owner = createDefaultOwner({
-            ss: {
-                test: { ...killedBuff(enemy), onExpiration: () => followUp }
-            }
-        })
+        const followUp = makeWrapper({ displayName: 'follow up', broadContexts: {} })
+        const owner = createDefaultOwner({ ss: { test: [killedBuff(enemy, () => followUp)] } })
 
         decayEnemyKilled([owner], enemy)
         assert.notExists(owner.ss.test)
-        assert.equal(owner.ss['follow up'], followUp)
+        assert.equal(owner.ss['follow up']![0]!.pointer.displayName, 'follow up')
     })
 })

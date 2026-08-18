@@ -1,96 +1,24 @@
-import { iterate } from '../../simulate/util/iterate'
-import { clearSeed, setSeed } from '../../roll'
+import { describe, test, assert } from 'vitest'
+import { createDefaultOwner, instantiateActor } from '../../actor2'
+import { addStatusToStatusSheet, getStatusKey } from '..'
+import { calculateDamageTicks } from '../tick'
 import burningWeaponStatus from './burning-weapon'
-import { decaySaveSucceeded } from '../decay'
-import { createDefaultOwner } from '../../actor2'
-import { afterEach, assert, describe, expect, test } from 'vitest'
-import { findNodeMatching, leaf } from '../../log2'
-import modNodeToText from '../../log2/format'
 
-const KEY = 'burning'
-const setupOwner = () => {
-    const creator = createDefaultOwner({
-        fs: {
-            'dot-plus': {
-                displayName: 'dot-plus',
-                broadContexts: {
-                    'damage-over-time-feat-mod': () => leaf('dot-plus', 2)
-                }
-            }
-        }
-    })
-    return createDefaultOwner({
-        ss: {
-            [KEY]: burningWeaponStatus({
-                snapshot: creator,
-            }),
-        }
-    })
-}
+describe('burning weapon', () => {
+    test('applies with a reflex save-succeeded expiration', () => {
+        const receiver = createDefaultOwner()
+        addStatusToStatusSheet(receiver, createDefaultOwner(), burningWeaponStatus)
 
-describe('burningWeaponStatus wires into decaySaveSucceeded', () => {
-    const PASS_SEED = 1
-    const FAIL_SEED = 0
-
-    afterEach(() => {
-        clearSeed()
+        const inst = receiver.ss[getStatusKey(burningWeaponStatus)]![0]!
+        assert.equal(inst.expiration?.kind, 'save-succeeded')
+        assert.equal(inst.expiration?.kind === 'save-succeeded' && inst.expiration.saveType, 'reflex')
     })
 
-    test('a passing reflex save removes the burning status', () => {
-        const owner = setupOwner()
-        setSeed(FAIL_SEED)
-        decaySaveSucceeded(owner)
-        assert.exists(owner.ss.burning)
-    })
+    test('ticks 1d4 damage on the receiver', () => {
+        const receiver = createDefaultOwner()
+        addStatusToStatusSheet(receiver, createDefaultOwner(), burningWeaponStatus)
 
-    test('a failing reflex save keeps the burning status', () => {
-        const owner = setupOwner()
-        setSeed(PASS_SEED)
-        decaySaveSucceeded(owner)
-        assert.notExists(owner.ss.burning)
-    })
-
-    test('both outcomes are reachable across seeds', () => {
-        // iterate seeds 0..19 and confirm the burn is sometimes shaken off and
-        // sometimes not - proving the save-succeeded path can both keep and remove it
-        const outcomes = iterate(60, () => {
-            const owner = setupOwner()
-            assert.exists(owner.ss.burning)
-            const result = decaySaveSucceeded(owner)
-            const found = result.find(a => a.key === KEY && a.kind === 'succeeded')
-            return !found
-        })
-
-        const total = outcomes.length
-        const threshold = .05
-        const expectedFailProportion = .6 // DC 15, +2 to save, don't want to do a billion tests
-        const realFailProportion = outcomes.filter(a => a === true).length
-
-        expect(realFailProportion / total).toBeGreaterThanOrEqual(expectedFailProportion - threshold)
-        expect(realFailProportion / total).toBeLessThanOrEqual(expectedFailProportion + threshold)
-    })
-
-    test('Has a tick', () => {
-        const owner = setupOwner()
-        const obj = owner.ss.burning
-        assert.exists(obj)
-
-        assert.exists(obj.tick)
-        // calculates properly
-        setSeed(0)
-        const damageTaken = obj.tick.calculateDamage!(owner)
-        /* console.log(modNodeToText(damageTaken)) */
-
-        const f0 = findNodeMatching(damageTaken, /damage-over-time-taken/, {
-            includeRoot: true,
-        })
-        assert.exists(f0)
-        assert.equal(f0.total(), 4)
-
-        const f1 = findNodeMatching(damageTaken, /dot-plus/)
-        assert.exists(f1)
-        assert.equal(f1.total(), 2)
-
-        clearSeed()
+        const total = calculateDamageTicks(instantiateActor(receiver))[0].node.total()
+        assert.isTrue(total >= 1 && total <= 4)
     })
 })

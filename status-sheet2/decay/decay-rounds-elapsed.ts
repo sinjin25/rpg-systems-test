@@ -10,10 +10,12 @@ export const statusExpirationIsRoundsElapsed = (
 
 export const decayRoundsElapsed = (owner: OwnerMaximal, elapsed: number, self?: Actor2) => {
     for (const key of Object.keys(owner.ss)) {
-        const status = owner.ss[key]
-        if (!statusExpirationIsRoundsElapsed(status.expiration)) continue
+        // copy: expireStatus mutates the array (and may delete the key) as we go
+        for (const inst of [...owner.ss[key]!]) {
+            if (!statusExpirationIsRoundsElapsed(inst.expiration)) continue
 
-        status.expiration.remaining -= elapsed
-        if (status.expiration.remaining <= 0) chainStatus(owner, expireStatus(owner, key))
+            inst.expiration.remaining -= elapsed
+            if (inst.expiration.remaining <= 0) chainStatus(owner, expireStatus(owner, key, inst))
+        }
     }
 }

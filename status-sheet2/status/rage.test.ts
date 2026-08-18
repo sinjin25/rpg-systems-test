@@ -29,7 +29,7 @@ const makeOwner = (data: { improved?: boolean, raging?: boolean, weapon?: BaseEq
         fs,
         es: data.weapon ? { mainhand: data.weapon } : undefined,
     })
-    if (data.raging !== false) addStatusToStatusSheet(owner, rage)
+    if (data.raging !== false) addStatusToStatusSheet(owner, owner, rage)
     return owner
 }
 

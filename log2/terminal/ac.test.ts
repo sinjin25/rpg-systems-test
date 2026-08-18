@@ -3,6 +3,7 @@ import ac from './ac'
 import catsGrace from '../../status-sheet2/status/cats-grace'
 import divineProtection from '../../status-sheet2/status/divine-protection'
 import { createDefaultOwner } from '../../actor2'
+import { inst } from '../../status-sheet2/testing'
 import dodgy from '../feats/dodgy'
 import shieldMastery from '../feats/shield-mastery'
 import modNodeToText from '../format'
@@ -13,7 +14,7 @@ describe('ac (terminal)', () => {
         const owner = createDefaultOwner({
             cs: { dex: 14 },
             es: { armor: armors['banded mail'], offhand: heavyShield },
-            ss: { catsGrace },
+            ss: { catsGrace: [inst(catsGrace)] },
             fs: { dodgy, shieldMastery },
         })
         assert.equal(owner.tags.length, 0)
@@ -24,7 +25,7 @@ describe('ac (terminal)', () => {
         const owner = createDefaultOwner({
             cs: { dex: 14 },
             es: { armor: armors['banded mail'], offhand: heavyShield },
-            ss: { catsGrace },
+            ss: { catsGrace: [inst(catsGrace)] },
         })
         // 10 base + min(4 dex, 1 cap) + (7 + 2 armor)
         const node = ac(owner)
@@ -35,7 +36,7 @@ describe('ac (terminal)', () => {
     test('unarmored: base 10 + full dex 4 + no armor', () => {
         const owner = createDefaultOwner({
             cs: { dex: 14 },
-            ss: { catsGrace },
+            ss: { catsGrace: [inst(catsGrace)] },
         })
         const node = ac(owner)
         // 10 base + 4 dex (14 + 4 -> +4, uncapped) + 0 armor
@@ -46,7 +47,7 @@ describe('ac (terminal)', () => {
         const owner = createDefaultOwner({
             cs: { dex: 14 },
             es: { armor: armors['banded mail'], offhand: heavyShield },
-            ss: { catsGrace },
+            ss: { catsGrace: [inst(catsGrace)] },
             fs: { dodgy, shieldMastery },
         })
         const node = ac(owner)
@@ -60,7 +61,7 @@ describe('ac (terminal)', () => {
         const owner = createDefaultOwner({
             cs: { dex: 14 },
             es: { armor: armors['banded mail'], offhand: heavyShield },
-            ss: { catsGrace, divineProtection: divineProtection(2) },
+            ss: { catsGrace: [inst(catsGrace)], divineProtection: [inst(divineProtection(2))] },
         })
         // armored 20 (from the first case) + Divine Protection 2
         expect(ac(owner).total()).toBe(22)

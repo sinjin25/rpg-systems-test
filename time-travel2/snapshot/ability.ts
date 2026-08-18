@@ -1,7 +1,7 @@
 import { DiscreteTargetGroupPayloadResolution } from "../../ability-sheet2";
 import { FrozenAbilityNode } from "../types";
 import freezeModNodeRecursive from "./mod-node";
-import freezeStatus from "./status";
+import { freezeStatusDefinition } from "./status";
 
 const freezeResolution = (r: DiscreteTargetGroupPayloadResolution): FrozenAbilityNode => {
     return {
@@ -11,7 +11,10 @@ const freezeResolution = (r: DiscreteTargetGroupPayloadResolution): FrozenAbilit
         saveType: r.saveType,
         damage: r.damage?.map(freezeModNodeRecursive),
         heal: r.heal?.map(freezeModNodeRecursive),
-        statusEffect: r.statusEffect?.map(freezeStatus),
+        // no usage other than potential UI narration or something
+        // a later TT event will have the status effect added to a sheet
+        // just order of operations shit
+        statusEffect: r.statusEffect?.map(freezeStatusDefinition),
     }
 }
 

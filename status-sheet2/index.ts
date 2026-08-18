@@ -11,9 +11,16 @@ export type {
     StatusPersistTypes,
     StatusSheet,
     Tick,
-    SnapshotStatusEffect,
+    TickCalc,
+    ResolvedTick,
+    ResolvedTickCalc,
+    StatusEffectInstance,
+    StatusEffectInstanceFactory,
+    StatusEffectWrapper,
+    StatusEffectStack,
 } from "./types"
 export * from "./status"
 export * from "./add-status-to-status-sheet"
+export * from "./instance"
 
 export const defaultStatusSheet: StatusSheet = {}

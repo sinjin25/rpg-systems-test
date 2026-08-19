@@ -1,7 +1,7 @@
 import { describe, test, expect, assert } from 'vitest'
 import damageTaken from './damage-taken'
 import critDamage from '../terminal/crit-damage'
-import { createDefaultOwner } from '../../actor2'
+import { createDefaultOwner, instantiateActor, OwnerMaximal } from '../../actor2'
 import { ObjectWithBroadContexts, OwnerLog2 } from '../types'
 import studiedTarget from '../../status-sheet2/status/studied-target'
 import defensiveRoll from '../../status-sheet2/status/defensive-roll'
@@ -10,6 +10,9 @@ import { setSeed, clearSeed } from '../../roll'
 import modNodeToText from '../format'
 import damageOverTime from '../terminal/damage-over-time'
 import damageOverTimeTaken from './damage-over-time-taken'
+import { addStatusToStatusSheet, getStatusKey, makeWrapper } from '../../status-sheet2'
+import featContribution from '../composition/feat-contribution'
+import { calculateDamageTicks } from '../../status-sheet2/tick'
 
 describe('damage-taken (terminal)', () => {
     const creator = createDefaultOwner({
@@ -29,6 +32,19 @@ describe('damage-taken (terminal)', () => {
                 broadContexts: {
                     'damage-over-time-taken-feat-mod': () => leaf('decrease-dot', -2)
                 }
+            }
+        }
+    })
+    const stackingDot = makeWrapper({
+        broadContexts: {},
+        displayName: 'stacking-dot',
+        stack: {
+            kind: 'stack',
+        },
+        tick: {
+            calculateDamage: {
+                base: () => leaf('stacking-dot', 4),
+                mod: (source: OwnerMaximal) => featContribution('damage-over-time-feat-mod')(source),
             }
         }
     })
@@ -62,5 +78,24 @@ describe('damage-taken (terminal)', () => {
         assert.equal(f0!.total(), 6)
         assert.equal(f2!.total(), -2)
         assert.equal(f3!.total(), 8)
+    })
+
+    test('Confirm stacking kind = stack behavior', () => {
+        const o = creator // has dot-plus
+        const a = instantiateActor(o)
+
+        // add twice
+        addStatusToStatusSheet(o, o, stackingDot, stackingDot)
+        assert.equal(o.ss[getStatusKey(stackingDot)].length, 2)
+
+        const cdt = calculateDamageTicks(a)
+        console.log(cdt)
+        assert.equal(cdt.length, 2)
+
+        // each instance of a stacked dot is its own damage calculation
+        const cdt0 = cdt[0]!
+
+        assert.equal(cdt0.node.total(), 8)
+        console.log(modNodeToText(cdt0.node))
     })
 })

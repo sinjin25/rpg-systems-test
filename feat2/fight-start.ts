@@ -1,6 +1,7 @@
 import { FeatSheet } from "."
 import { CharacterSheet } from "../character-sheet"
 import { OwnerMaximal } from "../actor2"
+import { newStatusInstance } from "../status-sheet2"
 
 
 export const getOnFightStartFeatHandlers = (owner: {
@@ -21,7 +22,8 @@ export const applyOnFightStartFeatHandlers = (
         /* console.log('statuses', statuses) */
         statuses.forEach((status, i) => {
             /* console.log('key is', statuses.length > 1 ? `${k}${i}` : k) */
-            owner.ss[statuses.length > 1 ? `${k}${i}` : k] = status
+            const key = statuses.length > 1 ? `${k}${i}` : k
+            owner.ss[key] = [newStatusInstance(status, owner)]
         })
     }
 }

@@ -1,73 +1,34 @@
-import { StatusEffect } from '..'
+import { describe, test, assert } from 'vitest'
+import { addStatusToStatusSheet, makeWrapper, newStatusInstance } from '..'
 import { createDefaultOwner } from '../../actor2'
 import { expireStatus } from './expire-status'
-import { describe, test, assert } from 'vitest'
+
+const buff = makeWrapper({ displayName: 'buff', broadContexts: {}, stack: { kind: 'stack' } })
 
 describe('expireStatus', () => {
-    const plainStatus = (displayName = 'plain'): StatusEffect => ({
-        displayName,
-        broadContexts: {},
-    })
-
-    test('removes the status from the sheet', () => {
-        const owner = createDefaultOwner({
-            ss: {
-                test: plainStatus()
-            }
-        })
-
-        assert.exists(owner.ss.test)
-        expireStatus(owner, 'test')
-        assert.notExists(owner.ss.test)
-    })
-
-    test('returns the status it expired', () => {
-        const status = plainStatus()
-        const owner = createDefaultOwner({
-            ss: {
-                test: status
-            }
-        })
-
-        assert.equal(expireStatus(owner, 'test'), status)
-    })
-
-    test('returns undefined when the key is not on the sheet', () => {
+    test('removes a single instance and deletes the key once empty', () => {
         const owner = createDefaultOwner()
+        addStatusToStatusSheet(owner, owner, buff)
+        const inst = owner.ss['buff']![0]!
 
-        assert.notExists(expireStatus(owner, 'test'))
+        const removed = expireStatus(owner, 'buff', inst)
+        assert.equal(removed, inst)
+        assert.notExists(owner.ss['buff'])
     })
 
-    test('does not run onExpiration', () => {
-        let ran = false
-        const owner = createDefaultOwner({
-            ss: {
-                test: {
-                    ...plainStatus(),
-                    onExpiration: () => {
-                        ran = true
-                        return plainStatus('follow up')
-                    },
-                }
-            }
-        })
+    test('removes only the targeted instance, leaving the rest under the key', () => {
+        const owner = createDefaultOwner()
+        addStatusToStatusSheet(owner, owner, buff, buff)
+        const [a, b] = owner.ss['buff']!
 
-        expireStatus(owner, 'test')
-        assert.isFalse(ran)
-        assert.notExists(owner.ss.test)
+        expireStatus(owner, 'buff', a!)
+        assert.equal(owner.ss['buff']!.length, 1)
+        assert.equal(owner.ss['buff']![0], b)
     })
 
-    test('does not touch other statuses on the sheet', () => {
-        const other = plainStatus('other')
-        const owner = createDefaultOwner({
-            ss: {
-                test: plainStatus(),
-                other,
-            }
-        })
-
-        expireStatus(owner, 'test')
-        assert.notExists(owner.ss.test)
-        assert.equal(owner.ss.other, other)
+    test('returns undefined when the instance is not on the key', () => {
+        const owner = createDefaultOwner()
+        const stray = newStatusInstance(buff, owner)
+        assert.equal(expireStatus(owner, 'buff', stray), undefined)
     })
 })

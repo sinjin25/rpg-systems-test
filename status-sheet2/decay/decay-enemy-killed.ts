@@ -13,9 +13,10 @@ export const decayEnemyKilled = (
 ) => {
     for (const owner of owners) {
         for (const key of Object.keys(owner.ss)) {
-            const status = owner.ss[key]
-            if (!statusExpirationIsEnemyKilled(status.expiration)) continue
-            if (status.expiration.enemy === killed) chainStatus(owner, expireStatus(owner, key))
+            for (const inst of [...owner.ss[key]!]) {
+                if (!statusExpirationIsEnemyKilled(inst.expiration)) continue
+                if (inst.expiration.enemy === killed) chainStatus(owner, expireStatus(owner, key, inst))
+            }
         }
     }
 }

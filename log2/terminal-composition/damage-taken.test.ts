@@ -2,15 +2,17 @@ import { describe, test, expect, assert } from 'vitest'
 import damageTaken from './damage-taken'
 import critDamage from '../terminal/crit-damage'
 import { createDefaultOwner } from '../../actor2'
-import { ObjectWithBroadContexts, OwnerLog2 } from '../types'
+import { OwnerLog2 } from '../types'
 import studiedTarget from '../../status-sheet2/status/studied-target'
 import defensiveRoll from '../../status-sheet2/status/defensive-roll'
+import { makeWrapper } from '../../status-sheet2'
+import { inst } from '../../status-sheet2/testing'
 import { leaf, findNodeMatching } from '..'
 import { setSeed, clearSeed } from '../../roll'
 import modNodeToText from '../format'
 import { BaseEquipment } from '../../equipment-sheet2/types'
 
-const dtStatus = (amount: number): ObjectWithBroadContexts => ({
+const dtStatus = (amount: number) => makeWrapper({
     displayName: 'Test DT',
     broadContexts: { 'damage-taken-status-mod': () => leaf('Test DT', amount) },
 })
@@ -36,7 +38,7 @@ describe('damage-taken (terminal)', () => {
     })
 
     test('Studied Target makes the defender take +2', () => {
-        const defender = createDefaultOwner({ ss: { 'Studied Target': studiedTarget } })
+        const defender = createDefaultOwner({ ss: { 'Studied Target': [inst(studiedTarget)] } })
         const node = damageTaken({
             node: leaf('incoming', 7)
         })(defender)
@@ -45,7 +47,7 @@ describe('damage-taken (terminal)', () => {
     })
 
     test('clamps to 0 so an over-reduction cannot heal', () => {
-        const defender = createDefaultOwner({ ss: { a: dtStatus(-20) } })
+        const defender = createDefaultOwner({ ss: { a: [inst(dtStatus(-20))] } })
         expect(damageTaken({
             node: leaf('incoming', 7)
         })(defender).total()).toBe(0)
@@ -54,7 +56,7 @@ describe('damage-taken (terminal)', () => {
     test('A roll is stable across reads. Feats can reduce/increase', () => {
         setSeed(42)
         try {
-            const defender = createDefaultOwner({ ss: { 'Defensive Roll': defensiveRoll } })
+            const defender = createDefaultOwner({ ss: { 'Defensive Roll': [inst(defensiveRoll)] } })
             const node = damageTaken({
                 node: leaf('incoming', 10),
             })(defender)
@@ -83,7 +85,7 @@ describe('damage-taken (terminal)', () => {
         /* console.log(modNodeToText(attackerTree)) */
         expect(attackerTree.total()).toBe(9) // 4 * 1.5
 
-        const defender = createDefaultOwner({ ss: { 'Studied Target': studiedTarget } })
+        const defender = createDefaultOwner({ ss: { 'Studied Target': [inst(studiedTarget)] } })
         const node = damageTaken({
             node: attackerTree,
         })(defender)

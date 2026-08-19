@@ -1,18 +1,51 @@
 import newModNode, { ModNode, sumFunc } from "../..";
-import { EveryTree, FeatBroadContexts, OwnerLog2, StatusBroadContexts } from "../../types";
+import { CsScore, EveryTree, OwnerLog2, StatusBroadContexts, StatusInstanceLog2 } from "../../types";
 
-const collectStatusContributions = (
+type StackKind = NonNullable<StatusInstanceLog2['pointer']['stack']>['kind']
+
+// for an instance, does it have a relevant broadContext? If not stop, otherwise gather the relevant ModNodes
+const resolveInstanceNodes = (
+    instances: StatusInstanceLog2[],
     owner: OwnerLog2,
-    broadContext: StatusBroadContexts, // a subset of EveryTree, so we know where people are getting their shit from
+    broadContext: EveryTree,
 ): ModNode[] => {
-    const entries = Object.values(owner.ss)
+    const nodes: ModNode[] = []
+    for (const instance of instances) {
+        const handler = instance.pointer.broadContexts?.[broadContext]
+        if (!handler) continue
 
-    const relevant = entries.map(f => f.broadContexts?.[broadContext])
-        .filter(f => !!f) // it has a handler for the given broadContext
-        .map(f => f(owner)) // run the handler
-        .filter(n => !!n) // node exists (as opposed to being undefined)
+        const node = handler(owner)
+        if (!node) continue
 
-    return relevant
+        nodes.push(node)
+    }
+    return nodes
+}
+
+const highestNode = (nodes: ModNode[]): ModNode =>
+    nodes.reduce((best, node) => (node.total() > best.total() ? node : best))
+const combineByStackKind = (kind: StackKind, nodes: ModNode[]): ModNode[] => {
+    if (kind === 'stack') return nodes
+    return [highestNode(nodes)]
+}
+
+export const collectStatusContributions = (
+    owner: OwnerLog2,
+    broadContext: StatusBroadContexts | `${CsScore}-from-status`, // where people are getting their shit from
+): ModNode[] => {
+    const result: ModNode[] = []
+
+    for (const instances of Object.values(owner.ss)) {
+        if (!instances.length) continue
+
+        const nodes = resolveInstanceNodes(instances, owner, broadContext)
+        if (!nodes.length) continue
+
+        const kind = instances[0]!.pointer.stack?.kind ?? 'highest'
+        result.push(...combineByStackKind(kind, nodes))
+    }
+
+    return result
 }
 
 export default (broadContext: StatusBroadContexts) => (owner: OwnerLog2): ModNode => {

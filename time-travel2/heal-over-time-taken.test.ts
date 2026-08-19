@@ -1,24 +1,20 @@
-import { createDefaultOwner, instantiateActor, OwnerMaximal } from "../actor2/index.ts";
-import { addStatusToStatusSheet } from "../status-sheet2/index.ts";
-import { SnapshotStatusEffect } from "../status-sheet2/types.ts";
+import { createDefaultOwner, instantiateActor } from "../actor2/index.ts";
+import { addStatusToStatusSheet, makeWrapper } from "../status-sheet2/index.ts";
 import { calculateHealTicks } from "../status-sheet2/tick.ts";
 import { applyHeal } from "../health/index.ts";
 import newModNode, { leaf, sumFunc } from "../log2/index.ts";
-import healOverTime from "../log2/terminal/heal-over-time.ts";
-import healOverTimeTaken from "../log2/terminal-composition/heal-over-time-taken.ts";
 import healOverTimeLog from './heal-over-time-taken.ts'
 import { describe, test, assert, expect } from 'vitest'
 import snapshotActor from "./snapshot/actor.ts";
 
 // regen has no dedicated status yet, so compose one inline the way ignite composes damage
-const regen: SnapshotStatusEffect = (data: { snapshot: OwnerMaximal }) => ({
+const regen = makeWrapper({
     displayName: 'regen',
     broadContexts: {},
     tick: {
-        calculateHeal: (receiver: OwnerMaximal) => {
-            const base = newModNode('regen', [leaf('regen-base', 1)], sumFunc)
-            const hot = healOverTime(base)(data.snapshot)
-            return healOverTimeTaken({ node: hot })(receiver)
+        calculateHeal: {
+            base: () => newModNode('regen', [leaf('regen-base', 1)], sumFunc),
+            mod: () => leaf('regen-mod', 0),
         }
     }
 })
@@ -27,7 +23,7 @@ describe('heal-over-time', () => {
     test('Snapshots after all ticks have ran', () => {
         const owner = createDefaultOwner()
         const actor = instantiateActor(owner)
-        addStatusToStatusSheet(owner, regen)
+        addStatusToStatusSheet(owner, owner, regen)
 
         // give the heals room to matter (and stay below max across ticks)
         actor.health.curr = 1

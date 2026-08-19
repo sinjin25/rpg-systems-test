@@ -56,9 +56,9 @@ describe('applyFlatFooted', () => {
         applyFlatFooted(owner, tree)
 
         // owner should have it now in owner.ss
-        const status = owner.ss['flatFooted']
+        const status = owner.ss['flatFooted']![0]!
         assert.exists(status)
-        assert.equal(status.displayName, 'flat-footed')
+        assert.equal(status.pointer.displayName, 'flat-footed')
 
         // duration is the expected value
         const expiration = status.expiration
@@ -70,7 +70,7 @@ describe('applyFlatFooted', () => {
         const { tree: second } = instantiateSpeed(owner)
         applyFlatFooted(owner, second)
 
-        assert.notStrictEqual(owner.ss['flatFooted'], status)
+        assert.notStrictEqual(owner.ss['flatFooted']![0], status)
     })
 
     test('Does nothing if speed was negative', () => {

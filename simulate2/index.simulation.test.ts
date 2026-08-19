@@ -3,7 +3,8 @@ import { simulateFight } from './index.ts'
 import { describe, test, assert } from 'vitest'
 import newTimeTravelLogReplayer from '../time-travel2/replay/index.ts'
 import ttrvTextVisualizer from '../time-travel2/replay/text-visualizer.ts'
-import { StatusEffect } from '../status-sheet2/index.ts'
+import { makeWrapper } from '../status-sheet2/index.ts'
+import { inst } from '../status-sheet2/testing.ts'
 import { Handlers } from '../time-travel2/types.ts'
 import { addAbility } from '../ability-sheet2/index.ts'
 import { default as igniteAbility } from '../ability-sheet2/abilities2/ignite.ts'
@@ -17,15 +18,18 @@ describe('Integration: TimeTravel', () => {
 
         const onFireEnemy = createDefaultOwner()
         // add second for more testing
-        const poison: StatusEffect = {
+        const poison = makeWrapper({
             broadContexts: {},
             displayName: 'poison',
             description: '',
             tick: {
-                calculateDamage: () => leaf('poison', 2)
+                calculateDamage: {
+                    base: () => leaf('poison', 2),
+                    mod: () => leaf('poison-mod', 0),
+                }
             }
-        }
-        onFireEnemy.ss['poison'] = poison
+        })
+        onFireEnemy.ss['poison'] = [inst(poison, onFireEnemy)]
         const ttr = newTimeTravelLogReplayer(ttrvTextVisualizer)
         simulateFight(
             {

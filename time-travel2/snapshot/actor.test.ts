@@ -4,8 +4,7 @@ import applyDamage from '../../health/apply-damage.ts'
 import attack from '../../log2/terminal/attack.ts'
 import { addStatusToStatusSheet, getStatusKey } from '../../status-sheet2/add-status-to-status-sheet.ts'
 import { decayRoundsElapsed } from '../../status-sheet2/decay/decay-rounds-elapsed.ts'
-import { bless, rage, StatusEffect } from '../../status-sheet2/index.ts'
-import burningWeaponStatus from '../../status-sheet2/status/burning-weapon.ts'
+import { makeWrapper } from '../../status-sheet2/index.ts'
 import snapshotActor from './actor.ts'
 import { describe, test, assert, expect } from 'vitest'
 
@@ -103,53 +102,28 @@ describe('OwnerMaximalUnstableReferences (mostly proper clones)', () => {
     })
 })
 
-describe('cloneStatusSheet is rough', () => {
-    /* test('save-succeeded kind throws', () => {
-        const { actor, owner } = ownerActorUtil()
-        addStatusToStatusSheet(owner, burningWeaponStatus)
+describe('cloneStatusSheet', () => {
+    const buff = makeWrapper(
+        { displayName: 'bless', broadContexts: {} },
+        { expiration: { kind: 'rounds-elapsed', remaining: 3 } },
+    )
 
-        assert.throws(() => snapshotActor(actor), /need to freeze the dc and save/)
-    }) */
-
-    test('Record reference behavior', () => {
+    test('freezes each key into an array of frozen statuses, decoupled from the live sheet', () => {
         const { actor, owner } = ownerActorUtil()
-        const myStatus: StatusEffect = {
-            broadContexts: {},
-            displayName: 'bless',
-            expiration: {
-                kind: 'rounds-elapsed',
-                remaining: 3,
-            }
-        }
-        addStatusToStatusSheet(owner, myStatus)
+        addStatusToStatusSheet(owner, owner, buff)
+        const key = getStatusKey(buff)
 
         const tt0 = snapshotActor(actor)
 
-        // host is not the same (good)
-        // @ts-expect-error
-        assert.notEqual(owner.ss, tt0.owner.ss)
+        // frozen sheet mirrors the key as an array, but is a distinct object graph
+        assert.notEqual(owner.ss as unknown, tt0.owner.ss as unknown)
+        assert.equal(tt0.owner.ss[key]!.length, 1)
+        assert.equal(tt0.owner.ss[key]![0]!.expiration!.remaining, 3)
 
-        // keys exist on both (good)
-        assert.exists(tt0.owner.ss[getStatusKey(myStatus)])
-        assert.exists(owner.ss[getStatusKey(myStatus)])
-
-        // the individual status is a different object (good)
-        assert.notEqual(
-            tt0.owner.ss[getStatusKey(myStatus)],
-            // @ts-expect-error
-            owner.ss[getStatusKey(myStatus)]
-        )
-
+        // decaying the live instance leaves the earlier snapshot untouched
         decayRoundsElapsed(actor.owner, 1)
-        // @ts-expect-error
-        assert.equal(owner.ss[getStatusKey(myStatus)]!.expiration!.remaining, 2)
-        assert.notEqual(
-            // @ts-expect-error
-            owner.ss[getStatusKey(myStatus)]!.expiration!.remaining,
-            tt0.owner.ss[getStatusKey(myStatus)]!.expiration!.remaining,
-        )
-
+        const live = owner.ss[key]![0]!.expiration!
+        assert.equal(live.kind === 'rounds-elapsed' && live.remaining, 2)
+        assert.equal(tt0.owner.ss[key]![0]!.expiration!.remaining, 3)
     })
-
-    test.skip('Snapshots works correctly (they dont)')
 })

@@ -7,7 +7,5 @@ export default {
     displayName,
     description: 'Increase your stats for X rounds',
     broadContexts: {},
-    onFightStart: (o: OwnerMaximal) => rageStatus({
-        snapshot: o,
-    })
+    onFightStart: (o: OwnerMaximal) => rageStatus
 } as const satisfies Feat2

@@ -2,6 +2,7 @@ import { describe, test, expect, assert } from 'vitest'
 import healthPerLevel from './health-per-level'
 import { createDefaultOwner } from '../../actor2'
 import bearsEndurance from '../../status-sheet2/status/bears-endurance'
+import { inst } from '../../status-sheet2/testing'
 import { findNodeMatching } from '..'
 
 const perLevel = (con: number, extra = {}) =>
@@ -18,7 +19,7 @@ describe('health-per-level', () => {
     })
 
     test('con statuses are folded in through modded-con', () => {
-        const node = healthPerLevel(createDefaultOwner({ cs: { con: 14 }, ss: { con: bearsEndurance } }))
+        const node = healthPerLevel(createDefaultOwner({ cs: { con: 14 }, ss: { con: [inst(bearsEndurance)] } }))
         expect(node.total()).toBe(14) // 10 + (14 + 4 -> +4)
         assert.exists(findNodeMatching(node, /modded-con/))
     })

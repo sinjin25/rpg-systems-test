@@ -3,7 +3,7 @@ import { FinalStandardActionResult } from "../actor2/act"
 import { BaseEquipment } from "../equipment-sheet2/types"
 import { ModNode } from "../log2"
 import { Saves } from "../log2/types"
-import { StatusEffect } from "../status-sheet2"
+import { StatusEffect, StatusEffectInstance } from "../status-sheet2"
 import { Actor2Snapshot } from "./snapshot/actor"
 
 export type FrozenModNode = {
@@ -14,7 +14,7 @@ export type FrozenModNode = {
 
 export type FrozenExpiration = {
     dc?: FrozenModNode,
-    kind: NonNullable<StatusEffect['expiration']>['kind'],
+    kind: NonNullable<StatusEffectInstance['expiration']>['kind'],
     remaining?: number,
     saveType?: Saves
     /* enemy?: {} */

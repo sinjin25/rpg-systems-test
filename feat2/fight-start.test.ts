@@ -1,13 +1,13 @@
 import { applyOnFightStartFeatHandlers, getOnFightStartFeatHandlers } from './fight-start.ts'
 import { describe, test, assert, expect } from 'vitest'
 import { Feat2 } from './index.ts'
-import { StatusEffect } from '../status-sheet2/types.ts'
+import { makeWrapper } from '../status-sheet2/index.ts'
 import { createDefaultOwner } from '../actor2/index.ts'
 
-const testStatus: StatusEffect = {
+const testStatus = makeWrapper({
     displayName: 'testfeatstatus',
     broadContexts: {},
-}
+})
 const testFeat: Feat2 = {
     broadContexts: {},
     displayName: 'abcdefg',

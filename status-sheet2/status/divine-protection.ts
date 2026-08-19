@@ -1,17 +1,14 @@
 import { leaf } from "../../log2";
-import { ObjectWithBroadContexts } from "../../log2/types";
 import roll from "../../roll";
-import { StatusEffect } from "../types";
+import { makeWrapper } from "../instance";
 
-const divineProtection = (acBonus = roll(4), duration = roll(4)): StatusEffect => ({
+const divineProtection = (acBonus = roll(4), duration = roll(4)) => makeWrapper({
     displayName: 'Divine Protection',
     broadContexts: {
         'ac-status-mod': () => leaf('Divine Protection', acBonus),
     },
-    expiration: {
-        kind: 'rounds-elapsed',
-        remaining: duration
-    }
+}, {
+    expiration: { kind: 'rounds-elapsed', remaining: duration },
 })
 
 export default divineProtection

@@ -24,7 +24,7 @@ const factory: AbilitySheetDefinition['factory'] = () => {
                     saveType: 'reflex',
                 },
                 onSaveFailure: (source: Actor2) => ({
-                    statusEffect: [igniteStatus({ snapshot: source.owner })],
+                    statusEffect: [igniteStatus],
                 }),
             },
         ],

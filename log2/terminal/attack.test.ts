@@ -1,21 +1,23 @@
 import { describe, test, expect, assert } from 'vitest'
 import attack from './attack'
 import { findNodeMatching, leaf } from '..'
-import { ObjectWithBroadContexts, OwnerLog2 } from '../types'
+import { OwnerLog2 } from '../types'
 import { hasAllTags, Tags } from '../tags'
 import modNodeToText from '../format'
 import { createDefaultOwner, OwnerMaximal } from '../../actor2'
+import { makeWrapper } from '../../status-sheet2'
+import { inst } from '../../status-sheet2/testing'
 import { Feat2 } from '../../feat2'
 import { BaseEquipment } from '../../equipment-sheet2/types'
 import { fakeCharacterLevels } from '../../character-sheet/util'
 
 // +2 attack on a finesse weapon
-const finesseBless: ObjectWithBroadContexts = {
+const finesseBless = makeWrapper({
     displayName: 'Finesse Bless',
     broadContexts: {
         'attack-status-mod': o => hasAllTags(o.tags, ['finesse']) ? leaf('Finesse Bless', 2) : undefined,
     },
-}
+})
 
 const daggerPlusOne: BaseEquipment = {
     displayName: 'dagger-plus-one',
@@ -44,7 +46,7 @@ const finesseBuild = () => {
         cs: { dex: 18, str: 10, levels: fakeCharacterLevels(4) },
         es: { mainhand: daggerPlusOne, ring: ringPlusOneFinesseAttack },
         fs: { finesseWeaponFighting },
-        ss: { finesseBless },
+        ss: { finesseBless: [inst(finesseBless)] },
     })
     owner.relevantSlot = owner.es.mainhand
     return owner

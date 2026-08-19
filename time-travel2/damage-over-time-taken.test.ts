@@ -10,7 +10,7 @@ describe('damage-over-time', () => {
     test('Snapshots after all ticks have ran', () => {
         const owner = createDefaultOwner()
         const actor = instantiateActor(owner)
-        addStatusToStatusSheet(owner, ignite)
+        addStatusToStatusSheet(owner, owner, ignite)
 
         const result = calculateDamageTicks(actor)
         assert.equal(result.length, 1)

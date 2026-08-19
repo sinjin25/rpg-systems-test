@@ -1,205 +1,61 @@
-import { Actor2, createDefaultOwner, instantiateActor, OwnerMaximal } from '../actor2/index.ts'
-import modNodeToText from '../log2/format.ts'
-import newModNode, { findNodeMatching, leaf, ModNode, sumFunc } from '../log2/index.ts'
-import damageOverTimeTaken from '../log2/terminal-composition/damage-over-time-taken.ts'
-import damageOverTime from '../log2/terminal/damage-over-time.ts'
-import { addStatusToStatusSheet, ignite, StatusEffect } from './index.ts'
-import { calculateDamageTicks, calculateHealTicks, calculateTick } from './tick.ts'
-import { describe, test, assert, expect } from 'vitest'
-import { SnapshotStatusEffect } from './types.ts'
-import applyDamage from '../health/apply-damage.ts'
-import { Feat2 } from '../feat2/index.ts'
-import addFeat from '../feat2/add-feat/index.ts'
+import { describe, test, assert } from 'vitest'
+import { createDefaultOwner, instantiateActor } from '../actor2'
+import { leaf } from '../log2'
+import { Feat2 } from '../feat2'
+import addFeat from '../feat2/add-feat'
+import { addStatusToStatusSheet, makeWrapper } from './index'
+import { calculateDamageTicks, calculateHealTicks } from './tick'
 
-const st: SnapshotStatusEffect = (data) => {
-    return {
-        displayName: 'dot',
-        broadContexts: {},
-        expiration: {
-            kind: 'rounds-elapsed',
-            remaining: 3,
-        },
-        tick: {
-            calculateDamage(target: OwnerMaximal) {
-                const n = leaf('dot', 4)
-                const node = damageOverTime(n)(data.snapshot)
-                return damageOverTimeTaken({
-                    node,
-                })(target)
-            },
-        }
-    }
-}
-
-const nonSnapshotSt: StatusEffect = {
-    displayName: 'normal dot',
+const damageDot = makeWrapper({
+    displayName: 'dot',
     broadContexts: {},
     tick: {
-        calculateDamage(target: OwnerMaximal) {
-            return damageOverTimeTaken({
-                node: leaf('stable dot', 3)
-            })(target)
-        }
-    }
-}
-
-const mightGoNeg: StatusEffect = {
-    displayName: 'normal dot',
-    broadContexts: {},
-    tick: {
-        calculateDamage(target: OwnerMaximal) {
-            return damageOverTimeTaken({
-                node: leaf('might-go-neg', 1)
-            })(target)
-        }
-    }
-}
-
-describe('damage works', () => {
-    const caster = createDefaultOwner({
-        fs: {
-            'dot-plus': {
-                displayName: 'dot-plus',
-                broadContexts: {
-                    'damage-over-time-feat-mod': () => leaf('dot-plus', 2)
-                }
-            }
-        }
-    })
-    const receiver = createDefaultOwner({
-        fs: {
-            'dot-defense': {
-                displayName: 'dot-defense',
-                broadContexts: {
-                    'damage-over-time-taken-feat-mod': () => leaf('dot-defense', -2)
-                }
-            }
+        calculateDamage: {
+            base: () => leaf('base', 4),
+            mod: () => leaf('mod', 0),
         },
-        // this doesn't matter when ran directly
-        ss: {
-            ignite: st({
-                snapshot: caster,
-            }),
-            nonSnapshotSt,
-            mightGoNeg,
-        }
-    })
-    test('calculateDamage works in insolation', () => {
-
-        const ct = calculateTick(
-            receiver.ss.ignite,
-            receiver,
-        )
-
-        /* console.log(ct) */
-        /* console.log(modNodeToText(ct.calculateDamage!)) */
-
-        const f0 = findNodeMatching(ct.calculateDamage!, /damage-over-time-taken/, {
-            includeRoot: true
-        })
-
-        assert.exists(f0)
-        assert.equal(f0.total(), 4) // +4 reduced by -2
-
-        const actor = instantiateActor(receiver)
-        applyDamage(actor.health, ct.calculateDamage!.total())
-        assert.equal(
-            actor.health.curr + ct.calculateDamage!.total(),
-            actor.health.max)
-
-        // returns the statuseffect
-        assert.exists(ct.source)
-    })
-    test('calculateDamageTicks works', () => {
-        const ct = calculateTick(
-            receiver.ss.ignite,
-            receiver,
-        )
-
-        const actor = instantiateActor(receiver)
-        const result = calculateDamageTicks(actor)
-
-        // 3 items here
-        assert.equal(result.length, 3)
-        /* console.log(result) */
-
-        // apply all the ticks manually
-        result.forEach(a => applyDamage(actor.health, a.node.total()))
-
-        // ensure we actually have multiple items with values
-        const sum = result.map(a => a.node.total()).reduce((acc, a) => acc + a, 0)
-
-        assert.equal(
-            sum > result[0].node.total(),
-            true
-        )
-        // all three are applied
-        assert.equal(
-            actor.health.curr,
-            actor.health.max -= sum,
-        )
-
-        result.forEach(a => {
-            // make sure damage ticks cant go negative
-            assert.equal(
-                a.node.total() >= 0,
-                true
-            )
-        })
-    })
+    },
 })
 
 describe('calculateDamageTicks', () => {
-    test('Returns all damage-over-time-taken calculations for each', () => {
-        const owner = createDefaultOwner()
-        addStatusToStatusSheet(owner, ignite)
-        // make another
-        owner.ss['ign'] = ignite({
-            snapshot: owner
-        })
-        const actor = instantiateActor(owner)
-        const cdt = calculateDamageTicks(actor)
-        assert.equal(cdt.length, 2)
+    test('combines base + frozen mod, then applies the live target-side reduction', () => {
+        const receiver = createDefaultOwner()
+        const dotDefense: Feat2 = {
+            displayName: 'dot-defense',
+            broadContexts: { 'damage-over-time-taken-feat-mod': () => leaf('dot-defense', -1) },
+        }
+        addFeat(receiver, dotDefense)
+        addStatusToStatusSheet(receiver, receiver, damageDot)
+
+        const result = calculateDamageTicks(instantiateActor(receiver))
+        assert.equal(result.length, 1)
+        assert.equal(result[0].node.total(), 3) // 4 base - 1 taken
+    })
+
+    test('returns one result per instance under a key', () => {
+        const receiver = createDefaultOwner()
+        addStatusToStatusSheet(receiver, receiver, damageDot, damageDot)
+        assert.equal(calculateDamageTicks(instantiateActor(receiver)).length, 2)
     })
 })
 
 describe('calculateHealTicks', () => {
-    test('Returns all heal-over-time-taken calculations', () => {
-        const owner = createDefaultOwner()
-        const status: StatusEffect = {
-            displayName: 'test-heal-status',
+    test('produces a heal node for tick.calculateHeal statuses', () => {
+        const receiver = createDefaultOwner()
+        const hot = makeWrapper({
+            displayName: 'hot',
             broadContexts: {},
             tick: {
-                calculateHeal: () => leaf('test-heal-status', 4)
-            }
-        }
-        const status2: StatusEffect = {
-            displayName: 'test-heal-status2',
-            broadContexts: {},
-            tick: {
-                calculateHeal: () => leaf('test-heal-status2', 4)
-            }
-        }
-        const feat: Feat2 = {
-            displayName: 'hott-plus',
-            broadContexts: {
-                'heal-over-time-taken-feat-mod': () => leaf('hott-plus', 2)
-            }
-        }
+                calculateHeal: {
+                    base: () => leaf('base', 5),
+                    mod: () => leaf('mod', 0),
+                },
+            },
+        })
+        addStatusToStatusSheet(receiver, receiver, hot)
 
-        addFeat(owner, feat)
-        addStatusToStatusSheet(owner, status, status2)
-        const actor = instantiateActor(owner)
-
-        const cht = calculateHealTicks(actor)
-        assert.equal(cht.length, 2)
-
-        const displayNames = new Set<string>()
-        for (let c of cht) {
-            displayNames.add(c.node.displayName)
-        }
-        assert.equal(displayNames.size, 2)
-        assert.isTrue(displayNames.has('test-heal-status2'))
-        assert.isTrue(displayNames.has('test-heal-status'))
+        const result = calculateHealTicks(instantiateActor(receiver))
+        assert.equal(result.length, 1)
+        assert.equal(result[0].node.total(), 5)
     })
 })

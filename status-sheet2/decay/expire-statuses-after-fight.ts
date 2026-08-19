@@ -7,9 +7,9 @@ export const expireStatusesAfterFight = (
 ) => {
     const keys = Object.keys(owner.ss)
     for (let key of keys) {
-        const v = owner.ss[key]
-        if (!v.persists) continue
-        if (!v.persists.afterBattle) continue
-        chainStatus(owner, expireStatus(owner, key))
+        for (const inst of [...owner.ss[key]!]) {
+            if (!inst.pointer.persists?.afterBattle) continue
+            chainStatus(owner, expireStatus(owner, key, inst))
+        }
     }
 }

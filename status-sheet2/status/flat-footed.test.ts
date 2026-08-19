@@ -3,21 +3,22 @@ import flatFooted from './flat-footed'
 import { createDefaultOwner } from '../../actor2'
 import maxDexOfEquipment from '../../log2/composition/max-dex-of-equipment'
 import { findNodeMatching } from '../../log2'
+import { inst } from '../testing'
 
 describe("cats-grace", () => {
     test('registers a +4 dex-from-status contribution', () => {
         const owner = createDefaultOwner({})
 
-        owner.ss['flatFooted'] = flatFooted(10)
+        owner.ss['flatFooted'] = [inst(flatFooted(10))]
 
-        const obj = owner.ss['flatFooted']!
+        const obj = owner.ss['flatFooted']![0]!
         if (!obj.expiration) throw Error('expected status to appear')
         if (obj.expiration.kind !== 'speed-elapsed') throw Error('expected speed elapsed type')
 
         assert.equal(obj.expiration.remaining, 10)
 
 
-        const contribution = obj.broadContexts['max-dex-of-equipment']!
+        const contribution = obj.pointer.broadContexts['max-dex-of-equipment']!
 
         expect(contribution(createDefaultOwner({}))!.total()).toBe(0)
 

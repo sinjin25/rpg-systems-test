@@ -4,7 +4,8 @@ import { createDefaultOwner } from '../../actor2'
 import { OwnerLog2, ObjectWithBroadContexts } from '../types'
 import { leaf, findNodeMatching } from '..'
 import { BaseEquipment } from '../../equipment-sheet2/types'
-import { StatusEffect } from '../../status-sheet2'
+import { makeWrapper } from '../../status-sheet2'
+import { inst } from '../../status-sheet2/testing'
 
 const weapon = (dmg: number): BaseEquipment =>
 ({
@@ -16,13 +17,12 @@ const weapon = (dmg: number): BaseEquipment =>
 const withSlot = (owner: OwnerLog2, slot: OwnerLog2['relevantSlot']): OwnerLog2 =>
     ({ ...owner, relevantSlot: slot })
 
-const st: StatusEffect = {
+const st = makeWrapper({
     displayName: 'test-damage-status',
     broadContexts: {
         'crit-scalable-damage-status-mod': () => leaf('test-damage-status', 2)
     },
-    expiration: { kind: 'rounds-elapsed', remaining: 3 },
-}
+}, { expiration: { kind: 'rounds-elapsed', remaining: 3 } })
 
 describe('crit-scalable-damage', () => {
     test('sums weapon roll + effective stat (default melee str +2)', () => {
@@ -42,7 +42,7 @@ describe('crit-scalable-damage', () => {
 
     test('includes crit-scalable status mods', () => {
         const owner = createDefaultOwner({
-            ss: { st }
+            ss: { st: [inst(st)] }
         })
 
         const node = critScalableDamage(owner)

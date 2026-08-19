@@ -12,9 +12,10 @@ export const decayActionsElapsed = (
     actionsTaken: number,
 ) => {
     for (const key of Object.keys(owner.ss)) {
-        const status = owner.ss[key]
-        if (!statusExpirationIsActionsElapsed(status.expiration)) continue
-        status.expiration.remaining -= actionsTaken
-        if (status.expiration.remaining <= 0) chainStatus(owner, expireStatus(owner, key))
+        for (const inst of [...owner.ss[key]!]) {
+            if (!statusExpirationIsActionsElapsed(inst.expiration)) continue
+            inst.expiration.remaining -= actionsTaken
+            if (inst.expiration.remaining <= 0) chainStatus(owner, expireStatus(owner, key, inst))
+        }
     }
 }

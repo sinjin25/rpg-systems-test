@@ -1,6 +1,8 @@
 import { describe, test, expect, assert } from 'vitest'
 import maxDexOfEquipment from './max-dex-of-equipment'
 import flatFooted from '../../status-sheet2/status/flat-footed'
+import { makeWrapper } from '../../status-sheet2'
+import { inst } from '../../status-sheet2/testing'
 import modNodeToText from '../format'
 import { armors, heavyShield } from '../../equipment-sheet2/defaults'
 import { createDefaultOwner } from '../../actor2'
@@ -53,10 +55,10 @@ describe('Works with flat-footed status', () => {
                 armor: armors['banded mail']
             },
             ss: {
-                flatFooted: {
+                flatFooted: [inst(makeWrapper({
                     displayName: 'flat-footed',
                     broadContexts: {},
-                }
+                }))]
             }
         })
         const node = maxDexOfEquipment(owner)!

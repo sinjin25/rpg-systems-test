@@ -1,7 +1,7 @@
 import { Actor2, createDefaultOwner } from "../../actor2"
 import { leaf, ModNode } from "../../log2"
 import dc from "../../log2/terminal/dc"
-import { StatusEffect } from "../../status-sheet2"
+import { StatusEffectWrapper } from "../../status-sheet2"
 import target from "../../target"
 import { TargetPriority } from "../../target/types"
 import { AbilityCastType } from "../types"
@@ -16,7 +16,7 @@ export type AbilitySheetDefinition = {
 export type AbilityPayload = {
     damage?: ModNode[],
     heal?: ModNode[],
-    statusEffect?: StatusEffect[],
+    statusEffect?: StatusEffectWrapper[],
 }
 
 export type DiscreteTargetGroupPayloadResolution = {

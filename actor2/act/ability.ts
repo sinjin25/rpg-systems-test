@@ -7,7 +7,7 @@ export const applyResolutions = (resolutions: DiscreteTargetGroupPayloadResoluti
     for (const r of resolutions) {
         if (r.damage) for (const node of r.damage) applyDamage(r.target.health, node.total())
         if (r.heal) for (const node of r.heal) applyHeal(r.target.health, node.total())
-        if (r.statusEffect) addStatusToStatusSheet(r.target.owner, ...r.statusEffect)
+        if (r.statusEffect) addStatusToStatusSheet(r.target.owner, r.source.owner, ...r.statusEffect)
     }
 }
 

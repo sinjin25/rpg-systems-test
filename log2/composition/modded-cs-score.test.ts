@@ -6,7 +6,9 @@ import bearsEndurance from '../../status-sheet2/status/bears-endurance'
 import { createDefaultOwner } from '../../actor2'
 import { dexAmulet, strAmulet } from './equipment/demo-equips'
 import { findNodeMatching } from '..'
-import { CsScore, ObjectWithBroadContexts } from '../types'
+import { CsScore } from '../types'
+import { StatusEffectWrapper } from '../../status-sheet2'
+import { inst } from '../../status-sheet2/testing'
 import { BaseEquipment } from '../../equipment-sheet2/types'
 
 describe('Works', () => {
@@ -21,7 +23,7 @@ describe('Works', () => {
 
 type Case = {
     member: CsScore,
-    status: ObjectWithBroadContexts,
+    status: StatusEffectWrapper,
     amulet?: BaseEquipment,
     amuletName?: RegExp,
 }
@@ -37,7 +39,7 @@ describe.each(cases)('modded-cs-score: $member', ({ member, status, amulet, amul
         moddedCsScore(member)(createDefaultOwner({ cs: { [member]: score }, ...extra })).total()
 
     test('sums the status score bonus before converting to a modifier', () => {
-        const withStatus = (score: number) => mod(score, { ss: { [member]: status } })
+        const withStatus = (score: number) => mod(score, { ss: { [member]: [inst(status)] } })
         expect(withStatus(14)).toBe(4) // (14 + 4) -> +4
         expect(withStatus(10)).toBe(2) // (10 + 4) -> +2
     })

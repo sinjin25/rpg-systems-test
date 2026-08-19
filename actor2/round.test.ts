@@ -1,6 +1,7 @@
 import { createDefaultOwner, instantiateActor } from '.'
 import { iterate } from '../simulate/util/iterate.ts'
-import { StatusSheet } from '../status-sheet2'
+import { makeWrapper, StatusSheet } from '../status-sheet2'
+import { inst } from '../status-sheet2/testing'
 import { Round, round, speedRoll } from './round.ts'
 import { describe, test, assert, expect } from 'vitest'
 
@@ -80,7 +81,7 @@ describe('Round reports participants who are ready to act', () => {
 
     test('a speed-elapsed status decays alongside the participant\'s speed rolls', () => {
         const ss: StatusSheet = {
-            test: { displayName: 'test', broadContexts: {}, expiration: { kind: 'speed-elapsed', remaining: 200 } },
+            test: [inst(makeWrapper({ displayName: 'test', broadContexts: {} }, { expiration: { kind: 'speed-elapsed', remaining: 200 } }))],
         }
         const p = instantiateActor(defaultPerson())
         p.owner.ss = ss

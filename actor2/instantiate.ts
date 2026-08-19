@@ -5,6 +5,7 @@ import maximumHealth from "../log2/terminal/maximum-health"
 import roll from "../roll"
 import {
     flatFooted,
+    newStatusInstance,
 } from '../status-sheet2'
 
 export type Speed = {
@@ -50,7 +51,7 @@ export const applyFlatFooted = (owner: OwnerMaximal, tree: ModNode) => {
     const duration = STD_SPEED - tree.total()
     if (duration < 0) return
 
-    owner.ss['flatFooted'] = flatFooted(duration)
+    owner.ss['flatFooted'] = [newStatusInstance(flatFooted(duration), owner)]
 }
 
 export const instantiateHealth = (owner: OwnerMaximal): {

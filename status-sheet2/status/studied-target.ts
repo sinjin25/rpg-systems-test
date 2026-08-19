@@ -1,14 +1,14 @@
 import { leaf } from "../../log2";
-import { ObjectWithBroadContexts } from "../../log2/types";
+import { makeWrapper } from "../instance";
 
 const mod = -1
 
-const studiedTarget: ObjectWithBroadContexts = {
+const studiedTarget = makeWrapper({
     displayName: 'Studied Target',
     broadContexts: {
         'ac-status-mod': () => leaf('Studied Target', mod),
         'damage-taken-status-mod': () => leaf('Studied Target', 1),
     },
-}
+})
 
 export default studiedTarget

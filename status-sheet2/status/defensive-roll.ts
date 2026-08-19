@@ -1,9 +1,9 @@
-import newModNode, { leaf } from "../../log2";
+import { leaf } from "../../log2";
 import roll from "../../roll";
-import { ObjectWithBroadContexts } from "../../log2/types";
+import { makeWrapper } from "../instance";
 
 const displayName = `Defensive Roll`
-const defensiveRoll: ObjectWithBroadContexts = {
+const defensiveRoll = makeWrapper({
     displayName,
     broadContexts: {
         'damage-taken-status-mod': () => {
@@ -12,6 +12,6 @@ const defensiveRoll: ObjectWithBroadContexts = {
             return leaf(displayName, r)
         },
     },
-}
+})
 
 export default defensiveRoll

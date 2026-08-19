@@ -18,10 +18,17 @@ import { Tags } from "./tags";
 export type OwnerLog2 = Omit<OwnerMaximal, 'fs' | 'ss' | 'es' | 'as'> &
 {
     fs: Record<string, ObjectWithBroadContexts>,
-    ss: Record<string, ObjectWithBroadContexts>,
+    ss: Record<string, StatusInstanceLog2[]>,
     es: EquipmentSheet,
     relevantSlot?: BaseEquipment
     tags: Tags[], // starts empty, a terminal tree should mutate it. Use the utility functions from tags.ts
+}
+
+// minimum info from status-sheet2
+export type StatusInstanceLog2 = {
+    pointer: ObjectWithBroadContexts & {
+        stack?: { kind: 'stack' | 'highest' | 'refresh' }
+    }
 }
 
 export type ObjectWithBroadContexts = {

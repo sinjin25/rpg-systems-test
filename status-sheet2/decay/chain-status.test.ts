@@ -1,119 +1,49 @@
-import { addStatusToStatusSheet, getStatusKey, StatusEffect } from '..'
-import { createDefaultOwner, OwnerMaximal } from '../../actor2'
+import { describe, test, assert, expect } from 'vitest'
+import { addStatusToStatusSheet, getStatusKey, makeWrapper, newStatusInstance } from '..'
+import { createDefaultOwner } from '../../actor2'
 import { chainStatus } from './chain-status'
 import { expireStatus } from './expire-status'
-import { DecayChainStatusLog, DecayOwner } from './types'
-import { describe, test, assert, expect } from 'vitest'
+import { DecayChainStatusLog } from './types'
+
+const followup = makeWrapper({ displayName: 'st2', broadContexts: {} })
+const chaining = makeWrapper({ displayName: 'st1', broadContexts: {}, onExpiration: () => followup })
 
 describe('chainStatus', () => {
-    const stFollowup: StatusEffect = {
-        displayName: 'st2',
-        broadContexts: {},
-    }
-    const st: StatusEffect = {
-        broadContexts: {},
-        displayName: 'st1',
-        onExpiration: (o: OwnerMaximal) => stFollowup
-    }
-
-    test('chainStatus doesnt actually know if the original status was on owner', () => {
-        // this function is intended to follow up expire-status.ts
+    test('mints the follow-up instance under its displayName, inheriting the source', () => {
         const owner = createDefaultOwner()
-        assert.notExists(owner.ss[getStatusKey(st)])
-        const log = chainStatus(owner, st)
-        assert.exists(owner.ss, log!.key)
+        const source = createDefaultOwner()
+        const expired = newStatusInstance(chaining, source)
+
+        const log = chainStatus(owner, expired)
+        expect(log).toMatchObject({ key: 'st2', kind: 'replaced', source: expired.pointer } as DecayChainStatusLog)
+
+        const instances = owner.ss['st2']!
+        assert.equal(instances.length, 1)
+        assert.equal(instances[0]!.pointer.displayName, 'st2')
+        assert.equal(instances[0]!.source, source) // inherited from the expired instance
     })
 
-    test('chainStatus returns a log on success or undefined when nothing happens', () => {
+    test('does nothing when there is no onExpiration, or no instance', () => {
         const owner = createDefaultOwner()
-        const log = chainStatus(owner, st)
-        assert.exists(log)
-        expect(log).toMatchObject({
-            key: getStatusKey(stFollowup),
-            kind: 'replaced',
-            source: st,
-        } as DecayChainStatusLog)
+        const noChain = newStatusInstance(makeWrapper({ displayName: 'x', broadContexts: {} }), owner)
 
-        const undefSt: StatusEffect = {
-            displayName: 'undefSt',
-            broadContexts: {},
-        }
-        const undefLog = chainStatus(owner, undefSt)
-        assert.equal(undefLog, undefined)
-    })
-
-    test('chaining puts follow-up status on the sheet under its own displayName', () => {
-        const followUp = stFollowup
-        const owner = createDefaultOwner()
-
-        chainStatus(owner, st)
-        assert.equal(owner.ss[getStatusKey(followUp)], followUp)
-        assert.notExists(owner.ss['original'])
-    })
-
-    test('passes the owner to onExpiration', () => {
-        let seen: unknown = undefined
-        const owner = createDefaultOwner()
-
-        assert.notEqual(seen, owner)
-        chainStatus(owner, {
-            ...st,
-            onExpiration: (data) => {
-                seen = data
-                return undefined
-            },
-        })
-        assert.equal(seen, owner)
-    })
-
-    test('Does nothing when onExpiration returns undefined', () => {
-        const owner = createDefaultOwner()
-
-        const normalStatus: StatusEffect = {
-            displayName: 'normalstatus',
-            broadContexts: {},
-            onExpiration: undefined,
-        }
-        chainStatus(owner, normalStatus)
+        assert.equal(chainStatus(owner, noChain), undefined)
+        assert.equal(chainStatus(owner, undefined), undefined)
         assert.deepEqual(Object.keys(owner.ss), [])
     })
 
-    test('does nothing when the status has no onExpiration', () => {
+    test('chained off expireStatus, onExpiration sees the instance already removed', () => {
         const owner = createDefaultOwner()
-
-        const normalStatus: StatusEffect = {
-            displayName: 'normalstatus',
-            broadContexts: {},
-            // onExpiration: undefined,
-        }
-
-        const next = chainStatus(owner, normalStatus)
-        assert.deepEqual(Object.keys(owner.ss), [])
-        assert.notExists(next)
-    })
-
-    test('does nothing when handed no status', () => {
-        const owner = createDefaultOwner()
-
-        const next = chainStatus(owner, undefined)
-        assert.deepEqual(Object.keys(owner.ss), [])
-        assert.notExists(next)
-    })
-
-    test('chained off expireStatus, onExpiration sees the status already removed', () => {
-        let existedDuringCallback: boolean | undefined = undefined
-        const owner = createDefaultOwner()
-        const testStatus: StatusEffect = {
+        let existedDuringCallback: boolean | undefined
+        const w = makeWrapper({
             displayName: 'test',
             broadContexts: {},
-            onExpiration: () => {
-                existedDuringCallback = 'test' in owner.ss
-                return undefined
-            },
-        }
-        addStatusToStatusSheet(owner, testStatus)
+            onExpiration: () => { existedDuringCallback = owner.ss['test'] !== undefined; return undefined },
+        })
+        addStatusToStatusSheet(owner, owner, w)
+        const inst = owner.ss[getStatusKey(w)]![0]!
 
-        chainStatus(owner, expireStatus(owner, 'test'))
+        chainStatus(owner, expireStatus(owner, 'test', inst))
         assert.equal(existedDuringCallback, false)
     })
 })

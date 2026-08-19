@@ -15,26 +15,27 @@ export const decaySaveSucceeded = (owner: OwnerMaximal): DecaySaveSucceededLog[]
     const log: DecaySaveSucceededLog[] = []
 
     for (const key of Object.keys(owner.ss)) {
-        const status = owner.ss[key]
-        if (!statusExpirationIsSaveSucceeded(status.expiration)) continue
+        for (const inst of [...owner.ss[key]!]) {
+            if (!statusExpirationIsSaveSucceeded(inst.expiration)) continue
 
-        const { saveType, dc } = status.expiration
-        const saveMod = save(saveType)(owner)
-        const natural = roll(20, 1)(owner)
-        const saveTotal = newModNode('save', [saveMod, natural], sumFunc)
+            const { saveType, dc } = inst.expiration
+            const saveMod = save(saveType)(owner)
+            const natural = roll(20, 1)(owner)
+            const saveTotal = newModNode('save', [saveMod, natural], sumFunc)
 
-        let pass: boolean
-        if (natural.total() === 1) pass = false
-        else if (natural.total() === 20) pass = true
-        else if (saveTotal.total() < dc.total()) pass = false
-        else pass = true
-        log.push({
-            key,
-            kind: pass ? 'succeeded' : 'failed',
-            dc,
-            save: saveTotal,
-        })
-        if (pass) chainStatus(owner, expireStatus(owner, key))
+            let pass: boolean
+            if (natural.total() === 1) pass = false
+            else if (natural.total() === 20) pass = true
+            else if (saveTotal.total() < dc.total()) pass = false
+            else pass = true
+            log.push({
+                key,
+                kind: pass ? 'succeeded' : 'failed',
+                dc,
+                save: saveTotal,
+            })
+            if (pass) chainStatus(owner, expireStatus(owner, key, inst))
+        }
     }
 
     return log

@@ -1,41 +1,35 @@
-import { addStatusToStatusSheet } from '..'
+import { describe, test, assert } from 'vitest'
 import { createDefaultOwner, instantiateActor } from '../../actor2'
-import { applyDamage } from '../../health'
-import { findNodeMatching } from '../../log2'
-import modNodeToText from '../../log2/format'
+import { leaf } from '../../log2'
+import { Feat2 } from '../../feat2'
+import addFeat from '../../feat2/add-feat'
+import { addStatusToStatusSheet } from '..'
 import { calculateDamageTicks } from '../tick'
-import ignite from './ignite.ts'
-import { describe, test, assert, expect } from 'vitest'
+import ignite from './ignite'
 
-describe('Ignite', () => {
-    test('works with calculateTick', () => {
-        const owner = createDefaultOwner()
-        const ig = ignite({
-            snapshot: owner,
-        })
+describe('ignite', () => {
+    test('ticks 1d4 damage on the receiver', () => {
+        const receiver = createDefaultOwner()
+        addStatusToStatusSheet(receiver, createDefaultOwner(), ignite)
+
+        const result = calculateDamageTicks(instantiateActor(receiver))
+        assert.equal(result.length, 1)
+        const total = result[0].node.total()
+        assert.isTrue(total >= 1 && total <= 4)
+    })
+
+    test('freezes the source damage-over-time bonus at apply time', () => {
+        const source = createDefaultOwner()
+        const dotPlus: Feat2 = {
+            displayName: 'dot-plus',
+            broadContexts: { 'damage-over-time-feat-mod': () => leaf('dot-plus', 10) },
+        }
+        addFeat(source, dotPlus)
 
         const receiver = createDefaultOwner()
-        addStatusToStatusSheet(receiver, ig)
+        addStatusToStatusSheet(receiver, source, ignite)
 
-        const receiverActor = instantiateActor(receiver)
-        assert.equal(receiverActor.health.curr, receiverActor.health.max)
-
-        const results = calculateDamageTicks(receiverActor)
-
-        for (let res of results) {
-            console.log(modNodeToText(res.node))
-            applyDamage(receiverActor.health, res.node.total())
-        }
-        const igNode = results[0]!.node
-        const f0 = findNodeMatching(igNode, /damage-over-time-taken/, {
-            includeRoot: true,
-        })
-        assert.exists(f0)
-
-        const f1 = findNodeMatching(igNode, /ignite/)
-        assert.exists(f1)
-
-        // check if it applied the damage
-        assert.notEqual(receiverActor.health.max, receiverActor.health.curr)
+        const total = calculateDamageTicks(instantiateActor(receiver))[0].node.total()
+        assert.isTrue(total >= 11 && total <= 14) // 1d4 + frozen +10 from source
     })
 })

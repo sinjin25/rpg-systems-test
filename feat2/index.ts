@@ -2,7 +2,7 @@ import { ObjectWithBroadContexts } from "../log2/types";
 import { OwnerMaximal } from "../actor2";
 import { TriggerHooks } from "../trigger/core-types";
 
-type FeatFightStartFunction = (owner: OwnerMaximal) => StatusEffect | StatusEffect[] | undefined
+type FeatFightStartFunction = (owner: OwnerMaximal) => StatusEffectWrapper | StatusEffectWrapper[] | undefined
 
 type FeatPrereqFunction = (owner: OwnerMaximal) => boolean
 
@@ -22,7 +22,7 @@ export type Feat2 = ObjectWithBroadContexts & {
 }
 
 import { CharacterSheet } from '../character-sheet'
-import { StatusEffect } from "../status-sheet2";
+import { StatusEffectWrapper } from "../status-sheet2";
 
 export type FeatSheet = Record<string, Feat2>
 

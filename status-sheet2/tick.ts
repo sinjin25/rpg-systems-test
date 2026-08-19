@@ -1,7 +1,10 @@
 import { Actor2, OwnerMaximal } from "../actor2";
-import { applyDamage, applyHeal } from "../health";
 import { ModNode } from "../log2";
-import { StatusEffect, Tick } from "./types";
+import damageOverTime from "../log2/terminal/damage-over-time";
+import healOverTime from "../log2/terminal/heal-over-time";
+import damageOverTimeTaken from "../log2/terminal-composition/damage-over-time-taken";
+import healOverTimeTaken from "../log2/terminal-composition/heal-over-time-taken";
+import { ResolvedTickCalc, StatusEffect, StatusEffectInstance } from "./types";
 
 type TickInstance = {
     source: StatusEffect
@@ -9,22 +12,25 @@ type TickInstance = {
     calculateHeal?: ModNode,
 }
 
-export const calculateTick = (status: StatusEffect, receiver: OwnerMaximal): TickInstance => {
+// resolveXX is basically for a ResolvedTickCalc we have a handler (because we need to roll sometimes) for a base and a snapshotted mod based on status instance creation time
+const resolveDamageNode = (calc: ResolvedTickCalc, source: OwnerMaximal, receiver: OwnerMaximal): ModNode => {
+    const node = damageOverTime(calc.base())(source, calc.mod)
+    return damageOverTimeTaken({ node })(receiver)
+}
+
+const resolveHealNode = (calc: ResolvedTickCalc, source: OwnerMaximal, receiver: OwnerMaximal): ModNode => {
+    const node = healOverTime(calc.base())(source, calc.mod)
+    return healOverTimeTaken({ node })(receiver)
+}
+
+export const calculateTick = (instance: StatusEffectInstance, receiver: OwnerMaximal): TickInstance => {
+    const t = instance.tick
+
     const ret: TickInstance = {
-        calculateDamage: undefined,
-        calculateHeal: undefined,
-        source: status,
+        source: instance.pointer,
     }
-    const t = status?.tick
-    if (t === undefined) return ret
-
-    if (t.calculateDamage) {
-        ret.calculateDamage = t.calculateDamage(receiver)
-    }
-    if (t.calculateHeal) {
-        ret.calculateHeal = t.calculateHeal(receiver)
-    }
-
+    if (t?.calculateDamage) ret.calculateDamage = resolveDamageNode(t.calculateDamage, instance.source, receiver)
+    if (t?.calculateHeal) ret.calculateHeal = resolveHealNode(t.calculateHeal, instance.source, receiver)
     return ret
 }
 
@@ -35,14 +41,10 @@ export const calculateDamageTicks = (
         source: StatusEffect,
         node: ModNode,
     }[] = []
-    for (let key in actor.owner.ss) {
-        const st = actor.owner.ss[key]!
-        if (st.tick?.calculateDamage) {
-            const cd = calculateTick(st, actor.owner)
-            ret.push({
-                node: cd.calculateDamage!,
-                source: st,
-            })
+    for (const instances of Object.values(actor.owner.ss)) {
+        for (const inst of instances) {
+            const ct = calculateTick(inst, actor.owner)
+            if (ct.calculateDamage) ret.push({ node: ct.calculateDamage, source: ct.source })
         }
     }
     return ret
@@ -55,14 +57,10 @@ export const calculateHealTicks = (
         source: StatusEffect,
         node: ModNode,
     }[] = []
-    for (let key in actor.owner.ss) {
-        const st = actor.owner.ss[key]!
-        if (st.tick?.calculateHeal) {
-            const ch = calculateTick(st, actor.owner)
-            ret.push({
-                node: ch.calculateHeal!,
-                source: st,
-            })
+    for (const instances of Object.values(actor.owner.ss)) {
+        for (const inst of instances) {
+            const ct = calculateTick(inst, actor.owner)
+            if (ct.calculateHeal) ret.push({ node: ct.calculateHeal, source: ct.source })
         }
     }
     return ret

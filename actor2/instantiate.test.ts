@@ -1,9 +1,11 @@
 import { describe, test, expect, assert, beforeEach, afterEach } from 'vitest'
-import { createDefaultOwner } from '.'
-import { instantiateSpeed, instantiateHealth, applyFlatFooted, STD_SPEED } from './instantiate'
+import { createDefaultOwner, instantiateActor } from '.'
+import { instantiateSpeed, instantiateHealth, applyFlatFooted, STD_SPEED, _reinstantiateHealth, reinstantiateHealth } from './instantiate'
 import { setSeed, clearSeed } from '../roll'
 import { findNodeMatching } from '../log2'
 import { iterate } from '../simulate/util/iterate'
+import { addStatusToStatusSheet, bearsEndurance, getStatusKey } from '../status-sheet2'
+import { decayRoundsElapsed } from '../status-sheet2/decay'
 
 describe('instantiateSpeed', () => {
     beforeEach(() => setSeed(1))
@@ -105,5 +107,101 @@ describe('instantiateHealth', () => {
 
         // temporary starts at 0
         assert.equal(health.temporary, 0)
+    })
+})
+
+describe('_reinstantiateHealth', () => {
+    test('Recalculates the same numbers', () => {
+        const owner = createDefaultOwner()
+        const actor = instantiateActor(owner)
+
+        const re = _reinstantiateHealth(actor)
+        assert.equal(re.health.max, actor.health.max)
+        assert.equal(re.health.curr, actor.health.curr)
+    })
+    test('boundary: curr is 0', () => {
+        const owner = createDefaultOwner()
+        const actor = instantiateActor(owner)
+
+        actor.health.curr = 0
+
+        const re = _reinstantiateHealth(actor)
+        assert.equal(re.health.max, actor.health.max)
+        assert.equal(re.health.curr, actor.health.curr)
+
+        assert.equal(re.health.curr, 0)
+    })
+    test('Buffs recalculate correctly @ max', () => {
+        const owner = createDefaultOwner()
+        const actor = instantiateActor(owner)
+
+        const HEALTH_MAX = actor.health.max
+        const HEALTH = actor.health.curr
+
+        addStatusToStatusSheet(owner, owner, bearsEndurance)
+
+        const re = _reinstantiateHealth(actor)
+        assert.notEqual(HEALTH_MAX, re.health.max)
+        assert.notEqual(HEALTH, re.health.curr)
+    })
+    test('Buffs recalculate correctly', () => {
+        const owner = createDefaultOwner()
+        const actor = instantiateActor(owner)
+        actor.health.curr = Math.floor(actor.health.curr * .66)
+        assert.equal(actor.health.curr, 21)
+
+        const HEALTH_MAX = actor.health.max
+        const HEALTH = actor.health.curr
+
+        addStatusToStatusSheet(owner, owner, bearsEndurance)
+
+        const re = _reinstantiateHealth(actor)
+        assert.notEqual(HEALTH_MAX, re.health.max)
+        assert.notEqual(HEALTH, re.health.curr)
+
+        assert.equal(re.health.curr, 24)
+    })
+    test('Buff expiration would calculate correctly', () => {
+        const owner = createDefaultOwner()
+        addStatusToStatusSheet(owner, owner, bearsEndurance)
+        const actor = instantiateActor(owner)
+
+        actor.health.curr = Math.floor(actor.health.curr * .66)
+        assert.equal(actor.health.curr, 23)
+
+        decayRoundsElapsed(owner, 4)
+        assert.notExists(owner.ss[getStatusKey(bearsEndurance)])
+
+        // decay is health-agnostic; simulate reconciles via reinstantiateHealth
+        const re = _reinstantiateHealth(actor)
+        assert.notEqual(actor.health.max, re.health.max)
+        assert.notEqual(actor.health.curr, re.health.curr)
+
+        assert.equal(re.health.curr, 21)
+    })
+})
+
+describe('reinstantiateHealth', () => {
+    test('no-ops when max is unchanged (guards against ceil drift)', () => {
+        const owner = createDefaultOwner()
+        const actor = instantiateActor(owner)
+        actor.health.curr = Math.floor(actor.health.curr * .66)
+        const before = { ...actor.health }
+
+        reinstantiateHealth(actor)
+
+        // no buff changed max, so health is left exactly as-is
+        assert.deepEqual(actor.health, before)
+    })
+    test('mutates actor health in place when a buff changes max', () => {
+        const owner = createDefaultOwner()
+        const actor = instantiateActor(owner)
+        const oldMax = actor.health.max
+
+        addStatusToStatusSheet(owner, owner, bearsEndurance)
+        reinstantiateHealth(actor)
+
+        assert.isAbove(actor.health.max, oldMax)
+        assert.equal(actor.health.curr, actor.health.max) // was at full
     })
 })

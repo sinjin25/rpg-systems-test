@@ -1,7 +1,7 @@
 import { Actor2, instantiateActor, OwnerMaximal } from "../actor2"
 import { act, actionIsAbility, applyResolutions, outputFinalSar } from "../actor2/act"
 import { resolveAbility } from "../ability-sheet2"
-import { instantiateSpeed, STD_SPEED } from "../actor2/instantiate"
+import { instantiateSpeed, reinstantiateHealth, STD_SPEED } from "../actor2/instantiate"
 import { round } from "../actor2/round"
 import { applyDamage, applyHeal } from "../health"
 import modNodeToText from "../log2/format"
@@ -89,7 +89,11 @@ export const simulateFight = (
         && anyActorAlive(playerActors)
     ) {
         rounds++
-        actors.forEach(a => decaySaveSucceeded(a.owner))
+        // decay is health-agnostic; reconcile max health here only when a status expired
+        actors.forEach(a => {
+            const saves = decaySaveSucceeded(a.owner)
+            if (saves.some(s => s.kind === 'succeeded')) reinstantiateHealth(a)
+        })
 
         actors.forEach(a => handlePotentialDeath(actors, a))
 
@@ -110,13 +114,16 @@ export const simulateFight = (
                 source: snapshotActor(theActor)
             }))
 
-            decayRoundsElapsed(theActor.owner, 1, theActor)
+            // an expired status may have changed max health -> reconcile when one did
+            const anythingElapsedRounds = !!decayRoundsElapsed(theActor.owner, 1, theActor)
+            if (anythingElapsedRounds) reinstantiateHealth(theActor)
             if (!theActor.speed.canAct) continue
 
             // start action
             const actions = act(theActor)
 
-            decayActionsElapsed(theActor.owner, 1)
+            const anythingElapsedSpeed = !!decayActionsElapsed(theActor.owner, 1)
+            if (anythingElapsedSpeed) reinstantiateHealth(theActor)
 
             // find the first alive person (target)
             const targetTeam = ownerIsMemberOf(theActor.owner, playerActors) ? enemyActors : playerActors

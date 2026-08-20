@@ -8,14 +8,21 @@ export const statusExpirationIsRoundsElapsed = (
 ): expiration is StatusExpirationRoundsElapsed =>
     expiration?.kind === 'rounds-elapsed'
 
-export const decayRoundsElapsed = (owner: OwnerMaximal, elapsed: number, self?: Actor2) => {
+// returns how many statuses expired, so callers can react (ex: recalc health)
+export const decayRoundsElapsed = (owner: OwnerMaximal, elapsed: number, self?: Actor2): number => {
+    let expired = 0
     for (const key of Object.keys(owner.ss)) {
         // copy: expireStatus mutates the array (and may delete the key) as we go
         for (const inst of [...owner.ss[key]!]) {
             if (!statusExpirationIsRoundsElapsed(inst.expiration)) continue
 
             inst.expiration.remaining -= elapsed
-            if (inst.expiration.remaining <= 0) chainStatus(owner, expireStatus(owner, key, inst))
+            if (inst.expiration.remaining <= 0) {
+                const removed = expireStatus(owner, key, inst)
+                chainStatus(owner, removed)
+                if (removed) expired++
+            }
         }
     }
+    return expired
 }

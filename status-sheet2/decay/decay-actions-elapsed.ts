@@ -7,15 +7,22 @@ export const statusExpirationIsActionsElapsed = (
 ): expiration is StatusExpirationActionsElapsed =>
     expiration?.kind === 'actions-elapsed'
 
+// returns how many statuses expired, so callers can react (ex: recalc health)
 export const decayActionsElapsed = (
     owner: DecayOwner,
     actionsTaken: number,
-) => {
+): number => {
+    let expired = 0
     for (const key of Object.keys(owner.ss)) {
         for (const inst of [...owner.ss[key]!]) {
             if (!statusExpirationIsActionsElapsed(inst.expiration)) continue
             inst.expiration.remaining -= actionsTaken
-            if (inst.expiration.remaining <= 0) chainStatus(owner, expireStatus(owner, key, inst))
+            if (inst.expiration.remaining <= 0) {
+                const removed = expireStatus(owner, key, inst)
+                chainStatus(owner, removed)
+                if (removed) expired++
+            }
         }
     }
+    return expired
 }

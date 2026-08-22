@@ -1,10 +1,14 @@
 import { AbilitySheetDefinition } from "./abilities2/types"
+import { AttackAbilitySheetDefinition } from "./attack-ability/types"
 
 export type AbilityCastType = 'standard' | 'swift' | 'free'
 
 export type AbilityTags = string[]
 
-export type AbilityCatalog = Record<string, AbilitySheetDefinition>
+// a category can hold either kind of ability; the `kind` discriminant distinguishes them
+export type AnyAbilitySheetDefinition = AbilitySheetDefinition | AttackAbilitySheetDefinition
+
+export type AbilityCatalog = Record<string, AnyAbilitySheetDefinition>
 
 export type AbilityCategory = {
     items: AbilityCatalog,

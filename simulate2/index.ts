@@ -1,6 +1,6 @@
 import { Actor2, instantiateActor, OwnerMaximal } from "../actor2"
-import { act, actionIsAbility, applyResolutions, outputFinalSar } from "../actor2/act"
-import { resolveAbility } from "../ability-sheet2"
+import { act, actionIsAbility, actionIsAttackAbility, applyAttackResolutions, applyResolutions, outputFinalSar } from "../actor2/act"
+import { resolveAbility, resolveAttackAbility } from "../ability-sheet2"
 import { instantiateSpeed, reinstantiateHealth, STD_SPEED } from "../actor2/instantiate"
 import { round } from "../actor2/round"
 import { applyDamage, applyHeal } from "../health"
@@ -156,6 +156,25 @@ export const simulateFight = (
             }
 
             actions.forEach(a => {
+                if (actionIsAttackAbility(a)) {
+                    // targeting lives inside the attack ability's steps
+                    const resolutions = resolveAttackAbility(
+                        { enemy: targetTeam, ally: allyTeam },
+                        theActor,
+                        a.factory(),
+                    )
+                    for (let r of resolutions) {
+                        applyAttackResolutions([r])
+                        // attack resolutions carry no save/dc, so log the underlying SAR via the
+                        // standard-action-result event; snapshot the actual per-resolution target
+                        ttrAppendLog(timeTravel['standard-action-result']({
+                            ...ttrActorContext(theActor, [r.target])(),
+                            ...r.sar,
+                        }))
+                        handlePotentialDeath(actors, r.target, theActor.owner)
+                    }
+                    return
+                }
                 if (actionIsAbility(a)) {
                     // targeting now lives inside the ability's steps
                     const ability = a.factory()

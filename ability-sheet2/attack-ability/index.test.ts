@@ -6,7 +6,9 @@ import { setSeed, clearSeed } from '../../roll'
 import { BaseEquipment } from '../../equipment-sheet2/types'
 import { iterate } from '../../simulate/util/iterate'
 import { Participants } from '../abilities2'
-import { resolvePayload, resolveStep } from './index'
+import { applyAttackResolutions } from '../../actor2/act'
+import { applyDamage } from '../../health'
+import { resolvePayload, resolveStep, RESOLVE_PAYLOAD_DEFAULT_OPTS } from './index'
 import { AttackDiscreteTargetGroup, AttackDiscreteTargetGroupPayload } from './types'
 
 // --- fixtures -------------------------------------------------------------
@@ -159,6 +161,57 @@ describe('augments', () => {
         assert.notEqual(hit.res.result.hook, 'onMiss')
         assert.equal(penalized.result.hook, 'onMiss')
     })
+
+    test('a state-aware mod reads the target and changes the roll (full-life bonus)', () => {
+        // +100 to hit, but only while the target is at full life (reads target at resolve time)
+        const vital: AttackDiscreteTargetGroupPayload = {
+            onMiss: () => ({}),
+            onHit: () => ({}),
+            augments: {
+                attackResult: {
+                    mod: (_s, t) => leaf('vital', t.health.curr === t.health.max ? 100 : 0),
+                },
+            },
+        }
+        const plain: AttackDiscreteTargetGroupPayload = { onMiss: () => ({}), onHit: () => ({}) }
+
+        // a seed where a plain attack ordinarily misses a full-life target (not a nat-1)
+        const miss = findRun(
+            (seed) => ({ seed, res: resolvePayload(armedActor(), targetActor(), plain) }),
+            x => x.res.result.hook === 'onMiss' && rollOf(x.res.result.sar.attackResult!) > 1,
+        )
+
+        // same seed, full-life target -> the +100 applies -> now a hit
+        setSeed(miss.seed)
+        const full = resolvePayload(armedActor(), targetActor(), vital)
+        clearSeed()
+        assert.notEqual(full.result.hook, 'onMiss')
+
+        // same seed, a damaged target -> predicate false, +0 -> still a miss
+        setSeed(miss.seed)
+        const source = armedActor()
+        const damagedTarget = targetActor()
+        applyDamage(damagedTarget.health, 1) // no longer full life
+        const damaged = resolvePayload(source, damagedTarget, vital)
+        clearSeed()
+        assert.equal(damaged.result.hook, 'onMiss')
+    })
+
+    test('a state-aware override receives the source', () => {
+        // replace the threat range with a value derived from the source's stats (str = 10)
+        const payload: AttackDiscreteTargetGroupPayload = {
+            onHit: () => ({}),
+            onThreaten: () => ({}),
+            onCrit: () => ({}),
+            augments: { threatResult: { override: (s) => leaf('src-threat', s.owner.cs.str) } },
+        }
+        // threatResult survives in the final SAR on any hit
+        const hit = findRun(
+            () => resolvePayload(armedActor(), targetActor(), payload),
+            r => r.result.hook !== 'onMiss',
+        )
+        assert.equal(hit.result.sar.threatResult?.total(), 10)
+    })
 })
 
 // --- chainOnly ------------------------------------------------------------
@@ -202,5 +255,137 @@ describe('chainOnly', () => {
         assert.notEqual(run.firstHook, 'onMiss')
         assert.isTrue(run.secondTriggered)
         assert.equal(run.count, 2)
+    })
+})
+
+// --- self channel (effects routed back to the source, conditional on a hit) ------------------
+
+describe('self channel', () => {
+    // recoil onto the source, only on a hit (no onMiss -> a miss produces no self payload)
+    const recoilPayload: AttackDiscreteTargetGroupPayload = {
+        onHit: () => ({ self: { damage: [leaf('recoil', 5)] } }),
+    }
+
+    test('a hit routes the self payload to the source and damages it', () => {
+        let done = false
+        for (let seed = 0; seed < 200 && !done; seed++) {
+            setSeed(seed)
+            const source = armedActor()
+            const target = targetActor()
+            const { result } = resolvePayload(source, target, recoilPayload)
+            if (result.hook === 'onMiss') continue
+
+            assert.exists(result.self?.damage)
+            const before = source.health.curr
+            applyAttackResolutions([result])
+            assert.equal(before - source.health.curr, 5) // recoil landed on the source, not the target
+            done = true
+        }
+        clearSeed()
+        assert.isTrue(done, 'expected a hitting seed in [0,200)')
+    })
+
+    test('a miss produces no self payload and leaves the source untouched', () => {
+        let done = false
+        for (let seed = 0; seed < 200 && !done; seed++) {
+            setSeed(seed)
+            const source = armedActor()
+            const target = targetActor()
+            const { result } = resolvePayload(source, target, recoilPayload)
+            if (result.hook !== 'onMiss') continue
+
+            assert.isUndefined(result.self)
+            const before = source.health.curr
+            applyAttackResolutions([result])
+            assert.equal(source.health.curr, before)
+            done = true
+        }
+        clearSeed()
+        assert.isTrue(done, 'expected a missing seed in [0,200)')
+    })
+})
+
+// --- resolution opts (per-payload overrides of the hit/crit rules) ----------------------------
+
+describe('resolution opts', () => {
+    test('RESOLVE_PAYLOAD_DEFAULT_OPTS is the standard-rules set', () => {
+        assert.deepEqual(RESOLVE_PAYLOAD_DEFAULT_OPTS, {
+            canMiss: true,
+            canCrit: true,
+            mustCrit: false,
+            nat1HitFails: true,
+            nat20HitHits: true,
+            nat1ThreatFails: true,
+            nat20ThreatSucceeds: true,
+        })
+    })
+
+    test('mustCrit:true forces a confirmed crit on any seed', () => {
+        setSeed(0)
+        const { result } = resolvePayload(armedActor(), targetActor(), { onCrit: () => ({}) }, { mustCrit: true })
+        clearSeed()
+        assert.equal(result.hook, 'onCrit')
+        assert.exists(result.sar.critDamageResult)
+    })
+
+    test('canMiss:false makes a would-be miss land', () => {
+        // a seed that misses under the default rules
+        const miss = findRun(
+            (seed) => ({ seed, res: resolvePayload(armedActor(), targetActor(), {}) }),
+            x => x.res.result.hook === 'onMiss',
+        )
+
+        setSeed(miss.seed)
+        const forced = resolvePayload(armedActor(), targetActor(), {}, { canMiss: false })
+        clearSeed()
+
+        assert.equal(miss.res.result.hook, 'onMiss')
+        assert.notEqual(forced.result.hook, 'onMiss') // the same roll now lands
+    })
+
+    test('canCrit:false forecloses a crit (a confirmed crit becomes a plain hit)', () => {
+        // wide threat range + weak target guarantees a crit under default rules
+        const critForcing: AttackDiscreteTargetGroupPayload = {
+            onHit: () => ({}),
+            augments: { threatResult: { override: () => leaf('wide-threat', 2) } },
+        }
+        const crit = findRun(
+            (seed) => ({ seed, res: resolvePayload(armedActor(), weakTarget(), critForcing) }),
+            x => x.res.result.hook === 'onCrit',
+        )
+
+        setSeed(crit.seed)
+        const noCrit = resolvePayload(armedActor(), weakTarget(), critForcing, { canCrit: false })
+        clearSeed()
+
+        assert.equal(crit.res.result.hook, 'onCrit')
+        assert.equal(noCrit.result.hook, 'onHit') // still lands, just never crits
+    })
+
+    test('opts on the payload flow through resolveStep to sarAgainstTarget', () => {
+        // a seed where a plain attack ordinarily misses the first enemy
+        const miss = findRun(
+            (seed) => {
+                const source = armedActor()
+                const enemy = targetActor()
+                return { seed, hook: resolvePayload(source, enemy, {}).result.hook }
+            },
+            x => x.hook === 'onMiss',
+        )
+
+        // same seed, but the payload declares canMiss:false - resolveStep must honour it
+        setSeed(miss.seed)
+        const source = armedActor()
+        const res = resolveStep(
+            { ally: [source], enemy: [targetActor()] },
+            source,
+            {
+                tp: { filters: [], simple: 'first', team: 'enemy' },
+                payload: [{ opts: { canMiss: false }, onHit: () => ({}) }],
+            },
+        )
+        clearSeed()
+
+        assert.equal(res[0]!.hook, 'onHit')
     })
 })

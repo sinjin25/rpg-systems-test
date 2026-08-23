@@ -37,7 +37,8 @@ const resolveTick = (tick: Tick | undefined, source: OwnerMaximal): ResolvedTick
 }
 
 type MakeWrapperOpts = {
-    expiration?: StatusExpiration
+    // a fixed expiration, or a thunk rolled per instance (e.g. a random duration)
+    expiration?: StatusExpiration | (() => StatusExpiration)
 }
 
 // builds the wrapper + default factory; stack defaults to 'highest'
@@ -49,7 +50,7 @@ export const makeWrapper = (
     const factory: StatusEffectInstanceFactory = (source) => ({
         pointer,
         source, // as in the caster, not the definition
-        ...opts,
+        expiration: typeof opts.expiration === 'function' ? opts.expiration() : opts.expiration,
         tick: resolveTick(pointer.tick, source),
     })
     return { ...pointer, factory }

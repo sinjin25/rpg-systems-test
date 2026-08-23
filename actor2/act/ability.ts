@@ -20,6 +20,13 @@ export const applyAttackResolutions = (resolutions: AttackDiscreteTargetGroupPay
         if (r.damage) for (const node of r.damage) applyDamage(r.target.health, node.total())
         if (r.heal) for (const node of r.heal) applyHeal(r.target.health, node.total())
         if (r.statusEffect) addStatusToStatusSheet(r.target.owner, r.source.owner, ...r.statusEffect)
+
+        // effects routed back to the source (recoil, self-buff, ...) - only present if a hook set it
+        if (r.self) {
+            if (r.self.damage) for (const node of r.self.damage) applyDamage(r.source.health, node.total())
+            if (r.self.heal) for (const node of r.self.heal) applyHeal(r.source.health, node.total())
+            if (r.self.statusEffect) addStatusToStatusSheet(r.source.owner, r.source.owner, ...r.self.statusEffect)
+        }
     }
 }
 

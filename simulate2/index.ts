@@ -172,6 +172,8 @@ export const simulateFight = (
                             ...r.sar,
                         }))
                         handlePotentialDeath(actors, r.target, theActor.owner)
+                        // a self payload (e.g. recoil) can kill the caster too
+                        if (r.self) handlePotentialDeath(actors, r.source, theActor.owner)
                     }
                     return
                 }

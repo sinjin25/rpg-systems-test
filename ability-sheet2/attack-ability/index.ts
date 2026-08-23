@@ -1,9 +1,9 @@
 import { Actor2 } from '../../actor2'
-import { calculateAc, outputRawSar, sarAgainstTarget, StandardActionResult } from '../../actor2/act'
+import { calculateAc, outputRawSar, SAR_AGAINST_TARGET_DEFAULT_OPTS, sarAgainstTarget, StandardActionResult } from '../../actor2/act'
 import newModNode, { sumFunc } from '../../log2'
 import target from '../../target'
 import { Participants } from '../abilities2'
-import { AttackAbility, AttackDiscreteTargetGroup, AttackDiscreteTargetGroupPayload, AttackDiscreteTargetGroupPayloadResolution } from './types'
+import { AttackAbility, AttackDiscreteTargetGroup, AttackDiscreteTargetGroupPayload, AttackDiscreteTargetGroupPayloadResolution, SARAgainstTargetOpts } from './types'
 
 const resolveAttackAbility = (
     p: Participants, source: Actor2, ability: AttackAbility
@@ -35,7 +35,7 @@ const resolveStep = (
     for (let t of targets) {
         if (!t) continue
         for (let payload of step.payload) {
-            const { defenderSuccess, result } = resolvePayload(source, t, payload)
+            const { defenderSuccess, result } = resolvePayload(source, t, payload, payload.opts)
             resolutions.push(result)
 
             if (!shouldTGPRContinue({ defenderSuccess }, payload)) break
@@ -47,6 +47,8 @@ const resolveStep = (
 const applyAugments = (
     sar: StandardActionResult,
     augments: AttackDiscreteTargetGroupPayload['augments'],
+    source: Actor2,
+    target: Actor2,
 ): StandardActionResult => {
     // its an optional field
     if (!augments) return sar
@@ -55,10 +57,11 @@ const applyAugments = (
         const aug = augments[key]
         if (!aug) continue
         let node = out[key]
-        if (aug.override) node = aug.override()
+        if (aug.override) node = aug.override(source, target)
         // there is never a case where override is present and mod is as well
         else if (aug.mod) {
-            node = newModNode(node.displayName, [...node.children, aug.mod], sumFunc)
+            const modNode = typeof aug.mod === 'function' ? aug.mod(source, target) : aug.mod
+            node = newModNode(node.displayName, [...node.children, modNode], sumFunc)
         }
         out[key] = node
     }
@@ -80,19 +83,27 @@ const resolveHook = (
     }
 }
 
+// the attack-ability-facing default; aliases the single source of truth in actor2/act
+export const RESOLVE_PAYLOAD_DEFAULT_OPTS: SARAgainstTargetOpts = SAR_AGAINST_TARGET_DEFAULT_OPTS
+
 const resolvePayload = (
     source: Actor2,
     target: Actor2,
     payload: AttackDiscreteTargetGroupPayload,
+    opts: Partial<SARAgainstTargetOpts> = {},
 ): {
     defenderSuccess: boolean, // a miss (the defender "made their save")
     result: AttackDiscreteTargetGroupPayloadResolution
 } => {
+    const optsToUse: SARAgainstTargetOpts = {
+        ...RESOLVE_PAYLOAD_DEFAULT_OPTS,
+        ...opts,
+    }
     // v1: single primary attack (dual-wield/iteratives deferred)
     const [sar] = outputRawSar(source)
-    const augmented = applyAugments(sar, payload.augments)
+    const augmented = applyAugments(sar, payload.augments, source, target)
     const targetAc = calculateAc(target.owner)
-    const final = sarAgainstTarget(augmented, targetAc)
+    const final = sarAgainstTarget(augmented, targetAc, optsToUse)
 
     // discriminate the outcome from which nodes sarAgainstTarget kept. A confirmed crit carries
     // critDamageResult (and no plain damageResult), so it must be checked before the miss case.

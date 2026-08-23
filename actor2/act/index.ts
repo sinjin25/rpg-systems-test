@@ -3,7 +3,7 @@ import { AbilityCastType, AbilitySheetDefinition, AttackAbilitySheetDefinition, 
 import { selectAndPrepAbility } from './ability'
 import { outputRawSar, StandardActionResult } from './attack'
 
-export { FinalStandardActionResult, StandardActionResult, calculateAc, calculateAttack, calculateCritConfirm, calculateSAR, critDidConfirm, hitDidConfirm, outputFinalSar, outputRawSar, sarAgainstTarget } from './attack'
+export { FinalStandardActionResult, StandardActionResult, SAR_AGAINST_TARGET_DEFAULT_OPTS, calculateAc, calculateAttack, calculateCritConfirm, calculateSAR, critDidConfirm, hitDidConfirm, outputFinalSar, outputRawSar, sarAgainstTarget } from './attack'
 
 export { applyResolutions, applyAttackResolutions, selectAndPrepAbility } from './ability'
 

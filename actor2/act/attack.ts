@@ -4,6 +4,7 @@ import newModNode, { findNodeMatching, leaf, ModNode, sumFunc } from "../../log2
 import { ac, attack, critConfirm, critDamage, critThreatRange, damage } from "../../log2/terminal"
 import roll from "../../log2/roll"
 import modNodeToText from "../../log2/format"
+import type { SARAgainstTargetOpts } from "../../ability-sheet2/attack-ability/types"
 
 type AttackOpts = {
     relevantSlot: BaseEquipment,
@@ -143,35 +144,56 @@ export const outputRawSar = (data: Actor2) => {
     return sar
 }
 
+// all-true = the standard Pathfinder rules; the single source of truth for the default flags. The
+// raw-attack path (outputFinalSar) and existing callers get this, so behaviour is unchanged unless a
+// caller passes overrides (see the attack-ability resolvePayload).
+export const SAR_AGAINST_TARGET_DEFAULT_OPTS: SARAgainstTargetOpts = {
+    canMiss: true,
+    canCrit: true,
+    mustCrit: false,
+    nat1HitFails: true,
+    nat20HitHits: true,
+    nat1ThreatFails: true,
+    nat20ThreatSucceeds: true,
+}
+
 export const hitDidConfirm = (
     attackResult: ReturnType<typeof calculateAttack>,
-    targetAc: ReturnType<typeof calculateAc>
+    targetAc: ReturnType<typeof calculateAc>,
+    opts: SARAgainstTargetOpts = SAR_AGAINST_TARGET_DEFAULT_OPTS,
 ) => {
     const rollChild = attackResult.children.find(a => a.displayName === 'roll-total')
     if (!rollChild) {
         throw Error('Did not find roll child. Confirm the name.')
     }
 
-    if (rollChild.total() >= 20) return true
-    else if (rollChild.total() === 1) return false
+    const roll = rollChild.total()
+    if (opts.nat20HitHits && roll >= 20) return true
+    if (opts.nat1HitFails && roll === 1) return false
     return attackResult.total() >= targetAc.total()
 }
 
 export const critDidConfirm = (
     critConfirmResult: ReturnType<typeof calculateCritConfirm>,
-    targetAc: ReturnType<typeof calculateAc>
+    targetAc: ReturnType<typeof calculateAc>,
+    opts: SARAgainstTargetOpts = SAR_AGAINST_TARGET_DEFAULT_OPTS,
 ) => {
     const rollChild = critConfirmResult.children.find(a => a.displayName === 'roll-total')
     if (!rollChild) {
         throw Error('Did not find roll child. Confirm the name.')
     }
 
-    if (rollChild.total() >= 20) return true
-    else if (rollChild.total() === 1) return false
+    const roll = rollChild.total()
+    if (opts.nat20ThreatSucceeds && roll >= 20) return true
+    if (opts.nat1ThreatFails && roll === 1) return false
     return critConfirmResult.total() >= targetAc.total()
 }
 
-export const sarAgainstTarget = (sar: StandardActionResult, targetAc: ReturnType<typeof calculateAc>): FinalStandardActionResult => {
+export const sarAgainstTarget = (
+    sar: StandardActionResult,
+    targetAc: ReturnType<typeof calculateAc>,
+    opts: SARAgainstTargetOpts = SAR_AGAINST_TARGET_DEFAULT_OPTS,
+): FinalStandardActionResult => {
     const { attackResult, critConfirmResult, critDamageResult, damageResult, relevantSlot, threatResult } = sar
 
     const rollChild = attackResult.children.find(a => a.displayName === 'roll-total')
@@ -179,15 +201,14 @@ export const sarAgainstTarget = (sar: StandardActionResult, targetAc: ReturnType
         throw Error('Did not find roll child. Confirm the name.')
     }
 
-    // Does it hit
-    const isHit = hitDidConfirm(attackResult, targetAc)
+    // Does it hit - mustCrit forces everything; canMiss:false forces a landing
+    const isHit = opts.mustCrit ? true : (opts.canMiss ? hitDidConfirm(attackResult, targetAc, opts) : true)
 
-    // is it a threat
-
-    const isThreat = rollChild.total() >= threatResult.total()
+    // is it a threat - canCrit:false forecloses any crit
+    const isThreat = opts.mustCrit ? true : (opts.canCrit ? rollChild.total() >= threatResult.total() : false)
 
     // did it confirm
-    let isConfirm = isThreat && critDidConfirm(critConfirmResult, targetAc)
+    let isConfirm = opts.mustCrit ? true : (isThreat && critDidConfirm(critConfirmResult, targetAc, opts))
 
     // what to return
     if (!isHit) {

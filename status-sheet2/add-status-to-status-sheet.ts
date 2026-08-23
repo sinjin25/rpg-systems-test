@@ -2,7 +2,9 @@ import { OwnerMaximal } from "../actor2"
 import { newStatusInstance } from "./instance"
 import { StatusEffect, StatusEffectWrapper } from "./types"
 
-export const getStatusKey = (status: StatusEffect) => status.displayName
+export const getStatusKey = (status: {
+    displayName: string,
+}) => status.displayName
 
 // this is done to normalize adding snapshots and statuses to a sheet
 export const addStatusToStatusSheet = (owner: OwnerMaximal, creator: OwnerMaximal | undefined, ...statuses: Array<StatusEffectWrapper>) => {

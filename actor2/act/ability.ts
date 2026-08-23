@@ -6,20 +6,30 @@ import { OwnerLog2 } from '../../log2/types'
 import { addStatusToStatusSheet } from "../../status-sheet2"
 
 export const applyResolutions = (resolutions: DiscreteTargetGroupPayloadResolution[]) => {
-    for (const r of resolutions) {
-        if (r.damage) for (const node of r.damage) applyDamage(r.target.health, damageTakenTree({ node })(r.target.owner as unknown as OwnerLog2).total())
+    return resolutions.map(r => {
+        const damageTaken: ReturnType<ReturnType<typeof damageTakenTree>>[] = []
+        if (r.damage) for (const node of r.damage) {
+            const dt = damageTakenTree({ node })(r.target.owner as unknown as OwnerLog2)
+            damageTaken.push(dt)
+            applyDamage(r.target.health, dt.total())
+        }
         if (r.heal) for (const node of r.heal) applyHeal(r.target.health, node.total())
         if (r.statusEffect) addStatusToStatusSheet(r.target.owner, r.source.owner, ...r.statusEffect)
-    }
+        return { r, damageTaken }
+    })
 }
 
 // like applyResolutions, but weapon damage lives in the resolved SAR (crit takes precedence, matching
 // the raw-SAR handling in simulate2); the hook's AbilityPayload is additive on top.
 export const applyAttackResolutions = (resolutions: AttackDiscreteTargetGroupPayloadResolution[]) => {
-    for (const r of resolutions) {
+    return resolutions.map(r => {
         const weapon = r.sar.critDamageResult ?? r.sar.damageResult
         const targetOwnerLog2 = r.target.owner as unknown as OwnerLog2
-        if (weapon) applyDamage(r.target.health, damageTakenTree({ node: weapon })(targetOwnerLog2).total())
+        let damageTakenResult: ReturnType<ReturnType<typeof damageTakenTree>> | undefined
+        if (weapon) {
+            damageTakenResult = damageTakenTree({ node: weapon })(targetOwnerLog2)
+            applyDamage(r.target.health, damageTakenResult.total())
+        }
         if (r.damage) for (const node of r.damage) applyDamage(r.target.health, damageTakenTree({ node })(targetOwnerLog2).total())
         if (r.heal) for (const node of r.heal) applyHeal(r.target.health, node.total())
         if (r.statusEffect) addStatusToStatusSheet(r.target.owner, r.source.owner, ...r.statusEffect)
@@ -30,7 +40,8 @@ export const applyAttackResolutions = (resolutions: AttackDiscreteTargetGroupPay
             if (r.self.heal) for (const node of r.self.heal) applyHeal(r.source.health, node.total())
             if (r.self.statusEffect) addStatusToStatusSheet(r.source.owner, r.source.owner, ...r.self.statusEffect)
         }
-    }
+        return { r, damageTakenResult }
+    })
 }
 
 export const selectAndPrepAbility = (

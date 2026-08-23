@@ -32,12 +32,12 @@ describe('Integration: works with ignite', () => {
         const receiverBefore = snapshotActor(receiver)
         const logs: Array<ReturnType<typeof ability>> = []
 
-        for (let r of resolutions) {
-            applyResolutions([r])
+        for (let { r, damageTaken } of applyResolutions(resolutions)) {
             logs.push(ability({
                 source: snapshotActor(caster),
                 to: [snapshotActor(r.target)],
                 resolution: r,
+                damageTaken,
             }))
         }
 
@@ -47,6 +47,12 @@ describe('Integration: works with ignite', () => {
         const dmgLog = logs.find(l => l.damage && l.damage.length)
         assert.exists(dmgLog)
         assert.notEqual(receiverBefore.health.curr, dmgLog!.to![0]!.health.curr)
+
+        // damageTaken is captured and its total matches the raw damage total
+        // (no damage-taken modifiers on a default owner, so they should be equal)
+        assert.exists(dmgLog!.damageTaken)
+        assert.equal(dmgLog!.damageTaken!.length, dmgLog!.damage!.length)
+        assert.equal(dmgLog!.damageTaken![0]!.total, dmgLog!.damage![0]!.total)
 
         // the failed-save log records the ignite status on the target
         const statusLog = logs.find(l => l.statusEffect && l.statusEffect.length)

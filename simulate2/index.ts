@@ -165,13 +165,13 @@ export const simulateFight = (
                         theActor,
                         a.factory(),
                     )
-                    for (let r of resolutions) {
-                        applyAttackResolutions([r])
+                    for (let { r, damageTakenResult } of applyAttackResolutions(resolutions)) {
                         // attack resolutions carry no save/dc, so log the underlying SAR via the
                         // standard-action-result event; snapshot the actual per-resolution target
                         ttrAppendLog(timeTravel['standard-action-result']({
                             ...ttrActorContext(theActor, [r.target])(),
                             ...r.sar,
+                            damageTakenResult,
                         }))
                         handlePotentialDeath(actors, r.target, theActor.owner)
                         // a self payload (e.g. recoil) can kill the caster too
@@ -187,12 +187,12 @@ export const simulateFight = (
                         theActor,
                         ability,
                     )
-                    for (let r of resolutions) {
-                        applyResolutions([r])
+                    for (let { r, damageTaken } of applyResolutions(resolutions)) {
                         ttrAppendLog(timeTravel['ability']({
                             source: snapshotActor(theActor),
                             to: [snapshotActor(r.target)],
                             resolution: r,
+                            damageTaken,
                         }))
                         handlePotentialDeath(actors, r.target, theActor.owner)
                     }
@@ -202,17 +202,21 @@ export const simulateFight = (
                 // resolve action
                 const finalSar = outputFinalSar([a], target)
                 for (let fs of finalSar) {
+                    let damageTakenResult: ReturnType<ReturnType<typeof damageTakenTree>> | undefined
                     if (!fs.critDamageResult && !fs.damageResult) {
                     }
                     else if (fs.critDamageResult) {
-                        applyDamage(target.health, damageTakenTree({ node: fs.critDamageResult })(target.owner as unknown as OwnerLog2).total())
+                        damageTakenResult = damageTakenTree({ node: fs.critDamageResult })(target.owner as unknown as OwnerLog2)
+                        applyDamage(target.health, damageTakenResult.total())
                     }
                     else if (fs.damageResult) {
-                        applyDamage(target.health, damageTakenTree({ node: fs.damageResult })(target.owner as unknown as OwnerLog2).total())
+                        damageTakenResult = damageTakenTree({ node: fs.damageResult })(target.owner as unknown as OwnerLog2)
+                        applyDamage(target.health, damageTakenResult.total())
                     }
                     ttrAppendLog(timeTravel["standard-action-result"]({
                         ...snapshotActors(),
                         ...fs,
+                        damageTakenResult,
                     }))
                 }
 

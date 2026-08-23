@@ -3,7 +3,7 @@ import freezeModNodeRecursive from "./snapshot/mod-node"
 import { FrozenStandardActionResult } from "./types"
 
 const MOD_NODE_KEYS = ['attackResult', 'damageResult', 'threatResult',
-    'critConfirmResult', 'critDamageResult'] as const
+    'critConfirmResult', 'critDamageResult', 'damageTakenResult'] as const
 
 const standardActionResult: Handlers['standard-action-result'] = (input) => {
     const { source, to, ...sar } = input

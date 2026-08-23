@@ -5,6 +5,8 @@ import { instantiateSpeed, reinstantiateHealth, STD_SPEED } from "../actor2/inst
 import { round } from "../actor2/round"
 import { applyDamage, applyHeal } from "../health"
 import modNodeToText from "../log2/format"
+import damageTakenTree from '../log2/terminal-composition/damage-taken'
+import { OwnerLog2 } from '../log2/types'
 import { decayActionsElapsed, decayEnemyKilled, decayRoundsElapsed, decaySaveSucceeded } from "../status-sheet2/decay"
 import runTrigger from "../trigger/dispatch"
 import { anyActorAlive, chooseTarget, determineFightWinner, handlePotentialDeath, ownerIsMemberOf } from "./helpers"
@@ -203,10 +205,10 @@ export const simulateFight = (
                     if (!fs.critDamageResult && !fs.damageResult) {
                     }
                     else if (fs.critDamageResult) {
-                        applyDamage(target.health, fs.critDamageResult.total())
+                        applyDamage(target.health, damageTakenTree({ node: fs.critDamageResult })(target.owner as unknown as OwnerLog2).total())
                     }
                     else if (fs.damageResult) {
-                        applyDamage(target.health, fs.damageResult.total())
+                        applyDamage(target.health, damageTakenTree({ node: fs.damageResult })(target.owner as unknown as OwnerLog2).total())
                     }
                     ttrAppendLog(timeTravel["standard-action-result"]({
                         ...snapshotActors(),

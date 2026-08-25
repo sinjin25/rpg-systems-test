@@ -7,12 +7,12 @@ export default {
     displayName,
     description: 'Debuffs the enemy when you miss within a certain range',
     broadContexts: {},
-    trigger: {
+    /* trigger: {
         onMiss: () => ({
             kind: 'apply-status',
             recipient: 'target',
             key: 'fatiguingBlows',
             status: fbStatus,
         }),
-    },
+    }, */
 } as const satisfies Feat2

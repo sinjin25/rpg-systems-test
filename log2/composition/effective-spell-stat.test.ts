@@ -17,6 +17,7 @@ describe('effective-spell-stat', () => {
         assert.exists(f0)
         assert.exists(f1)
 
-        assert.equal(f1.total(), 2) // 15 => +2
+        assert.equal(f1.total(), 15) // 15
+        assert.equal(f0.total(), 2) // 15 -> +2
     })
 })

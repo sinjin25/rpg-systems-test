@@ -57,6 +57,7 @@ export type BaseStateMod = `raw-${CsScore}`
     | `modded-${CsScore}`
     | `${CsScore}-from-status`
     | `${CsScore}-total` // after all modifiers
+    | `${CsScore}-as-mod`
 export type FeatModTypes = 'attack' | 'damage' | 'ac' | 'initiative' | 'health' | 'flat-damage' | 'crit-scalable-damage' | 'damage-taken' | 'max-dex' | 'damage-over-time' | 'damage-over-time-taken' | 'heal-over-time' | 'heal-over-time-taken' | 'spell-dc'
 export type FeatMod = `${FeatModTypes}-feat-mod`
 
@@ -115,6 +116,7 @@ export type EveryTree =
     | 'flat-damage'
     | 'crit-multiplier'
     | 'crit-multiplier-mod'
+    | 'crit-multiplier-feat-mod'
     | 'crit-threat-range-mod'
     | 'damage-taken-status-mod'
     | 'enhancement' // used by attack, ac, damage, for equipment (mostly flavor)
@@ -131,7 +133,7 @@ export type FeatBroadContexts = Subset<EveryTree,
     | 'crit-confirm-mod'
     | 'crit-scalable-damage-feat-mod'
     | 'flat-damage-feat-mod'
-    | 'crit-multiplier-mod'
+    | 'crit-multiplier-feat-mod'
     | 'crit-threat-range-mod'
     | 'damage-taken-feat-mod'
     | 'damage-feat-mod'

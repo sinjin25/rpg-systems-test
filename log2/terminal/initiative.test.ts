@@ -31,10 +31,13 @@ describe('initiative', () => {
 
         const f1 = findNodeMatching(node, /modded-dex/)
         const f2 = findNodeMatching(node, /init-feat/)
+        const f3 = findNodeMatching(node, /dex-as-mod/)
 
         assert.exists(f1)
         assert.exists(f2)
-        assert.equal(f1.total(), 2)
+        assert.exists(f3)
+        assert.equal(f1.total(), 14)
+        assert.equal(f3.total(), 2)
         assert.equal(f2.total(), 4)
     })
 })

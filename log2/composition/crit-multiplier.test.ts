@@ -4,6 +4,7 @@ import { createDefaultOwner } from '../../actor2'
 import { OwnerLog2, ObjectWithBroadContexts } from '../types'
 import { leaf, findNodeMatching } from '..'
 import { BaseEquipment } from '../../equipment-sheet2/types'
+import modNodeToText from '../format'
 
 const weapon = (crit: number): BaseEquipment =>
 ({
@@ -25,6 +26,13 @@ describe('crit-multiplier', () => {
         }
     })
     owner.relevantSlot = owner.es.mainhand
+
+    test('default equipment test', () => {
+        const owner = createDefaultOwner()
+        const node = critMultiplier(owner)
+        console.log(modNodeToText(node))
+    })
+
     test('uses the weapon base multiplier', () => {
         const node = critMultiplier(owner)
         expect(node.total()).toBe(2)
@@ -40,7 +48,7 @@ describe('crit-multiplier', () => {
                 // @ts-expect-error
                 'crit-plus': {
                     broadContexts: {
-                        'crit-multiplier-mod': () => leaf('crit-plus', 2)
+                        'crit-multiplier-feat-mod': () => leaf('crit-plus', 2)
                     }
                 }
             },

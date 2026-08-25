@@ -1,8 +1,24 @@
 {
   "name": "rpg-tests",
   "version": "1.0.0",
-  "main": "index.js",
+  "type": "module",
+  "exports": {
+    "./actor2": {
+      "import": "./dist/actor2/index.js",
+      "types": "./dist/actor2/index.d.ts"
+    },
+    "./actor2/act": {
+      "import": "./dist/actor2/act/index.js",
+      "types": "./dist/actor2/act/index.d.ts"
+    },
+    "./*": {
+      "import": "./dist/*.js",
+      "types": "./dist/*.d.ts"
+    }
+  },
   "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "build:watch": "tsc -p tsconfig.build.json --watch",
     "test": "vitest",
     "test:fast": "vitest --exclude \"**/*.simulation.test.ts\" --exclude \"*.simulation.test.ts\"",
     "test:slow": "vitest --passWithNoTests --testTimeout=30000 simulation.test"

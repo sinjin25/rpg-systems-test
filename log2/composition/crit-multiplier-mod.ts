@@ -4,4 +4,4 @@ import featContribution from "./feat-contribution";
 
 const displayName: EveryTree = 'crit-multiplier-mod'
 export default (owner: OwnerLog2) =>
-    newModNode(displayName, [featContribution('crit-multiplier-mod')(owner)], sumFunc)
+    newModNode(displayName, [featContribution('crit-multiplier-feat-mod')(owner)], sumFunc)

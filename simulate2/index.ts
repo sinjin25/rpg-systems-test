@@ -8,7 +8,6 @@ import modNodeToText from "../log2/format"
 import damageTakenTree from '../log2/terminal-composition/damage-taken'
 import { OwnerLog2 } from '../log2/types'
 import { decayActionsElapsed, decayEnemyKilled, decayRoundsElapsed, decaySaveSucceeded } from "../status-sheet2/decay"
-import runTrigger from "../trigger/dispatch"
 import { anyActorAlive, chooseTarget, determineFightWinner, handlePotentialDeath, ownerIsMemberOf } from "./helpers"
 import { /* instantiateParticipants */resolveParticipants } from "./setup"
 import { snapshotActor, timeTravel } from "../time-travel2"

@@ -1,6 +1,6 @@
 import newModNode, { maxFunc, ModNode } from "..";
 import { EveryTree, OwnerLog2 } from "../types";
-import moddedCsScore from "./modded-cs-score";
+import csAsMod from "./cs-as-mod";
 
 const displayName: EveryTree = 'effective-damage-stat'
 
@@ -11,8 +11,8 @@ export default (owner: OwnerLog2) => {
 
     const candidates: ModNode[] = []
 
-    if (isFinesse || hasSlashingGrace) candidates.push(...[moddedCsScore('str')(owner), moddedCsScore('dex')(owner)])
-    else candidates.push(moddedCsScore('str')(owner))
+    if (isFinesse || hasSlashingGrace) candidates.push(...[csAsMod('str')(owner), csAsMod('dex')(owner)])
+    else candidates.push(csAsMod('str')(owner))
 
     return newModNode(displayName, candidates, maxFunc)
 }

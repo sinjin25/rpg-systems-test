@@ -16,7 +16,7 @@ export type Feat2 = ObjectWithBroadContexts & {
     prerequisites?: FeatPrereqFunction,
     onFightStart?: FeatFightStartFunction,
     /* interceptRoll?: InterceptRollFunction, */
-    trigger?: TriggerHooks,
+    /* trigger?: TriggerHooks, */
     // from Feat, dead
     tags?: string[],
 }

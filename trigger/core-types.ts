@@ -1,5 +1,5 @@
-import type { StatusEffect } from "../status-sheet/core-types"
-import type { FeatModRequiredData } from "../feat/core-types"
+import type { StatusEffect } from "../status-sheet2/types"
+type FeatModRequiredData = Record<string, unknown>
 
 export type TriggerEffectApplyStatus = {
     kind: 'apply-status',

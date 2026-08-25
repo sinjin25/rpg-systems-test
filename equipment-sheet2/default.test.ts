@@ -8,7 +8,7 @@ import {
 import { describe, test, assert, expect } from 'vitest'
 import ac from '../log2/terminal/ac.ts'
 import { createDefaultOwner } from '../defaults'
-import moddedCsScore from '../log2/composition/modded-cs-score.ts'
+import csAsMod from '../log2/composition/cs-as-mod.ts'
 import { OwnerMaximal } from '../actor2'
 import type { BaseEquipment } from './types'
 import damage from '../log2/terminal/damage.ts'
@@ -32,7 +32,7 @@ const BASE_AC = 10
 const acWithArmor = (dexScore: number, armor: BaseEquipment) => {
     const owner = createDefaultOwner({ cs: { dex: dexScore } }) as unknown as OwnerMaximal
 
-    const dexMod = moddedCsScore('dex')(owner).total()
+    const dexMod = csAsMod('dex')(owner).total()
     const armorAc = armor.broadContexts['ac-of-equipment']!(owner)!.total()
     const maxDex = armor.broadContexts['max-dex-of-equipment']!(owner)!.total()
 

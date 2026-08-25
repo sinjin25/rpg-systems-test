@@ -2,7 +2,7 @@ import newModNode, { sumFunc } from "..";
 import { OwnerLog2, EveryTree, TreeSubproblems, CsScore } from "../types";
 import baseSave from "../composition/base-save";
 import saveStatusMod from "../composition/status/save-status-mod";
-import moddedCsScore from "../composition/modded-cs-score";
+import csAsMod from "../composition/cs-as-mod";
 import featContribution from "../composition/feat-contribution";
 import modFromEquipment from "../composition/equipment/mod-from-equipment";
 
@@ -17,7 +17,7 @@ const saveTypeToCsScoreMap: Record<Member, CsScore> = {
 export default (member: Member) => (owner: OwnerLog2) => {
     const base = baseSave(owner, member)
     const cs = saveTypeToCsScoreMap[member]
-    const moddedCs = moddedCsScore(cs)(owner)
+    const moddedCs = csAsMod(cs)(owner)
     const featMod = featContribution(`${member}-feat-mod`)(owner)
     const statusMod = saveStatusMod(member)(owner)
     const equipmentMod = modFromEquipment(`${member}-equipment-mod`)(owner)

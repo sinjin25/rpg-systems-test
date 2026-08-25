@@ -2,13 +2,13 @@
 
 import { default as newModNode, ModNode, sumFunc, leaf } from "..";
 import { OwnerLog2, EveryTree, TreeSubproblems } from "../types";
-import moddedCsScore from "../composition/modded-cs-score";
+import csAsMod from "../composition/cs-as-mod";
 
 const BASE_PER_LEVEL = 10
 const displayName: EveryTree = 'health-per-level'
 export default (owner: OwnerLog2) => {
     const subproblems: TreeSubproblems = {
-        'modded-con': moddedCsScore('con')(owner),
+        'modded-con': csAsMod('con')(owner),
         'base-health-per-level': leaf('base-health-per-level', BASE_PER_LEVEL)
     }
 

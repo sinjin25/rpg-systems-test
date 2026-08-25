@@ -2,7 +2,7 @@
 
 import { default as newModNode, ModNode, sumFunc, leaf, productFunc } from "..";
 import { OwnerLog2, EveryTree, TreeSubproblems } from "../types";
-import moddedCsScore from "../composition/modded-cs-score";
+import csAsMod from "../composition/cs-as-mod";
 import featContribution from "../composition/feat-contribution";
 import flatHealth from "../composition/flat-health";
 import healthPerLevel from "../composition/health-per-level";
@@ -18,8 +18,8 @@ export default (owner: OwnerLog2) => {
         'health-from-levels': newModNode(
             'health-from-levels',
             [
+                leaf('levels', owner.cs.levels.length),
                 healthPerLevel(owner),
-                leaf('levels', owner.cs.levels.length)
             ],
             productFunc,
         )

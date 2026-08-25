@@ -51,7 +51,7 @@ export const heavyShield: BaseEquipment = (() => {
 
     return {
         displayName: dn,
-        acceptableSlots: SLOT_TYPE.armor,
+        acceptableSlots: SLOT_TYPE.shield,
         broadContexts: {
             "ac-of-equipment": (o: OwnerLog2) => leaf(
                 dn,
@@ -66,7 +66,7 @@ export const shortsword: BaseEquipment = (() => {
     const dn = 'shortsword'
     return {
         displayName: dn,
-        acceptableSlots: SLOT_TYPE.armor,
+        acceptableSlots: SLOT_TYPE.weapon,
         broadContexts: {
             damage: (o: OwnerLog2) => {
                 const sides = 6

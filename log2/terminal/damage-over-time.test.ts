@@ -67,7 +67,7 @@ describe('damage-over-time', () => {
                 }
             }
         }))
-        const node = damageOverTime(leaf('my dot', 4))(owner, snapshot)
+        const node = damageOverTime(leaf('my dot', 4))(owner, {}, snapshot)
 
         // the live feat mod (99) is NOT computed — total is 4 + 3, not 4 + 99
         assert.equal(node.total(), 7)
@@ -81,7 +81,7 @@ describe('damage-over-time', () => {
     test('the child name is only as good as the preCalc: a bare leaf shows its own name, not the subproblem key', () => {
         // Object.values(subproblems) drops the key, so a poorly-named preCalc (e.g. the
         // tick.test.ts fixture leaf('mod', 0)) surfaces literally as "mod".
-        const node = damageOverTime(leaf('my dot', 4))(createDefaultOwner(), leaf('mod', 0))
+        const node = damageOverTime(leaf('my dot', 4))(createDefaultOwner(), {}, leaf('mod', 0))
 
         assert.exists(findNodeMatching(node, /^mod$/))
         assert.notExists(findNodeMatching(node, /damage-over-time-feat-mod/))

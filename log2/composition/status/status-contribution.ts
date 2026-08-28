@@ -1,5 +1,5 @@
 import newModNode, { ModNode, sumFunc } from "../..";
-import { CsScore, EveryTree, OwnerLog2, StatusBroadContexts, StatusInstanceLog2 } from "../../types";
+import { CsScore, EveryTree, ModNodeOpts, OwnerLog2, StatusBroadContexts, StatusInstanceLog2 } from "../../types";
 
 type StackKind = NonNullable<StatusInstanceLog2['pointer']['stack']>['kind']
 
@@ -7,6 +7,7 @@ type StackKind = NonNullable<StatusInstanceLog2['pointer']['stack']>['kind']
 const resolveInstanceNodes = (
     instances: StatusInstanceLog2[],
     owner: OwnerLog2,
+    opts: ModNodeOpts,
     broadContext: EveryTree,
 ): ModNode[] => {
     const nodes: ModNode[] = []
@@ -14,7 +15,7 @@ const resolveInstanceNodes = (
         const handler = instance.pointer.broadContexts?.[broadContext]
         if (!handler) continue
 
-        const node = handler(owner)
+        const node = handler(owner, opts)
         if (!node) continue
 
         nodes.push(node)
@@ -31,6 +32,7 @@ const combineByStackKind = (kind: StackKind, nodes: ModNode[]): ModNode[] => {
 
 export const collectStatusContributions = (
     owner: OwnerLog2,
+    opts: ModNodeOpts,
     broadContext: StatusBroadContexts | `${CsScore}-from-status`, // where people are getting their shit from
 ): ModNode[] => {
     const result: ModNode[] = []
@@ -38,7 +40,7 @@ export const collectStatusContributions = (
     for (const instances of Object.values(owner.ss)) {
         if (!instances.length) continue
 
-        const nodes = resolveInstanceNodes(instances, owner, broadContext)
+        const nodes = resolveInstanceNodes(instances, owner, opts, broadContext)
         if (!nodes.length) continue
 
         const kind = instances[0]!.pointer.stack?.kind ?? 'highest'
@@ -48,8 +50,8 @@ export const collectStatusContributions = (
     return result
 }
 
-export default (broadContext: StatusBroadContexts) => (owner: OwnerLog2): ModNode => {
-    const children = collectStatusContributions(owner, broadContext)
+export default (broadContext: StatusBroadContexts) => (owner: OwnerLog2, opts: ModNodeOpts = {}): ModNode => {
+    const children = collectStatusContributions(owner, opts, broadContext)
 
     return newModNode(
         broadContext,

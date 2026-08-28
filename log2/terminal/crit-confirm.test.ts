@@ -43,12 +43,11 @@ describe('crit-confirm (terminal)', () => {
     })
 })
 
-describe('Confirm tag mutation (mutated at crit-confirm and attack)', () => {
-    test('', () => {
+describe('owner is not mutated (tags travel via opts)', () => {
+    test('owner.tags is unchanged after calling crit-confirm', () => {
         const o = createDefaultOwner()
         assert.equal(o.tags.length, 0)
         critConfirm(o)
-        assert.equal(o.tags.length, 3)
-        expect(o.tags).toEqual(expect.arrayContaining(['standard-attack', 'crit-confirm'] as TerminalTags[]))
+        assert.equal(o.tags.length, 0, 'owner.tags must not be mutated by critConfirm()')
     })
 })

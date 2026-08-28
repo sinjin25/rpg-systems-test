@@ -2,31 +2,30 @@
 // contributions, all summed. See attack-readme.md for which children are still bridged to legacy.
 
 import newModNode, { sumFunc } from "..";
-import { OwnerLog2, EveryTree, TreeSubproblems } from "../types";
+import { OwnerLog2, EveryTree, TreeSubproblems, ModNodeOpts } from "../types";
 import effectiveAttackStat from "../composition/effective-attack-stat";
 import baseAttackBonus from "../composition/base-attack-bonus";
 import attackStatusMod from "../composition/attack-status-mod";
 import attackEquipmentMod from "../composition/attack-equipment-mod";
 import featContribution from "../composition/feat-contribution";
-import { addTags, mutateOwnerTags, Tags } from "../tags";
+import { Tags } from "../tags";
 
 const displayName: EveryTree = 'attack'
 
-export default (owner: OwnerLog2) => {
-    // add tags from equipment
+export default (owner: OwnerLog2, opts: ModNodeOpts = {}) => {
     const TERMINAL_TAGS: Tags[] = ['standard-attack']
 
     if (!owner.relevantSlot) throw Error('relevant slot was not passed')
 
-    const eqTg = owner?.relevantSlot?.tags || []
-    mutateOwnerTags(owner, ...eqTg, ...TERMINAL_TAGS)
+    const eqTg = owner.relevantSlot.tags ?? []
+    const localOpts: ModNodeOpts = { ...opts, tags: [...(opts.tags ?? []), ...eqTg, ...TERMINAL_TAGS] }
 
     const subproblems: TreeSubproblems = {
-        'effective-attack-stat': effectiveAttackStat(owner),
-        'base-attack-bonus': baseAttackBonus(owner),
-        'attack-feat-mod': featContribution('attack-feat-mod')(owner),
-        'attack-status-mod': attackStatusMod(owner),
-        'attack-equipment-mod': attackEquipmentMod(owner),
+        'effective-attack-stat': effectiveAttackStat(owner, localOpts),
+        'base-attack-bonus':     baseAttackBonus(owner, localOpts),
+        'attack-feat-mod':       featContribution('attack-feat-mod')(owner, localOpts),
+        'attack-status-mod':     attackStatusMod(owner, localOpts),
+        'attack-equipment-mod':  attackEquipmentMod(owner, localOpts),
     }
     const subpr = Object.values(subproblems)
 

@@ -1,7 +1,7 @@
 import { describe, test, expect, assert } from 'vitest'
 import attack from './attack'
 import { findNodeMatching, leaf } from '..'
-import { OwnerLog2 } from '../types'
+import { ModNodeOpts, OwnerLog2 } from '../types'
 import { hasAllTags, Tags } from '../tags'
 import modNodeToText from '../format'
 import { createDefaultOwner, OwnerMaximal } from '../../actor2'
@@ -15,7 +15,7 @@ import { fakeCharacterLevels } from '../../character-sheet/util'
 const finesseBless = makeWrapper({
     displayName: 'Finesse Bless',
     broadContexts: {
-        'attack-status-mod': o => hasAllTags(o.tags, ['finesse']) ? leaf('Finesse Bless', 2) : undefined,
+        'attack-status-mod': (o, opts) => hasAllTags(opts.tags ?? [], ['finesse']) ? leaf('Finesse Bless', 2) : undefined,
     },
 })
 
@@ -30,14 +30,14 @@ const daggerPlusOne: BaseEquipment = {
 const ringPlusOneFinesseAttack: BaseEquipment = {
     displayName: 'ring-plus-one-finesse-attack',
     broadContexts: {
-        'attack-equipment-mod': (o: OwnerLog2) => hasAllTags(o.tags, ['finesse']) ? leaf('ring-plus-one-finesse-attack', 1) : undefined
+        'attack-equipment-mod': (o: OwnerLog2, opts: ModNodeOpts) => hasAllTags(opts.tags ?? [], ['finesse']) ? leaf('ring-plus-one-finesse-attack', 1) : undefined
     }
 }
 
 const finesseWeaponFighting: Feat2 = {
     displayName: 'finesse-weapon-fighting',
     broadContexts: {
-        'attack-feat-mod': (o: OwnerLog2) => hasAllTags(o.tags, ['melee']) ? leaf('finesse-weapon-fighting', 1) : undefined
+        'attack-feat-mod': (o: OwnerLog2, opts: ModNodeOpts) => hasAllTags(opts.tags ?? [], ['melee']) ? leaf('finesse-weapon-fighting', 1) : undefined
     }
 }
 
@@ -83,15 +83,13 @@ describe('attack (terminal)', () => {
     })
 })
 
-describe('Tags are added properly (mutated)', () => {
-    test('Confirm tags exists', () => {
+describe('owner is not mutated', () => {
+    test('owner.tags is unchanged after calling attack', () => {
         const owner = finesseBuild()
         owner.relevantSlot = owner.es.mainhand
 
         assert.equal(owner.tags.length, 0)
-        attack(owner) // mutates
-        console.log(owner.tags)
-        assert.equal(owner.tags.length, 3)
-        expect(owner.tags).toEqual(expect.arrayContaining(['finesse', 'melee', 'standard-attack'] as Tags[]))
+        attack(owner)
+        assert.equal(owner.tags.length, 0, 'owner.tags must not be mutated by attack()')
     })
 })

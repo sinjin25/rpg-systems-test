@@ -3,6 +3,11 @@ import { OwnerMaximal } from "../actor2";
 import { BaseEquipment, EquipmentSheet } from "../equipment-sheet2/types";
 import { Tags } from "./tags";
 
+export type ModNodeOpts = {
+    tags?: Tags[]
+    // extensible: add future context fields here without touching call sites
+}
+
 
 
 // the structural contract log2 traversal needs: anything it can walk broadContexts on.
@@ -33,7 +38,7 @@ export type StatusInstanceLog2 = {
 
 export type ObjectWithBroadContexts = {
     displayName: string,
-    broadContexts: Partial<Record<EveryTree, (owner: OwnerLog2) => ModNode | undefined>>
+    broadContexts: Partial<Record<EveryTree, (owner: OwnerLog2, opts: ModNodeOpts) => ModNode | undefined>>
 }
 
 export type AllFeats =

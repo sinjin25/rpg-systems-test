@@ -2,17 +2,17 @@
 
 import { default as newModNode, ModNode } from "../..";
 import maxDexOfEquipment from "../max-dex-of-equipment";
-import { OwnerLog2, EveryTree, TreeSubproblems } from "../../types"
+import { OwnerLog2, EveryTree, TreeSubproblems, ModNodeOpts } from "../../types"
 import csAsMod from "../cs-as-mod";
 
 const displayName: EveryTree = 'ac-from-dex'
 
-export default (owner: OwnerLog2) => {
+export default (owner: OwnerLog2, opts: ModNodeOpts = {}) => {
 
     const subproblems: TreeSubproblems = {
         // solve modded dex
-        'modded-dex': csAsMod('dex')(owner),
-        'max-dex-of-equipment': maxDexOfEquipment(owner)
+        'modded-dex': csAsMod('dex')(owner, opts),
+        'max-dex-of-equipment': maxDexOfEquipment(owner, opts)
     }
 
     const subpr = Object.values(subproblems)

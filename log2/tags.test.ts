@@ -52,7 +52,7 @@ describe('Integration: works with feats and broadContext', () => {
     const tagFeat: Feat2 = {
         displayName: 'test-feat',
         broadContexts: {
-            'attack-feat-mod': (o) => hasAllTags(o.tags!, ['standard-attack']) ? leaf('test-feat', 1) : undefined
+            'attack-feat-mod': (o, opts) => hasAllTags(opts.tags ?? [], ['standard-attack']) ? leaf('test-feat', 1) : undefined
         }
     }
     test('Feat is found correctly', () => {

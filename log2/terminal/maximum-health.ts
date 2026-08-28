@@ -1,7 +1,7 @@
 // the max dex from a piece of equipment
 
 import { default as newModNode, ModNode, sumFunc, leaf, productFunc } from "..";
-import { OwnerLog2, EveryTree, TreeSubproblems } from "../types";
+import { OwnerLog2, EveryTree, TreeSubproblems, ModNodeOpts } from "../types";
 import csAsMod from "../composition/cs-as-mod";
 import featContribution from "../composition/feat-contribution";
 import flatHealth from "../composition/flat-health";
@@ -11,15 +11,15 @@ import baseHealth from "../bases/base-health";
 /* const BASE = 20
 const PER_LEVEL = 10 */
 const displayName: EveryTree = 'maximum-health'
-export default (owner: OwnerLog2) => {
+export default (owner: OwnerLog2, opts: ModNodeOpts = {}) => {
     const subproblems: TreeSubproblems = {
-        'flat-health': flatHealth(owner),
-        'base-health': baseHealth(owner),
+        'flat-health': flatHealth(owner, opts),
+        'base-health': baseHealth(owner, opts),
         'health-from-levels': newModNode(
             'health-from-levels',
             [
                 leaf('levels', owner.cs.levels.length),
-                healthPerLevel(owner),
+                healthPerLevel(owner, opts),
             ],
             productFunc,
         )

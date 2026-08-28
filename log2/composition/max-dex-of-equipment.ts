@@ -1,18 +1,18 @@
 // the lowest max-dex cap across worn armor
 
 import newModNode, { leaf, minFunc, sumFunc } from "..";
-import { OwnerLog2, EveryTree } from "../types";
+import { ModNodeOpts, OwnerLog2, EveryTree } from "../types";
 import maxDexOfEquipmentPiece from "../bases/max-dex-of-equipment-piece";
 import featContribution from "./feat-contribution";
 
 const displayName: EveryTree = 'max-dex-of-equipment'
 
-export default (owner: OwnerLog2) => {
+export default (owner: OwnerLog2, opts: ModNodeOpts = {}) => {
     // guard: look for flat-footed first
     const flatFooted = owner.ss.flatFooted
 
     const items = Object.values(owner.es)
-    const pieces = items.map(a => maxDexOfEquipmentPiece(a)(owner))
+    const pieces = items.map(a => maxDexOfEquipmentPiece(a)(owner, opts))
         .filter(a => !!a)
 
     if (flatFooted) pieces.push(leaf('flat-footed', 0))
@@ -30,7 +30,7 @@ export default (owner: OwnerLog2) => {
         },
     )
 
-    const children = [cap, featContribution('max-dex-feat-mod')(owner)]
+    const children = [cap, featContribution('max-dex-feat-mod')(owner, opts)]
 
     return newModNode(
         displayName,

@@ -83,25 +83,6 @@ describe('Actor simple snapshotted elements', () => {
     })
 })
 
-describe('OwnerMaximalUnstableReferences (mostly proper clones)', () => {
-    // most of these, theoretically, should be mostly snapshotted (as in same values, different references). This is not entirely true for some of them.
-    test('cloneTags', () => {
-        const { actor, owner } = ownerActorUtil()
-        const ttSnapshot = snapshotActor(actor)
-        assert.notEqual(ttSnapshot.owner.tags, owner.tags)
-
-        // this mutates tags
-        const node = attack(actor.owner)
-        // snapshot looks similar
-        const ttSnapshot2 = snapshotActor(actor)
-        assert.equal(owner.tags.length, 2)
-        assert.equal(ttSnapshot2.owner.tags.length, 2)
-
-        // confirm old snapshot remains unchanged
-        assert.equal(ttSnapshot.owner.tags.length, 0)
-    })
-})
-
 describe('cloneStatusSheet', () => {
     const buff = makeWrapper(
         { displayName: 'bless', broadContexts: {} },

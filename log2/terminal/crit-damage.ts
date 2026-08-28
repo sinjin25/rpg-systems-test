@@ -1,17 +1,17 @@
 import newModNode, { mapFunc, productFunc, sumFunc } from "..";
-import { EveryTree, OwnerLog2, TreeSubproblems } from "../types";
+import { EveryTree, ModNodeOpts, OwnerLog2, TreeSubproblems } from "../types";
 import critScalableDamage from "../composition/crit-scalable-damage";
 import flatDamage from "../composition/flat-damage";
 import critMultiplier from "../composition/crit-multiplier";
 
 const displayName: EveryTree = 'crit-damage'
 
-export default (owner: OwnerLog2) => {
+export default (owner: OwnerLog2, opts: ModNodeOpts = {}) => {
     if (!owner.relevantSlot) throw Error('relevant slot not passed')
     const subproblems: TreeSubproblems = {
-        'crit-scalable-damage': critScalableDamage(owner),
-        'flat-damage': flatDamage(owner),
-        'crit-multiplier': critMultiplier(owner),
+        'crit-scalable-damage': critScalableDamage(owner, opts),
+        'flat-damage': flatDamage(owner, opts),
+        'crit-multiplier': critMultiplier(owner, opts),
     }
     const scaledPortion = newModNode('crit-scaled-portion', [
         subproblems['crit-multiplier']!,

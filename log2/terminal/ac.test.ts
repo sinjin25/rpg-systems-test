@@ -10,7 +10,7 @@ import modNodeToText from '../format'
 import { armors, heavyShield } from '../../equipment-sheet2/defaults'
 
 describe('ac (terminal)', () => {
-    test('mutates owner tags', () => {
+    test('owner.tags is not mutated', () => {
         const owner = createDefaultOwner({
             cs: { dex: 14 },
             es: { armor: armors['banded mail'], offhand: heavyShield },
@@ -19,7 +19,7 @@ describe('ac (terminal)', () => {
         })
         assert.equal(owner.tags.length, 0)
         ac(owner)
-        assert.equal(owner.tags.length > 0, true)
+        assert.equal(owner.tags.length, 0, 'owner.tags must not be mutated by ac()')
     })
     test('armored: base 10 + capped dex 1 + armor 9', () => {
         const owner = createDefaultOwner({

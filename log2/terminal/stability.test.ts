@@ -20,8 +20,8 @@ describe('Assumption errors', () => {
         const myFeat: Feat2 = {
             displayName: 'finessething',
             broadContexts: {
-                'attack-feat-mod': (o: OwnerMaximal) => {
-                    if (o.tags.includes('finesse')) return leaf('finessething', 99)
+                'attack-feat-mod': (o, opts) => {
+                    if (opts.tags?.includes('finesse')) return leaf('finessething', 99)
                 }
             }
         }

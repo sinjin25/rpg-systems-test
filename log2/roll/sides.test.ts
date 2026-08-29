@@ -20,7 +20,7 @@ describe('Sides', () => {
         const node = sides('attack-sides-mod')(owner)!
         /* console.log(modNodeToText(node)) */
 
-        const f0 = findNodeMatching(node, /attack-sides-mod/, {
+        const f0 = findNodeMatching(node, /attack-sides-mod$/, {
             includeRoot: true
         })
         assert.exists(f0)

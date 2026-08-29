@@ -34,7 +34,7 @@ describe('max-dex-of-equipment', () => {
         assert.equal(node.total(), 0)
         assert.exists(node)
 
-        const f0 = findNodeMatching(node, /max-dex-of-equipment/, {
+        const f0 = findNodeMatching(node, /max-dex-of-equipment$/, {
             includeRoot: true,
         })
         assert.exists(f0)

@@ -64,6 +64,7 @@ export type BaseStateMod = `raw-${CsScore}`
     | `${CsScore}-total` // after all modifiers
     | `${CsScore}-as-mod`
 export type FeatModTypes = 'attack' | 'damage' | 'ac' | 'initiative' | 'health' | 'flat-damage' | 'crit-scalable-damage' | 'damage-taken' | 'max-dex' | 'damage-over-time' | 'damage-over-time-taken' | 'heal-over-time' | 'heal-over-time-taken' | 'spell-dc'
+    | 'speed'
 export type FeatMod = `${FeatModTypes}-feat-mod`
 
 type Health = 'base-health' | 'flat-health' | 'health-per-level' | 'health-equipment-mod' | 'base-health-per-level' | 'health-from-levels'
@@ -91,6 +92,7 @@ export type TerminalRoutes = 'ac'
     | 'heal-over-time-taken'
     | 'roll-total'
     | 'dc'
+    | 'speed'
 
 export type EveryTree =
     BaseStateMod
@@ -111,6 +113,7 @@ export type EveryTree =
     | 'ac-status-mod'
     | 'crit-confirm-mod'
     | 'crit-scalable-damage-status-mod'
+    | 'speed-status-mod'
     | 'spell-dc-status-mod'
     | 'spell-dc-from-equipment'
     | 'base-dc' // gotten from Ability
@@ -150,6 +153,7 @@ export type FeatBroadContexts = Subset<EveryTree,
     | 'damage-over-time-taken-feat-mod'
     | 'heal-over-time-feat-mod'
     | 'heal-over-time-taken-feat-mod'
+    | 'speed-feat-mod'
     | 'spell-dc-feat-mod'
     | RollSidesMod
 >
@@ -163,4 +167,5 @@ export type StatusBroadContexts = Subset<EveryTree,
     | 'damage-taken-status-mod'
     | 'crit-scalable-damage-status-mod'
     | 'spell-dc-status-mod'
+    | 'speed-status-mod'
 >

@@ -17,7 +17,7 @@ describe('roll works', () => {
             DICE,
         )(owner)
 
-        const f0 = findNodeMatching(node, 'roll', {
+        const f0 = findNodeMatching(node, /roll-total$/, {
             includeRoot: true,
         })
         assert.exists(f0)

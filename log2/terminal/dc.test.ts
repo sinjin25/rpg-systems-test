@@ -15,7 +15,7 @@ describe('terminal: dc', () => {
         })(owner)
 
         // terminal name is correct
-        const f0 = findNodeMatching(node, 'dc', {
+        const f0 = findNodeMatching(node, /^dc$/, {
             includeRoot: true,
         })
         assert.exists(f0)

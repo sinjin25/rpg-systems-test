@@ -25,14 +25,14 @@ describe('damage-of-equipment-piece', () => {
 
     test('carries the weapon\'s display name', () => {
         const node = damageOfEquipmentPiece(weapon(8))(owner)
-        findNodeMatching(node, /test/, {
+        findNodeMatching(node, /test$/, {
             includeRoot: true,
         })
     })
 
     test('exposes the roll + sides via children', () => {
         const node = damageOfEquipmentPiece(shortsword)(owner)
-        const rollNode = findNodeMatching(node, 'roll-total', { includeRoot: true })
+        const rollNode = findNodeMatching(node, /roll-total$/, { includeRoot: true })
         assert.exists(rollNode)
         const sidesNode = findNodeMatching(node, /1d6/)
         assert.exists(sidesNode)

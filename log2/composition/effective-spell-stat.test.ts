@@ -9,7 +9,7 @@ describe('effective-spell-stat', () => {
         const owner = createDefaultOwner()
         const ess = effectiveSpellStat(owner)
 
-        const f0 = findNodeMatching(ess, /effective-spell-dc-stat/, {
+        const f0 = findNodeMatching(ess, /effective-spell-dc-stat$/, {
             includeRoot: true,
         })
         const f1 = findNodeMatching(ess, /modded-int/)

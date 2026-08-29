@@ -47,7 +47,7 @@ describe('crit-damage (terminal)', () => {
 
         const node = critDamage(owner)
         assert.equal(node.total(), 8)
-        assert.exists(findNodeMatching(node, /crit-damage/, {
+        assert.exists(findNodeMatching(node, /crit-damage$/, {
             includeRoot: true,
         }))
     })

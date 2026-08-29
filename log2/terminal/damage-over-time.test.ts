@@ -21,7 +21,7 @@ describe('damage-over-time', () => {
         const node = damageOverTime(l)(owner)
 
         /* console.log(modNodeToText(node)) */
-        const f0 = findNodeMatching(node, /damage-over-time/, {
+        const f0 = findNodeMatching(node, /damage-over-time$/, {
             includeRoot: true,
         })
         assert.exists(f0)

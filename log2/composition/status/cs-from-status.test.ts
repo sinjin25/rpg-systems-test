@@ -25,7 +25,7 @@ describe('Works', () => {
         assert.equal(con.total(), 0)
 
         /* console.log(str) */
-        assert.exists(findNodeMatching(str, 'str-from-status', {
+        assert.exists(findNodeMatching(str, /str-from-status$/, {
             includeRoot: true,
         }))
         assert.exists(findNodeMatching(str, /bull/))

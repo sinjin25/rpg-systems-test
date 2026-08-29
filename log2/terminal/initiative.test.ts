@@ -23,7 +23,7 @@ describe('initiative', () => {
         })
 
         const node = initiative(owner)
-        const f0 = findNodeMatching(node, /initiative/, {
+        const f0 = findNodeMatching(node, /initiative$/, {
             includeRoot: true,
         })
         assert.exists(f0)

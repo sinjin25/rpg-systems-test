@@ -15,7 +15,7 @@ describe('Works', () => {
     test('Confirm name', () => {
         const owner = createDefaultOwner({})
         const result = csAsMod('dex')(owner)
-        findNodeMatching(result, /dex-total/, {
+        findNodeMatching(result, /dex-total$/, {
             includeRoot: true,
         })
     })

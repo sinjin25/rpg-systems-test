@@ -62,7 +62,7 @@ describe('damage-taken (terminal)', () => {
         /* console.log(modNodeToText(node)) */
 
         // prints expected tag
-        const f0 = findNodeMatching(node, /damage-over-time-taken/, {
+        const f0 = findNodeMatching(node, /damage-over-time-taken$/, {
             includeRoot: true,
         })
         const f1 = findNodeMatching(node, /damage-over-time-taken-feat-mod/)

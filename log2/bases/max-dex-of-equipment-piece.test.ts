@@ -17,7 +17,7 @@ describe('max-dex-of-equipment-piece', () => {
         assert.equal(n.total(), 1)
 
         // is named the equipment piece
-        const f0 = findNodeMatching(n, /max-dex-of-equipment-piece/, {
+        const f0 = findNodeMatching(n, /max-dex-of-equipment-piece$/, {
             includeRoot: true
         })
         assert.notExists(f0)

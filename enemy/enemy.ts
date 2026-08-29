@@ -1,2 +1,1 @@
-// empty
-// but enemies are built off players
+export { default as ostracizedGoblin } from "./goblin/ostracized-goblin";

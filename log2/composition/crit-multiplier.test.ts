@@ -4,11 +4,12 @@ import { createDefaultOwner } from '../../actor2'
 import { OwnerLog2, ObjectWithBroadContexts } from '../types'
 import { leaf, findNodeMatching } from '..'
 import { BaseEquipment } from '../../equipment-sheet2/types'
+import { SLOT_TYPE } from '../../equipment-sheet2/defaults'
 import modNodeToText from '../format'
 
 const weapon = (crit: number): BaseEquipment =>
 ({
-    displayName: 'test-weapon', tags: ['melee'], broadContexts: {
+    displayName: 'test-weapon', acceptableSlots: SLOT_TYPE.weapon, tags: ['melee'], broadContexts: {
         'damage': () => {
             const r = 4
             return leaf('test-weapon', r)

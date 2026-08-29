@@ -7,10 +7,11 @@ import modNodeToText from '../format'
 import roll from '../../roll'
 import { Feat2 } from '../../feat2'
 import { BaseEquipment } from '../../equipment-sheet2/types'
+import { SLOT_TYPE } from '../../equipment-sheet2/defaults'
 
 const weapon = (dmg: number, crit?: number): BaseEquipment =>
 ({
-    displayName: 'test-weapon', contexts: ['melee'], broadContexts: {
+    displayName: 'test-weapon', acceptableSlots: SLOT_TYPE.weapon, tags: ['melee'], broadContexts: {
         'damage': () => {
             // use a standardized damage
             const r = dmg
@@ -18,7 +19,7 @@ const weapon = (dmg: number, crit?: number): BaseEquipment =>
         },
         'crit-multiplier': () => leaf('test-weapon', crit || 1.5)
     }
-} as BaseEquipment)
+})
 
 
 const flatStatOwner = (fs: OwnerLog2['fs'] = {}) =>

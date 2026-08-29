@@ -4,7 +4,7 @@ import flatFooted from '../../status-sheet2/status/flat-footed'
 import { makeWrapper } from '../../status-sheet2'
 import { inst } from '../../status-sheet2/testing'
 import modNodeToText from '../format'
-import { armors, heavyShield } from '../../equipment-sheet2/defaults'
+import { armors, heavyShield, SLOT_TYPE } from '../../equipment-sheet2/defaults'
 import { createDefaultOwner } from '../../actor2'
 import { OwnerLog2 } from '../types'
 import { findNodeMatching, leaf } from '..'
@@ -13,6 +13,7 @@ const owner = createDefaultOwner({
     es: {
         armor: armors['banded mail'], offhand: {
             displayName: 'super-heavy-shield',
+            acceptableSlots: SLOT_TYPE.shield,
             broadContexts: {
                 'max-dex-of-equipment': (o: OwnerLog2) => {
                     return leaf('super-heavy-shield', 0)

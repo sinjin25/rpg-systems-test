@@ -5,9 +5,11 @@ import { describe, test, assert, expect } from 'vitest'
 import { OwnerLog2 } from '../../types.ts'
 import modFromEquipment from './mod-from-equipment.ts'
 import { BaseEquipment } from '../../../equipment-sheet2/types.ts'
+import { SLOT_TYPE } from '../../../equipment-sheet2/defaults.ts'
 
 const testeq = {
     displayName: 'shortsword',
+    acceptableSlots: SLOT_TYPE.weapon,
     broadContexts: {
         'damage': (owner: OwnerLog2) => {
             return newModNode('shortsword', [], () => 6)
@@ -38,6 +40,7 @@ describe('mod-from-equipment', () => {
 describe('mod-from-equipment cs', () => {
     const amulet: BaseEquipment = {
         displayName: 'stat amul',
+        acceptableSlots: SLOT_TYPE.amulet,
         broadContexts: {
             'str-from-equipment': () => newModNode('stat amul', [], 4),
             'dex-from-equipment': () => newModNode('stat amul', [], 3),

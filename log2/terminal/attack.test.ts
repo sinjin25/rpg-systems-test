@@ -9,6 +9,7 @@ import { makeWrapper } from '../../status-sheet2'
 import { inst } from '../../status-sheet2/testing'
 import { Feat2 } from '../../feat2'
 import { BaseEquipment } from '../../equipment-sheet2/types'
+import { SLOT_TYPE } from '../../equipment-sheet2/defaults'
 import { fakeCharacterLevels } from '../../character-sheet/util'
 
 // +2 attack on a finesse weapon
@@ -21,6 +22,7 @@ const finesseBless = makeWrapper({
 
 const daggerPlusOne: BaseEquipment = {
     displayName: 'dagger-plus-one',
+    acceptableSlots: SLOT_TYPE.weapon,
     broadContexts: {
         'attack-equipment-mod': () => leaf('dagger-plus-one', 1)
     },
@@ -29,6 +31,7 @@ const daggerPlusOne: BaseEquipment = {
 
 const ringPlusOneFinesseAttack: BaseEquipment = {
     displayName: 'ring-plus-one-finesse-attack',
+    acceptableSlots: SLOT_TYPE.ring,
     broadContexts: {
         'attack-equipment-mod': (o: OwnerLog2, opts: ModNodeOpts) => hasAllTags(opts.tags ?? [], ['finesse']) ? leaf('ring-plus-one-finesse-attack', 1) : undefined
     }

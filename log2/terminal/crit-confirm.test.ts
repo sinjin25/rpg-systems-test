@@ -6,9 +6,11 @@ import { findNodeMatching } from '..'
 import modNodeToText from '../format'
 import { TerminalTags } from '../tags'
 import { BaseEquipment } from '../../equipment-sheet2/types'
+import { SLOT_TYPE } from '../../equipment-sheet2/defaults'
 
 const shortsword: BaseEquipment = {
     displayName: 'shortsword',
+    acceptableSlots: SLOT_TYPE.weapon,
     broadContexts: {
 
     },

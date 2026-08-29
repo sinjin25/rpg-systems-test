@@ -10,6 +10,10 @@ const ostracizedGoblin: OwnerMaximal = {
         dex: 8,
         str: 6,
         con: 8,
+        flavorSheet: {
+            description: 'A weak goblin',
+            displayName: 'Weak Goblin'
+        }
     },
     fs: {
         ambush,

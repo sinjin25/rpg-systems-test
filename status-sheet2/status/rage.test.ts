@@ -16,13 +16,13 @@ const IMPROVED_RAGE_EXTRA = 2
 // the default shortsword rolls, so crit totals need a weapon with fixed damage
 const testWeapon: BaseEquipment = {
     displayName: 'test-weapon',
-    contexts: ['melee'],
+    acceptableSlots: SLOT_TYPE.weapon,
+    tags: ['melee'],
     broadContexts: {
         damage: () => leaf('test-weapon', 4),
         'crit-multiplier': () => leaf('test-weapon', 2),
     },
-    acceptableSlots: SLOT_TYPE['weapon'],
-} as BaseEquipment
+}
 
 const makeOwner = (data: { improved?: boolean, raging?: boolean, weapon?: BaseEquipment } = {}) => {
     const fs: FeatSheet = data.improved ? { [featImprovedRage.displayName]: featImprovedRage } : {}

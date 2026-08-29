@@ -4,12 +4,13 @@ import { createDefaultOwner } from '../../actor2'
 import { ObjectWithBroadContexts } from '../types'
 import { leaf, findNodeMatching } from '..'
 import { BaseEquipment } from '../../equipment-sheet2/types'
+import { SLOT_TYPE } from '../../equipment-sheet2/defaults'
 import { makeWrapper } from '../../status-sheet2'
 import { inst } from '../../status-sheet2/testing'
 
 const weapon = (dmg: number): BaseEquipment =>
 ({
-    displayName: 'test-weapon', tags: ['melee'], broadContexts: {
+    displayName: 'test-weapon', acceptableSlots: SLOT_TYPE.weapon, tags: ['melee'], broadContexts: {
         'damage': () => leaf('test-weapon', 8)
     }
 })

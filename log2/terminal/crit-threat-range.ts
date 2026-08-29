@@ -5,7 +5,7 @@ import critThreatRangeMod from "../composition/crit-threat-range-mod";
 const displayName: EveryTree = 'crit-threat-range'
 const DEFAULT_THREAT_RANGE = 20
 export default (owner: OwnerLog2, opts: ModNodeOpts = {}) => {
-    const relevantSlot = owner.relevantSlot
+    const relevantSlot = opts.relevantSlot ?? owner.es.mainhand
     if (!relevantSlot) throw Error('Need to pass in a weapon to relevantSlot')
 
     const weaponCritThreatHandler = relevantSlot.broadContexts['crit-threat-range']

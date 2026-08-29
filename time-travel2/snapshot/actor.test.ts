@@ -34,12 +34,7 @@ describe('snapshotActor Stable References', () => {
         assert.equal(owner.cs.con, 999)
         assert.equal(ttSnapshot.owner.cs.con, 999)
     })
-    test('cloneRelevantSlot (temp?)', () => {
-        const { actor, owner } = ownerActorUtil()
 
-        const ttSnapshot = snapshotActor(actor)
-        assert.equal(ttSnapshot.owner.relevantSlot, actor.owner.relevantSlot)
-    })
 })
 
 describe('Actor simple snapshotted elements', () => {

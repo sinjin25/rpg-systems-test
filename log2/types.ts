@@ -5,6 +5,7 @@ import { Tags } from "./tags";
 
 export type ModNodeOpts = {
     tags?: Tags[]
+    relevantSlot?: BaseEquipment
     // extensible: add future context fields here without touching call sites
 }
 
@@ -25,7 +26,6 @@ export type OwnerLog2 = Omit<OwnerMaximal, 'fs' | 'ss' | 'es' | 'as'> &
     fs: Record<string, ObjectWithBroadContexts>,
     ss: Record<string, StatusInstanceLog2[]>,
     es: EquipmentSheet,
-    relevantSlot?: BaseEquipment
     tags: Tags[], // starts empty, a terminal tree should mutate it. Use the utility functions from tags.ts
 }
 

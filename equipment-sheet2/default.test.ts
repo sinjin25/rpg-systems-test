@@ -59,8 +59,6 @@ describe('Weapons roll fresh each tree, nodes are steady per tree', () => {
                 mainhand: shortsword
             },
         })
-        owner.relevantSlot = owner.es.mainhand
-
         const final = new Set<number>()
         iterate(30, () => {
             const d = damage(owner)

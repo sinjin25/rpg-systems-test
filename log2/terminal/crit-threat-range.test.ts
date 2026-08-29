@@ -44,9 +44,5 @@ describe('crit-threat-range (terminal)', () => {
         /* console.log(modNodeToText(node)) */
     })
 
-    test('throws when no relevantSlot is provided', () => {
-        const owner = createDefaultOwner({})
-        owner.relevantSlot = undefined
-        expect(() => critThreatRange(owner)).toThrow(/relevant/i)
-    })
+
 })

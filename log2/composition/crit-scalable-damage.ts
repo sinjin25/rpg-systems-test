@@ -7,7 +7,7 @@ import statusContribution from "./status/status-contribution";
 
 const displayName: EveryTree = 'crit-scalable-damage'
 export default (owner: OwnerLog2, opts: ModNodeOpts = {}) => {
-    const relevantSlot = owner.relevantSlot
+    const relevantSlot = opts.relevantSlot ?? owner.es.mainhand
     if (!relevantSlot) throw Error('Need to pass in a weapon to relevantSlot')
 
     return newModNode(displayName, [

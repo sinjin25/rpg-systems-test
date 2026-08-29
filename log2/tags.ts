@@ -36,8 +36,7 @@ export const addTags = (list: Tags[], toAdd: Tags | Tags[]) => {
 
 export const mutateOwnerTags = (owner: OwnerLog2, ...arbitraryTags: Tags[]) => {
     const tags = owner?.tags || []
-    const eqTags = owner?.relevantSlot?.tags || []
-    const tg = Array.from(new Set<Tags>([...tags, ...eqTags, ...arbitraryTags]))
+    const tg = Array.from(new Set<Tags>([...tags, ...arbitraryTags]))
     owner.tags = tg
     /* console.log('mutateOwnerTags', owner.tags, tg) */
 }

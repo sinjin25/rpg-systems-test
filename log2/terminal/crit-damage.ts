@@ -7,7 +7,8 @@ import critMultiplier from "../composition/crit-multiplier";
 const displayName: EveryTree = 'crit-damage'
 
 export default (owner: OwnerLog2, opts: ModNodeOpts = {}) => {
-    if (!owner.relevantSlot) throw Error('relevant slot not passed')
+    const slot = opts.relevantSlot ?? owner.es.mainhand
+    if (!slot) throw Error('relevant slot not passed')
     const subproblems: TreeSubproblems = {
         'crit-scalable-damage': critScalableDamage(owner, opts),
         'flat-damage': flatDamage(owner, opts),

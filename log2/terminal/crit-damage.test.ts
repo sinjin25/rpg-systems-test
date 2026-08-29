@@ -43,7 +43,7 @@ describe('crit-damage (terminal)', () => {
                 mainhand: w
             },
         })
-        owner.relevantSlot = owner.es.mainhand
+
         const node = critDamage(owner)
         assert.equal(node.total(), 8)
         assert.exists(findNodeMatching(node, /crit-damage/, {
@@ -62,7 +62,7 @@ describe('crit-damage (terminal)', () => {
                 scalingFeat,
             }
         })
-        owner.relevantSlot = owner.es.mainhand
+
         const node = critDamage(owner)
         /* console.log(modNodeToText(node)) */
         assert.equal(node.total(), 12)
@@ -81,7 +81,7 @@ describe('crit-damage (terminal)', () => {
                 flatFeat,
             }
         })
-        owner.relevantSlot = owner.es.mainhand
+
         const node = critDamage(owner)
         /* console.log(modNodeToText(node)) */
         assert.equal(node.total(), 10) // 8 scaled, + 2 flat
@@ -98,7 +98,7 @@ describe('crit-damage (terminal)', () => {
                 mainhand: w
             },
         })
-        owner.relevantSlot = owner.es.mainhand
+
         const node = critDamage(owner)
         /* console.log(modNodeToText(node)) */
         assert.equal(node.total(), 7)
@@ -113,7 +113,7 @@ describe('crit-damage (terminal)', () => {
                 mainhand: w
             },
         })
-        owner.relevantSlot = owner.es.mainhand
+
         const node = critDamage(owner)
 
         const multi = findNodeMatching(node, /crit-multiplier/)
@@ -129,7 +129,7 @@ describe('crit-damage (terminal)', () => {
                 mainhand: w
             },
         })
-        owner.relevantSlot = owner.es.mainhand
+
         const node = critDamage(owner)
 
         assert.equal(node.total(), 20)
@@ -138,9 +138,5 @@ describe('crit-damage (terminal)', () => {
         assert.equal(csNode.total(), 5)
     })
 
-    test('throws when no relevantSlot is provided', () => {
-        const owner = flatStatOwner()
-        owner.relevantSlot = undefined
-        expect(() => critDamage(owner)).toThrow(/relevant slot/i)
-    })
+
 })

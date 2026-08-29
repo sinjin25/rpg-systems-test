@@ -28,23 +28,13 @@ describe('hasAllTags', () => {
 
 describe('mutateOwnerTags', () => {
     test('Works & strips duplicates', () => {
-        const wp: BaseEquipment = {
-            displayName: 'knife',
-            broadContexts: {},
-            tags: ['finesse', 'melee']
-        }
-        const owner = createDefaultOwner({
-            es: {
-                mainhand: wp,
-            },
-        })
-        owner.relevantSlot = owner.es.mainhand
+        const owner = createDefaultOwner({})
         assert.equal(owner.tags.length, 0)
 
         // @ts-expect-error
         mutateOwnerTags(owner, 'standard attack', 'random tag', 'random tag', 'random tag')
-        assert.equal(owner.tags.length, 4)
-        expect(owner.tags).toEqual(expect.arrayContaining(['finesse', 'melee', 'standard attack', 'random tag']))
+        assert.equal(owner.tags.length, 2)
+        expect(owner.tags).toEqual(expect.arrayContaining(['standard attack', 'random tag']))
     })
 })
 
@@ -61,7 +51,6 @@ describe('Integration: works with feats and broadContext', () => {
                 tagFeat
             },
         })
-        owner.relevantSlot = owner.es.mainhand
         /* console.log('owner', owner.cs.levels) */
         const node = attack(owner)
         const matchingNode = findNodeMatching(node, /test-feat/)

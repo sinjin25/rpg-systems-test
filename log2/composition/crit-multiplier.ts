@@ -6,7 +6,7 @@ const displayName: EveryTree = 'crit-multiplier'
 const DEFAULT_MULTIPLIER = 1.5
 
 export default (owner: OwnerLog2, opts: ModNodeOpts = {}) => {
-    const relevantSlot = owner.relevantSlot
+    const relevantSlot = opts.relevantSlot ?? owner.es.mainhand
     if (!relevantSlot) throw Error('Need to pass in a weapon to relevantSlot')
 
     const handler = relevantSlot.broadContexts[displayName]

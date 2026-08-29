@@ -15,9 +15,10 @@ const displayName: EveryTree = 'attack'
 export default (owner: OwnerLog2, opts: ModNodeOpts = {}) => {
     const TERMINAL_TAGS: Tags[] = ['standard-attack']
 
-    if (!owner.relevantSlot) throw Error('relevant slot was not passed')
+    const slot = opts.relevantSlot ?? owner.es.mainhand
+    if (!slot) throw Error('relevant slot was not passed')
 
-    const eqTg = owner.relevantSlot.tags ?? []
+    const eqTg = slot.tags ?? []
     const localOpts: ModNodeOpts = { ...opts, tags: [...(opts.tags ?? []), ...eqTg, ...TERMINAL_TAGS] }
 
     const subproblems: TreeSubproblems = {

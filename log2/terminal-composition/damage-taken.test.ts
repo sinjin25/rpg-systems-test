@@ -2,7 +2,6 @@ import { describe, test, expect, assert } from 'vitest'
 import damageTaken from './damage-taken'
 import critDamage from '../terminal/crit-damage'
 import { createDefaultOwner } from '../../actor2'
-import { OwnerLog2 } from '../types'
 import studiedTarget from '../../status-sheet2/status/studied-target'
 import defensiveRoll from '../../status-sheet2/status/defensive-roll'
 import { makeWrapper } from '../../status-sheet2'
@@ -26,9 +25,6 @@ const weapon = (dmg: number, crit?: number): BaseEquipment => {
         }
     }
 }
-const withSlot = (owner: OwnerLog2, slot: OwnerLog2['relevantSlot']): OwnerLog2 =>
-    ({ ...owner, relevantSlot: slot })
-
 describe('damage-taken (terminal)', () => {
     test('passes incoming damage through when the defender has no mods', () => {
         const node = damageTaken({

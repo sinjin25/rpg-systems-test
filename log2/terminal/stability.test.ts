@@ -35,8 +35,6 @@ describe('Assumption errors', () => {
         assert.equal(nonFinesseAttack.total(), nonFinesseAttack.total())
 
         owner.es.mainhand = myShortsword
-        // relevantSlot isn't a getter so it can get out of sync
-        owner.relevantSlot = owner.es.mainhand
 
         const newAttack = attack(owner)
         assert.equal(newAttack.total(), 99 + 3)

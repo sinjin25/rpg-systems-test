@@ -17,7 +17,8 @@ export default (
         tags?: Tags[],
     }
 ) => (owner: OwnerLog2, opts: ModNodeOpts = {}) => {
-    if (!owner.relevantSlot) throw Error('relevant slot was not passed')
+    const slot = opts.relevantSlot ?? owner.es.mainhand
+    if (!slot) throw Error('relevant slot was not passed')
 
     const localOpts: ModNodeOpts = { ...opts, tags: [...(opts.tags ?? []), ...(payload.tags ?? [])] }
 

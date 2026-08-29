@@ -14,11 +14,9 @@ export const calculateAttack = (
     owner: OwnerMaximal,
     opts: AttackOpts
 ) => {
-    owner.relevantSlot = opts.relevantSlot
-
     return newModNode(
         'attack',
-        [attack(owner), roll(20, 1, 'attack-sides-mod')(owner)],
+        [attack(owner, { relevantSlot: opts.relevantSlot }), roll(20, 1, 'attack-sides-mod')(owner)],
         sumFunc,
     )
 }
@@ -27,36 +25,30 @@ const calculateDamage = (
     owner: OwnerMaximal,
     opts: AttackOpts
 ) => {
-    owner.relevantSlot = opts.relevantSlot
-
-    return damage(owner)
+    return damage(owner, { relevantSlot: opts.relevantSlot })
 }
 
 const calculateCritDamage = (
     owner: OwnerMaximal,
     opts: AttackOpts
 ) => {
-    owner.relevantSlot = opts.relevantSlot
-
-    return critDamage(owner)
+    return critDamage(owner, { relevantSlot: opts.relevantSlot })
 }
 
 const calculateThreat = (
     owner: OwnerMaximal,
     opts: AttackOpts
 ) => {
-    return critThreatRange(owner)
+    return critThreatRange(owner, { relevantSlot: opts.relevantSlot })
 }
 
 export const calculateCritConfirm = (
     owner: OwnerMaximal,
     opts: AttackOpts
 ) => {
-    owner.relevantSlot = opts.relevantSlot
-
     return newModNode(
         'crit-confirm',
-        [critConfirm(owner), roll(20, 1, 'attack-sides-mod')(owner)],
+        [critConfirm(owner, { relevantSlot: opts.relevantSlot }), roll(20, 1, 'attack-sides-mod')(owner)],
         sumFunc,
     )
 }

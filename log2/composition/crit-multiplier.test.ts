@@ -25,7 +25,7 @@ describe('crit-multiplier', () => {
             mainhand: weapon(2)
         }
     })
-    owner.relevantSlot = owner.es.mainhand
+
 
     test('default equipment test', () => {
         const owner = createDefaultOwner()
@@ -53,7 +53,7 @@ describe('crit-multiplier', () => {
                 }
             },
         })
-        owner.relevantSlot = owner.es.mainhand
+    
         const node = critMultiplier(owner)
         expect(node.total()).toBe(4)
 

@@ -48,13 +48,11 @@ const finesseBuild = () => {
         fs: { finesseWeaponFighting },
         ss: { finesseBless: [inst(finesseBless)] },
     })
-    owner.relevantSlot = owner.es.mainhand
     return owner
 }
 
 describe('attack (terminal)', () => {
     const owner = createDefaultOwner({})
-    owner.relevantSlot = owner.es.mainhand
 
     test('sums all five children of a full finesse build', () => {
         const node = attack(finesseBuild())
@@ -86,7 +84,6 @@ describe('attack (terminal)', () => {
 describe('owner is not mutated', () => {
     test('owner.tags is unchanged after calling attack', () => {
         const owner = finesseBuild()
-        owner.relevantSlot = owner.es.mainhand
 
         assert.equal(owner.tags.length, 0)
         attack(owner)

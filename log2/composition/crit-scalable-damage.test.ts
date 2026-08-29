@@ -1,7 +1,7 @@
 import { describe, test, expect, assert } from 'vitest'
 import critScalableDamage from './crit-scalable-damage'
 import { createDefaultOwner } from '../../actor2'
-import { OwnerLog2, ObjectWithBroadContexts } from '../types'
+import { ObjectWithBroadContexts } from '../types'
 import { leaf, findNodeMatching } from '..'
 import { BaseEquipment } from '../../equipment-sheet2/types'
 import { makeWrapper } from '../../status-sheet2'
@@ -14,9 +14,6 @@ const weapon = (dmg: number): BaseEquipment =>
     }
 })
 
-const withSlot = (owner: OwnerLog2, slot: OwnerLog2['relevantSlot']): OwnerLog2 =>
-    ({ ...owner, relevantSlot: slot })
-
 const st = makeWrapper({
     displayName: 'test-damage-status',
     broadContexts: {
@@ -26,7 +23,7 @@ const st = makeWrapper({
 
 describe('crit-scalable-damage', () => {
     test('sums weapon roll + effective stat (default melee str +2)', () => {
-        const node = critScalableDamage(withSlot(createDefaultOwner({}), weapon(8)))
+        const node = critScalableDamage(createDefaultOwner({ es: { mainhand: weapon(8) } }))
         expect(node.total()).toBe(10) // 8 + 2
     })
 
@@ -35,7 +32,7 @@ describe('crit-scalable-damage', () => {
             displayName: 'test-scaler',
             broadContexts: { 'crit-scalable-damage-feat-mod': () => leaf('test-scaler', 3) },
         }
-        const node = critScalableDamage(withSlot(createDefaultOwner({ cs: { str: 10 }, fs: { scaler } }), weapon(8)))
+        const node = critScalableDamage(createDefaultOwner({ cs: { str: 10 }, fs: { scaler }, es: { mainhand: weapon(8) } }))
         expect(node.total()).toBe(11) // 8 + 0 str + 3
         expect(findNodeMatching(node, /test-scaler/i)).toBeTruthy()
     })
@@ -49,10 +46,5 @@ describe('crit-scalable-damage', () => {
         const f0 = findNodeMatching(node, /test-damage-status/)
         assert.exists(f0)
         assert.equal(f0.total(), 2)
-    })
-    test('throws when no relevantSlot is provided', () => {
-        const owner = createDefaultOwner()
-        owner.relevantSlot = undefined
-        expect(() => critScalableDamage(owner)).toThrow(/relevant/)
     })
 })

@@ -6,7 +6,7 @@ import rollTree from '../log2/roll'
 import type { BaseEquipment, EquipmentSheet, EquipmentSlot } from './types'
 import { classLevelCounts } from '../class-level2/derive'
 
-const SLOT_TYPE: Record<string, BaseEquipment['acceptableSlots']> = {
+export const SLOT_TYPE: Record<string, BaseEquipment['acceptableSlots']> = {
     weapon: ['mainhand', 'offhand'],
     shield: ['offhand'],
     armor: ['armor'],

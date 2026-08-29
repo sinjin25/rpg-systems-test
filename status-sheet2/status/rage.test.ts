@@ -9,6 +9,7 @@ import damage from '../../log2/terminal/damage.ts'
 import critDamage from '../../log2/terminal/crit-damage.ts'
 import rage, { RAGE_ATTACK_BONUS, RAGE_DAMAGE_BONUS } from './rage.ts'
 import { describe, test, assert, expect } from 'vitest'
+import { SLOT_TYPE } from '../../equipment-sheet2/defaults.ts'
 
 const IMPROVED_RAGE_EXTRA = 2
 
@@ -20,6 +21,7 @@ const testWeapon: BaseEquipment = {
         damage: () => leaf('test-weapon', 4),
         'crit-multiplier': () => leaf('test-weapon', 2),
     },
+    acceptableSlots: SLOT_TYPE['weapon'],
 } as BaseEquipment
 
 const makeOwner = (data: { improved?: boolean, raging?: boolean, weapon?: BaseEquipment } = {}) => {

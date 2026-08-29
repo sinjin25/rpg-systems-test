@@ -16,7 +16,6 @@
         "node_modules",
         "dist",
         "**/*.test.ts",
-        "enemy/**",
         "design-docs/**",
         "content/**",
         "trigger/apply.ts",

@@ -10,12 +10,14 @@ import { applyAttackResolutions } from '../../actor2/act'
 import { applyDamage } from '../../health'
 import { resolvePayload, resolveStep, RESOLVE_PAYLOAD_DEFAULT_OPTS } from './index'
 import { AttackDiscreteTargetGroup, AttackDiscreteTargetGroupPayload } from './types'
+import { SLOT_TYPE } from '../../equipment-sheet2/defaults'
 
 // --- fixtures -------------------------------------------------------------
 
 // fixed-die weapon so only the d20s vary between seeds (mirrors attack.test.ts)
 const testWeapon = (displayName: string): BaseEquipment => ({
     displayName,
+    acceptableSlots: SLOT_TYPE.weapon,
     tags: ['melee'],
     broadContexts: {
         damage: (o) => newModNode(displayName, [rollTree(6)(o)], sumFunc),

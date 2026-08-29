@@ -1,7 +1,7 @@
 import { createDefaultOwner, OwnerMaximal } from "../../actor2";
 import { FeatSheet } from "../../feat2";
 import addFeat from "../../feat2/add-feat";
-import possibleFeatKeys, { PossibleFeatKey } from "../../feat2/feats";
+import possibleFeats, { PossibleFeatKey } from "../../feat2/feats";
 import { classLevelCounts, registry } from "../derive";
 import { ClassKeys, ClassLevel, ClassLevelPickLog, ClassLevelSumKeys } from "../types";
 import { ClassLevelProposal } from "./types";
@@ -51,7 +51,7 @@ export const chooseOptionAndMutate = (
     try {
         if (clp.hasFreeFeats) {
             if (!freeFeat) return false
-            const f = possibleFeatKeys[freeFeat]
+            const f = possibleFeats[freeFeat]
             if (!f) throw Error(`!f for ${freeFeat}`)
             // this mutates
             const canAddFeat = addFeat(owner, f)
@@ -59,7 +59,7 @@ export const chooseOptionAndMutate = (
         }
 
         for (let classFeatKey of clp.classFeats) {
-            const f = possibleFeatKeys[classFeatKey]
+            const f = possibleFeats[classFeatKey]
             if (!f) throw Error(`!f for ${classFeatKey}`)
             owner.fs[classFeatKey] = f
         }

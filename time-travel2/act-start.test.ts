@@ -10,7 +10,7 @@ describe('act-start', () => {
         const actor = instantiateActor(owner)
 
         actor.speed.remainder = 34
-        const r = round({
+        const { acting: r } = round({
             participants: [actor],
             speedSum: 35
         })

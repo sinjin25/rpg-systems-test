@@ -25,20 +25,6 @@ const highEndDexActor = createDefaultOwner({
     }
 })
 
-const BASE_AC = 10
-
-// the terminal `ac` tree still reads the old equipment-sheet shape, so it ignores
-// these armors entirely. Solve it straight off the broadContexts instead.
-const acWithArmor = (dexScore: number, armor: BaseEquipment) => {
-    const owner = createDefaultOwner({ cs: { dex: dexScore } }) as unknown as OwnerMaximal
-
-    const dexMod = csAsMod('dex')(owner).total()
-    const armorAc = armor.broadContexts['ac-of-equipment']!(owner)!.total()
-    const maxDex = armor.broadContexts['max-dex-of-equipment']!(owner)!.total()
-
-    return BASE_AC + Math.min(dexMod, maxDex) + armorAc
-}
-
 describe('Armor heuristics', () => {
 
     test('Extremely high dex outperforms low investment armor', () => {

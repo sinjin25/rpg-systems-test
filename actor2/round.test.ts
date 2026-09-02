@@ -2,7 +2,7 @@ import { createDefaultOwner, instantiateActor } from '.'
 import { iterate } from '../simulate/util/iterate.ts'
 import { makeWrapper, StatusSheet } from '../status-sheet2'
 import { inst } from '../status-sheet2/testing'
-import { Round, round, speedRoll } from './round.ts'
+import { Round, round } from './round.ts'
 import { describe, test, assert, expect } from 'vitest'
 
 const defaultPerson = () => createDefaultOwner({})
@@ -16,8 +16,16 @@ describe('Speed rolls are 2d6', () => {
         let uniqueOutcomes = 0
         const TEST = 500
 
+        const actor = instantiateActor(defaultPerson())
+        const roundData = { participants: [actor], speedSum: 0 } // speedSum=0 so every roll acts
+
         for (let i = 0; i < TEST; i++) {
-            const roll = speedRoll(defaultPerson())
+            actor.speed.remainder = 0
+            const { modNodes } = round(roundData)
+            const node = modNodes.get(actor.id)!
+            // the roll-total node is the last child (log2/roll produces it)
+            const rollNode = node.children.find(c => c.displayName === 'roll-total')!
+            const roll = rollNode.total()
             if (!outcomes[roll]) {
                 outcomes[roll] = 1
                 uniqueOutcomes++
@@ -50,7 +58,7 @@ describe('Round reports participants who are ready to act', () => {
             speedSum: STANDARD_SPEED,
         }
         // expect around ~35/3.5 = 10 iterations per action on average
-        const r = round(roundData)
+        const { acting: r } = round(roundData)
         assert.equal(Array.isArray(r), true)
 
         assert.equal(
@@ -70,7 +78,7 @@ describe('Round reports participants who are ready to act', () => {
         }
 
         for (let i = 0; i < ITERATIONS; i++) {
-            const r = round(roundData)
+            const { acting: r } = round(roundData)
             if (r.length > 0) hasActors++
             else noActors++
         }
@@ -109,7 +117,7 @@ describe('Round reports participants who are ready to act', () => {
 
         iterate(5, () => {
             roundData.participants.forEach(a => a.speed.remainder = 34)
-            const result = round(roundData)
+            const { acting: result } = round(roundData)
             for (let i = 1; i < result.length; i++) {
                 const prev = result[i - 1]
                 const curr = result[i]

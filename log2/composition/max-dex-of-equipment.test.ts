@@ -1,7 +1,7 @@
 import { describe, test, expect, assert } from 'vitest'
 import maxDexOfEquipment from './max-dex-of-equipment'
 import flatFooted from '../../status-sheet2/status/flat-footed'
-import { makeWrapper } from '../../status-sheet2'
+import { addStatusToStatusSheet, makeWrapper } from '../../status-sheet2'
 import { inst } from '../../status-sheet2/testing'
 import modNodeToText from '../format'
 import { armors, heavyShield, SLOT_TYPE } from '../../equipment-sheet2/defaults'
@@ -55,13 +55,8 @@ describe('Works with flat-footed status', () => {
             es: {
                 armor: armors['banded mail']
             },
-            ss: {
-                flatFooted: [inst(makeWrapper({
-                    displayName: 'flat-footed',
-                    broadContexts: {},
-                }))]
-            }
         })
+        addStatusToStatusSheet(owner, owner, flatFooted(99))
         const node = maxDexOfEquipment(owner)!
         assert.equal(node.total(), 0)
         assert.exists(node)

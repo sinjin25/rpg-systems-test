@@ -85,11 +85,13 @@ export interface TTLogMap {
     'speed': {
         input: {
             actors: Actor2Snapshot[],
+            modNodes: Record<number, ModNode>,
         },
         output: {
             kind: 'speed',
             // but in speed order
             actors: Actor2Snapshot[],
+            modNodes: Record<number, FrozenModNode>,
         }
     },
     'act-start': {

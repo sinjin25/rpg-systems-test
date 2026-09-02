@@ -46,6 +46,21 @@ export const armors = buildOutBaseArmor([
     ['plate', 8, 1],
 ])
 
+export const buckler: BaseEquipment = (() => {
+    const dn = 'buckler'
+    return {
+        displayName: dn,
+        acceptableSlots: SLOT_TYPE.shield,
+        broadContexts: {
+            "ac-of-equipment": (o: OwnerLog2) => leaf(
+                dn,
+                1,
+            )
+        },
+        tags: ['shield']
+    }
+})()
+
 export const heavyShield: BaseEquipment = (() => {
     const dn = 'heavy shield'
 

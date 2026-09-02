@@ -8,7 +8,7 @@ const ostracizedGoblin: OwnerMaximal = {
     cs: {
         ...defaultEnemySheet,
         dex: 8,
-        str: 6,
+        str: 10,
         con: 8,
         flavorSheet: {
             description: 'A weak goblin',
@@ -20,7 +20,7 @@ const ostracizedGoblin: OwnerMaximal = {
     },
     es: {
         mainhand: clawSmall,
-        armor: naturalAc(8)
+        armor: naturalAc(3)
     },
     ss: {
     },

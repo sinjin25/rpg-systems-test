@@ -8,6 +8,8 @@ import dodgy from '../feats/dodgy'
 import shieldMastery from '../feats/shield-mastery'
 import modNodeToText from '../format'
 import { armors, heavyShield } from '../../equipment-sheet2/defaults'
+import { BASE_AC } from '../bases/base-ac'
+import { ostracizedGoblin } from '../../enemy/enemy'
 
 describe('ac (terminal)', () => {
     test('owner.tags is not mutated', () => {
@@ -30,7 +32,7 @@ describe('ac (terminal)', () => {
         // 10 base + min(4 dex, 1 cap) + (7 + 2 armor)
         const node = ac(owner)
         /* console.log(modNodeToText(node)) */
-        expect(node.total()).toBe(20)
+        expect(node.total()).toBe(BASE_AC + 1 + 7 + 2)
     })
 
     test('unarmored: base 10 + full dex 4 + no armor', () => {
@@ -40,7 +42,7 @@ describe('ac (terminal)', () => {
         })
         const node = ac(owner)
         // 10 base + 4 dex (14 + 4 -> +4, uncapped) + 0 armor
-        expect(node.total()).toBe(14)
+        expect(node.total()).toBe(6)
     })
 
     test('Tags are passed properly and feats are included when relevant (+4, +1)', () => {
@@ -53,7 +55,7 @@ describe('ac (terminal)', () => {
         const node = ac(owner)
         /* console.log(modNodeToText(node)) */
         // armored 20 (from the first case) + Dodgy 4 + Shield Mastery 1
-        expect(node.total()).toBe(25)
+        expect(node.total()).toBe(17)
         /* console.log(modNodeToText(result)) */
     })
 
@@ -64,6 +66,15 @@ describe('ac (terminal)', () => {
             ss: { catsGrace: [inst(catsGrace)], divineProtection: [inst(divineProtection(2))] },
         })
         // armored 20 (from the first case) + Divine Protection 2
-        expect(ac(owner).total()).toBe(22)
+        expect(ac(owner).total()).toBe(BASE_AC + 12)
+    })
+})
+
+describe('integration: works on enemies (natural ac)', () => {
+    test('', () => {
+        const owner = ostracizedGoblin
+        const DEX = -1
+        const NATURAL = 3
+        expect(ac(owner).total()).toBe(BASE_AC + DEX + NATURAL)
     })
 })

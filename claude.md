@@ -14,3 +14,12 @@ Do not use more than one subagent at a time. User prefers being lean on token us
 
 # Answering prompts
 Do not answer a prompt with more than 5 paragraphs. If more than that is required, say you'd like to talk about X and prompt the user for more information.
+
+# ModNode Testing
+A lot of the calculation involve the ModNode type. When testing an instance for children, you use findNodeMatching you do not manually loop through children.
+
+# Seed Testing
+A lot of tests involve finding rng seeds. To fish for a seed, create a test. Use itereate function
+C:\Code Tutorials\dnd-rpg\rpg-tests\simulate\util\iterate.ts
+
+Find the seed that matches your conditions. Change the test to test.skip (vitest) so we can use it again if the seeds become invalidated. Write the original test you were going to write using the suitable seeds located.

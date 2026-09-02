@@ -98,13 +98,14 @@ export const simulateFight = (
 
         actors.forEach(a => handlePotentialDeath(actors, a))
 
-        const acting = round({
+        const { acting, modNodes } = round({
             participants: actors,
             speedSum: STD_SPEED,
         })
         {
             ttrAppendLog(timeTravel["speed"]({
                 actors: acting.map(a => snapshotActor(a)),
+                modNodes: Object.fromEntries(modNodes),
             }))
         }
 

@@ -17,10 +17,30 @@ export const clearSeed = () => {
     rng = Math.random
 }
 
-const roll = (
-    diceSides: number,
-) => {
+const rollFrom = (rng: () => number) => (diceSides: number) => {
     return Math.floor(rng() * diceSides) + 1
 }
 
+const roll = rollFrom(() => rng())
+
 export default roll
+
+export type RollInstance = {
+    roll: (diceSides: number) => number
+    setSeed: (seed: number) => void
+    clearSeed: () => void
+    // ex: handoff new roll instances to simulations
+    // ex: seed spawning instance -> create a seed for a map gen, then a fight, then a fight, then an item drop
+    spawn: () => RollInstance
+}
+
+export const createRoll = (seed?: number): RollInstance => {
+    let instanceRng: () => number = seed === undefined ? Math.random : mulberry32(seed)
+
+    return {
+        roll: (diceSides: number) => rollFrom(instanceRng)(diceSides),
+        setSeed: (s: number) => { instanceRng = mulberry32(s) },
+        clearSeed: () => { instanceRng = Math.random },
+        spawn: () => createRoll(Math.floor(instanceRng() * 0xFFFFFFFF)),
+    }
+}

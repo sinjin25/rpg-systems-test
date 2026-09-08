@@ -40,7 +40,7 @@ const dumbTargeting: TargetPriority = {
 export const simulateFight = (
     participants: {
         player: OwnerMaximal[] | Actor2[],
-        enemy: OwnerMaximal[],
+        enemy: OwnerMaximal[] | Actor2[],
     },
     options?: {
         verbose?: boolean,

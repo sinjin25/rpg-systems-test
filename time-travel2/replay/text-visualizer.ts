@@ -26,7 +26,7 @@ const ttrvTextVisualizer: TimeTravelReplayerVisualizer = {
     // hand the frozen attack tree back to confirm the SARLog type is received intact
     "standard-action-result": async (log) => {
         const result = log.modNodes.critDamageResult ? 'crits' : log.modNodes.damageResult ? 'hits' : 'misses'
-        const dmg = log.modNodes?.critDamageResult?.total || log.modNodes?.damageResult?.total || undefined
+        const dmg = log.modNodes?.damageTakenResult?.total
         const target = log.to?.[0]
         console.log(
             displayActor(log.source),
@@ -71,7 +71,7 @@ const ttrvTextVisualizer: TimeTravelReplayerVisualizer = {
                 `${displayActor(to, cc.BgRed)} ${verb} ${displayActor(source)} (${log.save.total} vs ${log.dc.total})`,
             )
         }
-        const dmg = log.damage?.reduce((sum, n) => sum + n.total, 0)
+        const dmg = log.damageTaken?.reduce((sum, n) => sum + n.total, 0)
         if (dmg) console.log(`${displayActor(to, cc.BgRed)} takes ${dmg} damage`)
         const heal = log.heal?.reduce((sum, n) => sum + n.total, 0)
         if (heal) console.log(`${displayActor(to, cc.BgGreen)} heals ${heal}`)

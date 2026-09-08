@@ -4,9 +4,11 @@ import { createDefaultOwner } from '../../actor2'
 import modNodeToText from '../format'
 import { findNodeMatching, leaf } from '..'
 import { BaseEquipment } from '../../equipment-sheet2/types'
+import { SLOT_TYPE } from '../../equipment-sheet2/defaults'
 
 const dagger: BaseEquipment = {
     displayName: 'dagger',
+    acceptableSlots: SLOT_TYPE.weapon,
     broadContexts: {
         damage: (o) => {
             const r = 4

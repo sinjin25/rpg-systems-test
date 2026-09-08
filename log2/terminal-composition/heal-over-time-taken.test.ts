@@ -36,7 +36,7 @@ describe('heal-over-time-taken (terminal)', () => {
             node: hotNode,
         })(receiver)
 
-        const f0 = findNodeMatching(node, /heal-over-time-taken/, {
+        const f0 = findNodeMatching(node, /heal-over-time-taken$/, {
             includeRoot: true,
         })
         const f1 = findNodeMatching(node, /heal-over-time-taken-feat-mod/)

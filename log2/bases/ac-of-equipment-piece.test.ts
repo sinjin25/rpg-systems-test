@@ -1,6 +1,6 @@
 import { describe, test, expect, assert } from 'vitest'
 import acOfEquipmentPiece from './ac-of-equipment-piece'
-import { armors, heavyShield } from '../../equipment-sheet2/defaults'
+import { armors, heavyShield, SLOT_TYPE } from '../../equipment-sheet2/defaults'
 import { findNodeMatching } from '..'
 import modNodeToText from '../format'
 import { createDefaultOwner } from '../../actor2'
@@ -25,6 +25,7 @@ describe('ac-of-equipment-piece', () => {
     test('Returns undefined when no relevant broadContext', () => {
         const node = acOfEquipmentPiece({
             displayName: 'shortsword',
+            acceptableSlots: SLOT_TYPE.weapon,
             broadContexts: {},
         })(owner)
         assert.notExists(node)

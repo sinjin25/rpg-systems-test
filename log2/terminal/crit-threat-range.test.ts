@@ -5,6 +5,7 @@ import { OwnerLog2 } from '../types'
 import { findNodeMatching, leaf } from '..'
 import improvedCritical from '../feats/improved-critical'
 import modNodeToText from '../format'
+import { SLOT_TYPE } from '../../equipment-sheet2/defaults'
 
 describe('crit-threat-range (terminal)', () => {
     const owner = createDefaultOwner()
@@ -20,6 +21,7 @@ describe('crit-threat-range (terminal)', () => {
             es: {
                 mainhand: {
                     displayName: 'rapier',
+                    acceptableSlots: SLOT_TYPE.weapon,
                     broadContexts: {
                         'crit-threat-range': (o: OwnerLog2) => leaf('rapier', 18)
                     }
@@ -44,9 +46,5 @@ describe('crit-threat-range (terminal)', () => {
         /* console.log(modNodeToText(node)) */
     })
 
-    test('throws when no relevantSlot is provided', () => {
-        const owner = createDefaultOwner({})
-        owner.relevantSlot = undefined
-        expect(() => critThreatRange(owner)).toThrow(/relevant/i)
-    })
+
 })

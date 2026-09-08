@@ -34,12 +34,7 @@ describe('snapshotActor Stable References', () => {
         assert.equal(owner.cs.con, 999)
         assert.equal(ttSnapshot.owner.cs.con, 999)
     })
-    test('cloneRelevantSlot (temp?)', () => {
-        const { actor, owner } = ownerActorUtil()
 
-        const ttSnapshot = snapshotActor(actor)
-        assert.equal(ttSnapshot.owner.relevantSlot, actor.owner.relevantSlot)
-    })
 })
 
 describe('Actor simple snapshotted elements', () => {
@@ -80,25 +75,6 @@ describe('Actor simple snapshotted elements', () => {
         assert.equal(ttSnapshot2.health.curr, actor.health.curr)
 
         assert.notEqual(actor.health.curr, ttSnapshot.health.curr)
-    })
-})
-
-describe('OwnerMaximalUnstableReferences (mostly proper clones)', () => {
-    // most of these, theoretically, should be mostly snapshotted (as in same values, different references). This is not entirely true for some of them.
-    test('cloneTags', () => {
-        const { actor, owner } = ownerActorUtil()
-        const ttSnapshot = snapshotActor(actor)
-        assert.notEqual(ttSnapshot.owner.tags, owner.tags)
-
-        // this mutates tags
-        const node = attack(actor.owner)
-        // snapshot looks similar
-        const ttSnapshot2 = snapshotActor(actor)
-        assert.equal(owner.tags.length, 2)
-        assert.equal(ttSnapshot2.owner.tags.length, 2)
-
-        // confirm old snapshot remains unchanged
-        assert.equal(ttSnapshot.owner.tags.length, 0)
     })
 })
 

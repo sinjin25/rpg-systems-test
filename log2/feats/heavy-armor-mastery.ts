@@ -7,7 +7,7 @@ const displayName: AllFeats = 'heavy-armor-mastery'
 const feat: ObjectWithBroadContexts = {
     displayName,
     broadContexts: {
-        'ac-feat-mod': (owner) => hasAllTags(owner.tags, ['heavy-armor']) ? leaf(displayName, 1) : undefined,
+        'ac-feat-mod': (owner, opts) => hasAllTags(opts.tags ?? [], ['heavy-armor']) ? leaf(displayName, 1) : undefined,
     },
 }
 

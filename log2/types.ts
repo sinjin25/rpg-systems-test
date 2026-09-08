@@ -3,6 +3,12 @@ import { OwnerMaximal } from "../actor2";
 import { BaseEquipment, EquipmentSheet } from "../equipment-sheet2/types";
 import { Tags } from "./tags";
 
+export type ModNodeOpts = {
+    tags?: Tags[]
+    relevantSlot?: BaseEquipment
+    // extensible: add future context fields here without touching call sites
+}
+
 
 
 // the structural contract log2 traversal needs: anything it can walk broadContexts on.
@@ -20,7 +26,6 @@ export type OwnerLog2 = Omit<OwnerMaximal, 'fs' | 'ss' | 'es' | 'as'> &
     fs: Record<string, ObjectWithBroadContexts>,
     ss: Record<string, StatusInstanceLog2[]>,
     es: EquipmentSheet,
-    relevantSlot?: BaseEquipment
     tags: Tags[], // starts empty, a terminal tree should mutate it. Use the utility functions from tags.ts
 }
 
@@ -33,7 +38,7 @@ export type StatusInstanceLog2 = {
 
 export type ObjectWithBroadContexts = {
     displayName: string,
-    broadContexts: Partial<Record<EveryTree, (owner: OwnerLog2) => ModNode | undefined>>
+    broadContexts: Partial<Record<EveryTree, (owner: OwnerLog2, opts: ModNodeOpts) => ModNode | undefined>>
 }
 
 export type AllFeats =
@@ -57,7 +62,9 @@ export type BaseStateMod = `raw-${CsScore}`
     | `modded-${CsScore}`
     | `${CsScore}-from-status`
     | `${CsScore}-total` // after all modifiers
+    | `${CsScore}-as-mod`
 export type FeatModTypes = 'attack' | 'damage' | 'ac' | 'initiative' | 'health' | 'flat-damage' | 'crit-scalable-damage' | 'damage-taken' | 'max-dex' | 'damage-over-time' | 'damage-over-time-taken' | 'heal-over-time' | 'heal-over-time-taken' | 'spell-dc'
+    | 'speed'
 export type FeatMod = `${FeatModTypes}-feat-mod`
 
 type Health = 'base-health' | 'flat-health' | 'health-per-level' | 'health-equipment-mod' | 'base-health-per-level' | 'health-from-levels'
@@ -85,6 +92,7 @@ export type TerminalRoutes = 'ac'
     | 'heal-over-time-taken'
     | 'roll-total'
     | 'dc'
+    | 'speed'
 
 export type EveryTree =
     BaseStateMod
@@ -105,6 +113,7 @@ export type EveryTree =
     | 'ac-status-mod'
     | 'crit-confirm-mod'
     | 'crit-scalable-damage-status-mod'
+    | 'speed-status-mod'
     | 'spell-dc-status-mod'
     | 'spell-dc-from-equipment'
     | 'base-dc' // gotten from Ability
@@ -115,6 +124,7 @@ export type EveryTree =
     | 'flat-damage'
     | 'crit-multiplier'
     | 'crit-multiplier-mod'
+    | 'crit-multiplier-feat-mod'
     | 'crit-threat-range-mod'
     | 'damage-taken-status-mod'
     | 'enhancement' // used by attack, ac, damage, for equipment (mostly flavor)
@@ -131,7 +141,7 @@ export type FeatBroadContexts = Subset<EveryTree,
     | 'crit-confirm-mod'
     | 'crit-scalable-damage-feat-mod'
     | 'flat-damage-feat-mod'
-    | 'crit-multiplier-mod'
+    | 'crit-multiplier-feat-mod'
     | 'crit-threat-range-mod'
     | 'damage-taken-feat-mod'
     | 'damage-feat-mod'
@@ -143,6 +153,7 @@ export type FeatBroadContexts = Subset<EveryTree,
     | 'damage-over-time-taken-feat-mod'
     | 'heal-over-time-feat-mod'
     | 'heal-over-time-taken-feat-mod'
+    | 'speed-feat-mod'
     | 'spell-dc-feat-mod'
     | RollSidesMod
 >
@@ -156,4 +167,5 @@ export type StatusBroadContexts = Subset<EveryTree,
     | 'damage-taken-status-mod'
     | 'crit-scalable-damage-status-mod'
     | 'spell-dc-status-mod'
+    | 'speed-status-mod'
 >

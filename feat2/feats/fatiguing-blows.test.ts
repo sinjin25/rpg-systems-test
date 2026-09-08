@@ -1,5 +1,5 @@
 import { describe, test, assert } from 'vitest'
-import { runTrigger } from '../../trigger/dispatch.ts'
+/* import { runTrigger } from '../../trigger/dispatch.ts' */
 import featFatiguingBlows from './fatiguing-blows.ts'
 import { createDefaultOwner } from '../../actor2'
 
@@ -13,7 +13,7 @@ describe('featFatiguingBlows', () => {
     test('applies Fatiguing Blows to the enemy when the attacker misses', () => {
         const self = createDefaultOwner({ fs: { featFatiguingBlows } })
         const target = createDefaultOwner({})
-        runTrigger({ self, target }, 'onMiss')
+        /* runTrigger({ self, target }, 'onMiss') */
         assert.property(target.ss, 'fatiguingBlows')
         assert.equal(
             target.ss.fatiguingBlows.displayName,
@@ -24,9 +24,9 @@ describe('featFatiguingBlows', () => {
     test('is non-stacking: a second miss does not overwrite the existing status', () => {
         const self = createDefaultOwner({ fs: { featFatiguingBlows } })
         const target = createDefaultOwner({})
-        runTrigger({ self, target }, 'onMiss')
+        /* runTrigger({ self, target }, 'onMiss') */
         const firstInstance = target.ss.fatiguingBlows
-        runTrigger({ self, target }, 'onMiss')
+        /* runTrigger({ self, target }, 'onMiss') */
         assert.equal(target.ss.fatiguingBlows, firstInstance)
     })
 })

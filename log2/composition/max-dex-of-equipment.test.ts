@@ -1,10 +1,10 @@
 import { describe, test, expect, assert } from 'vitest'
 import maxDexOfEquipment from './max-dex-of-equipment'
 import flatFooted from '../../status-sheet2/status/flat-footed'
-import { makeWrapper } from '../../status-sheet2'
+import { addStatusToStatusSheet, makeWrapper } from '../../status-sheet2'
 import { inst } from '../../status-sheet2/testing'
 import modNodeToText from '../format'
-import { armors, heavyShield } from '../../equipment-sheet2/defaults'
+import { armors, heavyShield, SLOT_TYPE } from '../../equipment-sheet2/defaults'
 import { createDefaultOwner } from '../../actor2'
 import { OwnerLog2 } from '../types'
 import { findNodeMatching, leaf } from '..'
@@ -13,6 +13,7 @@ const owner = createDefaultOwner({
     es: {
         armor: armors['banded mail'], offhand: {
             displayName: 'super-heavy-shield',
+            acceptableSlots: SLOT_TYPE.shield,
             broadContexts: {
                 'max-dex-of-equipment': (o: OwnerLog2) => {
                     return leaf('super-heavy-shield', 0)
@@ -33,7 +34,7 @@ describe('max-dex-of-equipment', () => {
         assert.equal(node.total(), 0)
         assert.exists(node)
 
-        const f0 = findNodeMatching(node, /max-dex-of-equipment/, {
+        const f0 = findNodeMatching(node, /max-dex-of-equipment$/, {
             includeRoot: true,
         })
         assert.exists(f0)
@@ -54,13 +55,8 @@ describe('Works with flat-footed status', () => {
             es: {
                 armor: armors['banded mail']
             },
-            ss: {
-                flatFooted: [inst(makeWrapper({
-                    displayName: 'flat-footed',
-                    broadContexts: {},
-                }))]
-            }
         })
+        addStatusToStatusSheet(owner, owner, flatFooted(99))
         const node = maxDexOfEquipment(owner)!
         assert.equal(node.total(), 0)
         assert.exists(node)

@@ -5,9 +5,11 @@ import roll, { setSeed, clearSeed } from '../../roll'
 import newModNode, { findNodeMatching, leaf } from '..'
 import modNodeToText from '../format'
 import { BaseEquipment } from '../../equipment-sheet2/types'
+import { SLOT_TYPE } from '../../equipment-sheet2/defaults'
 
 const wp = (dmg: number): BaseEquipment => ({
     displayName: 'test-weapon',
+    acceptableSlots: SLOT_TYPE.weapon,
     tags: ['melee'],
     broadContexts: {
         'damage': () => leaf('test-weapon', dmg)
@@ -24,7 +26,7 @@ describe('damage (terminal)', () => {
                 mainhand: w
             },
         })
-        owner.relevantSlot = owner.es.mainhand
+
         const node = damage(owner)
         const csd = findNodeMatching(node, /crit-scalable-damage/i)
         assert.exists(csd)
@@ -39,6 +41,7 @@ describe('damage (terminal)', () => {
         try {
             const w: BaseEquipment = ({
                 displayName: 'test-weapon',
+                acceptableSlots: SLOT_TYPE.weapon,
                 tags: ['melee'],
                 broadContexts: {
                     'damage': () => {
@@ -53,7 +56,7 @@ describe('damage (terminal)', () => {
                     mainhand: w
                 },
             })
-            owner.relevantSlot = owner.es.mainhand
+    
             const node = damage(owner)
             const first = node.total()
             expect(first).toBeGreaterThanOrEqual(1)
@@ -66,9 +69,5 @@ describe('damage (terminal)', () => {
         }
     })
 
-    test('throws when no relevantSlot is provided', () => {
-        const owner = createDefaultOwner({})
-        owner.relevantSlot = undefined
-        expect(() => damage(owner)).toThrow(/relevant/)
-    })
+
 })

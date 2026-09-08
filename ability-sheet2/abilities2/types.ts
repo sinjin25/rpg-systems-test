@@ -7,6 +7,7 @@ import { TargetPriority } from "../../target/types"
 import { AbilityCastType } from "../types"
 
 export type AbilitySheetDefinition = {
+    kind?: 'save', // discriminant vs AttackAbilitySheetDefinition; absent reads as 'save'
     castType: AbilityCastType,
     displayName: string,
     description?: string,

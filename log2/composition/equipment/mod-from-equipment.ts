@@ -1,6 +1,6 @@
 import newModNode, { ModNode, sumFunc } from "../..";
 import { EquipmentSlot } from "../../../equipment-sheet2/types";
-import { EveryTree, OwnerLog2 } from "../../types";
+import { EveryTree, ModNodeOpts, OwnerLog2 } from "../../types";
 
 // THIS SHOULD BE LIFTED UP INTO EQUIPMENT2
 export const collectEquipmentTags = (
@@ -24,20 +24,20 @@ export const collectEquipmentTags = (
 
 const collectEquipmentContributions = (
     owner: OwnerLog2,
+    opts: ModNodeOpts,
     broadContext: EveryTree,
-    tags: string[] = []
 ): ModNode[] => {
     const v = Object.values(owner.es)
         .filter(e => !!e)
 
     const relevant = v.map(a => a.broadContexts?.[broadContext])
         .filter(f => !!f) // return ones without a handler there
-        .map(f => f(owner)) // apply the handler
+        .map(f => f(owner, opts)) // apply the handler
         .filter(v => !!v) // remove ones that didn't apply (returned undefined)
 
     return relevant
 }
 
-export default (member: EveryTree) => (owner: OwnerLog2) => {
-    return newModNode(member, collectEquipmentContributions(owner, member), sumFunc)
+export default (member: EveryTree) => (owner: OwnerLog2, opts: ModNodeOpts = {}) => {
+    return newModNode(member, collectEquipmentContributions(owner, opts, member), sumFunc)
 }

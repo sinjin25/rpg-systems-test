@@ -8,7 +8,7 @@ import {
 import { describe, test, assert, expect } from 'vitest'
 import ac from '../log2/terminal/ac.ts'
 import { createDefaultOwner } from '../defaults'
-import moddedCsScore from '../log2/composition/modded-cs-score.ts'
+import csAsMod from '../log2/composition/cs-as-mod.ts'
 import { OwnerMaximal } from '../actor2'
 import type { BaseEquipment } from './types'
 import damage from '../log2/terminal/damage.ts'
@@ -24,20 +24,6 @@ const highEndDexActor = createDefaultOwner({
         dex: HIGH_LEVEL_BUFFS_BASE,
     }
 })
-
-const BASE_AC = 10
-
-// the terminal `ac` tree still reads the old equipment-sheet shape, so it ignores
-// these armors entirely. Solve it straight off the broadContexts instead.
-const acWithArmor = (dexScore: number, armor: BaseEquipment) => {
-    const owner = createDefaultOwner({ cs: { dex: dexScore } }) as unknown as OwnerMaximal
-
-    const dexMod = moddedCsScore('dex')(owner).total()
-    const armorAc = armor.broadContexts['ac-of-equipment']!(owner)!.total()
-    const maxDex = armor.broadContexts['max-dex-of-equipment']!(owner)!.total()
-
-    return BASE_AC + Math.min(dexMod, maxDex) + armorAc
-}
 
 describe('Armor heuristics', () => {
 
@@ -59,8 +45,6 @@ describe('Weapons roll fresh each tree, nodes are steady per tree', () => {
                 mainhand: shortsword
             },
         })
-        owner.relevantSlot = owner.es.mainhand
-
         const final = new Set<number>()
         iterate(30, () => {
             const d = damage(owner)

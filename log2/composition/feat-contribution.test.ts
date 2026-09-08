@@ -10,7 +10,7 @@ describe('Works', () => {
         const node = featContribution('safasdf')(owner)
 
         assert.equal(node.total(), 0)
-        assert.exists(findNodeMatching(node, /safasdf/i, {
+        assert.exists(findNodeMatching(node, /safasdf$/i, {
             includeRoot: true,
         }))
     })
@@ -35,7 +35,7 @@ describe('Works', () => {
         const node = featContribution('initiative-feat-mod')(owner)
         assert.equal(node.total(), 8)
 
-        assert.exists(findNodeMatching(node, /initiative-feat-mod/i, {
+        assert.exists(findNodeMatching(node, /initiative-feat-mod$/i, {
             includeRoot: true,
         }))
         assert.exists(findNodeMatching(node, /ive1/i))

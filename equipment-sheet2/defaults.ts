@@ -6,6 +6,14 @@ import rollTree from '../log2/roll'
 import type { BaseEquipment, EquipmentSheet, EquipmentSlot } from './types'
 import { classLevelCounts } from '../class-level2/derive'
 
+export const SLOT_TYPE: Record<string, BaseEquipment['acceptableSlots']> = {
+    weapon: ['mainhand', 'offhand'],
+    shield: ['offhand'],
+    armor: ['armor'],
+    amulet: ['amulet'],
+    ring: ['ring'],
+}
+
 // generic is to provide inference
 const buildOutBaseArmor = <const T extends readonly (readonly [string, number, number])[]>(
     data: T
@@ -14,6 +22,7 @@ const buildOutBaseArmor = <const T extends readonly (readonly [string, number, n
 
     data.forEach(([dn, ac, maxDex]) => {
         record[dn as T[number][0]] = {
+            acceptableSlots: SLOT_TYPE.armor,
             displayName: dn,
             broadContexts: {
                 'ac-of-equipment': () => leaf(dn, ac),
@@ -37,11 +46,27 @@ export const armors = buildOutBaseArmor([
     ['plate', 8, 1],
 ])
 
+export const buckler: BaseEquipment = (() => {
+    const dn = 'buckler'
+    return {
+        displayName: dn,
+        acceptableSlots: SLOT_TYPE.shield,
+        broadContexts: {
+            "ac-of-equipment": (o: OwnerLog2) => leaf(
+                dn,
+                1,
+            )
+        },
+        tags: ['shield']
+    }
+})()
+
 export const heavyShield: BaseEquipment = (() => {
     const dn = 'heavy shield'
 
     return {
         displayName: dn,
+        acceptableSlots: SLOT_TYPE.shield,
         broadContexts: {
             "ac-of-equipment": (o: OwnerLog2) => leaf(
                 dn,
@@ -56,6 +81,7 @@ export const shortsword: BaseEquipment = (() => {
     const dn = 'shortsword'
     return {
         displayName: dn,
+        acceptableSlots: SLOT_TYPE.weapon,
         broadContexts: {
             damage: (o: OwnerLog2) => {
                 const sides = 6
@@ -70,6 +96,7 @@ export const shortswordPlusOne: BaseEquipment = (() => {
     const dn = 'shortswordPlusOne'
     return {
         displayName: dn,
+        acceptableSlots: SLOT_TYPE.weapon,
         broadContexts: {
             damage: (o: OwnerLog2) => {
                 const sides = 6
@@ -87,6 +114,7 @@ export const shortswordPlusOneIfFighter: BaseEquipment = (() => {
     const dn = 'shortswordPlusOneIfFighter'
     return {
         displayName: dn,
+        acceptableSlots: SLOT_TYPE.weapon,
         broadContexts: {
             damage: (o: OwnerLog2) => {
                 const sides = 6
@@ -106,6 +134,7 @@ export const longsword: BaseEquipment = (() => {
     const dn = 'longsword'
     return {
         displayName: dn,
+        acceptableSlots: SLOT_TYPE.weapon,
         broadContexts: {
             damage: (o: OwnerLog2) => {
                 const sides = 8
@@ -120,6 +149,7 @@ export const dagger: BaseEquipment = (() => {
     const dn = 'dagger'
     return {
         displayName: dn,
+        acceptableSlots: SLOT_TYPE.weapon,
         broadContexts: {
             damage: (o: OwnerLog2) => {
                 const sides = 4

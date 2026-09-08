@@ -8,14 +8,14 @@ import improvedRage from './improved-rage'
 import rage from './rage'
 import conSaves from './con-saves'
 import powerAttack from './power-attack'
-// do not include in possibleFeatKeys
+// do not include in possibleFeats
 import { testFeatMeleeWeaponFighting } from './test-feats'
 import dodge from './dodge'
 
 export const deriveFeatName = (feat: Feat2) => feat.displayName
 
 // 
-export const possibleFeatKeys = {
+export const possibleFeats = {
     [armorTraining.displayName]: armorTraining,
     [battleFocus.displayName]: battleFocus,
     [divineProtection.displayName]: divineProtection,
@@ -29,9 +29,9 @@ export const possibleFeatKeys = {
 } satisfies Record<string, Feat2>
 
 // 'Armor Training' | 'Battle Focus' | ... etc
-export type PossibleFeatKey = keyof typeof possibleFeatKeys
+export type PossibleFeatKey = keyof typeof possibleFeats
 
-export type PossibleFeats = typeof possibleFeatKeys
+export type PossibleFeats = typeof possibleFeats
 
 export {
     armorTraining,
@@ -46,4 +46,4 @@ export {
     powerAttack,
 }
 
-export default possibleFeatKeys
+export default possibleFeats

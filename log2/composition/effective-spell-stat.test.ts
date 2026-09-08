@@ -9,7 +9,7 @@ describe('effective-spell-stat', () => {
         const owner = createDefaultOwner()
         const ess = effectiveSpellStat(owner)
 
-        const f0 = findNodeMatching(ess, /effective-spell-dc-stat/, {
+        const f0 = findNodeMatching(ess, /effective-spell-dc-stat$/, {
             includeRoot: true,
         })
         const f1 = findNodeMatching(ess, /modded-int/)
@@ -17,6 +17,7 @@ describe('effective-spell-stat', () => {
         assert.exists(f0)
         assert.exists(f1)
 
-        assert.equal(f1.total(), 2) // 15 => +2
+        assert.equal(f1.total(), 15) // 15
+        assert.equal(f0.total(), 2) // 15 -> +2
     })
 })

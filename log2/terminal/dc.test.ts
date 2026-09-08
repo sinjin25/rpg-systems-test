@@ -15,7 +15,7 @@ describe('terminal: dc', () => {
         })(owner)
 
         // terminal name is correct
-        const f0 = findNodeMatching(node, 'dc', {
+        const f0 = findNodeMatching(node, /^dc$/, {
             includeRoot: true,
         })
         assert.exists(f0)
@@ -34,13 +34,13 @@ describe('terminal: dc', () => {
                 'swag-casting': {
                     displayName: 'swag-casting',
                     broadContexts: {
-                        'spell-dc-feat-mod': (o: OwnerLog2) => hasAllTags(o.tags, ['ability', 'magic']) ? leaf('swag-casting', 2) : undefined
+                        'spell-dc-feat-mod': (o, opts) => hasAllTags(opts.tags ?? [], ['ability', 'magic']) ? leaf('swag-casting', 2) : undefined
                     }
                 },
                 'ability-casting': {
                     displayName: 'ability-casting',
                     broadContexts: {
-                        'spell-dc-feat-mod': (o: OwnerLog2) => hasAnyTag(o.tags, ['ability'], ['magic']) ? leaf('ability-casting', 2) : undefined
+                        'spell-dc-feat-mod': (o, opts) => hasAnyTag(opts.tags ?? [], ['ability'], ['magic']) ? leaf('ability-casting', 2) : undefined
                     }
                 }
             }

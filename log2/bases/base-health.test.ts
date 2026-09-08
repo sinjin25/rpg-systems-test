@@ -8,7 +8,7 @@ describe('base-health', () => {
         const owner = createDefaultOwner()
         const node = baseHealth(owner)
         assert.equal(node.total(), 20)
-        const f0 = findNodeMatching(node, /base-health/, {
+        const f0 = findNodeMatching(node, /base-health$/, {
             includeRoot: true,
         })
         assert.exists(f0)

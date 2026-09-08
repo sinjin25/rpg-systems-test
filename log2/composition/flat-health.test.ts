@@ -4,6 +4,7 @@ import { createDefaultOwner } from '../../actor2'
 import { ObjectWithBroadContexts } from '../types'
 import { leaf, findNodeMatching } from '..'
 import { BaseEquipment } from '../../equipment-sheet2/types'
+import { SLOT_TYPE } from '../../equipment-sheet2/defaults'
 
 const toughness: ObjectWithBroadContexts = {
     displayName: 'toughness',
@@ -12,6 +13,7 @@ const toughness: ObjectWithBroadContexts = {
 
 const healthRing: BaseEquipment = {
     displayName: 'ring plus ten health',
+    acceptableSlots: SLOT_TYPE.ring,
     broadContexts: { 'health-equipment-mod': () => leaf('ring plus ten health', 10) },
 }
 

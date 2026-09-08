@@ -1,12 +1,13 @@
 import { Actor2, instantiateActor, OwnerMaximal } from "../actor2"
-import { act, actionIsAbility, applyResolutions, outputFinalSar } from "../actor2/act"
-import { resolveAbility } from "../ability-sheet2"
-import { instantiateSpeed, STD_SPEED } from "../actor2/instantiate"
+import { act, actionIsAbility, actionIsAttackAbility, applyAttackResolutions, applyResolutions, outputFinalSar } from "../actor2/act"
+import { resolveAbility, resolveAttackAbility } from "../ability-sheet2"
+import { instantiateSpeed, reinstantiateHealth, STD_SPEED } from "../actor2/instantiate"
 import { round } from "../actor2/round"
 import { applyDamage, applyHeal } from "../health"
 import modNodeToText from "../log2/format"
+import damageTakenTree from '../log2/terminal-composition/damage-taken'
+import { OwnerLog2 } from '../log2/types'
 import { decayActionsElapsed, decayEnemyKilled, decayRoundsElapsed, decaySaveSucceeded } from "../status-sheet2/decay"
-import runTrigger from "../trigger/dispatch"
 import { anyActorAlive, chooseTarget, determineFightWinner, handlePotentialDeath, ownerIsMemberOf } from "./helpers"
 import { /* instantiateParticipants */resolveParticipants } from "./setup"
 import { snapshotActor, timeTravel } from "../time-travel2"
@@ -39,7 +40,7 @@ const dumbTargeting: TargetPriority = {
 export const simulateFight = (
     participants: {
         player: OwnerMaximal[] | Actor2[],
-        enemy: OwnerMaximal[],
+        enemy: OwnerMaximal[] | Actor2[],
     },
     options?: {
         verbose?: boolean,
@@ -89,17 +90,22 @@ export const simulateFight = (
         && anyActorAlive(playerActors)
     ) {
         rounds++
-        actors.forEach(a => decaySaveSucceeded(a.owner))
+        // decay is health-agnostic; reconcile max health here only when a status expired
+        actors.forEach(a => {
+            const saves = decaySaveSucceeded(a.owner)
+            if (saves.some(s => s.kind === 'succeeded')) reinstantiateHealth(a)
+        })
 
         actors.forEach(a => handlePotentialDeath(actors, a))
 
-        const acting = round({
+        const { acting, modNodes } = round({
             participants: actors,
             speedSum: STD_SPEED,
         })
         {
             ttrAppendLog(timeTravel["speed"]({
                 actors: acting.map(a => snapshotActor(a)),
+                modNodes: Object.fromEntries(modNodes),
             }))
         }
 
@@ -110,13 +116,16 @@ export const simulateFight = (
                 source: snapshotActor(theActor)
             }))
 
-            decayRoundsElapsed(theActor.owner, 1, theActor)
+            // an expired status may have changed max health -> reconcile when one did
+            const anythingElapsedRounds = !!decayRoundsElapsed(theActor.owner, 1, theActor)
+            if (anythingElapsedRounds) reinstantiateHealth(theActor)
             if (!theActor.speed.canAct) continue
 
             // start action
             const actions = act(theActor)
 
-            decayActionsElapsed(theActor.owner, 1)
+            const anythingElapsedSpeed = !!decayActionsElapsed(theActor.owner, 1)
+            if (anythingElapsedSpeed) reinstantiateHealth(theActor)
 
             // find the first alive person (target)
             const targetTeam = ownerIsMemberOf(theActor.owner, playerActors) ? enemyActors : playerActors
@@ -149,6 +158,27 @@ export const simulateFight = (
             }
 
             actions.forEach(a => {
+                if (actionIsAttackAbility(a)) {
+                    // targeting lives inside the attack ability's steps
+                    const resolutions = resolveAttackAbility(
+                        { enemy: targetTeam, ally: allyTeam },
+                        theActor,
+                        a.factory(),
+                    )
+                    for (let { r, damageTakenResult } of applyAttackResolutions(resolutions)) {
+                        // attack resolutions carry no save/dc, so log the underlying SAR via the
+                        // standard-action-result event; snapshot the actual per-resolution target
+                        ttrAppendLog(timeTravel['standard-action-result']({
+                            ...ttrActorContext(theActor, [r.target])(),
+                            ...r.sar,
+                            damageTakenResult,
+                        }))
+                        handlePotentialDeath(actors, r.target, theActor.owner)
+                        // a self payload (e.g. recoil) can kill the caster too
+                        if (r.self) handlePotentialDeath(actors, r.source, theActor.owner)
+                    }
+                    return
+                }
                 if (actionIsAbility(a)) {
                     // targeting now lives inside the ability's steps
                     const ability = a.factory()
@@ -157,12 +187,12 @@ export const simulateFight = (
                         theActor,
                         ability,
                     )
-                    for (let r of resolutions) {
-                        applyResolutions([r])
+                    for (let { r, damageTaken } of applyResolutions(resolutions)) {
                         ttrAppendLog(timeTravel['ability']({
                             source: snapshotActor(theActor),
                             to: [snapshotActor(r.target)],
                             resolution: r,
+                            damageTaken,
                         }))
                         handlePotentialDeath(actors, r.target, theActor.owner)
                     }
@@ -172,17 +202,21 @@ export const simulateFight = (
                 // resolve action
                 const finalSar = outputFinalSar([a], target)
                 for (let fs of finalSar) {
+                    let damageTakenResult: ReturnType<ReturnType<typeof damageTakenTree>> | undefined
                     if (!fs.critDamageResult && !fs.damageResult) {
                     }
                     else if (fs.critDamageResult) {
-                        applyDamage(target.health, fs.critDamageResult.total())
+                        damageTakenResult = damageTakenTree({ node: fs.critDamageResult })(target.owner as unknown as OwnerLog2)
+                        applyDamage(target.health, damageTakenResult.total())
                     }
                     else if (fs.damageResult) {
-                        applyDamage(target.health, fs.damageResult.total())
+                        damageTakenResult = damageTakenTree({ node: fs.damageResult })(target.owner as unknown as OwnerLog2)
+                        applyDamage(target.health, damageTakenResult.total())
                     }
                     ttrAppendLog(timeTravel["standard-action-result"]({
                         ...snapshotActors(),
                         ...fs,
+                        damageTakenResult,
                     }))
                 }
 

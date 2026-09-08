@@ -18,12 +18,17 @@ describe('Replayer recreates turn order', () => {
         // ground-truth turn order per round, captured live from round()
         const matrix: number[][] = []
         for (let i = 0; i < 200; i++) {
-            const acting = round({ participants: [a1, a2], speedSum: 35 })
+            const { acting, modNodes } = round({ participants: [a1, a2], speedSum: 35 })
             matrix.push(acting.map(a => a.id))
 
             // log the step: freeze the acting actors so the replayer only ever
             // sees snapshots, then let the speed handler re-derive their order
-            replayer.appendLog(speed({ actors: acting.map(a => snapshotActor(a)) }))
+            replayer.appendLog(speed({
+                actors: acting.map(a => snapshotActor(a)),
+                modNodes: Object.fromEntries(modNodes),
+            }))
+
+            /* console.log('replayer', replayer.logs[replayer.logs.length - 1]) */
         }
 
         // replay: drain the tape and rebuild turn order from each stored speed log

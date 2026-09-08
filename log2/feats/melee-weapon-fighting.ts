@@ -7,8 +7,8 @@ const displayName: AllFeats = 'melee-weapon-fighting'
 const feat: ObjectWithBroadContexts = {
     displayName,
     broadContexts: {
-        'attack-feat-mod': (owner) =>
-            hasAnyTag(owner.tags, ['melee'], ['ranged', 'magic']) ? leaf(displayName, 1) : undefined,
+        'attack-feat-mod': (owner, opts) =>
+            hasAnyTag(opts.tags ?? [], ['melee'], ['ranged', 'magic']) ? leaf(displayName, 1) : undefined,
     },
 }
 

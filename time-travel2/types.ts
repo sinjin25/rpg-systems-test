@@ -30,6 +30,7 @@ export type FrozenStandardActionResult = Partial<{
     threatResult: FrozenModNode
     critConfirmResult: FrozenModNode
     critDamageResult: FrozenModNode
+    damageTakenResult: FrozenModNode
 }>
 
 export type FrozenAbilityNode = {
@@ -38,6 +39,7 @@ export type FrozenAbilityNode = {
     save?: FrozenModNode,
     saveType?: DiscreteTargetGroupPayloadResolution['saveType'],
     damage?: FrozenModNode[],
+    damageTaken?: FrozenModNode[],
     heal?: FrozenModNode[],
     statusEffect?: FrozenStatus[],
 }
@@ -70,7 +72,7 @@ export interface TTLogMap {
         } & TimeTravelContext,
     }
     'standard-action-result': {
-        input: TimeTravelContext & FinalStandardActionResult,
+        input: TimeTravelContext & FinalStandardActionResult & { damageTakenResult?: ModNode },
         output: TimeTravelContext & {
             kind: 'standard-action-result',
             modNodes: FrozenStandardActionResult,
@@ -83,11 +85,13 @@ export interface TTLogMap {
     'speed': {
         input: {
             actors: Actor2Snapshot[],
+            modNodes: Record<number, ModNode>,
         },
         output: {
             kind: 'speed',
             // but in speed order
             actors: Actor2Snapshot[],
+            modNodes: Record<number, FrozenModNode>,
         }
     },
     'act-start': {
@@ -128,6 +132,7 @@ export interface TTLogMap {
     'ability': {
         input: TimeTravelContext & {
             resolution: DiscreteTargetGroupPayloadResolution,
+            damageTaken?: ModNode[],
         },
         output: TimeTravelContext & {
             kind: 'ability',

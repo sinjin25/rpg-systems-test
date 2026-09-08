@@ -7,10 +7,11 @@ import modNodeToText from '../format'
 import roll from '../../roll'
 import { Feat2 } from '../../feat2'
 import { BaseEquipment } from '../../equipment-sheet2/types'
+import { SLOT_TYPE } from '../../equipment-sheet2/defaults'
 
 const weapon = (dmg: number, crit?: number): BaseEquipment =>
 ({
-    displayName: 'test-weapon', contexts: ['melee'], broadContexts: {
+    displayName: 'test-weapon', acceptableSlots: SLOT_TYPE.weapon, tags: ['melee'], broadContexts: {
         'damage': () => {
             // use a standardized damage
             const r = dmg
@@ -18,7 +19,7 @@ const weapon = (dmg: number, crit?: number): BaseEquipment =>
         },
         'crit-multiplier': () => leaf('test-weapon', crit || 1.5)
     }
-} as BaseEquipment)
+})
 
 
 const flatStatOwner = (fs: OwnerLog2['fs'] = {}) =>
@@ -43,10 +44,10 @@ describe('crit-damage (terminal)', () => {
                 mainhand: w
             },
         })
-        owner.relevantSlot = owner.es.mainhand
+
         const node = critDamage(owner)
         assert.equal(node.total(), 8)
-        assert.exists(findNodeMatching(node, /crit-damage/, {
+        assert.exists(findNodeMatching(node, /crit-damage$/, {
             includeRoot: true,
         }))
     })
@@ -62,7 +63,7 @@ describe('crit-damage (terminal)', () => {
                 scalingFeat,
             }
         })
-        owner.relevantSlot = owner.es.mainhand
+
         const node = critDamage(owner)
         /* console.log(modNodeToText(node)) */
         assert.equal(node.total(), 12)
@@ -81,7 +82,7 @@ describe('crit-damage (terminal)', () => {
                 flatFeat,
             }
         })
-        owner.relevantSlot = owner.es.mainhand
+
         const node = critDamage(owner)
         /* console.log(modNodeToText(node)) */
         assert.equal(node.total(), 10) // 8 scaled, + 2 flat
@@ -98,7 +99,7 @@ describe('crit-damage (terminal)', () => {
                 mainhand: w
             },
         })
-        owner.relevantSlot = owner.es.mainhand
+
         const node = critDamage(owner)
         /* console.log(modNodeToText(node)) */
         assert.equal(node.total(), 7)
@@ -113,7 +114,7 @@ describe('crit-damage (terminal)', () => {
                 mainhand: w
             },
         })
-        owner.relevantSlot = owner.es.mainhand
+
         const node = critDamage(owner)
 
         const multi = findNodeMatching(node, /crit-multiplier/)
@@ -129,7 +130,7 @@ describe('crit-damage (terminal)', () => {
                 mainhand: w
             },
         })
-        owner.relevantSlot = owner.es.mainhand
+
         const node = critDamage(owner)
 
         assert.equal(node.total(), 20)
@@ -138,9 +139,5 @@ describe('crit-damage (terminal)', () => {
         assert.equal(csNode.total(), 5)
     })
 
-    test('throws when no relevantSlot is provided', () => {
-        const owner = flatStatOwner()
-        owner.relevantSlot = undefined
-        expect(() => critDamage(owner)).toThrow(/relevant slot/i)
-    })
+
 })

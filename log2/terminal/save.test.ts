@@ -13,7 +13,7 @@ describe('Too lazy to do this rn', () => {
         })
         const node = save('reflex')(owner)
         expect(node.total()).toBe(3)
-        assert.exists(findNodeMatching(node, /reflex/, {
+        assert.exists(findNodeMatching(node, /reflex$/, {
             includeRoot: true,
         }))
 

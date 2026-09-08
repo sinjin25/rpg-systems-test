@@ -1,20 +1,21 @@
 import { Actor2 } from "."
-import roll from "../roll"
+import { ModNode, sumFunc } from "../log2"
+import newModNode from "../log2"
+import roll from "../log2/roll"
+import speedTerminal from "../log2/terminal/speed"
 import { decaySpeedElapsed } from "../status-sheet2/decay"
 import { Speed } from "./instantiate"
 
 export const DEFAULT_SPEED = 35
 
-// move into terminal/ at some point
-export const speedRoll = (
-    data: Actor2['owner'], // unused, use later
-) => {
-    return roll(6) + roll(6)
-}
-
 export type Round = {
     participants: Actor2[],
     speedSum: number, // default 35
+}
+
+export type RoundResult = {
+    acting: Actor2[],
+    modNodes: Map<number, ModNode>,
 }
 
 export const roundOrderBySpeed = <A extends {
@@ -26,22 +27,34 @@ export const roundOrderBySpeed = <A extends {
 
     return orderBySpeed
 }
+
 export const round = (
     data: Round
-) => {
+): RoundResult => {
     const acting: Round['participants'] = []
+    const modNodes: Map<number, ModNode> = new Map()
+
     for (let part of data.participants) {
         if (!part.speed.canAct) continue
-        // roll
-        const roll = speedRoll(part.owner)
-        part.speed.remainder += roll
-        decaySpeedElapsed(part.owner, roll)
+
+        const node = newModNode(
+            'speed roll',
+            [speedTerminal(part.owner), roll(6, 2)(part.owner)],
+            sumFunc,
+        )
+        const amount = node.total()
+        part.speed.remainder += amount
+        decaySpeedElapsed(part.owner, amount)
+        modNodes.set(part.id, node)
+
         if (part.speed.remainder >= data.speedSum) {
             part.speed.remainder -= data.speedSum
             acting.push(part)
         }
     }
 
-    // reorder based on excess speed
-    return roundOrderBySpeed(acting)
+    return {
+        acting: roundOrderBySpeed(acting),
+        modNodes,
+    }
 }

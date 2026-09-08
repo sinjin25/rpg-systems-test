@@ -2,7 +2,6 @@ import { describe, test, expect, assert } from 'vitest'
 import damageTaken from './damage-taken'
 import critDamage from '../terminal/crit-damage'
 import { createDefaultOwner } from '../../actor2'
-import { OwnerLog2 } from '../types'
 import studiedTarget from '../../status-sheet2/status/studied-target'
 import defensiveRoll from '../../status-sheet2/status/defensive-roll'
 import { makeWrapper } from '../../status-sheet2'
@@ -11,6 +10,7 @@ import { leaf, findNodeMatching } from '..'
 import { setSeed, clearSeed } from '../../roll'
 import modNodeToText from '../format'
 import { BaseEquipment } from '../../equipment-sheet2/types'
+import { SLOT_TYPE } from '../../equipment-sheet2/defaults'
 
 const dtStatus = (amount: number) => makeWrapper({
     displayName: 'Test DT',
@@ -19,16 +19,13 @@ const dtStatus = (amount: number) => makeWrapper({
 
 const weapon = (dmg: number, crit?: number): BaseEquipment => {
     return {
-        displayName: 'test-weapon', tags: ['melee'],
+        displayName: 'test-weapon', acceptableSlots: SLOT_TYPE.weapon, tags: ['melee'],
         broadContexts: {
             'damage': () => leaf('test-weapon', dmg),
             'crit-multiplier': () => leaf('test-weapon', crit || 1.5)
         }
     }
 }
-const withSlot = (owner: OwnerLog2, slot: OwnerLog2['relevantSlot']): OwnerLog2 =>
-    ({ ...owner, relevantSlot: slot })
-
 describe('damage-taken (terminal)', () => {
     test('passes incoming damage through when the defender has no mods', () => {
         const node = damageTaken({
@@ -73,6 +70,7 @@ describe('damage-taken (terminal)', () => {
         // attacker A: default melee str +2, x2 weapon dealing 8 -> crit 2*(8+2) = 20
         const wp: BaseEquipment = {
             displayName: 'test-weapon',
+            acceptableSlots: SLOT_TYPE.weapon,
             broadContexts: {
                 damage: (o) => leaf('test-weapon', 4),
             }

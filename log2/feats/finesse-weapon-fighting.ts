@@ -9,8 +9,8 @@ const displayName: AllFeats = 'finesse-weapon-fighting'
 const feat: ObjectWithBroadContexts = {
     displayName,
     broadContexts: {
-        'attack-feat-mod': (owner) =>
-            hasAllTags(owner.tags, ['finesse']) ? leaf(displayName, 1) : undefined
+        'attack-feat-mod': (owner, opts) =>
+            hasAllTags(opts.tags ?? [], ['finesse']) ? leaf(displayName, 1) : undefined
     },
 }
 

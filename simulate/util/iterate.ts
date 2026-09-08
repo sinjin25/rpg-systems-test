@@ -1,5 +1,5 @@
 // iterate through x simulations setting seed to x for reproducability
-import { setSeed, clearSeed } from '../../roll/index.ts'
+import { setSeed, clearSeed } from '../../roll/index'
 
 export const iterate = <T>(
     iterations: number,

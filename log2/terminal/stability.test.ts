@@ -20,8 +20,8 @@ describe('Assumption errors', () => {
         const myFeat: Feat2 = {
             displayName: 'finessething',
             broadContexts: {
-                'attack-feat-mod': (o: OwnerMaximal) => {
-                    if (o.tags.includes('finesse')) return leaf('finessething', 99)
+                'attack-feat-mod': (o, opts) => {
+                    if (opts.tags?.includes('finesse')) return leaf('finessething', 99)
                 }
             }
         }
@@ -35,8 +35,6 @@ describe('Assumption errors', () => {
         assert.equal(nonFinesseAttack.total(), nonFinesseAttack.total())
 
         owner.es.mainhand = myShortsword
-        // relevantSlot isn't a getter so it can get out of sync
-        owner.relevantSlot = owner.es.mainhand
 
         const newAttack = attack(owner)
         assert.equal(newAttack.total(), 99 + 3)

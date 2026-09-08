@@ -16,12 +16,14 @@ import {
     sarAgainstTarget,
 } from './attack'
 import rollTree from '../../log2/roll'
+import { SLOT_TYPE } from '../../equipment-sheet2/defaults'
 
 // --- fixtures -------------------------------------------------------------
 
 // a weapon with fixed damage so only the d20s vary between seeds
 const testWeapon = (displayName: string): BaseEquipment => ({
     displayName,
+    acceptableSlots: SLOT_TYPE.weapon,
     tags: ['melee'],
     broadContexts: {
         damage: (o) => {
@@ -287,6 +289,7 @@ describe('outputRawSar', () => {
         // a shield: occupies the slot but contributes no damage
         const offhand: BaseEquipment = {
             displayName: 'buckler',
+            acceptableSlots: SLOT_TYPE.shield,
             tags: ['shield'],
             broadContexts: { 'ac-of-equipment': () => leaf('buckler', 1) },
         }

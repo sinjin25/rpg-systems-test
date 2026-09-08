@@ -5,15 +5,18 @@ import newModNode, { leaf } from '..'
 import { collectEquipmentTags } from './equipment/mod-from-equipment'
 import { BaseEquipment } from '../../equipment-sheet2/types'
 import { OwnerLog2 } from '../types'
+import { SLOT_TYPE } from '../../equipment-sheet2/defaults'
 
 const dagger: BaseEquipment = {
     displayName: 'dagger',
+    acceptableSlots: SLOT_TYPE.weapon,
     tags: ['finesse'],
     broadContexts: {
     }
 }
 const daggerPlusOne: BaseEquipment = {
     displayName: 'dagger plus one',
+    acceptableSlots: SLOT_TYPE.weapon,
     tags: ['finesse'],
     broadContexts: {
         "attack-equipment-mod": () => newModNode('dagger plus one', [], 1)
@@ -23,6 +26,7 @@ const daggerPlusOne: BaseEquipment = {
 // test that tags can work
 const ringPlusOneFinesseAttack: BaseEquipment = {
     displayName: 'ring plus one finesse attack',
+    acceptableSlots: SLOT_TYPE.ring,
     broadContexts: {
         'attack-equipment-mod': (o: OwnerLog2) => collectEquipmentTags(o).includes('finesse') ? leaf('ring plus one finesse attack', 1) : undefined
     }

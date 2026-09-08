@@ -12,8 +12,8 @@ export type Actor2Snapshot = {
     owner: OwnerMaximalStableReferences & OwnerMaximalUnstableReferences,
 } & Pick<Actor2, 'speed' | 'health'>
 
-type OwnerMaximalStableReferences = Pick<OwnerMaximal, 'es' | 'cs' | 'fs' | 'relevantSlot'>
-type OwnerMaximalUnstableReferences = Pick<OwnerMaximal, /* 'ss' |  */'as' | 'relevantSlot' | 'tags'> & {
+type OwnerMaximalStableReferences = Pick<OwnerMaximal, 'es' | 'cs' | 'fs'>
+type OwnerMaximalUnstableReferences = Pick<OwnerMaximal, /* 'ss' |  */'as' | 'tags'> & {
     ss: SnapshotStatusSheet
 }
 
@@ -23,12 +23,6 @@ type OwnerMaximalUnstableReferences = Pick<OwnerMaximal, /* 'ss' |  */'as' | 're
 const cloneHealth = (health: Actor2['health']) => structuredClone(health)
 
 const cloneSpeed = (speed: Actor2['speed']) => structuredClone(speed)
-
-const cloneRelevantSlot = (relevantSlot: Actor2['owner']['relevantSlot']) => {
-    // this one's tough because we don't actually care what this is (it's only used temporarily for calcs)
-    // the reason we don't clone properly is because the handlers on items make this a bitch
-    return relevantSlot
-}
 
 const cloneTags = (tags: Actor2['owner']['tags']) => {
     return structuredClone(tags) // this is just a sequence of strings
@@ -78,7 +72,6 @@ const snapshotActor = (actor: Actor2): Actor2Snapshot => {
             // stable
             ...actor.owner,
             // unstable
-            relevantSlot: cloneRelevantSlot(actor.owner.relevantSlot), // DO NOT TRUST DO NOT USE
             as: cloneAbilitySheet(actor.owner.as),
             tags: cloneTags(actor.owner.tags), // DO NOT TRUST DO NOT USE
             ss: cloneStatusSheet(actor.owner.ss),

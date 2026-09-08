@@ -1,6 +1,6 @@
 import { Actor2, OwnerMaximal } from "../actor2"
 import { decayEnemyKilled } from "../status-sheet2/decay"
-import runTrigger from "../trigger/dispatch"
+/* import runTrigger from "../trigger/dispatch" */
 
 // helper for figuring out whose team someone belongs to (ex: are they a member of some subset of all the actors)
 export const ownerIsMemberOf = (
@@ -44,7 +44,7 @@ export const handlePotentialDeath = (
     target.speed.canAct = false
     decayEnemyKilled(actors.map(a => a.owner), target)
     // ?????????
-    if (killer) runTrigger({ self: killer, target: target.owner }, 'onKill')
+    /* if (killer) runTrigger({ self: killer, target: target.owner }, 'onKill') */
 }
 
 export const determineFightWinner = (

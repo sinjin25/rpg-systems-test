@@ -14,12 +14,12 @@ type TickInstance = {
 
 // resolveXX is basically for a ResolvedTickCalc we have a handler (because we need to roll sometimes) for a base and a snapshotted mod based on status instance creation time
 const resolveDamageNode = (calc: ResolvedTickCalc, source: OwnerMaximal, receiver: OwnerMaximal): ModNode => {
-    const node = damageOverTime(calc.base())(source, calc.mod)
+    const node = damageOverTime(calc.base())(source, {}, calc.mod)
     return damageOverTimeTaken({ node })(receiver)
 }
 
 const resolveHealNode = (calc: ResolvedTickCalc, source: OwnerMaximal, receiver: OwnerMaximal): ModNode => {
-    const node = healOverTime(calc.base())(source, calc.mod)
+    const node = healOverTime(calc.base())(source, {}, calc.mod)
     return healOverTimeTaken({ node })(receiver)
 }
 

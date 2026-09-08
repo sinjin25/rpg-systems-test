@@ -1,5 +1,5 @@
 import { createDefaultOwner } from '../actor2/index.ts'
-import { fakeCharacterLevels } from '../character-sheet/util.ts'
+import { fakeCharacterLevels } from '../character-sheet'
 import { simulateFight } from './index.ts'
 import { describe, test, assert } from 'vitest'
 

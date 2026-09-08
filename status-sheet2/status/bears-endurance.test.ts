@@ -3,12 +3,8 @@ import { createDefaultOwner, instantiateActor } from '../../actor2'
 import bearsEndurance from './bears-endurance'
 import { addStatusToStatusSheet, getStatusKey } from '../add-status-to-status-sheet'
 import { maximumHealth } from '../../log2/terminal'
-import { fakeCharacterLevels } from '../../character-sheet/util'
+import { fakeCharacterLevels } from '../../character-sheet'
 import { reinstantiateHealth } from '../../actor2/instantiate'
-
-// LAYER: bulls-strength (a status definition). It registers a +4 contribution under the
-// 'str-from-status' broad context. Whether the owner actually HAS it is str-from-status's job
-// (it reads owner.ss); here we just prove the registered contribution is +4.
 
 describe("bulls-strength", () => {
     test('registers a +8 con-from-status contribution', () => {

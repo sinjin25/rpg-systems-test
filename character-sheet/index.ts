@@ -1,29 +1,17 @@
+export * from './types'
 import { ClassLevelPickLog } from "../class-level2/types"
-import { fakeCharacterLevels } from "./util"
+import { CharacterSheet, defaultFlavorSheet } from './types'
 
-export interface FlavorSheet {
-    displayName: string,
-    description: string,
+export const fakeCharacterLevels = (n: number): ClassLevelPickLog => {
+    const result: ClassLevelPickLog = []
+    for (let i = 0; i < n; i++) {
+        result.push({
+            key: 'fighter',
+            freeFeats: [],
+        })
+    }
+    return result
 }
-
-export const defaultFlavorSheet: FlavorSheet = {
-    description: 'Little is known about this creature.',
-    displayName: 'Monster',
-}
-
-export interface CharacterSheet {
-    str: number,
-    dex: number,
-    con: number,
-    int: number,
-    levels: ClassLevelPickLog,
-    flavorSheet?: FlavorSheet
-}
-
-/* export interface UseCharacterSheet {
-    cs: CharacterSheet,
-    calculateModifier: (stat: number, bonuses?: number[]) => number,
-} */
 
 export const defaultCharacterSheet: CharacterSheet = {
     con: 15,

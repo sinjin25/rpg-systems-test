@@ -38,7 +38,7 @@ export type StatusInstanceLog2 = {
 
 export type ObjectWithBroadContexts = {
     displayName: string,
-    broadContexts: Partial<Record<EveryTree, (owner: OwnerLog2, opts?: ModNodeOpts) => ModNode | undefined>>
+    broadContexts: Partial<Record<EveryTree, (owner: OwnerLog2, opts: ModNodeOpts) => ModNode | undefined>>
 }
 
 export type AllFeats =

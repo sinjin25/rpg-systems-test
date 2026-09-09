@@ -20,7 +20,7 @@ describe('instantiateSpeed', () => {
 
         assert.equal(speed.remainder, STD_SPEED - tree.total())
 
-        assert.isTrue(speed.canAct)
+        assert.isTrue(speed.isAlive)
     })
 
     test('remainder can go negative when the roll beats STD_SPEED', () => {

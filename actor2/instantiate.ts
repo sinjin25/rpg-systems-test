@@ -10,7 +10,7 @@ import {
 
 export type Speed = {
     remainder: number, // speed remaining until action
-    canAct: boolean, // expand to include "stunned" | "dead" etc
+    isAlive: boolean, // expand to include "stunned" | "dead" etc
 }
 
 export type Health = {
@@ -41,7 +41,7 @@ export const instantiateSpeed = (owner: OwnerMaximal): {
     return {
         tree: result,
         speed: {
-            canAct: true,
+            isAlive: true,
             remainder: STD_SPEED - result.total()
         }
     }

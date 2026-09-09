@@ -16,10 +16,10 @@ export const ownerIsMemberOf = (
 // this will become wrong eventually
 export const targetIsAlive = (
     actor: Actor2
-) => actor.speed.canAct
+) => actor.speed.isAlive
 
-// given some subset of actors, choose the first available one (.speed.canAct)
-// speed.canAct is a stand in because it's only false when you're dead
+// given some subset of actors, choose the first available one (.speed.isAlive)
+// speed.isAlive is a stand in because it's only false when you're dead
 export const chooseTarget = (actors: Actor2[]) => {
     const targets = actors.filter(targetIsAlive)
     if (targets.length === 0) return undefined
@@ -35,16 +35,19 @@ export const anyActorAlive = (
     return false
 }
 
+// Returns true if the target died (health <= 0), false otherwise.
+// this is a bad return as we want a log
 export const handlePotentialDeath = (
     actors: Actor2[],
     target: Actor2,
     killer?: OwnerMaximal,
-) => {
-    if (target.health.curr > 0) return
-    target.speed.canAct = false
+): boolean => {
+    if (target.health.curr > 0) return false
+    target.speed.isAlive = false
     decayEnemyKilled(actors.map(a => a.owner), target)
     // ?????????
     /* if (killer) runTrigger({ self: killer, target: target.owner }, 'onKill') */
+    return true
 }
 
 export const determineFightWinner = (

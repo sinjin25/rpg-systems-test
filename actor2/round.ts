@@ -35,7 +35,7 @@ export const round = (
     const modNodes: Map<number, ModNode> = new Map()
 
     for (let part of data.participants) {
-        if (!part.speed.canAct) continue
+        if (!part.speed.isAlive) continue
 
         const node = newModNode(
             'speed roll',

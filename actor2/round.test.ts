@@ -5,6 +5,7 @@ import { inst } from '../status-sheet2/testing'
 import { Round, round } from './round.ts'
 import { describe, test, assert, expect } from 'vitest'
 
+const VERBOSE = false
 const defaultPerson = () => createDefaultOwner({})
 
 const STANDARD_SPEED = 35
@@ -33,7 +34,7 @@ describe('Speed rolls are 2d6', () => {
             else outcomes[roll]++
         }
 
-        console.table(outcomes)
+        if (VERBOSE) console.table(outcomes)
         assert.equal(EXPECTED_UNIQUE_OUTCOMES, uniqueOutcomes)
 
         // should be normally distributed at least
@@ -52,10 +53,10 @@ describe('Speed rolls are 2d6', () => {
 
 describe('Round reports participants who are ready to act', () => {
     test('Reports an array of TurnData', () => {
-        // there's a 0% chance of this fluking because no one can act the first round iteration
         const roundData = {
             participants: [instantiateActor(defaultPerson())],
-            speedSum: STANDARD_SPEED,
+            // was changed from standard speed since initiate = d20 + mod + 1 round of speed = possible fluke
+            speedSum: 999,
         }
         // expect around ~35/3.5 = 10 iterations per action on average
         const { acting: r } = round(roundData)

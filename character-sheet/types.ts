@@ -16,5 +16,5 @@ export interface CharacterSheet {
     con: number,
     int: number,
     levels: ClassLevelPickLog,
-    flavorSheet?: FlavorSheet
+    flavorSheet?: FlavorSheet,
 }

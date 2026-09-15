@@ -7,6 +7,9 @@ import { Health, instantiateHealth, instantiateSpeed, Speed } from "./instantiat
 import { FeatSheet } from "../feat2"
 import { AbilitySheet, createDefaultAbilitySheet } from "../ability-sheet2"
 import { ClassLevelPickLog } from "../class-level2/types"
+import { Experience } from "../experience/types"
+import { leaf } from "../log2"
+import { createDefaultExperience, experienceBreakpoints } from "../experience"
 
 // remove dependency on Owner asap
 export type OwnerMaximal = {
@@ -17,6 +20,7 @@ export type OwnerMaximal = {
     tags: Tags[], // starts empty, a terminal tree should mutate it. Use the utility functions from tags.ts
     // not checked:
     as: AbilitySheet,
+    experience: Experience,
 }
 
 export const generatePlayerId = (() => {
@@ -59,6 +63,7 @@ export const createDefaultOwner = (data: Partial<{
     es?: Partial<EquipmentSheet>,
     ss?: StatusSheet,
     as?: Partial<AbilitySheet>,
+    experience?: Partial<Experience>,
 }> = {}): OwnerMaximal => {
     const defaultWp = shortsword
     const fs = data.fs ?? {}
@@ -89,6 +94,10 @@ export const createDefaultOwner = (data: Partial<{
             ...createDefaultAbilitySheet(),
             ...data.as,
         },
+        experience: {
+            ...createDefaultExperience(),
+            ...data.experience,
+        }
     }
     return owner
 }

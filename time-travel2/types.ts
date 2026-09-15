@@ -54,7 +54,7 @@ type TimeTravelKind = | 'fight-start'
     | 'round'
     | 'speed' // people moving, regardless of if they act
     | 'decay-save-succeeded'
-    | 'handle-potential-death'
+    | 'actor-death'
     | 'act-start'
     | 'decay-rounds-elapsed'
     | 'decay-actions-elapsed'
@@ -63,12 +63,14 @@ type TimeTravelKind = | 'fight-start'
     | 'team-victory' // anyActorAlive
     | 'damage-over-time-taken'
     | 'heal-over-time-taken'
+    | 'xp-gained'
 
 export interface TTLogMap {
     'fight-start': {
-        input: TimeTravelContext,
+        input: TimeTravelContext & { playerIds: number[] },
         output: {
             kind: 'fight-start',
+            playerIds: number[],
         } & TimeTravelContext,
     }
     'standard-action-result': {
@@ -100,6 +102,15 @@ export interface TTLogMap {
         },
         output: {
             kind: 'act-start'
+            source: Actor2Snapshot,
+        },
+    },
+    'actor-death': {
+        input: {
+            source: Actor2Snapshot,
+        },
+        output: {
+            kind: 'actor-death',
             source: Actor2Snapshot,
         },
     },
@@ -137,6 +148,23 @@ export interface TTLogMap {
         output: TimeTravelContext & {
             kind: 'ability',
         } & FrozenAbilityNode
+    },
+    'xp-gained': {
+        input: TimeTravelContext & {
+            // eventually we want players to be able to modify the xp gained through ModNode calcs
+            kind: 'xp-gained',
+            // these are from mutateCurrentExperience
+            currentXp: number,
+            didLevel: boolean,
+            amount: ModNode,
+        },
+        output: TimeTravelContext & {
+            kind: 'xp-gained',
+        } & {
+            source: Actor2Snapshot,
+            didLevel: boolean,
+            amount: ModNode,
+        }
     }
 }
 

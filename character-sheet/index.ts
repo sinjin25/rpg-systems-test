@@ -22,7 +22,7 @@ export const defaultCharacterSheet: CharacterSheet = {
     flavorSheet: {
         displayName: 'Player',
         description: '',
-    }
+    },
 }
 
 export const defaultEnemySheet: CharacterSheet = {
@@ -33,5 +33,5 @@ export const defaultEnemySheet: CharacterSheet = {
     levels: fakeCharacterLevels(1),
     flavorSheet: {
         ...defaultFlavorSheet,
-    }
+    },
 }

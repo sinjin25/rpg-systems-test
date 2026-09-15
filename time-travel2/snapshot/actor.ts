@@ -6,16 +6,20 @@ import freezeStatus from "./status";
 
 type SnapshotStatusSheet = Record<string, FrozenStatus[]>
 
+// there's two live references here (baseOnKill and breakpoints, but they're effectively constants)
+type SnapshotExperience = Actor2['owner']['experience']
+
+type OwnerMaximalStableReferences = Pick<OwnerMaximal, 'es' | 'cs' | 'fs'>
+type OwnerMaximalUnstableReferences = Pick<OwnerMaximal, /* 'ss' |  */'as' | 'tags'> & {
+    ss: SnapshotStatusSheet,
+    experience: SnapshotExperience,
+}
+
 export type Actor2Snapshot = {
     id: number,
 } & {
     owner: OwnerMaximalStableReferences & OwnerMaximalUnstableReferences,
 } & Pick<Actor2, 'speed' | 'health'>
-
-type OwnerMaximalStableReferences = Pick<OwnerMaximal, 'es' | 'cs' | 'fs'>
-type OwnerMaximalUnstableReferences = Pick<OwnerMaximal, /* 'ss' |  */'as' | 'tags'> & {
-    ss: SnapshotStatusSheet
-}
 
 // structured clone doesn't work on things like functions
 // some keys are mixes of stable references (ex: parts of StatusEffect) and key value pairs
@@ -63,6 +67,14 @@ const cloneStatusSheet = (ss: Actor2['owner']['ss']) => {
     return clone
 }
 
+const cloneExperience = (experience: Actor2['owner']['experience']) => {
+    const clone = {
+        ...experience,
+    }
+
+    return clone
+}
+
 const snapshotActor = (actor: Actor2): Actor2Snapshot => {
     return {
         health: cloneHealth(actor.health),
@@ -75,7 +87,8 @@ const snapshotActor = (actor: Actor2): Actor2Snapshot => {
             as: cloneAbilitySheet(actor.owner.as),
             tags: cloneTags(actor.owner.tags), // DO NOT TRUST DO NOT USE
             ss: cloneStatusSheet(actor.owner.ss),
-        }
+            experience: cloneExperience(actor.owner.experience),
+        },
     }
 }
 

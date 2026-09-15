@@ -1,4 +1,5 @@
 import { Actor2, OwnerMaximal } from "../actor2"
+import { mutateCurrentExperience } from "../experience"
 import { decayEnemyKilled } from "../status-sheet2/decay"
 /* import runTrigger from "../trigger/dispatch" */
 
@@ -64,4 +65,13 @@ export const determineFightWinner = (
     return {
         winner,
     }
+}
+
+export const maybeAwardExperience = (deadActor: Actor2, enemyTeam: Actor2[], awardedActor: Actor2) => {
+    if (ownerIsMemberOf(deadActor.owner, enemyTeam) === false) return undefined
+
+    return mutateCurrentExperience(
+        awardedActor.owner,
+        deadActor.owner.experience.baseOnKill,
+    )
 }

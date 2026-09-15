@@ -1,5 +1,5 @@
 import { AbilitySheet, createDefaultAbilitySheet } from '../ability-sheet2'
-import { OwnerMaximal } from '../actor2'
+import { OwnerMaximal, createDefaultOwner } from '../actor2'
 import { CharacterSheet } from '../character-sheet'
 import { fakeCharacterLevels } from '../character-sheet'
 import { ClassLevelPickLog } from '../class-level2/types'
@@ -31,35 +31,4 @@ const cloneClassLevelSheet = (clpl: ClassLevelPickLog) => {
         })
     }
     return m
-}
-
-export const createDefaultOwner = (data: Partial<{
-    cs: Partial<CharacterSheet>,
-    fs: Partial<FeatSheet>,
-    es: Partial<EquipmentSheet>,
-    ss: Partial<StatusSheet>,
-    as: Partial<AbilitySheet>
-}>): OwnerMaximal => {
-    return {
-        cs: {
-            ...defaultCharacterSheet,
-            ...data.cs,
-            // fresh per owner - `levels` is mutable state (level-up writes to it),
-            // so it must not alias the shared default sheet's record
-            levels: cloneClassLevelSheet(data.cs?.levels ?? defaultCharacterSheet.levels),
-        },
-        es: {
-            ...defaultEquipmentSheet,
-            ...data.es
-        },
-        fs: {
-            ...defaultFeatSheet,
-            ...data.fs,
-        },
-        ss: {
-            ...data.ss,
-        },
-        // fresh per owner - AbilitySheet categories hold mutable state
-        as: data.as || createDefaultAbilitySheet(),
-    } as OwnerMaximal
 }

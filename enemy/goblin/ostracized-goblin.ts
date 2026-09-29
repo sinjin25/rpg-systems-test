@@ -32,7 +32,8 @@ const ostracizedGoblin: OwnerMaximal = {
         baseOnKill: leaf('base-xp-on-kill', 2),
         breakpoints: [...experienceBreakpoints],
         currentXp: 0,
-    }
+    },
+    rewardId: 'weak_goblin',
 }
 
 export default ostracizedGoblin

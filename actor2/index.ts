@@ -11,7 +11,8 @@ import { Experience } from "../experience/types"
 import { leaf } from "../log2"
 import { createDefaultExperience, experienceBreakpoints } from "../experience"
 
-// remove dependency on Owner asap
+// no better place to put rn
+type RewardIds = | 'weak_goblin'
 export type OwnerMaximal = {
     cs: CharacterSheet,
     fs: FeatSheet,
@@ -20,7 +21,8 @@ export type OwnerMaximal = {
     tags: Tags[], // starts empty, a terminal tree should mutate it. Use the utility functions from tags.ts
     // not checked:
     as: AbilitySheet,
-    experience: Experience,
+    experience: Experience, // remove soon
+    rewardId?: RewardIds,
 }
 
 export const generatePlayerId = (() => {

@@ -6,9 +6,9 @@ const displayName = `Defensive Roll`
 const defensiveRoll = makeWrapper({
     displayName,
     broadContexts: {
-        'damage-taken-status-mod': () => {
+        'damage-taken-status-mod': (owner, opts = {}) => {
             // does not support sides
-            const r = roll(4) * -1
+            const r = (opts.rollInstance?.roll ?? roll)(4) * -1
             return leaf(displayName, r)
         },
     },

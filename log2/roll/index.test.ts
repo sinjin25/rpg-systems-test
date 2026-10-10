@@ -12,10 +12,10 @@ describe('roll works', () => {
         const owner = createDefaultOwner()
         const SIDES = 20
         const DICE = 30
-        const node = rollTree(
-            SIDES,
-            DICE,
-        )(owner)
+        const node = rollTree({
+            diceSides: SIDES,
+            diceNumber: DICE,
+        })(owner, {})
 
         const f0 = findNodeMatching(node, /roll-total$/, {
             includeRoot: true,
@@ -47,7 +47,7 @@ describe('roll works', () => {
             },
         })
 
-        const node = rollTree(6, 1, 'attack-sides-mod')(owner)
+        const node = rollTree({ diceSides: 6, diceNumber: 1, member: 'attack-sides-mod' })(owner, {})
         /* console.log(modNodeToText(node)) */
         const f0 = findNodeMatching(node, /1d8/)
         const f1 = findNodeMatching(node, /attack-sides-mod/)
@@ -59,7 +59,7 @@ describe('roll works', () => {
 
         const REPS = 100
         for (let i = 0; i < REPS; i++) {
-            const myRoll = rollTree(6, 1, 'attack-sides-mod')(owner)
+            const myRoll = rollTree({ diceSides: 6, diceNumber: 1, member: 'attack-sides-mod' })(owner, {})
             assert.equal(myRoll.total() <= 6 + 2, true)
         }
     })
@@ -88,7 +88,7 @@ describe('Integration: attack', () => {
         const results = new Set<number>()
         iterate(200, (i) => {
             const attackMod = attack(owner)
-            const attackRoll = rollTree(20, 1, 'attack-sides-mod')(owner)
+            const attackRoll = rollTree({ diceSides: 20, diceNumber: 1, member: 'attack-sides-mod' })(owner, {})
             const tree = newModNode(
                 'attack',
                 [attackMod, attackRoll],

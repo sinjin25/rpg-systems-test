@@ -16,7 +16,7 @@ export const calculateAttack = (
 ) => {
     return newModNode(
         'attack',
-        [attack(owner, { relevantSlot: opts.relevantSlot }), roll(20, 1, 'attack-sides-mod')(owner)],
+        [attack(owner, { relevantSlot: opts.relevantSlot }), roll({ diceSides: 20, diceNumber: 1, member: 'attack-sides-mod' })(owner, {})],
         sumFunc,
     )
 }
@@ -48,7 +48,7 @@ export const calculateCritConfirm = (
 ) => {
     return newModNode(
         'crit-confirm',
-        [critConfirm(owner, { relevantSlot: opts.relevantSlot }), roll(20, 1, 'attack-sides-mod')(owner)],
+        [critConfirm(owner, { relevantSlot: opts.relevantSlot }), roll({ diceSides: 20, diceNumber: 1, member: 'attack-sides-mod' })(owner, {})],
         sumFunc,
     )
 }

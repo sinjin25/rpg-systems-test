@@ -71,7 +71,8 @@ const resolvePayload = (
         })(source.owner)
         const endSave = newModNode(
             payload.dc.saveType,
-            [save(payload.dc.saveType)(target.owner), roll(20, 1)(target.owner)],
+            // {} = global rng: resolvePayload has no ModNodeOpts yet
+            [save(payload.dc.saveType)(target.owner), roll({ diceSides: 20, diceNumber: 1 })(target.owner, {})],
             sumFunc
         )
 

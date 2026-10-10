@@ -2,7 +2,7 @@ import { OwnerMaximal } from "../../actor2";
 import { BaseEquipment } from "../../equipment-sheet2/types";
 import { SLOT_TYPE } from "../../equipment-sheet2/defaults";
 import newModNode, { leaf, sumFunc } from "../../log2";
-import { OwnerLog2 } from "../../log2/types";
+import { ModNodeOpts, OwnerLog2 } from "../../log2/types";
 import roll from "../../log2/roll";
 
 export const clawSmall: BaseEquipment = (() => {
@@ -11,9 +11,9 @@ export const clawSmall: BaseEquipment = (() => {
         displayName: dn,
         acceptableSlots: SLOT_TYPE.weapon,
         broadContexts: {
-            damage: (o: OwnerLog2) => {
+            damage: (o: OwnerLog2, opts: ModNodeOpts = {}) => {
                 const sides = 4
-                return newModNode(dn, [roll(sides)(o)], sumFunc)
+                return newModNode(dn, [roll({ diceSides: sides })(o, opts)], sumFunc)
             }
         },
         tags: ['melee']

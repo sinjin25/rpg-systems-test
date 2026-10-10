@@ -20,7 +20,8 @@ export const decaySaveSucceeded = (owner: OwnerMaximal): DecaySaveSucceededLog[]
 
             const { saveType, dc } = inst.expiration
             const saveMod = save(saveType)(owner)
-            const natural = roll(20, 1)(owner)
+            // {} = global rng: decaySaveSucceeded has no ModNodeOpts yet
+            const natural = roll({ diceSides: 20, diceNumber: 1 })(owner, {})
             const saveTotal = newModNode('save', [saveMod, natural], sumFunc)
 
             let pass: boolean

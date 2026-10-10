@@ -39,7 +39,9 @@ export const round = (
 
         const node = newModNode(
             'speed roll',
-            [speedTerminal(part.owner), roll(6, 2)(part.owner)],
+            // {} = global rng: round() has no ModNodeOpts yet, so the fight's rollInstance
+            // cannot reach the speed dice until it is threaded in here
+            [speedTerminal(part.owner), roll({ diceSides: 6, diceNumber: 2 })(part.owner, {})],
             sumFunc,
         )
         const amount = node.total()

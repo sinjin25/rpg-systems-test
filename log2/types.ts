@@ -1,11 +1,13 @@
 import { ModNode } from ".";
 import { OwnerMaximal } from "../actor2";
 import { BaseEquipment, EquipmentSheet } from "../equipment-sheet2/types";
+import { RollInstance } from "../roll/types";
 import { Tags } from "./tags";
 
 export type ModNodeOpts = {
     tags?: Tags[]
     relevantSlot?: BaseEquipment
+    rollInstance?: RollInstance,
     // extensible: add future context fields here without touching call sites
 }
 

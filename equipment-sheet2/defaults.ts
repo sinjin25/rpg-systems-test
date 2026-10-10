@@ -1,7 +1,7 @@
 // default equipment for testing purposes
 import newModNode, { leaf, ModNode, sumFunc } from '../log2'
 import { Tags } from '../log2/tags'
-import { ObjectWithBroadContexts, OwnerLog2 } from '../log2/types'
+import { ModNodeOpts, ObjectWithBroadContexts, OwnerLog2 } from '../log2/types'
 import rollTree from '../log2/roll'
 import type { BaseEquipment, EquipmentSheet, EquipmentSlot } from './types'
 import { classLevelCounts } from '../class-level2/derive'
@@ -83,9 +83,9 @@ export const shortsword: BaseEquipment = (() => {
         displayName: dn,
         acceptableSlots: SLOT_TYPE.weapon,
         broadContexts: {
-            damage: (o: OwnerLog2) => {
+            damage: (o: OwnerLog2, opts: ModNodeOpts = {}) => {
                 const sides = 6
-                return newModNode(dn, [rollTree(sides)(o)], sumFunc)
+                return newModNode(dn, [rollTree({ diceSides: sides })(o, opts)], sumFunc)
             }
         },
         tags: ['melee']
@@ -98,9 +98,9 @@ export const shortswordPlusOne: BaseEquipment = (() => {
         displayName: dn,
         acceptableSlots: SLOT_TYPE.weapon,
         broadContexts: {
-            damage: (o: OwnerLog2) => {
+            damage: (o: OwnerLog2, opts: ModNodeOpts = {}) => {
                 const sides = 6
-                return newModNode(dn, [rollTree(sides)(o)], sumFunc)
+                return newModNode(dn, [rollTree({ diceSides: sides })(o, opts)], sumFunc)
             },
             enhancement: (o: OwnerLog2) => {
                 return leaf(dn, 1)
@@ -116,9 +116,9 @@ export const shortswordPlusOneIfFighter: BaseEquipment = (() => {
         displayName: dn,
         acceptableSlots: SLOT_TYPE.weapon,
         broadContexts: {
-            damage: (o: OwnerLog2) => {
+            damage: (o: OwnerLog2, opts: ModNodeOpts = {}) => {
                 const sides = 6
-                return newModNode(dn, [rollTree(sides)(o)], sumFunc)
+                return newModNode(dn, [rollTree({ diceSides: sides })(o, opts)], sumFunc)
             },
             enhancement: (o: OwnerLog2) => {
                 const fLevelCnt = classLevelCounts(o.cs.levels).fighter
@@ -136,9 +136,9 @@ export const longsword: BaseEquipment = (() => {
         displayName: dn,
         acceptableSlots: SLOT_TYPE.weapon,
         broadContexts: {
-            damage: (o: OwnerLog2) => {
+            damage: (o: OwnerLog2, opts: ModNodeOpts = {}) => {
                 const sides = 8
-                return newModNode(dn, [rollTree(sides)(o)], sumFunc)
+                return newModNode(dn, [rollTree({ diceSides: sides })(o, opts)], sumFunc)
             }
         },
         tags: ['melee']
@@ -151,9 +151,9 @@ export const dagger: BaseEquipment = (() => {
         displayName: dn,
         acceptableSlots: SLOT_TYPE.weapon,
         broadContexts: {
-            damage: (o: OwnerLog2) => {
+            damage: (o: OwnerLog2, opts: ModNodeOpts = {}) => {
                 const sides = 4
-                return newModNode(dn, [rollTree(sides)(o)], sumFunc)
+                return newModNode(dn, [rollTree({ diceSides: sides })(o, opts)], sumFunc)
             },
         },
         tags: ['melee', 'finesse']

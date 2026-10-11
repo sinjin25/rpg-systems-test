@@ -1,5 +1,6 @@
 import { Actor2, instantiateActor, OwnerMaximal } from "../actor2"
 import { instantiateSpeed } from "../actor2/instantiate"
+import { ModNodeOpts } from "../log2/types"
 import { participantIsActor } from "./type-guard"
 
 // for things that persist between battles
@@ -28,11 +29,12 @@ export const setupWorldState = (
 
 // 
 export const resolveParticipants = (
-    participants: Array<OwnerMaximal | Actor2>
+    participants: Array<OwnerMaximal | Actor2>,
+    opts: ModNodeOpts = {},
 ) => {
     const part: Actor2[] = []
     for (let p of participants) {
-        if (!participantIsActor(p)) part.push(instantiateActor(p))
+        if (!participantIsActor(p)) part.push(instantiateActor(p, false, opts))
         else part.push(p)
     }
 

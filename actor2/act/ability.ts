@@ -2,14 +2,14 @@ import { Actor2 } from ".."
 import { AbilityCastType, AnyAbilitySheetDefinition, AttackDiscreteTargetGroupPayloadResolution, DiscreteTargetGroupPayloadResolution } from "../../ability-sheet2"
 import { applyDamage, applyHeal } from "../../health"
 import damageTakenTree from '../../log2/terminal-composition/damage-taken'
-import { OwnerLog2 } from '../../log2/types'
+import { ModNodeOpts, OwnerLog2 } from '../../log2/types'
 import { addStatusToStatusSheet } from "../../status-sheet2"
 
-export const applyResolutions = (resolutions: DiscreteTargetGroupPayloadResolution[]) => {
+export const applyResolutions = (resolutions: DiscreteTargetGroupPayloadResolution[], opts: ModNodeOpts = {}) => {
     return resolutions.map(r => {
         const damageTaken: ReturnType<ReturnType<typeof damageTakenTree>>[] = []
         if (r.damage) for (const node of r.damage) {
-            const dt = damageTakenTree({ node })(r.target.owner as unknown as OwnerLog2)
+            const dt = damageTakenTree({ node })(r.target.owner as unknown as OwnerLog2, opts)
             damageTaken.push(dt)
             applyDamage(r.target.health, dt.total())
         }
@@ -21,22 +21,22 @@ export const applyResolutions = (resolutions: DiscreteTargetGroupPayloadResoluti
 
 // like applyResolutions, but weapon damage lives in the resolved SAR (crit takes precedence, matching
 // the raw-SAR handling in simulate2); the hook's AbilityPayload is additive on top.
-export const applyAttackResolutions = (resolutions: AttackDiscreteTargetGroupPayloadResolution[]) => {
+export const applyAttackResolutions = (resolutions: AttackDiscreteTargetGroupPayloadResolution[], opts: ModNodeOpts = {}) => {
     return resolutions.map(r => {
         const weapon = r.sar.critDamageResult ?? r.sar.damageResult
         const targetOwnerLog2 = r.target.owner as unknown as OwnerLog2
         let damageTakenResult: ReturnType<ReturnType<typeof damageTakenTree>> | undefined
         if (weapon) {
-            damageTakenResult = damageTakenTree({ node: weapon })(targetOwnerLog2)
+            damageTakenResult = damageTakenTree({ node: weapon })(targetOwnerLog2, opts)
             applyDamage(r.target.health, damageTakenResult.total())
         }
-        if (r.damage) for (const node of r.damage) applyDamage(r.target.health, damageTakenTree({ node })(targetOwnerLog2).total())
+        if (r.damage) for (const node of r.damage) applyDamage(r.target.health, damageTakenTree({ node })(targetOwnerLog2, opts).total())
         if (r.heal) for (const node of r.heal) applyHeal(r.target.health, node.total())
         if (r.statusEffect) addStatusToStatusSheet(r.target.owner, r.source.owner, ...r.statusEffect)
 
         // effects routed back to the source (recoil, self-buff, ...) - only present if a hook set it
         if (r.self) {
-            if (r.self.damage) for (const node of r.self.damage) applyDamage(r.source.health, damageTakenTree({ node })(r.source.owner as unknown as OwnerLog2).total())
+            if (r.self.damage) for (const node of r.self.damage) applyDamage(r.source.health, damageTakenTree({ node })(r.source.owner as unknown as OwnerLog2, opts).total())
             if (r.self.heal) for (const node of r.self.heal) applyHeal(r.source.health, node.total())
             if (r.self.statusEffect) addStatusToStatusSheet(r.source.owner, r.source.owner, ...r.self.statusEffect)
         }

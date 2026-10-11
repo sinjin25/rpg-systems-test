@@ -1,5 +1,6 @@
 import { Actor2 } from '..'
 import { AbilityCastType, AbilitySheetDefinition, AttackAbilitySheetDefinition, advanceAbilityCategoryIndex } from '../../ability-sheet2'
+import { ModNodeOpts } from '../../log2/types'
 import { selectAndPrepAbility } from './ability'
 import { outputRawSar, StandardActionResult } from './attack'
 
@@ -19,7 +20,7 @@ export const actionIsAbility = (
 ): a is AbilitySheetDefinition => 'castType' in a && a.kind !== 'attack'
 
 
-export const act = (actor: Actor2) => {
+export const act = (actor: Actor2, opts: ModNodeOpts = {}) => {
     // figure out what this guy is going to do (before resolving it)
 
     const actions: Action[] = []
@@ -27,7 +28,7 @@ export const act = (actor: Actor2) => {
     for (let key of ['swift', 'standard', 'free'] as AbilityCastType[]) {
         const ab = selectAndPrepAbility(actor, key)
         if (ab !== undefined) actions.push(ab)
-        else if (key === 'standard') actions.push(...outputRawSar(actor))
+        else if (key === 'standard') actions.push(...outputRawSar(actor, opts))
 
         advanceAbilityCategoryIndex(actor.owner, key)
     }

@@ -26,21 +26,21 @@ const calculateDamage = (
     owner: OwnerMaximal,
     opts: AttackOpts
 ) => {
-    return damage(owner, { relevantSlot: opts.relevantSlot })
+    return damage(owner, opts)
 }
 
 const calculateCritDamage = (
     owner: OwnerMaximal,
     opts: AttackOpts
 ) => {
-    return critDamage(owner, { relevantSlot: opts.relevantSlot })
+    return critDamage(owner, opts)
 }
 
 const calculateThreat = (
     owner: OwnerMaximal,
     opts: AttackOpts
 ) => {
-    return critThreatRange(owner, { relevantSlot: opts.relevantSlot })
+    return critThreatRange(owner, opts)
 }
 
 export const calculateCritConfirm = (
@@ -92,19 +92,22 @@ export const calculateSAR = (
         }),
         critDamageResult: calculateCritDamage(owner, {
             relevantSlot,
+            ...opts,
         }),
         damageResult: calculateDamage(owner, {
             relevantSlot,
+            ...opts,
         }),
         threatResult: calculateThreat(owner, {
             relevantSlot,
+            ...opts,
         }),
         relevantSlot,
     }
 }
 
 // before the target is considered, once the target is considered irrelavant calcs will be stripped
-export const outputRawSar = (data: Actor2) => {
+export const outputRawSar = (data: Actor2, opts: ModNodeOpts = {}) => {
     let attackType: 'mainhand' | 'twohand' | 'dual-wield'
     if (data.owner.es.twohanded) attackType = 'twohand'
     else if (data.owner.es.offhand?.broadContexts?.damage) attackType = 'dual-wield'
@@ -115,24 +118,28 @@ export const outputRawSar = (data: Actor2) => {
         case 'twohand':
             sar.push(calculateSAR({
                 owner: data.owner,
-                relevantSlot: data.owner.es.twohanded!
+                relevantSlot: data.owner.es.twohanded!,
+                ...opts,
             }))
             break
         case 'dual-wield':
             sar.push(calculateSAR({
                 owner: data.owner,
-                relevantSlot: data.owner.es.mainhand!
+                relevantSlot: data.owner.es.mainhand!,
+                ...opts,
             }))
             sar.push(calculateSAR({
                 owner: data.owner,
-                relevantSlot: data.owner.es.offhand!
+                relevantSlot: data.owner.es.offhand!,
+                ...opts,
             }))
             break
         case 'mainhand':
         default:
             sar.push(calculateSAR({
                 owner: data.owner,
-                relevantSlot: data.owner.es.mainhand!
+                relevantSlot: data.owner.es.mainhand!,
+                ...opts,
             }))
     }
 

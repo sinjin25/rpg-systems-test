@@ -1,6 +1,6 @@
 import { createDefaultOwner } from '../actor2/index.ts'
 import { fakeCharacterLevels } from '../character-sheet'
-import roll, { clearSeed, setSeed } from '../roll/index.ts'
+import roll, { clearSeed, createRoll, setSeed } from '../roll/index.ts'
 import { simulateFight } from './index.ts'
 import { describe, test, assert, afterEach } from 'vitest'
 
@@ -97,6 +97,7 @@ describe('Full integration with rollInstance', () => {
                 enemy: [o1],
             }, {
             verbose: true,
+            rollInstance: createRoll(1),
         }
         )
 

@@ -4,6 +4,7 @@ import { BaseEquipment, EquipmentSheet } from "../equipment-sheet2/types"
 import { Tags } from "../log2/tags"
 import { StatusSheet } from "../status-sheet2"
 import { Health, instantiateHealth, instantiateSpeed, Speed } from "./instantiate"
+import { ModNodeOpts } from "../log2/types"
 import { FeatSheet } from "../feat2"
 import { AbilitySheet, createDefaultAbilitySheet } from "../ability-sheet2"
 import { ClassLevelPickLog } from "../class-level2/types"
@@ -47,9 +48,9 @@ export type Actor2 = {
     owner: OwnerMaximal,
 }
 
-export const instantiateActor = (owner: OwnerMaximal, isPlayer = false): Actor2 => {
+export const instantiateActor = (owner: OwnerMaximal, isPlayer = false, opts: ModNodeOpts = {}): Actor2 => {
     const { health, tree } = instantiateHealth(owner)
-    const { speed, tree: tree2 } = instantiateSpeed(owner)
+    const { speed, tree: tree2 } = instantiateSpeed(owner, opts)
 
     return {
         id: isPlayer ? generatePlayerId() : generateNonPlayerId(),

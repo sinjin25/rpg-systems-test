@@ -4,9 +4,10 @@ import newModNode, { findNodeMatching, leaf, ModNode, sumFunc } from "../../log2
 import { ac, attack, critConfirm, critDamage, critThreatRange, damage } from "../../log2/terminal"
 import roll from "../../log2/roll"
 import modNodeToText from "../../log2/format"
+import { ModNodeOpts } from "../../log2/types"
 import type { SARAgainstTargetOpts } from "../../ability-sheet2/attack-ability/types"
 
-type AttackOpts = {
+type AttackOpts = ModNodeOpts & {
     relevantSlot: BaseEquipment,
 }
 
@@ -16,7 +17,7 @@ export const calculateAttack = (
 ) => {
     return newModNode(
         'attack',
-        [attack(owner, { relevantSlot: opts.relevantSlot }), roll({ diceSides: 20, diceNumber: 1, member: 'attack-sides-mod' })(owner, {})],
+        [attack(owner, { relevantSlot: opts.relevantSlot }), roll({ diceSides: 20, diceNumber: 1, member: 'attack-sides-mod' })(owner, opts)],
         sumFunc,
     )
 }
@@ -48,7 +49,7 @@ export const calculateCritConfirm = (
 ) => {
     return newModNode(
         'crit-confirm',
-        [critConfirm(owner, { relevantSlot: opts.relevantSlot }), roll({ diceSides: 20, diceNumber: 1, member: 'attack-sides-mod' })(owner, {})],
+        [critConfirm(owner, { relevantSlot: opts.relevantSlot }), roll({ diceSides: 20, diceNumber: 1, member: 'attack-sides-mod' })(owner, opts)],
         sumFunc,
     )
 }
@@ -77,15 +78,17 @@ export const calculateSAR = (
     data: {
         relevantSlot: BaseEquipment,
         owner: OwnerMaximal,
-    }
+    } & ModNodeOpts
 ): StandardActionResult => {
-    const { owner, relevantSlot } = data
+    const { owner, relevantSlot, ...opts } = data
     return {
         attackResult: calculateAttack(owner, {
             relevantSlot,
+            ...opts,
         }),
         critConfirmResult: calculateCritConfirm(owner, {
             relevantSlot,
+            ...opts,
         }),
         critDamageResult: calculateCritDamage(owner, {
             relevantSlot,

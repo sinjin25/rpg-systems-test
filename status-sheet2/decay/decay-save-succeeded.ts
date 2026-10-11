@@ -2,6 +2,7 @@ import { OwnerMaximal } from "../../actor2";
 import newModNode, { sumFunc } from "../../log2";
 import roll from "../../log2/roll";
 import save from "../../log2/terminal/save";
+import { ModNodeOpts } from "../../log2/types";
 import { chainStatus } from "./chain-status";
 import { expireStatus } from "./expire-status";
 import { DecaySaveSucceededLog, StatusExpiration, StatusExpirationSaveSucceeded } from "./types";
@@ -11,7 +12,7 @@ export const statusExpirationIsSaveSucceeded = (
 ): expiration is StatusExpirationSaveSucceeded =>
     expiration?.kind === 'save-succeeded'
 
-export const decaySaveSucceeded = (owner: OwnerMaximal): DecaySaveSucceededLog[] => {
+export const decaySaveSucceeded = (owner: OwnerMaximal, opts: ModNodeOpts = {}): DecaySaveSucceededLog[] => {
     const log: DecaySaveSucceededLog[] = []
 
     for (const key of Object.keys(owner.ss)) {
@@ -20,8 +21,7 @@ export const decaySaveSucceeded = (owner: OwnerMaximal): DecaySaveSucceededLog[]
 
             const { saveType, dc } = inst.expiration
             const saveMod = save(saveType)(owner)
-            // {} = global rng: decaySaveSucceeded has no ModNodeOpts yet
-            const natural = roll({ diceSides: 20, diceNumber: 1 })(owner, {})
+            const natural = roll({ diceSides: 20, diceNumber: 1 })(owner, opts)
             const saveTotal = newModNode('save', [saveMod, natural], sumFunc)
 
             let pass: boolean

@@ -67,10 +67,11 @@ type TimeTravelKind = | 'fight-start'
 
 export interface TTLogMap {
     'fight-start': {
-        input: TimeTravelContext & { playerIds: number[] },
+        input: TimeTravelContext & { playerIds: number[], seed?: number },
         output: {
             kind: 'fight-start',
             playerIds: number[],
+            seed?: number,
         } & TimeTravelContext,
     }
     'standard-action-result': {

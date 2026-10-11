@@ -48,6 +48,7 @@ export const simulateFight = (
     options?: {
         verbose?: boolean,
         timeTravelReplayer?: TimeTravelReplayer,
+        seed?: number,
     }
     // stageRules:
 ): FightResult => {
@@ -84,6 +85,7 @@ export const simulateFight = (
             source: snapshotActor(playerActors[0]!),
             to: activeActors.map(a => snapshotActor(a)),
             playerIds: playerActors.map(a => a.id),
+            seed: options?.seed,
         }))
     }
 

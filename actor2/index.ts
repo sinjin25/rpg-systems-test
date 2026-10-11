@@ -12,7 +12,7 @@ import { leaf } from "../log2"
 import { createDefaultExperience, experienceBreakpoints } from "../experience"
 
 // no better place to put rn
-type RewardIds = | 'weak_goblin'
+export type RewardIds = | 'weak_goblin'
 export type OwnerMaximal = {
     cs: CharacterSheet,
     fs: FeatSheet,

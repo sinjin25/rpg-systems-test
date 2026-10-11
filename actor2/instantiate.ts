@@ -2,6 +2,7 @@ import type { Actor2, OwnerMaximal } from "."
 import newModNode, { leaf, ModNode, sumFunc } from "../log2"
 import initiative from "../log2/terminal/initiative"
 import maximumHealth from "../log2/terminal/maximum-health"
+import { ModNodeOpts } from "../log2/types"
 import roll from "../roll"
 import {
     flatFooted,
@@ -21,12 +22,12 @@ export type Health = {
 
 export const STD_SPEED = 35 // average of 2d6 is 3.5
 
-export const instantiateSpeed = (owner: OwnerMaximal): {
+export const instantiateSpeed = (owner: OwnerMaximal, opts: ModNodeOpts = {}): {
     tree: ModNode,
     speed: Speed,
 } => {
     const mod = initiative(owner)
-    const rolled = roll(20)
+    const rolled = (opts.rollInstance?.roll ?? roll)(20)
     const r = leaf('d20', rolled)
 
     const result = newModNode(

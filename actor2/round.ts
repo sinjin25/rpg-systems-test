@@ -3,6 +3,7 @@ import { ModNode, sumFunc } from "../log2"
 import newModNode from "../log2"
 import roll from "../log2/roll"
 import speedTerminal from "../log2/terminal/speed"
+import { ModNodeOpts } from "../log2/types"
 import { decaySpeedElapsed } from "../status-sheet2/decay"
 import { Speed } from "./instantiate"
 
@@ -29,7 +30,8 @@ export const roundOrderBySpeed = <A extends {
 }
 
 export const round = (
-    data: Round
+    data: Round,
+    opts: ModNodeOpts = {},
 ): RoundResult => {
     const acting: Round['participants'] = []
     const modNodes: Map<number, ModNode> = new Map()
@@ -39,9 +41,7 @@ export const round = (
 
         const node = newModNode(
             'speed roll',
-            // {} = global rng: round() has no ModNodeOpts yet, so the fight's rollInstance
-            // cannot reach the speed dice until it is threaded in here
-            [speedTerminal(part.owner), roll({ diceSides: 6, diceNumber: 2 })(part.owner, {})],
+            [speedTerminal(part.owner), roll({ diceSides: 6, diceNumber: 2 })(part.owner, opts)],
             sumFunc,
         )
         const amount = node.total()

@@ -3,6 +3,7 @@ import newModNode, { sumFunc } from "../../log2"
 import roll from "../../log2/roll"
 import { save } from "../../log2/terminal"
 import dc from "../../log2/terminal/dc"
+import { ModNodeOpts } from "../../log2/types"
 import target from "../../target"
 import { Ability } from "./types"
 import { DiscreteTargetGroup, DiscreteTargetGroupPayload, DiscreteTargetGroupPayloadResolution } from "./types"
@@ -17,12 +18,12 @@ export type Participants = {
 }
 
 export const resolveAbility = (
-    p: Participants, source: Actor2, ability: Ability
+    p: Participants, source: Actor2, ability: Ability, opts: ModNodeOpts = {}
 ) => {
     const resolutions: DiscreteTargetGroupPayloadResolution[] = []
     for (let step of ability.steps) {
         resolutions.push(
-            ...resolveStep(p, source, step)
+            ...resolveStep(p, source, step, opts)
         )
     }
 
@@ -38,13 +39,13 @@ const shouldTGPRContinue = (incoming: {
 }
 
 // ex: a DiscreteTargetGroup
-export const resolveStep = (p: Participants, source: Actor2, step: DiscreteTargetGroup) => {
+export const resolveStep = (p: Participants, source: Actor2, step: DiscreteTargetGroup, opts: ModNodeOpts = {}) => {
     const resolutions: DiscreteTargetGroupPayloadResolution[] = []
     const targets = target(p.enemy, p.ally, step.tp)
     for (let t of targets) {
         if (!t) continue
         for (let payload of step.payload) {
-            const { defenderSuccess, result } = resolvePayload(source, t, payload)
+            const { defenderSuccess, result } = resolvePayload(source, t, payload, opts)
             resolutions.push(result)
 
             if (!shouldTGPRContinue({ defenderSuccess }, payload)) break
@@ -59,6 +60,7 @@ const resolvePayload = (
     source: Actor2,
     target: Actor2,
     payload: DiscreteTargetGroupPayload,
+    opts: ModNodeOpts = {},
 ): {
     defenderSuccess: boolean,
     result: DiscreteTargetGroupPayloadResolution,
@@ -71,8 +73,7 @@ const resolvePayload = (
         })(source.owner)
         const endSave = newModNode(
             payload.dc.saveType,
-            // {} = global rng: resolvePayload has no ModNodeOpts yet
-            [save(payload.dc.saveType)(target.owner), roll({ diceSides: 20, diceNumber: 1 })(target.owner, {})],
+            [save(payload.dc.saveType)(target.owner), roll({ diceSides: 20, diceNumber: 1 })(target.owner, opts)],
             sumFunc
         )
 

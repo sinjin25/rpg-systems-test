@@ -30,7 +30,7 @@ export default (diceOpts: Log2RollOpts = {}) =>
 
         const subtree: ModNode[] = []
         for (let i = 0; i < diceNumber; i++) {
-            const sideBoost = member ? sides(member)(owner) : undefined
+            const sideBoost = member ? sides(member)(owner, opts) : undefined
             const BASE_SIDES = leaf('base-sides', diceSides)
             const total = BASE_SIDES.total() + (sideBoost?.total() ?? 0)
             const r = rollWith(total)

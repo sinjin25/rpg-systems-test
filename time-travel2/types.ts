@@ -123,7 +123,7 @@ export interface TTLogMap {
         },
         output: {
             kind: 'damage-over-time-taken',
-            statusSource: StatusEffect,
+            statusSource: FrozenStatus,
             modNode: FrozenModNode,
             to: Actor2Snapshot[],
         },
@@ -136,7 +136,7 @@ export interface TTLogMap {
         },
         output: {
             kind: 'heal-over-time-taken',
-            statusSource: StatusEffect,
+            statusSource: FrozenStatus,
             modNode: FrozenModNode,
             to: Actor2Snapshot[],
         },

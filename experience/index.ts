@@ -1,5 +1,5 @@
 import { OwnerMaximal } from '../actor2'
-import { leaf, ModNode } from '../log2'
+import { ModNode } from '../log2'
 import { Experience, ExperienceBreakpoints } from './types'
 
 export const experienceBreakpoints: ExperienceBreakpoints = [50, 150, 300, 600, 1000, 1500, 9999999]
@@ -34,7 +34,6 @@ export const mutateCurrentExperience = (target: OwnerMaximal, amount: ModNode): 
 
 export const createDefaultExperience = (): Experience => {
     return {
-        baseOnKill: leaf('base-xp-on-kill', 2),
         breakpoints: [...experienceBreakpoints],
         currentXp: 0,
     }

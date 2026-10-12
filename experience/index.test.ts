@@ -5,7 +5,6 @@ import { experienceBreakpoints, mutateCurrentExperience } from './index'
 
 const makeOwner = (currentXp: number) => createDefaultOwner({
     experience: {
-        baseOnKill: leaf('base', 0),
         currentXp,
         breakpoints: experienceBreakpoints,
     }

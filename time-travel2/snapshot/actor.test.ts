@@ -92,11 +92,6 @@ describe('cloneExperience', () => {
         assert.equal(tt0.owner.experience.currentXp, 0)
     })
 
-    test('baseOnKill is a live reference', () => {
-        const { actor, owner } = ownerActorUtil()
-        const tt0 = snapshotActor(actor)
-        assert.equal(tt0.owner.experience.baseOnKill, owner.experience.baseOnKill)
-    })
 })
 
 describe('cloneStatusSheet', () => {

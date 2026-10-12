@@ -1,3 +1,5 @@
+import ignite from '../ability-sheet2/abilities2/ignite.ts'
+import { addAbility } from '../ability-sheet2/index.ts'
 import { createDefaultOwner } from '../actor2/index.ts'
 import { fakeCharacterLevels } from '../character-sheet'
 import roll, { clearSeed, createRoll, setSeed } from '../roll/index.ts'
@@ -81,6 +83,7 @@ describe('Full integration with rollInstance', () => {
                 levels: fakeCharacterLevels(2)
             },
         })
+        addAbility(o1, ignite)
         const o2 = createDefaultOwner({
             cs: {
                 flavorSheet: {

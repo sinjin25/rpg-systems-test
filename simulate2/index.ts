@@ -163,7 +163,7 @@ export const simulateFight = (
             )[0]! // because it's always first
             const snapshotActors = ttrActorContext(theActor, [target])
 
-            const cdt = calculateDamageTicks(theActor)
+            const cdt = calculateDamageTicks(theActor, opts)
             for (let { node, source } of cdt) {
                 applyDamage(theActor.health, node.total())
                 ttrAppendLog(timeTravel["damage-over-time-taken"]({
@@ -173,7 +173,7 @@ export const simulateFight = (
                 }))
             }
 
-            const cht = calculateHealTicks(theActor)
+            const cht = calculateHealTicks(theActor, opts)
             for (let { node, source } of cht) {
                 applyHeal(theActor.health, node.total())
                 ttrAppendLog(timeTravel["heal-over-time-taken"]({

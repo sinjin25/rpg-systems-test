@@ -17,11 +17,7 @@ export const setupWorldState = (
             this.playerActors.forEach(a => {
                 // expire statuses
                 // apply fight start feats
-                // reset ability cursors
-
-                // reinstantiate speed
-                const { speed } = instantiateSpeed(a.owner)
-                a.owner.speed = speed
+                // reset ability cursor
             })
         }
     }
@@ -35,7 +31,12 @@ export const resolveParticipants = (
     const part: Actor2[] = []
     for (let p of participants) {
         if (!participantIsActor(p)) part.push(instantiateActor(p, false, opts))
-        else part.push(p)
+        else {
+            part.push(p)
+            // force a speed reroll (prevents an rng leak from map simulation)
+            const speed = instantiateSpeed(p.owner, opts)
+            p.speed = speed.speed
+        }
     }
 
     return part

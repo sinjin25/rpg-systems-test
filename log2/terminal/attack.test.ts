@@ -10,7 +10,7 @@ import { inst } from '../../status-sheet2/testing'
 import { Feat2 } from '../../feat2'
 import { BaseEquipment } from '../../equipment-sheet2/types'
 import { SLOT_TYPE } from '../../equipment-sheet2/defaults'
-import { fakeCharacterLevels } from '../../character-sheet/util'
+import { fakeCharacterLevels } from '../../character-sheet'
 
 // +2 attack on a finesse weapon
 const finesseBless = makeWrapper({

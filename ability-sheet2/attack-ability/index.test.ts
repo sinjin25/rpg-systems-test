@@ -20,7 +20,7 @@ const testWeapon = (displayName: string): BaseEquipment => ({
     acceptableSlots: SLOT_TYPE.weapon,
     tags: ['melee'],
     broadContexts: {
-        damage: (o) => newModNode(displayName, [rollTree(6)(o)], sumFunc),
+        damage: (o) => newModNode(displayName, [rollTree({ diceSides: 6 })(o, {})], sumFunc),
         'crit-multiplier': () => leaf(displayName, 2),
     },
 })

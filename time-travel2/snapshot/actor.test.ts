@@ -78,6 +78,27 @@ describe('Actor simple snapshotted elements', () => {
     })
 })
 
+describe('cloneExperience', () => {
+    test('currentXp is a value copy, not a live reference', () => {
+        const { actor, owner } = ownerActorUtil()
+
+        const tt0 = snapshotActor(actor)
+        assert.equal(tt0.owner.experience.currentXp, 0)
+
+        owner.experience.currentXp += 50
+
+        const tt1 = snapshotActor(actor)
+        assert.equal(tt1.owner.experience.currentXp, 50)
+        assert.equal(tt0.owner.experience.currentXp, 0)
+    })
+
+    test('baseOnKill is a live reference', () => {
+        const { actor, owner } = ownerActorUtil()
+        const tt0 = snapshotActor(actor)
+        assert.equal(tt0.owner.experience.baseOnKill, owner.experience.baseOnKill)
+    })
+})
+
 describe('cloneStatusSheet', () => {
     const buff = makeWrapper(
         { displayName: 'bless', broadContexts: {} },

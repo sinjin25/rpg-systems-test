@@ -4,9 +4,10 @@ import newModNode, { findNodeMatching, leaf, ModNode, sumFunc } from "../../log2
 import { ac, attack, critConfirm, critDamage, critThreatRange, damage } from "../../log2/terminal"
 import roll from "../../log2/roll"
 import modNodeToText from "../../log2/format"
+import { ModNodeOpts } from "../../log2/types"
 import type { SARAgainstTargetOpts } from "../../ability-sheet2/attack-ability/types"
 
-type AttackOpts = {
+type AttackOpts = ModNodeOpts & {
     relevantSlot: BaseEquipment,
 }
 
@@ -16,7 +17,7 @@ export const calculateAttack = (
 ) => {
     return newModNode(
         'attack',
-        [attack(owner, { relevantSlot: opts.relevantSlot }), roll(20, 1, 'attack-sides-mod')(owner)],
+        [attack(owner, { relevantSlot: opts.relevantSlot }), roll({ diceSides: 20, diceNumber: 1, member: 'attack-sides-mod' })(owner, opts)],
         sumFunc,
     )
 }
@@ -25,21 +26,21 @@ const calculateDamage = (
     owner: OwnerMaximal,
     opts: AttackOpts
 ) => {
-    return damage(owner, { relevantSlot: opts.relevantSlot })
+    return damage(owner, opts)
 }
 
 const calculateCritDamage = (
     owner: OwnerMaximal,
     opts: AttackOpts
 ) => {
-    return critDamage(owner, { relevantSlot: opts.relevantSlot })
+    return critDamage(owner, opts)
 }
 
 const calculateThreat = (
     owner: OwnerMaximal,
     opts: AttackOpts
 ) => {
-    return critThreatRange(owner, { relevantSlot: opts.relevantSlot })
+    return critThreatRange(owner, opts)
 }
 
 export const calculateCritConfirm = (
@@ -48,7 +49,7 @@ export const calculateCritConfirm = (
 ) => {
     return newModNode(
         'crit-confirm',
-        [critConfirm(owner, { relevantSlot: opts.relevantSlot }), roll(20, 1, 'attack-sides-mod')(owner)],
+        [critConfirm(owner, { relevantSlot: opts.relevantSlot }), roll({ diceSides: 20, diceNumber: 1, member: 'attack-sides-mod' })(owner, opts)],
         sumFunc,
     )
 }
@@ -77,31 +78,36 @@ export const calculateSAR = (
     data: {
         relevantSlot: BaseEquipment,
         owner: OwnerMaximal,
-    }
+    } & ModNodeOpts
 ): StandardActionResult => {
-    const { owner, relevantSlot } = data
+    const { owner, relevantSlot, ...opts } = data
     return {
         attackResult: calculateAttack(owner, {
             relevantSlot,
+            ...opts,
         }),
         critConfirmResult: calculateCritConfirm(owner, {
             relevantSlot,
+            ...opts,
         }),
         critDamageResult: calculateCritDamage(owner, {
             relevantSlot,
+            ...opts,
         }),
         damageResult: calculateDamage(owner, {
             relevantSlot,
+            ...opts,
         }),
         threatResult: calculateThreat(owner, {
             relevantSlot,
+            ...opts,
         }),
         relevantSlot,
     }
 }
 
 // before the target is considered, once the target is considered irrelavant calcs will be stripped
-export const outputRawSar = (data: Actor2) => {
+export const outputRawSar = (data: Actor2, opts: ModNodeOpts = {}) => {
     let attackType: 'mainhand' | 'twohand' | 'dual-wield'
     if (data.owner.es.twohanded) attackType = 'twohand'
     else if (data.owner.es.offhand?.broadContexts?.damage) attackType = 'dual-wield'
@@ -112,24 +118,28 @@ export const outputRawSar = (data: Actor2) => {
         case 'twohand':
             sar.push(calculateSAR({
                 owner: data.owner,
-                relevantSlot: data.owner.es.twohanded!
+                relevantSlot: data.owner.es.twohanded!,
+                ...opts,
             }))
             break
         case 'dual-wield':
             sar.push(calculateSAR({
                 owner: data.owner,
-                relevantSlot: data.owner.es.mainhand!
+                relevantSlot: data.owner.es.mainhand!,
+                ...opts,
             }))
             sar.push(calculateSAR({
                 owner: data.owner,
-                relevantSlot: data.owner.es.offhand!
+                relevantSlot: data.owner.es.offhand!,
+                ...opts,
             }))
             break
         case 'mainhand':
         default:
             sar.push(calculateSAR({
                 owner: data.owner,
-                relevantSlot: data.owner.es.mainhand!
+                relevantSlot: data.owner.es.mainhand!,
+                ...opts,
             }))
     }
 

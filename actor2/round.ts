@@ -3,6 +3,7 @@ import { ModNode, sumFunc } from "../log2"
 import newModNode from "../log2"
 import roll from "../log2/roll"
 import speedTerminal from "../log2/terminal/speed"
+import { ModNodeOpts } from "../log2/types"
 import { decaySpeedElapsed } from "../status-sheet2/decay"
 import { Speed } from "./instantiate"
 
@@ -29,17 +30,18 @@ export const roundOrderBySpeed = <A extends {
 }
 
 export const round = (
-    data: Round
+    data: Round,
+    opts: ModNodeOpts = {},
 ): RoundResult => {
     const acting: Round['participants'] = []
     const modNodes: Map<number, ModNode> = new Map()
 
     for (let part of data.participants) {
-        if (!part.speed.canAct) continue
+        if (!part.speed.isAlive) continue
 
         const node = newModNode(
             'speed roll',
-            [speedTerminal(part.owner), roll(6, 2)(part.owner)],
+            [speedTerminal(part.owner), roll({ diceSides: 6, diceNumber: 2 })(part.owner, opts)],
             sumFunc,
         )
         const amount = node.total()

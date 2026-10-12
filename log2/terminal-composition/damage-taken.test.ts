@@ -7,7 +7,7 @@ import defensiveRoll from '../../status-sheet2/status/defensive-roll'
 import { makeWrapper } from '../../status-sheet2'
 import { inst } from '../../status-sheet2/testing'
 import { leaf, findNodeMatching } from '..'
-import { setSeed, clearSeed } from '../../roll'
+import roll, { setSeed, clearSeed, createRoll } from '../../roll'
 import modNodeToText from '../format'
 import { BaseEquipment } from '../../equipment-sheet2/types'
 import { SLOT_TYPE } from '../../equipment-sheet2/defaults'
@@ -97,5 +97,44 @@ describe('damage-taken (terminal)', () => {
         assert.exists(wrapper2)
         assert.equal(wrapper2.total(), 1)
         /* console.log(modNodeToText(node)) */
+    })
+})
+
+describe('Takes a rollInstance', () => {
+    test('Can pass a rollInstance', () => {
+        const ri = createRoll(0)
+        const defender = createDefaultOwner({ ss: { 'Defensive Roll': [inst(defensiveRoll)] } })
+
+        assert.equal(ri._totalRolls(), 0)
+
+        const node = damageTaken({
+            // bypass needing additional rolls
+            // this means totalRolls can be guaranteed 1
+            node: leaf('incoming', 10),
+        })(defender, { rollInstance: ri })
+
+        assert.equal(ri._totalRolls(), 1)
+        expect(node.total()).toBeGreaterThanOrEqual(6) // 10 - 4
+        expect(node.total()).toBeLessThanOrEqual(9)    // 10 - 1
+    })
+    test('If no ri passed, uses global rng', () => {
+        const defender = createDefaultOwner({ ss: { 'Defensive Roll': [inst(defensiveRoll)] } })
+        setSeed(0)
+        const r0 = roll(5)
+        setSeed(0)
+        const r1 = roll(5)
+        assert.equal(r0, r1)
+
+        setSeed(0)
+        const node = damageTaken({
+            // bypass needing additional rolls
+            // this means totalRolls can be guaranteed 1
+            node: leaf('incoming', 10),
+        })(defender, {})
+        const r2 = roll(5)
+        // damageTaken has rolled therefore r2 is not the first roll of seed1
+        assert.notEqual(r1, r2)
+
+        clearSeed()
     })
 })

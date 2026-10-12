@@ -40,9 +40,9 @@ describe('chooseTarget', () => {
         const target = chooseTarget(actors)
         assert.equal(target, actors[0])
 
-        // mark 0 and 2 as dead (!speed.canAct)
-        actors[0]!.speed.canAct = false
-        actors[2]!.speed.canAct = false
+        // mark 0 and 2 as dead (!speed.isAlive)
+        actors[0]!.speed.isAlive = false
+        actors[2]!.speed.isAlive = false
 
         const target2 = chooseTarget(actors)
         assert.equal(target2, actors[1])

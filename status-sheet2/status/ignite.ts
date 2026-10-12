@@ -13,7 +13,7 @@ const ignite = makeWrapper({
     broadContexts: {},
     tick: {
         calculateDamage: {
-            base: () => newModNode(displayName, [leaf(`${displayName} 1d4`, roll(4))], sumFunc),
+            base: (opts = {}) => newModNode(displayName, [leaf(`${displayName} 1d4`, (opts.rollInstance?.roll ?? roll)(4))], sumFunc),
             mod: (source: OwnerMaximal) => featContribution('damage-over-time-feat-mod')(source),
         },
     },

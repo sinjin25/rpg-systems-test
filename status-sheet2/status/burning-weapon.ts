@@ -15,7 +15,7 @@ export const burningWeaponStatus = makeWrapper({
     broadContexts: {},
     tick: {
         calculateDamage: {
-            base: () => leaf('burning weapon 1d4', roll(4)),
+            base: (opts = {}) => leaf('burning weapon 1d4', (opts.rollInstance?.roll ?? roll)(4)),
             mod: (source: OwnerMaximal) => featContribution('damage-over-time-feat-mod')(source),
         },
     },

@@ -1,5 +1,3 @@
-import roll from "../roll"
-
 // a node with 0 to many children
 // .total() is a source of truth for all parent nodes
 export type ModNode = {

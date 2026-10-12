@@ -1,4 +1,4 @@
-import { ObjectWithBroadContexts } from "../log2/types"
+import { ObjectWithBroadContexts, ModNodeOpts } from "../log2/types"
 import { OwnerMaximal } from "../actor2"
 import { ModNode } from "../log2"
 import { StatusExpiration, StatusPersistTypes } from "./decay/types"
@@ -17,7 +17,7 @@ export type {
 
 // base re-rolls each tick; mod is the source-side contribution, frozen at apply time
 export type TickCalc = {
-    base: () => ModNode,
+    base: (opts?: ModNodeOpts) => ModNode,
     mod: (source: OwnerMaximal) => ModNode,
 }
 
@@ -28,7 +28,7 @@ export type Tick = {
 
 // the resolved form stored on an instance: mod has been evaluated against the source
 export type ResolvedTickCalc = {
-    base: () => ModNode,
+    base: (opts?: ModNodeOpts) => ModNode,
     mod: ModNode,
 }
 

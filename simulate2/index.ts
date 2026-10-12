@@ -6,9 +6,10 @@ import { round } from "../actor2/round"
 import { applyDamage, applyHeal } from "../health"
 import modNodeToText from "../log2/format"
 import damageTakenTree from '../log2/terminal-composition/damage-taken'
-import { OwnerLog2 } from '../log2/types'
+import { ModNodeOpts, OwnerLog2 } from '../log2/types'
+import { RollInstance } from "../roll/types"
 import { decayActionsElapsed, decayEnemyKilled, decayRoundsElapsed, decaySaveSucceeded } from "../status-sheet2/decay"
-import { anyActorAlive, chooseTarget, determineFightWinner, handlePotentialDeath, ownerIsMemberOf } from "./helpers"
+import { anyActorAlive, maybeAwardExperience, chooseTarget, determineFightWinner, handlePotentialDeath, ownerIsMemberOf } from "./helpers"
 import { /* instantiateParticipants */resolveParticipants } from "./setup"
 import { snapshotActor, timeTravel } from "../time-travel2"
 import { AnyStoredLog, TimeTravelReplayer } from "../time-travel2/replay/types"
@@ -16,6 +17,7 @@ import { TimeTravelContext, TTLogMap } from "../time-travel2/types"
 import { calculateDamageTicks, calculateHealTicks } from "../status-sheet2/tick"
 import { TargetPriority } from "../target/types"
 import pickTarget2 from '../target/index'
+import isAlive from "../target/generic-filter/is-alive"
 
 const VERBOSE = false
 
@@ -24,6 +26,7 @@ export type FightResult = {
     rounds: number,
     playerActors: Actor2[],
     enemyActors: Actor2[],
+    timeTravelReplayer?: TimeTravelReplayer,
     debugData: {
         player0HpStart: number,
         player0HpEnd: number,
@@ -37,6 +40,7 @@ const dumbTargeting: TargetPriority = {
     team: 'enemy',
 }
 
+// TODO: find a cleaner way to implement removing actors from the array on death
 export const simulateFight = (
     participants: {
         player: OwnerMaximal[] | Actor2[],
@@ -45,6 +49,8 @@ export const simulateFight = (
     options?: {
         verbose?: boolean,
         timeTravelReplayer?: TimeTravelReplayer,
+        seed?: number, // recorded on the fight-start log only; does not seed anything
+        rollInstance?: RollInstance, // the fight's whole duration runs on this; absent => global rng
     }
     // stageRules:
 ): FightResult => {
@@ -68,9 +74,14 @@ export const simulateFight = (
         player0HpStart: 0,
     }
 
-    const playerActors = resolveParticipants(participants.player)
-    const enemyActors = resolveParticipants(participants.enemy)
-    const actors = [...playerActors, ...enemyActors]
+    // the fight's whole duration runs on whatever instance is handed in; absent => every roll below
+    // falls back to the global rng (see ModNodeOpts.rollInstance)
+    const opts: ModNodeOpts = { rollInstance: options?.rollInstance }
+
+    const playerActors = resolveParticipants(participants.player, opts)
+    const enemyActors = resolveParticipants(participants.enemy, opts)
+    // this will get filtered constantly to make sure only alive actors are here
+    let activeActors = [...playerActors, ...enemyActors]
 
     debugData.player0HpStart = playerActors[0]!.health.curr
 
@@ -78,9 +89,9 @@ export const simulateFight = (
     {
         ttrAppendLog(timeTravel['fight-start']({
             source: snapshotActor(playerActors[0]!),
-            to: [
-                ...actors.map(a => snapshotActor(a))
-            ]
+            to: activeActors.map(a => snapshotActor(a)),
+            playerIds: playerActors.map(a => a.id),
+            seed: options?.seed,
         }))
     }
 
@@ -91,20 +102,35 @@ export const simulateFight = (
     ) {
         rounds++
         // decay is health-agnostic; reconcile max health here only when a status expired
-        actors.forEach(a => {
-            const saves = decaySaveSucceeded(a.owner)
+        activeActors.forEach(a => {
+            const saves = decaySaveSucceeded(a.owner, opts)
             if (saves.some(s => s.kind === 'succeeded')) reinstantiateHealth(a)
         })
 
-        actors.forEach(a => handlePotentialDeath(actors, a))
+        activeActors.forEach(a => {
+            if (handlePotentialDeath(activeActors, a)) {
+                ttrAppendLog(timeTravel['actor-death']({ source: snapshotActor(a) }))
+                activeActors = activeActors.filter(isAlive)
+                const xpResult = maybeAwardExperience(
+                    a, enemyActors, playerActors[0]!
+                )
+                if (xpResult !== undefined) {
+                    ttrAppendLog(timeTravel['xp-gained']({
+                        kind: 'xp-gained',
+                        ...xpResult,
+                        source: snapshotActor(playerActors[0]!),
+                    }))
+                }
+            }
+        })
 
         const { acting, modNodes } = round({
-            participants: actors,
+            participants: activeActors,
             speedSum: STD_SPEED,
-        })
+        }, opts)
         {
             ttrAppendLog(timeTravel["speed"]({
-                actors: acting.map(a => snapshotActor(a)),
+                actors: activeActors.map(a => snapshotActor(a)),
                 modNodes: Object.fromEntries(modNodes),
             }))
         }
@@ -119,10 +145,10 @@ export const simulateFight = (
             // an expired status may have changed max health -> reconcile when one did
             const anythingElapsedRounds = !!decayRoundsElapsed(theActor.owner, 1, theActor)
             if (anythingElapsedRounds) reinstantiateHealth(theActor)
-            if (!theActor.speed.canAct) continue
+            if (!theActor.speed.isAlive) continue
 
             // start action
-            const actions = act(theActor)
+            const actions = act(theActor, opts)
 
             const anythingElapsedSpeed = !!decayActionsElapsed(theActor.owner, 1)
             if (anythingElapsedSpeed) reinstantiateHealth(theActor)
@@ -137,7 +163,7 @@ export const simulateFight = (
             )[0]! // because it's always first
             const snapshotActors = ttrActorContext(theActor, [target])
 
-            const cdt = calculateDamageTicks(theActor)
+            const cdt = calculateDamageTicks(theActor, opts)
             for (let { node, source } of cdt) {
                 applyDamage(theActor.health, node.total())
                 ttrAppendLog(timeTravel["damage-over-time-taken"]({
@@ -147,7 +173,7 @@ export const simulateFight = (
                 }))
             }
 
-            const cht = calculateHealTicks(theActor)
+            const cht = calculateHealTicks(theActor, opts)
             for (let { node, source } of cht) {
                 applyHeal(theActor.health, node.total())
                 ttrAppendLog(timeTravel["heal-over-time-taken"]({
@@ -164,8 +190,9 @@ export const simulateFight = (
                         { enemy: targetTeam, ally: allyTeam },
                         theActor,
                         a.factory(),
+                        opts,
                     )
-                    for (let { r, damageTakenResult } of applyAttackResolutions(resolutions)) {
+                    for (let { r, damageTakenResult } of applyAttackResolutions(resolutions, opts)) {
                         // attack resolutions carry no save/dc, so log the underlying SAR via the
                         // standard-action-result event; snapshot the actual per-resolution target
                         ttrAppendLog(timeTravel['standard-action-result']({
@@ -173,9 +200,26 @@ export const simulateFight = (
                             ...r.sar,
                             damageTakenResult,
                         }))
-                        handlePotentialDeath(actors, r.target, theActor.owner)
+                        if (handlePotentialDeath(activeActors, r.target, theActor.owner)) {
+                            ttrAppendLog(timeTravel['actor-death']({ source: snapshotActor(r.target) }))
+                            activeActors = activeActors.filter(isAlive)
+                            const xpResult = maybeAwardExperience(
+                                r.target, enemyActors, playerActors[0]!
+                            )
+                            if (xpResult !== undefined) {
+                                ttrAppendLog(timeTravel['xp-gained']({
+                                    kind: 'xp-gained',
+                                    ...xpResult,
+                                    source: snapshotActor(playerActors[0]!),
+                                }))
+                            }
+                        }
                         // a self payload (e.g. recoil) can kill the caster too
-                        if (r.self) handlePotentialDeath(actors, r.source, theActor.owner)
+                        if (r.self && handlePotentialDeath(activeActors, r.source, theActor.owner)) {
+                            ttrAppendLog(timeTravel['actor-death']({ source: snapshotActor(r.source) }))
+                            activeActors = activeActors.filter(isAlive)
+                            // don't give xp to the player when they kill themselves
+                        }
                     }
                     return
                 }
@@ -186,15 +230,29 @@ export const simulateFight = (
                         { enemy: targetTeam, ally: allyTeam },
                         theActor,
                         ability,
+                        opts,
                     )
-                    for (let { r, damageTaken } of applyResolutions(resolutions)) {
+                    for (let { r, damageTaken } of applyResolutions(resolutions, opts)) {
                         ttrAppendLog(timeTravel['ability']({
                             source: snapshotActor(theActor),
                             to: [snapshotActor(r.target)],
                             resolution: r,
                             damageTaken,
                         }))
-                        handlePotentialDeath(actors, r.target, theActor.owner)
+                        if (handlePotentialDeath(activeActors, r.target, theActor.owner)) {
+                            ttrAppendLog(timeTravel['actor-death']({ source: snapshotActor(r.target) }))
+                            activeActors = activeActors.filter(isAlive)
+                            const xpResult = maybeAwardExperience(
+                                r.target, enemyActors, playerActors[0]!
+                            )
+                            if (xpResult !== undefined) {
+                                ttrAppendLog(timeTravel['xp-gained']({
+                                    kind: 'xp-gained',
+                                    ...xpResult,
+                                    source: snapshotActor(playerActors[0]!),
+                                }))
+                            }
+                        }
                     }
                     return
                 }
@@ -206,11 +264,11 @@ export const simulateFight = (
                     if (!fs.critDamageResult && !fs.damageResult) {
                     }
                     else if (fs.critDamageResult) {
-                        damageTakenResult = damageTakenTree({ node: fs.critDamageResult })(target.owner as unknown as OwnerLog2)
+                        damageTakenResult = damageTakenTree({ node: fs.critDamageResult })(target.owner as unknown as OwnerLog2, opts)
                         applyDamage(target.health, damageTakenResult.total())
                     }
                     else if (fs.damageResult) {
-                        damageTakenResult = damageTakenTree({ node: fs.damageResult })(target.owner as unknown as OwnerLog2)
+                        damageTakenResult = damageTakenTree({ node: fs.damageResult })(target.owner as unknown as OwnerLog2, opts)
                         applyDamage(target.health, damageTakenResult.total())
                     }
                     ttrAppendLog(timeTravel["standard-action-result"]({
@@ -220,7 +278,20 @@ export const simulateFight = (
                     }))
                 }
 
-                if (target) handlePotentialDeath(actors, target, theActor.owner)
+                if (target && handlePotentialDeath(activeActors, target, theActor.owner)) {
+                    ttrAppendLog(timeTravel['actor-death']({ source: snapshotActor(target) }))
+                    activeActors = activeActors.filter(isAlive)
+                    const xpResult = maybeAwardExperience(
+                        target, enemyActors, playerActors[0]!
+                    )
+                    if (xpResult !== undefined) {
+                        ttrAppendLog(timeTravel['xp-gained']({
+                            kind: 'xp-gained',
+                            ...xpResult,
+                            source: snapshotActor(playerActors[0]!),
+                        }))
+                    }
+                }
             })
         }
     }
@@ -241,6 +312,7 @@ export const simulateFight = (
         rounds,
         playerActors,
         enemyActors,
+        timeTravelReplayer: ttr,
         debugData,
     }
 }

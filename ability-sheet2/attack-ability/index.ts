@@ -1,18 +1,19 @@
 import { Actor2 } from '../../actor2'
 import { calculateAc, outputRawSar, SAR_AGAINST_TARGET_DEFAULT_OPTS, sarAgainstTarget, StandardActionResult } from '../../actor2/act'
 import newModNode, { sumFunc } from '../../log2'
+import { ModNodeOpts } from '../../log2/types'
 import target from '../../target'
 import { Participants } from '../abilities2'
 import { AttackAbility, AttackDiscreteTargetGroup, AttackDiscreteTargetGroupPayload, AttackDiscreteTargetGroupPayloadResolution, SARAgainstTargetOpts } from './types'
 
 const resolveAttackAbility = (
-    p: Participants, source: Actor2, ability: AttackAbility
+    p: Participants, source: Actor2, ability: AttackAbility, modOpts: ModNodeOpts = {}
 ) => {
     const resolutions: AttackDiscreteTargetGroupPayloadResolution[] = []
     // call resolve step
     for (let step of ability.steps) {
         resolutions.push(
-            ...resolveStep(p, source, step)
+            ...resolveStep(p, source, step, modOpts)
         )
     }
 
@@ -28,14 +29,14 @@ const shouldTGPRContinue = (incoming: {
 }
 
 const resolveStep = (
-    p: Participants, source: Actor2, step: AttackDiscreteTargetGroup,
+    p: Participants, source: Actor2, step: AttackDiscreteTargetGroup, modOpts: ModNodeOpts = {},
 ) => {
     const resolutions: AttackDiscreteTargetGroupPayloadResolution[] = []
     const targets = target(p.enemy, p.ally, step.tp)
     for (let t of targets) {
         if (!t) continue
         for (let payload of step.payload) {
-            const { defenderSuccess, result } = resolvePayload(source, t, payload, payload.opts)
+            const { defenderSuccess, result } = resolvePayload(source, t, payload, payload.opts, modOpts)
             resolutions.push(result)
 
             if (!shouldTGPRContinue({ defenderSuccess }, payload)) break
@@ -91,6 +92,7 @@ const resolvePayload = (
     target: Actor2,
     payload: AttackDiscreteTargetGroupPayload,
     opts: Partial<SARAgainstTargetOpts> = {},
+    modOpts: ModNodeOpts = {},
 ): {
     defenderSuccess: boolean, // a miss (the defender "made their save")
     result: AttackDiscreteTargetGroupPayloadResolution
@@ -100,7 +102,7 @@ const resolvePayload = (
         ...opts,
     }
     // v1: single primary attack (dual-wield/iteratives deferred)
-    const [sar] = outputRawSar(source)
+    const [sar] = outputRawSar(source, modOpts)
     const augmented = applyAugments(sar, payload.augments, source, target)
     const targetAc = calculateAc(target.owner)
     const final = sarAgainstTarget(augmented, targetAc, optsToUse)

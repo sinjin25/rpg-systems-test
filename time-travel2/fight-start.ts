@@ -1,12 +1,11 @@
 import { Handlers } from "./types";
 
-const fightStart: Handlers['fight-start'] = (input) => {
-    const { source, to } = input
-    return {
-        kind: 'fight-start',
-        source,
-        to,
-    }
-}
+const fightStart: Handlers['fight-start'] = ({ source, to, playerIds, seed }) => ({
+    kind: 'fight-start',
+    source,
+    to,
+    playerIds,
+    seed,
+})
 
 export default fightStart

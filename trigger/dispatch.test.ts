@@ -1,8 +1,8 @@
 import { describe, test, assert } from 'vitest'
-import { createDefaultOwner } from '../defaults/index.ts'
 import { runTrigger } from './dispatch.ts'
 import { Feat2 } from '../feat2/index.ts'
 import { StatusEffect } from '../status-sheet2/types.ts'
+import { createDefaultOwner } from '../actor2/index.ts'
 
 const featOnMiss: Feat2 = {
     displayName: 'Test Feat On Miss',

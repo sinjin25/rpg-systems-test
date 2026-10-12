@@ -8,5 +8,6 @@ export default (equipment: BaseEquipment) => (owner: OwnerLog2, opts: ModNodeOpt
         return equipment.broadContexts.damage(owner, opts)!
     }
     // unarmed damage
-    return newModNode(equipment.displayName, [leaf('1d2', roll(2))], sumFunc)
+    const r = (opts.rollInstance?.roll ?? roll)(2)
+    return newModNode(equipment.displayName, [leaf('1d2', r)], sumFunc)
 }

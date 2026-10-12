@@ -28,7 +28,7 @@ const testWeapon = (displayName: string): BaseEquipment => ({
     broadContexts: {
         damage: (o) => {
             const sides = 6
-            return newModNode(displayName, [rollTree(sides)(o)], sumFunc)
+            return newModNode(displayName, [rollTree({ diceSides: sides })(o, {})], sumFunc)
         },
         'crit-multiplier': () => leaf(displayName, 2),
     },

@@ -3,7 +3,7 @@ import maximumHealth from './maximum-health'
 import { createDefaultOwner } from '../../actor2'
 import { leaf, findNodeMatching } from '..'
 import { ObjectWithBroadContexts } from '../types'
-import { fakeCharacterLevels } from '../../character-sheet/util'
+import { fakeCharacterLevels } from '../../character-sheet'
 import modNodeToText from '../format'
 
 describe('maximum-health (terminal)', () => {

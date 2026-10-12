@@ -73,6 +73,14 @@ describe('createRoll', () => {
         }
     })
 
+    test('Can produce the seed', () => {
+        const randomInst = createRoll()
+        assert.typeOf(randomInst.getSeed(), 'number')
+
+        const oneSeed = createRoll(1)
+        assert.equal(oneSeed.getSeed(), 1)
+    })
+
     test('same seed produces the same sequence', () => {
         const first = createRoll(42)
         const second = createRoll(42)
@@ -154,6 +162,10 @@ describe('createRoll', () => {
             [fightSeedA.roll(20), fightSeedA.roll(20)],
             [fightSeedB.roll(20), fightSeedB.roll(20)],
         )
+
+        // each spawn() consumes one rng call from the parent
+        assert.equal(parentA._totalRolls(), 2)
+        assert.equal(parentB._totalRolls(), 2)
     })
 
     test('successive spawn() calls hand out decorrelated children', () => {

@@ -52,4 +52,23 @@ describe('heal-over-time', () => {
         r0.node.total = () => 99
         assert.notEqual(r0!.node.total(), record.modNode.total)
     })
+
+    test('statusSource can be frozen', () => {
+        const owner = createDefaultOwner()
+        const actor = instantiateActor(owner)
+        addStatusToStatusSheet(owner, owner, regen)
+        actor.health.curr = 1
+
+        const result = calculateHealTicks(actor)
+        const r0 = result[0]!
+
+        const record = healOverTimeLog({
+            statusSource: r0.source,
+            modNode: r0.node,
+            to: [snapshotActor(actor)],
+        })
+
+        r0.source.displayName = 'mutated-after-log'
+        assert.notEqual(record.statusSource.displayName, 'mutated-after-log')
+    })
 })

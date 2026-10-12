@@ -6,7 +6,7 @@ import freezeStatus from "./status";
 
 type SnapshotStatusSheet = Record<string, FrozenStatus[]>
 
-// there's two live references here (baseOnKill and breakpoints, but they're effectively constants)
+// there's a live reference here (breakpoints, but it's effectively constant)
 type SnapshotExperience = Actor2['owner']['experience']
 
 type OwnerMaximalStableReferences = Pick<OwnerMaximal, 'es' | 'cs' | 'fs'>

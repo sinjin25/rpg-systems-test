@@ -63,7 +63,6 @@ type TimeTravelKind = | 'fight-start'
     | 'team-victory' // anyActorAlive
     | 'damage-over-time-taken'
     | 'heal-over-time-taken'
-    | 'xp-gained'
 
 export interface TTLogMap {
     'fight-start': {
@@ -150,23 +149,6 @@ export interface TTLogMap {
             kind: 'ability',
         } & FrozenAbilityNode
     },
-    'xp-gained': {
-        input: TimeTravelContext & {
-            // eventually we want players to be able to modify the xp gained through ModNode calcs
-            kind: 'xp-gained',
-            // these are from mutateCurrentExperience
-            currentXp: number,
-            didLevel: boolean,
-            amount: ModNode,
-        },
-        output: TimeTravelContext & {
-            kind: 'xp-gained',
-        } & {
-            source: Actor2Snapshot,
-            didLevel: boolean,
-            amount: ModNode,
-        }
-    }
 }
 
 export type TTLogKeys = keyof TTLogMap

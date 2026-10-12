@@ -9,7 +9,7 @@ import damageTakenTree from '../log2/terminal-composition/damage-taken'
 import { ModNodeOpts, OwnerLog2 } from '../log2/types'
 import { RollInstance } from "../roll/types"
 import { decayActionsElapsed, decayEnemyKilled, decayRoundsElapsed, decaySaveSucceeded } from "../status-sheet2/decay"
-import { anyActorAlive, maybeAwardExperience, chooseTarget, determineFightWinner, handlePotentialDeath, ownerIsMemberOf } from "./helpers"
+import { anyActorAlive, chooseTarget, determineFightWinner, handlePotentialDeath, ownerIsMemberOf } from "./helpers"
 import { /* instantiateParticipants */resolveParticipants } from "./setup"
 import { snapshotActor, timeTravel } from "../time-travel2"
 import { AnyStoredLog, TimeTravelReplayer } from "../time-travel2/replay/types"
@@ -111,16 +111,6 @@ export const simulateFight = (
             if (handlePotentialDeath(activeActors, a)) {
                 ttrAppendLog(timeTravel['actor-death']({ source: snapshotActor(a) }))
                 activeActors = activeActors.filter(isAlive)
-                const xpResult = maybeAwardExperience(
-                    a, enemyActors, playerActors[0]!
-                )
-                if (xpResult !== undefined) {
-                    ttrAppendLog(timeTravel['xp-gained']({
-                        kind: 'xp-gained',
-                        ...xpResult,
-                        source: snapshotActor(playerActors[0]!),
-                    }))
-                }
             }
         })
 
@@ -203,16 +193,6 @@ export const simulateFight = (
                         if (handlePotentialDeath(activeActors, r.target, theActor.owner)) {
                             ttrAppendLog(timeTravel['actor-death']({ source: snapshotActor(r.target) }))
                             activeActors = activeActors.filter(isAlive)
-                            const xpResult = maybeAwardExperience(
-                                r.target, enemyActors, playerActors[0]!
-                            )
-                            if (xpResult !== undefined) {
-                                ttrAppendLog(timeTravel['xp-gained']({
-                                    kind: 'xp-gained',
-                                    ...xpResult,
-                                    source: snapshotActor(playerActors[0]!),
-                                }))
-                            }
                         }
                         // a self payload (e.g. recoil) can kill the caster too
                         if (r.self && handlePotentialDeath(activeActors, r.source, theActor.owner)) {
@@ -242,16 +222,6 @@ export const simulateFight = (
                         if (handlePotentialDeath(activeActors, r.target, theActor.owner)) {
                             ttrAppendLog(timeTravel['actor-death']({ source: snapshotActor(r.target) }))
                             activeActors = activeActors.filter(isAlive)
-                            const xpResult = maybeAwardExperience(
-                                r.target, enemyActors, playerActors[0]!
-                            )
-                            if (xpResult !== undefined) {
-                                ttrAppendLog(timeTravel['xp-gained']({
-                                    kind: 'xp-gained',
-                                    ...xpResult,
-                                    source: snapshotActor(playerActors[0]!),
-                                }))
-                            }
                         }
                     }
                     return
@@ -281,16 +251,6 @@ export const simulateFight = (
                 if (target && handlePotentialDeath(activeActors, target, theActor.owner)) {
                     ttrAppendLog(timeTravel['actor-death']({ source: snapshotActor(target) }))
                     activeActors = activeActors.filter(isAlive)
-                    const xpResult = maybeAwardExperience(
-                        target, enemyActors, playerActors[0]!
-                    )
-                    if (xpResult !== undefined) {
-                        ttrAppendLog(timeTravel['xp-gained']({
-                            kind: 'xp-gained',
-                            ...xpResult,
-                            source: snapshotActor(playerActors[0]!),
-                        }))
-                    }
                 }
             })
         }

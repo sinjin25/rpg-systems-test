@@ -1,8 +1,8 @@
 // a roll of one or more dice, as a ModNode tree
 
-import { ModNode, sumFunc, leaf } from "..";
+import { ModNode, sumFunc } from "..";
 import { OwnerLog2, EveryTree, RollSidesMod, ModNodeOpts } from "../types";
-import sides from "./sides";
+import finalSides from "./final-sides";
 import roll from "../../roll";
 
 const displayName: EveryTree = 'roll-total'
@@ -30,14 +30,13 @@ export default (diceOpts: Log2RollOpts = {}) =>
 
         const subtree: ModNode[] = []
         for (let i = 0; i < diceNumber; i++) {
-            const sideBoost = member ? sides(member)(owner, opts) : undefined
-            const BASE_SIDES = leaf('base-sides', diceSides)
-            const total = BASE_SIDES.total() + (sideBoost?.total() ?? 0)
+            const sidesNode = finalSides(diceSides, member)(owner, opts)
+            const total = sidesNode.total()
             const r = rollWith(total)
 
             subtree.push({
                 displayName: `roll 1d${total}`,
-                children: sideBoost ? [sideBoost, BASE_SIDES] : [BASE_SIDES],
+                children: [sidesNode],
                 total: () => r,
             })
         }

@@ -133,6 +133,8 @@ export type EveryTree =
     // terminal
     | TerminalRoutes
     | RollSidesMod
+    | 'original-dice-sides'
+    | 'maximum-dice-sides'
 
 export type TreeSubproblems = Partial<Record<EveryTree, ModNode>>
 

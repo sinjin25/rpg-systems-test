@@ -1,6 +1,6 @@
 import { describe, test, expect, assert } from 'vitest'
 import { createDefaultOwner, instantiateActor, Actor2, OwnerMaximal } from '..'
-import newModNode, { leaf, ModNode, sumFunc } from '../../log2'
+import newModNode, { findNodeMatching, leaf, ModNode, sumFunc } from '../../log2'
 import modNodeToText from '../../log2/format'
 import { BaseEquipment } from '../../equipment-sheet2/types'
 import { iterate } from '../../simulate/util/iterate'
@@ -17,6 +17,7 @@ import {
 } from './attack'
 import rollTree from '../../log2/roll'
 import { SLOT_TYPE } from '../../equipment-sheet2/defaults'
+import { createRoll } from '../../roll'
 
 // --- fixtures -------------------------------------------------------------
 
@@ -139,6 +140,50 @@ describe('calculateCritConfirm', () => {
         assert.isTrue(rolls.every(r => Number.isInteger(r) && r >= 1 && r <= 20))
         assert.include(rolls, 1)
         assert.include(rolls, 20)
+    })
+
+    test.skip('find seed: hitDidConfirm find 21, 22 nat rolls', () => {
+        const owner = createDefaultOwner({
+            fs: {
+                attackSidesPlus: {
+                    displayName: 'attack-sides-plus',
+                    broadContexts: {
+                        "attack-sides-mod": () => leaf('attack-sides-plus', 2)
+                    }
+                }
+            },
+        })
+
+
+
+        const rolls = iterate(100, (seed) => {
+            return [seed, calculateCritConfirm(owner, { relevantSlot: owner.es.mainhand, rollInstance: createRoll(seed) })]
+        })
+
+        const r = rolls.filter(([_, a]) => a.total() >= 21)
+        console.log(r.map(a => a[0]))
+    })
+
+    test('Can find the nat X of a modified dice', () => {
+        const SEED = 4
+        const owner = createDefaultOwner({
+            fs: {
+                attackSidesPlus: {
+                    displayName: 'attack-sides-plus',
+                    broadContexts: {
+                        "attack-sides-mod": () => leaf('attack-sides-plus', 2)
+                    }
+                }
+            },
+        })
+        const result = calculateCritConfirm(owner, { relevantSlot: owner.es.mainhand, rollInstance: createRoll(SEED) })
+
+        console.log('modnodetotext', modNodeToText(result))
+
+        console.log(result.children.map(a => a.displayName))
+        const rollNode = findNodeMatching(result, /roll\-total/i)!
+        console.log(rollNode.children.map(a => a.displayName))
+        assert.equal(result.total(), 22)
     })
 })
 

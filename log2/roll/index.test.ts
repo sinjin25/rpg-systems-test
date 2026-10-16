@@ -52,10 +52,12 @@ describe('roll works', () => {
         const f0 = findNodeMatching(node, /1d8/)
         const f1 = findNodeMatching(node, /attack-sides-mod/)
         const f2 = findNodeMatching(node, /attack-sides-plus/)
+        const f3 = findNodeMatching(node, /maximum-dice/)
         /* console.log(modNodeToText(node)) */
         assert.exists(f0)
         assert.exists(f1)
         assert.exists(f2)
+        assert.exists(f3)
 
         const REPS = 100
         for (let i = 0; i < REPS; i++) {

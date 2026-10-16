@@ -8,7 +8,7 @@ import { inst } from '../testing'
 describe('fatiguing-blows', () => {
     test('registers a -1 attack-status-mod contribution', () => {
         const contribution = fatiguingBlows.broadContexts['attack-status-mod']!
-        expect(contribution(createDefaultOwner({}))!.total()).toBe(-1)
+        expect(contribution(createDefaultOwner({}), {})!.total()).toBe(-1)
     })
 
     test('folds into attack-status-mod when on the sheet', () => {

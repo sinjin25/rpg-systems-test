@@ -13,7 +13,7 @@ import { inst } from '../testing'
 describe('studied-target', () => {
     test('registers a -1 ac-status-mod contribution', () => {
         const contribution = studiedTarget.broadContexts['ac-status-mod']!
-        expect(contribution(createDefaultOwner({}))!.total()).toBe(-1)
+        expect(contribution(createDefaultOwner({}), {})!.total()).toBe(-1)
     })
 
     test('folds into ac-status-mod when on the sheet', () => {
@@ -24,7 +24,7 @@ describe('studied-target', () => {
 
     test('registers a +1 damage-taken-status-mod contribution', () => {
         const contribution = studiedTarget.broadContexts['damage-taken-status-mod']!
-        expect(contribution(createDefaultOwner({}))!.total()).toBe(1)
+        expect(contribution(createDefaultOwner({}), {})!.total()).toBe(1)
     })
 
     test('folds into damage-taken-status-mod when on the sheet', () => {

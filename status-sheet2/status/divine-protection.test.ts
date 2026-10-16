@@ -20,7 +20,7 @@ describe('divine-protection', () => {
         assert.equal(exp.remaining, 3)
         const node = dp.pointer.broadContexts['ac-status-mod']
         if (!node) throw Error('expected ac-status-mod to exist')
-        assert.equal(node(owner)!.total(), 4)
+        assert.equal(node(owner, {})!.total(), 4)
     })
     test('Defaults to 1d4, 1d4 for duration and range', () => {
 

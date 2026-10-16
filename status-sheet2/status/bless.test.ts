@@ -12,7 +12,7 @@ import { inst } from '../testing'
 describe('bless', () => {
     test('registers a +2 attack-status-mod contribution', () => {
         const contribution = bless.broadContexts['attack-status-mod']!
-        expect(contribution(createDefaultOwner({}))!.total()).toBe(2)
+        expect(contribution(createDefaultOwner({}), {})!.total()).toBe(2)
     })
 
     test('folds into attack-status-mod when on the sheet', () => {

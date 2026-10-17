@@ -20,9 +20,7 @@ const DEFAULTS = {
 }
 
 export default (diceOpts: Log2RollOpts = {}) =>
-    // opts is deliberately NOT defaulted: a caller must say where its dice come from, so a
-    // handler that forgets to forward opts is a compile error instead of a die that silently
-    // escapes the fight's seeded stream. Pass {} to ask for the global rng on purpose.
+
     (owner: OwnerLog2, opts: ModNodeOpts): ModNode => {
         const { diceNumber, diceSides, member } = { ...DEFAULTS, ...diceOpts }
         // no instance => global rng

@@ -46,5 +46,19 @@ describe('crit-threat-range (terminal)', () => {
         /* console.log(modNodeToText(node)) */
     })
 
-
+    test('the default range tracks a widened die instead of staying pinned to 20', () => {
+        const owner = createDefaultOwner({
+            fs: {
+                attackSidesPlus: {
+                    displayName: 'attack-sides-plus',
+                    broadContexts: {
+                        "attack-sides-mod": () => leaf('attack-sides-plus', 2)
+                    }
+                }
+            },
+        })
+        const node = critThreatRange(owner)
+        expect(node.total()).toBe(22)
+        expect(findNodeMatching(node, /maximum-dice-sides/i)?.total()).toBe(22)
+    })
 })

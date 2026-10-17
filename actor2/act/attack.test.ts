@@ -38,6 +38,21 @@ const testWeapon = (displayName: string): BaseEquipment => ({
 const testOwner = (es: OwnerMaximal['es'] = { mainhand: testWeapon('mainhand-weapon') }) =>
     createDefaultOwner({ cs: { str: 10, dex: 10 }, es })
 
+// a +2 widened die (d20 -> d22), used to prove nat-max tracks the die's actual max instead of a
+// hardcoded 20
+const widenedOwner = () => createDefaultOwner({
+    cs: { str: 10, dex: 10 },
+    es: { mainhand: testWeapon('mainhand-weapon') },
+    fs: {
+        attackSidesPlus: {
+            displayName: 'attack-sides-plus',
+            broadContexts: {
+                'attack-sides-mod': () => leaf('attack-sides-plus', 2)
+            }
+        }
+    },
+})
+
 const testActor = (es?: OwnerMaximal['es']): Actor2 => instantiateActor(testOwner(es))
 
 // --- seed fishing ---------------------------------------------------------
@@ -160,12 +175,13 @@ describe('calculateCritConfirm', () => {
             return [seed, calculateCritConfirm(owner, { relevantSlot: owner.es.mainhand, rollInstance: createRoll(seed) })]
         })
 
-        const r = rolls.filter(([_, a]) => a.total() >= 21)
+        // @ts-expect-error
+        const r = rolls.filter(([_, a]) => a.total() >= 25)
         console.log(r.map(a => a[0]))
     })
 
     test('Can find the nat X of a modified dice', () => {
-        const SEED = 4
+        const SEED = 36
         const owner = createDefaultOwner({
             fs: {
                 attackSidesPlus: {
@@ -179,11 +195,14 @@ describe('calculateCritConfirm', () => {
         const result = calculateCritConfirm(owner, { relevantSlot: owner.es.mainhand, rollInstance: createRoll(SEED) })
 
         console.log('modnodetotext', modNodeToText(result))
+        const maxRoll = findNodeMatching(result, /maximum-dice-sides/i)
+        const actualRoll = findNodeMatching(result, /roll-total/i)
 
-        console.log(result.children.map(a => a.displayName))
-        const rollNode = findNodeMatching(result, /roll\-total/i)!
-        console.log(rollNode.children.map(a => a.displayName))
-        assert.equal(result.total(), 22)
+        assert.exists(maxRoll)
+        assert.exists(actualRoll)
+        assert.equal(maxRoll.total(), 22)
+        assert.equal(maxRoll.total(), actualRoll.total())
+        assert.equal(result.total(), 25) // +3
     })
 })
 
@@ -213,11 +232,20 @@ describe('attack hit resolution', () => {
         assert.isFalse(hitDidConfirm(attack, ac(attack.total())))
     })
 
-    // this is an acceptable bug at the moment
-    test.skip('a natural max face on a widened die counts as a natural 20')
+    const aWidenedAttack = () => {
+        const owner = widenedOwner()
+        return calculateAttack(owner, { relevantSlot: owner.es.mainhand! })
+    }
 
-    // this is an acceptable bug
-    test.skip('a roll of 20 on a widened die is not a natural 20')
+    test('a natural max face on a widened die counts as a natural 20', () => {
+        const attack = findRun(aWidenedAttack, node => rollOf(node) === 22)
+        assert.isTrue(hitDidConfirm(attack, ac(attack.total() + 1)))
+    })
+
+    test('a roll of 20 on a widened die is not a natural 20', () => {
+        const attack = findRun(aWidenedAttack, node => rollOf(node) === 20)
+        assert.isFalse(hitDidConfirm(attack, ac(attack.total() + 1)))
+    })
 })
 
 describe('crit confirmation', () => {
@@ -244,6 +272,21 @@ describe('crit confirmation', () => {
     test('a natural 1 on the confirm roll never confirms', () => {
         const confirm = findRun(aConfirm, node => rollOf(node) === 1)
         assert.isFalse(critDidConfirm(confirm, ac(confirm.total())))
+    })
+
+    const aWidenedConfirm = () => {
+        const owner = widenedOwner()
+        return calculateCritConfirm(owner, { relevantSlot: owner.es.mainhand! })
+    }
+
+    test('a natural max face on a widened confirm die always confirms', () => {
+        const confirm = findRun(aWidenedConfirm, node => rollOf(node) === 22)
+        assert.isTrue(critDidConfirm(confirm, ac(confirm.total() + 1)))
+    })
+
+    test('a roll of 20 on a widened confirm die does not always confirm', () => {
+        const confirm = findRun(aWidenedConfirm, node => rollOf(node) === 20)
+        assert.isFalse(critDidConfirm(confirm, ac(confirm.total() + 1)))
     })
 })
 

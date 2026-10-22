@@ -61,13 +61,16 @@ export const chooseOptionAndMutate = (
         for (let classFeatKey of clp.classFeats) {
             const f = possibleFeats[classFeatKey]
             if (!f) throw Error(`!f for ${classFeatKey}`)
-            owner.fs[classFeatKey] = f
+            owner.fs = { ...owner.fs, [classFeatKey]: f }
         }
 
-        owner.cs.levels.push({
-            freeFeats: freeFeat ? [freeFeat] : [],
-            key: clp.key,
-        })
+        owner.cs = {
+            ...owner.cs,
+            levels: [...owner.cs.levels, {
+                freeFeats: freeFeat ? [freeFeat] : [],
+                key: clp.key,
+            }],
+        }
         return true
     }
     catch (e) {

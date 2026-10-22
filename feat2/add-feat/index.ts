@@ -7,7 +7,7 @@ export const addFeat = (
 ): boolean => {
     const meetsPrerequisites = feat?.prerequisites?.(owner) ?? true
     if (!meetsPrerequisites) return false
-    owner.fs[feat.displayName] = feat
+    owner.fs = { ...owner.fs, [feat.displayName]: feat }
     return true
 }
 

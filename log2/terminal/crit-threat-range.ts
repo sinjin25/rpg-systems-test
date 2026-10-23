@@ -2,6 +2,7 @@ import newModNode, { sumFunc } from "..";
 import { EveryTree, ModNodeOpts, OwnerLog2, TreeSubproblems } from "../types";
 import critThreatRangeMod from "../composition/crit-threat-range-mod";
 import finalSides from "../roll/final-sides";
+import modFromEquipment from "../composition/equipment/mod-from-equipment";
 
 const displayName: EveryTree = 'crit-threat-range'
 export default (owner: OwnerLog2, opts: ModNodeOpts = {}) => {
@@ -14,7 +15,8 @@ export default (owner: OwnerLog2, opts: ModNodeOpts = {}) => {
         'crit-threat-range-mod': critThreatRangeMod(owner, opts),
         'crit-threat-range': weaponCritThreatHandler
             ? weaponCritThreatHandler(owner, opts)
-            : finalSides(20, 'attack-sides-mod')(owner, opts)
+            : finalSides(20, 'attack-sides-mod')(owner, opts),
+        'crit-threat-range-equipment-mod': modFromEquipment('crit-threat-range-equipment-mod')(owner, opts)
     }
 
     const subpr = Object.values(subproblems)

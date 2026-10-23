@@ -127,7 +127,13 @@ export type EveryTree =
     | 'crit-multiplier'
     | 'crit-multiplier-mod'
     | 'crit-multiplier-feat-mod'
+    | 'crit-multiplier-equipment-mod'
     | 'crit-threat-range-mod'
+    | 'crit-threat-range-equipment-mod'
+    | 'flat-damage-equipment-mod'
+    | 'speed-equipment-mod'
+    | 'initiative-equipment-mod'
+    | 'damage-taken-equipment-mod' // dr mod
     | 'damage-taken-status-mod'
     | 'enhancement' // used by attack, ac, damage, for equipment (mostly flavor)
     // terminal

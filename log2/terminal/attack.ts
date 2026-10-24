@@ -9,6 +9,7 @@ import attackStatusMod from "../composition/attack-status-mod";
 import attackEquipmentMod from "../composition/attack-equipment-mod";
 import featContribution from "../composition/feat-contribution";
 import { Tags } from "../tags";
+import { stripSelectModNodeIfEmpty } from "../strip-if-empty";
 
 const displayName: EveryTree = 'attack'
 
@@ -28,7 +29,7 @@ export default (owner: OwnerLog2, opts: ModNodeOpts = {}) => {
         'attack-status-mod':     attackStatusMod(owner, localOpts),
         'attack-equipment-mod':  attackEquipmentMod(owner, localOpts),
     }
-    const subpr = Object.values(subproblems)
+    const subpr = stripSelectModNodeIfEmpty(Object.values(subproblems))
 
     return newModNode(
         displayName,

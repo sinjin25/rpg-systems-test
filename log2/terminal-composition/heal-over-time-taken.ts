@@ -1,6 +1,7 @@
 import newModNode, { ModNode, mapFunc, sumFunc } from "..";
 import { EveryTree, ModNodeOpts, OwnerLog2 } from "../types";
 import featContribution from "../composition/feat-contribution";
+import { stripSelectModNodeIfEmpty } from "../strip-if-empty";
 
 const displayName: EveryTree = 'heal-over-time-taken'
 
@@ -12,10 +13,10 @@ export default (incomingHeal: {
 
     return newModNode(
         displayName,
-        [
+        stripSelectModNodeIfEmpty([
             incoming,
             featContribution('heal-over-time-taken-feat-mod')(owner, opts),
-        ],
+        ]),
         mapFunc(v => Math.max(0, v)),
     )
 }

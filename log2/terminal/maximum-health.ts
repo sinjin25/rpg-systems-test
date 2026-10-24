@@ -7,6 +7,7 @@ import featContribution from "../composition/feat-contribution";
 import flatHealth from "../composition/flat-health";
 import healthPerLevel from "../composition/health-per-level";
 import baseHealth from "../bases/base-health";
+import { stripSelectModNodeIfEmpty } from "../strip-if-empty";
 
 /* const BASE = 20
 const PER_LEVEL = 10 */
@@ -25,7 +26,7 @@ export default (owner: OwnerLog2, opts: ModNodeOpts = {}) => {
         )
     }
 
-    const subpr = Object.values(subproblems)
+    const subpr = stripSelectModNodeIfEmpty(Object.values(subproblems))
 
     return newModNode(
         displayName,

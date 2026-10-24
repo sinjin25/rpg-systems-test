@@ -5,6 +5,7 @@ import { OwnerLog2, EveryTree, TreeSubproblems, ModNodeOpts } from "../types";
 import attack from "./attack";
 import critConfirmMod from "../composition/crit-confirm-mod";
 import { Tags, TerminalTags } from "../tags";
+import { stripSelectModNodeIfEmpty } from "../strip-if-empty";
 
 const displayName: EveryTree = 'crit-confirm'
 
@@ -17,7 +18,7 @@ export default (owner: OwnerLog2, opts: ModNodeOpts = {}) => {
         'crit-confirm-mod': critConfirmMod(owner, localOpts),
     }
 
-    const subpr = Object.values(subproblems)
+    const subpr = stripSelectModNodeIfEmpty(Object.values(subproblems))
 
     return newModNode(
         displayName,

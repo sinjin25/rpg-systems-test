@@ -11,6 +11,7 @@ describe('crit-threat-range (terminal)', () => {
     const owner = createDefaultOwner()
     test('defaults to 20 when the weapon declares no critRange and no feats apply', () => {
         const node = critThreatRange(owner)
+        console.log(modNodeToText(node))
         expect(node.total()).toBe(20)
         expect(node.children.length).toBe(2) // weapon base (or default) and featmod
         expect(findNodeMatching(node, /crit-threat-range-mod/i)?.total()).toBe(0)

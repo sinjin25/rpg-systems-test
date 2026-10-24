@@ -3,6 +3,7 @@ import { EveryTree, ModNodeOpts, OwnerLog2, TreeSubproblems } from "../types";
 import critThreatRangeMod from "../composition/crit-threat-range-mod";
 import finalSides from "../roll/final-sides";
 import modFromEquipment from "../composition/equipment/mod-from-equipment";
+import { stripSelectModNodeIfEmpty } from "../strip-if-empty";
 
 const displayName: EveryTree = 'crit-threat-range'
 export default (owner: OwnerLog2, opts: ModNodeOpts = {}) => {
@@ -19,8 +20,9 @@ export default (owner: OwnerLog2, opts: ModNodeOpts = {}) => {
         'crit-threat-range-equipment-mod': modFromEquipment('crit-threat-range-equipment-mod')(owner, opts)
     }
 
-    const subpr = Object.values(subproblems)
-        .filter(a => !!a)
+    const subpr = stripSelectModNodeIfEmpty(
+        Object.values(subproblems).filter(a => !!a)
+    )
 
     return newModNode(displayName, subpr, sumFunc)
 }

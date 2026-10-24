@@ -11,18 +11,6 @@ export type ModNodeOpts = {
     // extensible: add future context fields here without touching call sites
 }
 
-
-
-// the structural contract log2 traversal needs: anything it can walk broadContexts on.
-// the concrete assembled actor lives in actor2/ and is assignable to this.
-/* export type OwnerLog2 = Omit<Owner, 'fs' | 'ss' | 'es' | 'as'> &
-{
-    fs: Record<string, ObjectWithBroadContexts>,
-    ss: Record<string, ObjectWithBroadContexts>,
-    es: EquipmentSheet,
-    relevantSlot?: BaseEquipment
-    tags: Tags[], // starts empty, a terminal tree should mutate it. Use the utility functions from tags.ts
-} */
 export type OwnerLog2 = Omit<OwnerMaximal, 'fs' | 'ss' | 'es' | 'as'> &
 {
     fs: Record<string, ObjectWithBroadContexts>,
@@ -65,8 +53,36 @@ export type BaseStateMod = `raw-${CsScore}`
     | `${CsScore}-from-status`
     | `${CsScore}-total` // after all modifiers
     | `${CsScore}-as-mod`
-export type FeatModTypes = 'attack' | 'damage' | 'ac' | 'initiative' | 'health' | 'flat-damage' | 'crit-scalable-damage' | 'damage-taken' | 'max-dex' | 'damage-over-time' | 'damage-over-time-taken' | 'heal-over-time' | 'heal-over-time-taken' | 'spell-dc'
+
+export type BaseTree =
+    | 'attack'
+    | 'damage'
+    | 'ac'
+    | 'initiative'
+    | 'health'
+    | 'maximum-health'
+    | 'flat-damage'
+    | 'crit-scalable-damage'
+    | 'damage-taken'
+    | 'max-dex'
+    | 'damage-over-time'
+    | 'damage-over-time-taken'
+    | 'heal-over-time'
+    | 'heal-over-time-taken'
+    | 'spell-dc'
+    | 'dc'
     | 'speed'
+    | Saves
+    | CsScore
+    | 'crit-confirm'
+    | 'crit-threat-range'
+    | 'crit-multiplier'
+    | 'crit-damage'
+    | 'roll-total'
+
+export type FeatModTypes = Extract<BaseTree,
+    'attack' | 'damage' | 'ac' | 'initiative' | 'health' | 'flat-damage' | 'crit-scalable-damage' | 'damage-taken' | 'max-dex' | 'damage-over-time' | 'damage-over-time-taken' | 'heal-over-time' | 'heal-over-time-taken' | 'spell-dc'
+    | 'speed'>
 export type FeatMod = `${FeatModTypes}-feat-mod`
 
 type Health = 'base-health' | 'flat-health' | 'health-per-level' | 'health-equipment-mod' | 'base-health-per-level' | 'health-from-levels'

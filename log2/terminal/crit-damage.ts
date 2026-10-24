@@ -3,6 +3,7 @@ import { EveryTree, ModNodeOpts, OwnerLog2, TreeSubproblems } from "../types";
 import critScalableDamage from "../composition/crit-scalable-damage";
 import flatDamage from "../composition/flat-damage";
 import critMultiplier from "../composition/crit-multiplier";
+import { stripSelectModNodeIfEmpty } from "../strip-if-empty";
 
 const displayName: EveryTree = 'crit-damage'
 
@@ -19,8 +20,8 @@ export default (owner: OwnerLog2, opts: ModNodeOpts = {}) => {
         subproblems['crit-scalable-damage']!,
     ], productFunc)
 
-    return newModNode(displayName, [
+    return newModNode(displayName, stripSelectModNodeIfEmpty([
         scaledPortion,
         subproblems['flat-damage']!,
-    ], mapFunc(Math.floor, sumFunc))
+    ]), mapFunc(Math.floor, sumFunc))
 }

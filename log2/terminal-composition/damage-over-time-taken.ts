@@ -2,6 +2,7 @@ import newModNode, { ModNode, mapFunc, sumFunc } from "..";
 import { EveryTree, ModNodeOpts, OwnerLog2 } from "../types";
 import damageTakenStatusMod from "../composition/status/damage-taken-status-mod";
 import featContribution from "../composition/feat-contribution";
+import { stripSelectModNodeIfEmpty } from "../strip-if-empty";
 
 const displayName: EveryTree = 'damage-over-time-taken'
 
@@ -13,11 +14,11 @@ export default (incomingDamage: {
 
     return newModNode(
         displayName,
-        [
+        stripSelectModNodeIfEmpty([
             incoming,
             featContribution('damage-over-time-taken-feat-mod')(owner, opts),
             damageTakenStatusMod(owner, opts),
-        ],
+        ]),
         mapFunc(v => Math.max(0, v)),
     )
 }

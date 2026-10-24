@@ -3,16 +3,19 @@ import { OwnerLog2, EveryTree, TreeSubproblems, ModNodeOpts } from "../types";
 import featContribution from "../composition/feat-contribution";
 import csAsMod from "../composition/cs-as-mod";
 import statusContribution from "../composition/status/status-contribution";
+import modFromEquipment from "../composition/equipment/mod-from-equipment";
+import { stripSelectModNodeIfEmpty } from "../strip-if-empty";
 
 const displayName: EveryTree = 'speed'
 
 export default (owner: OwnerLog2, opts: ModNodeOpts = {}) => {
     const subproblems: TreeSubproblems = {
         'speed-feat-mod': featContribution('speed-feat-mod')(owner, opts),
-        'speed-status-mod': statusContribution('speed-status-mod')(owner, opts)
+        'speed-status-mod': statusContribution('speed-status-mod')(owner, opts),
+        'speed-equipment-mod': modFromEquipment('speed-equipment-mod')(owner, opts)
     }
 
-    const subpr = Object.values(subproblems)
+    const subpr = stripSelectModNodeIfEmpty(Object.values(subproblems))
 
     return newModNode(
         displayName,

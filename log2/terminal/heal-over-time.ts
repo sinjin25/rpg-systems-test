@@ -1,6 +1,7 @@
 import newModNode, { ModNode, sumFunc } from "..";
 import featContribution from "../composition/feat-contribution";
 import { OwnerLog2, EveryTree, TreeSubproblems, ModNodeOpts } from "../types";
+import { stripSelectModNodeIfEmpty } from "../strip-if-empty";
 
 const displayName: EveryTree = 'heal-over-time'
 
@@ -14,7 +15,7 @@ export default (instance: ModNode) => (owner: OwnerLog2, opts: ModNodeOpts = {},
 
     return newModNode(
         displayName,
-        [...subpr, instance],
+        stripSelectModNodeIfEmpty([...subpr, instance]),
         sumFunc,
     )
 }

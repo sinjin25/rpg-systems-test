@@ -64,9 +64,6 @@ const ttrvTextVisualizer: TimeTravelReplayerVisualizer = {
     'actor-death': async (log) => {
         console.log(cc.BgRed, `${displayActor(log.source)} died`, cc.reset)
     },
-    'xp-gained': async (log) => {
-        console.log(cc.BgRed, `${displayActor(log.source)} gained ${log.amount.total()} xp`, cc.reset)
-    },
     'ability': async (log) => {
         const source = log.source
         const to = log.to?.[0]!

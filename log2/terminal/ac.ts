@@ -9,6 +9,7 @@ import acStatusMod from "../composition/status/ac-status-mod";
 import featContribution from "../composition/feat-contribution";
 import { Tags } from "../tags";
 import { EquipmentSheet, EquipmentSlot } from "../../equipment-sheet2/types";
+import { stripSelectModNodeIfEmpty } from "../strip-if-empty";
 
 const displayName: EveryTree = 'ac'
 
@@ -28,7 +29,7 @@ export default (owner: OwnerLog2, opts: ModNodeOpts = {}) => {
         'ac-status-mod': acStatusMod(owner, localOpts),
     }
 
-    const subpr = Object.values(subproblems)
+    const subpr = stripSelectModNodeIfEmpty(Object.values(subproblems))
 
     return newModNode(
         displayName,

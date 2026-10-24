@@ -8,6 +8,7 @@ import effectiveSpellStat from "../composition/effective-spell-dc-stat";
 import statusContribution from "../composition/status/status-contribution";
 import modFromEquipment from "../composition/equipment/mod-from-equipment";
 import featContribution from "../composition/feat-contribution";
+import { stripSelectModNodeIfEmpty } from "../strip-if-empty";
 
 const displayName: EveryTree = 'dc'
 
@@ -29,7 +30,7 @@ export default (
         'spell-dc-from-equipment': modFromEquipment('spell-dc-from-equipment')(owner, localOpts),
         'base-dc': newModNode('base-dc', [], () => payload.baseDc)
     }
-    const subpr = Object.values(subproblems)
+    const subpr = stripSelectModNodeIfEmpty(Object.values(subproblems))
 
     return newModNode(
         displayName,

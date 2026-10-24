@@ -33,6 +33,8 @@ describe('Sides', () => {
         // doesnt apply to other mods
         const node2 = sides('damage-sides-mod')(owner)
         assert.notExists(node2)
+
+        /* console.log(modNodeToText(node)) */
     })
     test('Returns undefined if no relevant boosts', () => {
         const owner = createDefaultOwner({

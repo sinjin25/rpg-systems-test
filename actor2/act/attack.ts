@@ -17,7 +17,7 @@ export const calculateAttack = (
 ) => {
     return newModNode(
         'attack',
-        [attack(owner, { relevantSlot: opts.relevantSlot }), roll({ diceSides: 20, diceNumber: 1, member: 'attack-sides-mod' })(owner, opts)],
+        [attack(owner, { relevantSlot: opts.relevantSlot }), roll({ member: 'attack-sides-mod' })(owner, opts)],
         sumFunc,
     )
 }
@@ -49,7 +49,7 @@ export const calculateCritConfirm = (
 ) => {
     return newModNode(
         'crit-confirm',
-        [critConfirm(owner, { relevantSlot: opts.relevantSlot }), roll({ diceSides: 20, diceNumber: 1, member: 'attack-sides-mod' })(owner, opts)],
+        [critConfirm(owner, { relevantSlot: opts.relevantSlot }), roll({ member: 'attack-sides-mod' })(owner, opts)],
         sumFunc,
     )
 }
@@ -170,7 +170,10 @@ export const hitDidConfirm = (
     }
 
     const roll = rollChild.total()
-    if (opts.nat20HitHits && roll >= 20) return true
+    const maxRoll = findNodeMatching(rollChild, /maximum-dice-sides/i)
+    if (!maxRoll) throw Error('Did not find maximum-dice-sides child. Confirm the name.')
+
+    if (opts.nat20HitHits && roll >= maxRoll.total()) return true
     if (opts.nat1HitFails && roll === 1) return false
     return attackResult.total() >= targetAc.total()
 }
@@ -186,7 +189,10 @@ export const critDidConfirm = (
     }
 
     const roll = rollChild.total()
-    if (opts.nat20ThreatSucceeds && roll >= 20) return true
+    const maxRoll = findNodeMatching(rollChild, /maximum-dice-sides/i)
+    if (!maxRoll) throw Error('Did not find maximum-dice-sides child. Confirm the name.')
+
+    if (opts.nat20ThreatSucceeds && roll >= maxRoll.total()) return true
     if (opts.nat1ThreatFails && roll === 1) return false
     return critConfirmResult.total() >= targetAc.total()
 }

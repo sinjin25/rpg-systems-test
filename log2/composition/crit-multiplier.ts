@@ -1,6 +1,7 @@
 import newModNode, { leaf, sumFunc } from "..";
 import { EveryTree, ModNodeOpts, OwnerLog2 } from "../types";
 import critMultiplierMod from "./crit-multiplier-mod";
+import modFromEquipment from "./equipment/mod-from-equipment";
 
 const displayName: EveryTree = 'crit-multiplier'
 const DEFAULT_MULTIPLIER = 1.5
@@ -14,10 +15,12 @@ export default (owner: OwnerLog2, opts: ModNodeOpts = {}) => {
     if (!handler) return newModNode(displayName, [
         leaf(relevantSlot.displayName, DEFAULT_MULTIPLIER),
         critMultiplierMod(owner, opts),
+        modFromEquipment('crit-multiplier-equipment-mod')(owner, opts),
     ], sumFunc)
 
     return newModNode(displayName, [
         leaf(relevantSlot.displayName, handler(owner, opts)!.total()),
         critMultiplierMod(owner, opts),
+        modFromEquipment('crit-multiplier-equipment-mod')(owner, opts),
     ], sumFunc)
 }

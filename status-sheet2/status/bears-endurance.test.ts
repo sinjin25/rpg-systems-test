@@ -9,7 +9,7 @@ import { reinstantiateHealth } from '../../actor2/instantiate'
 describe("bulls-strength", () => {
     test('registers a +8 con-from-status contribution', () => {
         const contribution = bearsEndurance.broadContexts['con-from-status']!
-        expect(contribution(createDefaultOwner({}))!.total()).toBe(8)
+        expect(contribution(createDefaultOwner({}), {})!.total()).toBe(8)
     })
 
     test('Starts with 4 rounds before expiration', () => {

@@ -11,6 +11,7 @@ describe('crit-threat-range (terminal)', () => {
     const owner = createDefaultOwner()
     test('defaults to 20 when the weapon declares no critRange and no feats apply', () => {
         const node = critThreatRange(owner)
+        console.log(modNodeToText(node))
         expect(node.total()).toBe(20)
         expect(node.children.length).toBe(2) // weapon base (or default) and featmod
         expect(findNodeMatching(node, /crit-threat-range-mod/i)?.total()).toBe(0)
@@ -46,5 +47,19 @@ describe('crit-threat-range (terminal)', () => {
         /* console.log(modNodeToText(node)) */
     })
 
-
+    test('the default range tracks a widened die instead of staying pinned to 20', () => {
+        const owner = createDefaultOwner({
+            fs: {
+                attackSidesPlus: {
+                    displayName: 'attack-sides-plus',
+                    broadContexts: {
+                        "attack-sides-mod": () => leaf('attack-sides-plus', 2)
+                    }
+                }
+            },
+        })
+        const node = critThreatRange(owner)
+        expect(node.total()).toBe(22)
+        expect(findNodeMatching(node, /maximum-dice-sides/i)?.total()).toBe(22)
+    })
 })

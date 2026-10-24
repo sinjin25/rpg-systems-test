@@ -11,7 +11,7 @@ describe('defensive-roll', () => {
     test('registers a negated 1d4 in [-4, -1]', () => {
         setSeed(42)
         try {
-            const node = defensiveRoll.broadContexts['damage-taken-status-mod']!(createDefaultOwner({}))!
+            const node = defensiveRoll.broadContexts['damage-taken-status-mod']!(createDefaultOwner({}), {})!
             expect(node.total()).toBeGreaterThanOrEqual(-4)
             expect(node.total()).toBeLessThanOrEqual(-1)
         } finally {
@@ -22,7 +22,7 @@ describe('defensive-roll', () => {
     test('amount is stable across reads', () => {
         setSeed(7)
         try {
-            const node = defensiveRoll.broadContexts['damage-taken-status-mod']!(createDefaultOwner({}))!
+            const node = defensiveRoll.broadContexts['damage-taken-status-mod']!(createDefaultOwner({}), {})!
             const first = node.total()
             expect(node.total()).toBe(first)
         } finally {

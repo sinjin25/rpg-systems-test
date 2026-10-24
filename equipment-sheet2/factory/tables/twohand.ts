@@ -1,173 +1,44 @@
 import { LookupTableValue, TwohandAffix, TwohandSuffix } from "../types";
+import { tuplesToLookupTableValues } from "./lookup-table-tuples";
 
-const STD_WEIGHT = 100
+const STAT_RANGES = tuplesToLookupTableValues(
+    [[4, 2, 1],
+    [2, 1, 2],
+    [1, 1, 4],]
+)
 
 export const twohandAffixLookupTable: Record<TwohandAffix['kind'], LookupTableValue[]> = {
-    'crit-multiplier': [
-        {
-            max: 1,
-            min: 1,
-            weight: STD_WEIGHT * .5
-        },
-        {
-            max: 1,
-            min: 1,
-            weight: STD_WEIGHT
-        },
-    ],
-    str: [
-        {
-            max: 4,
-            min: 2,
-            weight: STD_WEIGHT
-        },
-        {
-            max: 2,
-            min: 1,
-            weight: STD_WEIGHT * 2
-        },
-        {
-            max: 1,
-            min: 1,
-            weight: STD_WEIGHT * 4
-        },
-    ],
-    dex: [
-        {
-            max: 4,
-            min: 2,
-            weight: STD_WEIGHT
-        },
-        {
-            max: 2,
-            min: 1,
-            weight: STD_WEIGHT * 2
-        },
-        {
-            max: 1,
-            min: 1,
-            weight: STD_WEIGHT * 4
-        },
-    ],
-    int: [
-        {
-            max: 4,
-            min: 2,
-            weight: STD_WEIGHT
-        },
-        {
-            max: 2,
-            min: 1,
-            weight: STD_WEIGHT * 2
-        },
-        {
-            max: 1,
-            min: 1,
-            weight: STD_WEIGHT * 4
-        },
-    ],
-    speed: [
-        {
-            max: 10,
-            min: 10,
-            weight: STD_WEIGHT * .5
-        },
-    ],
-    initiative: [
-        {
-            max: 4,
-            min: 2,
-            weight: STD_WEIGHT
-        },
-        {
-            max: 2,
-            min: 1,
-            weight: STD_WEIGHT * 3
-        },
-    ],
+    'crit-multiplier': tuplesToLookupTableValues([
+        [1, 1, .5],
+        [1, 1, 1],
+    ]),
+    con: structuredClone(STAT_RANGES),
+    str: structuredClone(STAT_RANGES),
+    dex: structuredClone(STAT_RANGES),
+    int: structuredClone(STAT_RANGES),
+    speed: tuplesToLookupTableValues([
+        [10, 10, .5],
+    ]),
+    initiative: tuplesToLookupTableValues([
+        [4, 2, 1],
+        [2, 1, 3],
+    ]),
 }
 
 export const twohandSuffixLookupTable: Record<TwohandSuffix['kind'], LookupTableValue[]> = {
-    'crit-multiplier': [
-        {
-            max: 1,
-            min: 1,
-            weight: STD_WEIGHT * .5
-        },
-        {
-            max: 1,
-            min: 1,
-            weight: STD_WEIGHT
-        },
-    ],
-    str: [
-        {
-            max: 4,
-            min: 2,
-            weight: STD_WEIGHT
-        },
-        {
-            max: 2,
-            min: 1,
-            weight: STD_WEIGHT * 2
-        },
-        {
-            max: 1,
-            min: 1,
-            weight: STD_WEIGHT * 4
-        },
-    ],
-    dex: [
-        {
-            max: 4,
-            min: 2,
-            weight: STD_WEIGHT
-        },
-        {
-            max: 2,
-            min: 1,
-            weight: STD_WEIGHT * 2
-        },
-        {
-            max: 1,
-            min: 1,
-            weight: STD_WEIGHT * 4
-        },
-    ],
-    int: [
-        {
-            max: 4,
-            min: 2,
-            weight: STD_WEIGHT
-        },
-        {
-            max: 2,
-            min: 1,
-            weight: STD_WEIGHT * 2
-        },
-        {
-            max: 1,
-            min: 1,
-            weight: STD_WEIGHT * 4
-        },
-    ],
-    speed: [
-        {
-            max: 10,
-            min: 10,
-            weight: STD_WEIGHT * .5
-        },
-    ],
-    initiative: [
-        {
-            max: 4,
-            min: 2,
-            weight: STD_WEIGHT
-        },
-        {
-            max: 2,
-            min: 1,
-            weight: STD_WEIGHT * 3
-        },
-    ],
+    'crit-multiplier': tuplesToLookupTableValues([
+        [1, 1, .5],
+        [1, 1, 1],
+    ]),
+    con: structuredClone(STAT_RANGES),
+    str: structuredClone(STAT_RANGES),
+    dex: structuredClone(STAT_RANGES),
+    int: structuredClone(STAT_RANGES),
+    speed: tuplesToLookupTableValues([
+        [10, 10, .5],
+    ]),
+    initiative: tuplesToLookupTableValues([
+        [4, 2, 1],
+        [2, 1, 3],
+    ]),
 }

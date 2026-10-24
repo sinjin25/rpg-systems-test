@@ -8,8 +8,8 @@ import maximumHealth from '../../log2/terminal/maximum-health'
 import critThreatRange from '../../log2/terminal/crit-threat-range'
 import critMultiplier from '../../log2/composition/crit-multiplier'
 import modNodeToText from '../../log2/format'
-import { rapier } from '../defaults'
 import { RollInstance } from '../../roll/types'
+import { weaponBaseItemLookupTable } from './tables/weapon'
 
 // every die rolls its own max — deterministic without depending on a real seed's output
 const maxRoll: RollInstance = {
@@ -68,12 +68,10 @@ describe('blueprint -> BaseEquipment -> terminal calculation (integration)', () 
         console.log(modNodeToText(threatNode))
     })
 
-    test('a rolled base item carries its own crit stats through from defaults.ts', () => {
-        // rapier declares crit-threat-range 18 and crit-multiplier 2 directly on its own
-        // broadContexts (equipment-sheet2/defaults.ts) — not through the mod-roll pipeline
+    test('a rolled rapier carries its crit stats through from its implicit entry', () => {
         const blueprint: EquipmentBlueprint = {
             slot: 'mainhand',
-            base: { name: 'rapier', base: rapier, implicit: [] },
+            base: { name: 'rapier', ...weaponBaseItemLookupTable.rapier },
             affix: [],
             suffix: [],
         }

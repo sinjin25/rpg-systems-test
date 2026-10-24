@@ -137,9 +137,14 @@ export type EquipmentBlueprintImplicit = {
     value: number,
 }
 
+export type BaseEquipmentFactoryData = {
+    displayName: string,
+    tags?: BaseEquipment['tags'],
+}
+
 export type BaseItemLookupValue = {
     weight: number,
-    base: BaseEquipment,
+    base: BaseEquipmentFactoryData,
     implicit: EquipmentBlueprintImplicit[],
     // base weapon's own damage die (ex: longsword -> 8). Generated into the `damage` broadContext
     // by blueprintToBaseEquipment instead of being hand-written as a closure on `base`.

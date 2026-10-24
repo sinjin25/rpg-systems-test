@@ -5,6 +5,8 @@ import { ModNodeOpts, ObjectWithBroadContexts, OwnerLog2 } from '../log2/types'
 import rollTree from '../log2/roll'
 import type { BaseEquipment, EquipmentSheet, EquipmentSlot } from './types'
 import { classLevelCounts } from '../class-level2/derive'
+import { blueprintToBaseEquipment } from './factory/broad-context-adapter'
+import { weaponBaseItemLookupTable } from './factory/tables/weapon'
 
 export const SLOT_TYPE: Record<string, BaseEquipment['acceptableSlots']> = {
     weapon: ['mainhand', 'offhand'],
@@ -33,6 +35,17 @@ const buildOutBaseArmor = <const T extends readonly (readonly [string, number, n
 
     return record
 }
+
+// built from weaponBaseItemLookupTable via the factory pipeline instead of a hand-written
+// closure — acceptableSlots is widened back to SLOT_TYPE.weapon since the factory's blueprint
+// slot only governs which affix/suffix roll tables apply, not final equip eligibility
+const buildWeapon = (name: keyof typeof weaponBaseItemLookupTable): BaseEquipment => ({
+    ...blueprintToBaseEquipment(
+        { slot: 'mainhand', base: { name, ...weaponBaseItemLookupTable[name] }, affix: [], suffix: [] },
+        name,
+    ),
+    acceptableSlots: SLOT_TYPE.weapon,
+})
 
 export const armors = buildOutBaseArmor([
     ['clothing', 0, 10],
@@ -77,85 +90,28 @@ export const heavyShield: BaseEquipment = (() => {
     }
 })()
 
-export const shortsword: BaseEquipment = (() => {
-    const dn = 'shortsword'
-    return {
-        displayName: dn,
-        acceptableSlots: SLOT_TYPE.weapon,
-        broadContexts: {
-            damage: (o: OwnerLog2, opts: ModNodeOpts = {}) => {
-                const sides = 6
-                return newModNode(dn, [rollTree({ diceSides: sides })(o, opts)], sumFunc)
-            }
-        },
-        tags: ['melee']
-    }
-})()
+export const shortsword: BaseEquipment = buildWeapon('shortsword')
 
-export const shortswordPlusOne: BaseEquipment = (() => {
-    const dn = 'shortswordPlusOne'
-    return {
-        displayName: dn,
-        acceptableSlots: SLOT_TYPE.weapon,
-        broadContexts: {
-            damage: (o: OwnerLog2, opts: ModNodeOpts = {}) => {
-                const sides = 6
-                return newModNode(dn, [rollTree({ diceSides: sides })(o, opts)], sumFunc)
-            },
-            enhancement: (o: OwnerLog2) => {
-                return leaf(dn, 1)
-            }
-        },
-        tags: ['melee']
+const shortswordPlusOne: BaseEquipment = buildWeapon('shortsword')
+{
+    shortsword.displayName = 'shortsword-plus-one'
+    shortswordPlusOne.broadContexts.enhancement = (o: OwnerLog2) => {
+        return leaf('shortsword-plus-one', 1)
     }
-})()
+}
 
-export const shortswordPlusOneIfFighter: BaseEquipment = (() => {
-    const dn = 'shortswordPlusOneIfFighter'
-    return {
-        displayName: dn,
-        acceptableSlots: SLOT_TYPE.weapon,
-        broadContexts: {
-            damage: (o: OwnerLog2, opts: ModNodeOpts = {}) => {
-                const sides = 6
-                return newModNode(dn, [rollTree({ diceSides: sides })(o, opts)], sumFunc)
-            },
-            enhancement: (o: OwnerLog2) => {
-                const fLevelCnt = classLevelCounts(o.cs.levels).fighter
-                if (fLevelCnt === undefined) return leaf(dn, 0)
-                return leaf(dn, fLevelCnt)
-            }
-        },
-        tags: ['melee']
+export const shortswordPlusOneIfFighter: BaseEquipment = buildWeapon('shortsword')
+{
+    shortswordPlusOneIfFighter.displayName = 'shortsword-plus-one-if-fighter'
+    shortswordPlusOneIfFighter.broadContexts.enhancement = (o: OwnerLog2) => {
+        const fLevelCnt = classLevelCounts(o.cs.levels).fighter
+        if (fLevelCnt === undefined) return leaf('shortswordPlusOneIfFighter', 0)
+        return leaf('shortswordPlusOneIfFighter', fLevelCnt)
     }
-})()
+}
 
-export const longsword: BaseEquipment = (() => {
-    const dn = 'longsword'
-    return {
-        displayName: dn,
-        acceptableSlots: SLOT_TYPE.weapon,
-        broadContexts: {
-            damage: (o: OwnerLog2, opts: ModNodeOpts = {}) => {
-                const sides = 8
-                return newModNode(dn, [rollTree({ diceSides: sides })(o, opts)], sumFunc)
-            }
-        },
-        tags: ['melee']
-    }
-})()
+export const longsword: BaseEquipment = buildWeapon('longsword')
 
-export const dagger: BaseEquipment = (() => {
-    const dn = 'dagger'
-    return {
-        displayName: dn,
-        acceptableSlots: SLOT_TYPE.weapon,
-        broadContexts: {
-            damage: (o: OwnerLog2, opts: ModNodeOpts = {}) => {
-                const sides = 4
-                return newModNode(dn, [rollTree({ diceSides: sides })(o, opts)], sumFunc)
-            },
-        },
-        tags: ['melee', 'finesse']
-    }
-})()
+export const dagger: BaseEquipment = buildWeapon('dagger')
+
+export const rapier: BaseEquipment = buildWeapon('rapier')

@@ -1,14 +1,12 @@
 import { BaseItemLookupValue, LookupTableValue, WeaponAffix, WeaponSuffix } from "../types";
 import { tuplesToLookupTableValues } from "./lookup-table-tuples";
-import { dagger, longsword, rapier, scimitar, shortsword, warhammer } from "../../defaults";
 
 export const weaponBaseItemLookupTable: Record<string, BaseItemLookupValue> = {
-    dagger: { weight: 100, base: dagger, implicit: [], damageDiceSides: 4 },
-    shortsword: { weight: 100, base: shortsword, implicit: [], damageDiceSides: 6 },
-    longsword: { weight: 100, base: longsword, implicit: [], damageDiceSides: 8 },
-    rapier: { weight: 100, base: rapier, implicit: [], damageDiceSides: 6 },
-    scimitar: { weight: 100, base: scimitar, implicit: [], damageDiceSides: 6 },
-    warhammer: { weight: 100, base: warhammer, implicit: [], damageDiceSides: 8 },
+    dagger: { weight: 100, base: { displayName: 'dagger', tags: ['melee', 'finesse'] }, implicit: [{ kind: 'crit-threat-range', value: 19 }, { kind: 'crit-multiplier', value: 2 }], damageDiceSides: 4 },
+    shortsword: { weight: 100, base: { displayName: 'shortsword', tags: ['melee'] }, implicit: [], damageDiceSides: 6 },
+    longsword: { weight: 100, base: { displayName: 'longsword', tags: ['melee'] }, implicit: [{ kind: 'crit-threat-range', value: 19 }, { kind: 'crit-multiplier', value: 2 }], damageDiceSides: 8 },
+    rapier: { weight: 100, base: { displayName: 'rapier', tags: ['melee', 'finesse'] }, implicit: [{ kind: 'crit-threat-range', value: 18 }, { kind: 'crit-multiplier', value: 2 }], damageDiceSides: 6 },
+    warhammer: { weight: 100, base: { displayName: 'warhammer', tags: ['melee'] }, implicit: [{ kind: 'crit-multiplier', value: 3 }], damageDiceSides: 8 },
 }
 
 const STAT_RANGES = tuplesToLookupTableValues(

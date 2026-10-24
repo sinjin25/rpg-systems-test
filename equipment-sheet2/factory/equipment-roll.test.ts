@@ -84,7 +84,7 @@ describe('rollBaseItem', () => {
             counts[item.name] = (counts[item.name] ?? 0) + 1
         }
 
-        assert.equal(counts['longsword'], 186)
+        assert.equal(counts['longsword'], 217)
     })
 
     test('returns undefined for a slot with no base item table', () => {

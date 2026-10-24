@@ -58,9 +58,9 @@ const _collectModNodesByKind = (
     const relevantSuffix = blueprint.suffix.filter(a => a.kind !== 'roll-damage')
     const relevantAffix = blueprint.affix.filter(a => a.kind !== 'roll-damage')
     const relevantImplicit = (blueprint.base?.implicit ?? []).filter(a => {
-        if (a.kind !== 'roll-damage') return false
+        if (a.kind === 'roll-damage') return false
         // special rules
-        if (IMPLICIT_REPLACE_KEY[a.kind] === undefined) return false
+        if (IMPLICIT_REPLACE_KEY[a.kind] !== undefined) return false
         return true
     })
 
@@ -99,8 +99,6 @@ export const blueprintToBaseEquipment = (
 
     const broadContexts: BaseEquipment['broadContexts'] = {}
 
-    if (blueprint.base) Object.assign(broadContexts, blueprint.base.base.broadContexts)
-
     const nodeByKindEntries = Object.entries(nodesByKind) as [AugmentableModKind, ModNode[]][]
     for (const [kind, nodes] of nodeByKindEntries) {
         const key = MOD_KIND_TO_BROAD_CONTEXT_KEY[kind]
@@ -131,5 +129,6 @@ export const blueprintToBaseEquipment = (
         displayName,
         acceptableSlots: [blueprint.slot],
         broadContexts,
+        tags: blueprint.base?.base.tags,
     }
 }

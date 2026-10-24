@@ -140,6 +140,8 @@ export type EveryTree =
     | SaveModSources
     | 'crit-scalable-damage'
     | 'flat-damage'
+    | 'roll-damage'
+    | 'roll-damage-equipment-mod'
     | 'crit-multiplier'
     | 'crit-multiplier-mod'
     | 'crit-multiplier-feat-mod'

@@ -1,5 +1,15 @@
-import { LookupTableValue, WeaponAffix, WeaponSuffix } from "../types";
+import { BaseItemLookupValue, LookupTableValue, WeaponAffix, WeaponSuffix } from "../types";
 import { tuplesToLookupTableValues } from "./lookup-table-tuples";
+import { dagger, longsword, rapier, scimitar, shortsword, warhammer } from "../../defaults";
+
+export const weaponBaseItemLookupTable: Record<string, BaseItemLookupValue> = {
+    dagger: { weight: 100, base: dagger, implicit: [], damageDiceSides: 4 },
+    shortsword: { weight: 100, base: shortsword, implicit: [], damageDiceSides: 6 },
+    longsword: { weight: 100, base: longsword, implicit: [], damageDiceSides: 8 },
+    rapier: { weight: 100, base: rapier, implicit: [], damageDiceSides: 6 },
+    scimitar: { weight: 100, base: scimitar, implicit: [], damageDiceSides: 6 },
+    warhammer: { weight: 100, base: warhammer, implicit: [], damageDiceSides: 8 },
+}
 
 const STAT_RANGES = tuplesToLookupTableValues(
     [[4, 2, 1],

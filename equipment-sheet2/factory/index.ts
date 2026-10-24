@@ -2,12 +2,13 @@ import { RollInstance } from "../../roll/types";
 import { EquipmentSlot } from "../types";
 import { EquipmentBlueprint, EquipmentBlueprintModifier } from "./types";
 import { ModPosition } from "./util";
-import { rollMod, rollModCount, rollPerfection, rollRank } from "./equipment-roll";
+import { rollBaseItem, rollMod, rollModCount, rollPerfection, rollRank } from "./equipment-roll";
 
 export const rollItem = (
     slot: EquipmentSlot,
     ri?: RollInstance,
 ): EquipmentBlueprint => {
+    const baseItem = rollBaseItem(slot, ri)
     const modCount = rollModCount(ri)
 
     let affixCount = Math.floor(modCount / 2)
@@ -33,6 +34,7 @@ export const rollItem = (
 
     return {
         slot,
+        base: baseItem,
         affix: rollMods('affix', affixCount),
         suffix: rollMods('suffix', suffixCount),
     }

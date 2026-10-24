@@ -1,7 +1,7 @@
 import { EquipmentSlot } from "../types";
-import { LookupTableValue, ModKind } from "./types";
-import { weaponAffixLookupTable, weaponSuffixLookupTable } from "./tables/weapon";
-import { twohandAffixLookupTable, twohandSuffixLookupTable } from "./tables/twohand";
+import { BaseItemLookupValue, LookupTableValue, ModKind } from "./types";
+import { weaponAffixLookupTable, weaponBaseItemLookupTable, weaponSuffixLookupTable } from "./tables/weapon";
+import { twohandAffixLookupTable, twohandBaseItemLookupTable, twohandSuffixLookupTable } from "./tables/twohand";
 import { armorAffixLookupTable, armorSuffixLookupTable } from "./tables/armor";
 import { ringAffixLookupTable, ringSuffixLookupTable } from "./tables/ring";
 import { amuletAffixLookupTable, amuletSuffixLookupTable } from "./tables/amulet";
@@ -16,6 +16,21 @@ const slotLookupTables: Record<EquipmentSlot, Record<ModPosition, ModLookupTable
     armor: { affix: armorAffixLookupTable, suffix: armorSuffixLookupTable },
     ring: { affix: ringAffixLookupTable, suffix: ringSuffixLookupTable },
     amulet: { affix: amuletAffixLookupTable, suffix: amuletSuffixLookupTable },
+}
+
+const slotBaseItemTables: Record<EquipmentSlot, Record<string, BaseItemLookupValue>> = {
+    mainhand: weaponBaseItemLookupTable,
+    offhand: {},
+    twohanded: twohandBaseItemLookupTable,
+    armor: {},
+    ring: {},
+    amulet: {},
+}
+
+export const getBaseItemTblBySlot = (
+    slot: EquipmentSlot,
+): Record<string, BaseItemLookupValue> => {
+    return slotBaseItemTables[slot]
 }
 
 export const getModTblBySlot = (

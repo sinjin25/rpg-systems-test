@@ -1,7 +1,7 @@
 import { RollInstance } from "../../roll/types";
 import { EquipmentSlot } from "../types";
-import { ModKind } from "./types";
-import { getModsBySlot, getModTblBySlot, ModPosition } from "./util";
+import { EquipmentBlueprintBaseItem, ModKind } from "./types";
+import { getBaseItemTblBySlot, getModsBySlot, getModTblBySlot, ModPosition } from "./util";
 
 export const rollPerfection = (
     ri?: RollInstance
@@ -61,6 +61,34 @@ export const rollMod = (
         if (threshold >= roll) return modName
     }
     return thresholds[thresholds.length - 1].modName
+}
+
+export const rollBaseItem = (
+    slot: EquipmentSlot,
+    ri?: RollInstance,
+): EquipmentBlueprintBaseItem | undefined => {
+    const table = getBaseItemTblBySlot(slot)
+
+    let sum = 0
+    const thresholds: { name: string, threshold: number }[] = []
+    for (const [name, value] of Object.entries(table)) {
+        sum += value.weight
+        thresholds.push({ name, threshold: sum })
+    }
+    if (sum === 0) return undefined
+
+    const roll = ri ? ri.roll(sum) : Math.floor(Math.random() * sum) + 1
+
+    const _toBlueprintBaseItem = (name: string): EquipmentBlueprintBaseItem => {
+        const { base, implicit, damageDiceSides } = table[name]
+        return { name, base, implicit, damageDiceSides }
+    }
+
+    // pick first base matching threshold
+    for (const { name, threshold } of thresholds) {
+        if (threshold >= roll) return _toBlueprintBaseItem(name)
+    }
+    return _toBlueprintBaseItem(thresholds[thresholds.length - 1].name)
 }
 
 export const rollModCount = (

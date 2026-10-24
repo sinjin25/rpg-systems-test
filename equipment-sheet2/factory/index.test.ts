@@ -1,12 +1,16 @@
 import { describe, expect, test } from 'vitest'
 import { rollItem } from './index'
-import { rollModCount } from './equipment-roll'
+import { rollBaseItem, rollModCount } from './equipment-roll'
 import { createRoll } from '../../roll'
 
 describe('rollItem', () => {
     test('total affix + suffix count matches the rolled mod count', () => {
         const seed = 0
-        const expectedCount = rollModCount(createRoll(seed))
+        const ri = createRoll(seed)
+        // rollItem rolls the base item first, so the expectation must consume
+        // from the same sequence before reading the mod count
+        rollBaseItem('mainhand', ri)
+        const expectedCount = rollModCount(ri)
 
         const item = rollItem('mainhand', createRoll(seed))
 

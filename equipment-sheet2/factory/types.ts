@@ -1,5 +1,5 @@
 import { CsScore, EveryTree } from "../../log2/types"
-import type { EquipmentSlot } from "../types"
+import type { BaseEquipment, EquipmentSlot } from "../types"
 
 export type EquipmentForFactory = {
     kind: EquipmentSlot,
@@ -123,8 +123,37 @@ export type EquipmentBlueprintModifier = {
     perfection: number,
 }
 
+export type EquipmentBlueprintBaseItem = {
+    name: string
+    base: BaseItemLookupValue['base'],
+    implicit: EquipmentBlueprintImplicit[],
+    damageDiceSides?: BaseItemLookupValue['damageDiceSides'],
+}
+
+// does not have ranges or multiple ranks
+// includes some special cases like damage broadContext (see broad-context-adapter)
+export type EquipmentBlueprintImplicit = {
+    kind: ModKind,
+    value: number,
+}
+
+export type BaseItemLookupValue = {
+    weight: number,
+    base: BaseEquipment,
+    implicit: EquipmentBlueprintImplicit[],
+    // base weapon's own damage die (ex: longsword -> 8). Generated into the `damage` broadContext
+    // by blueprintToBaseEquipment instead of being hand-written as a closure on `base`.
+    damageDiceSides?: number,
+}
+
 export type EquipmentBlueprint = {
     slot: EquipmentSlot,
+    base?: EquipmentBlueprintBaseItem,
     affix: EquipmentBlueprintModifier[],
     suffix: EquipmentBlueprintModifier[]
+}
+
+export type RollDamageSource = {
+    label: string,
+    sides: number,
 }

@@ -1,7 +1,20 @@
 import { describe, expect, test, vi, assert } from 'vitest'
-import { rollPerfection, rollRank, rollMod } from './equipment-roll'
+import { rollPerfection, rollRank, rollMod, rollBaseItem } from './equipment-roll'
 import { createRoll } from '../../roll'
 import { getModsBySlot } from './util'
+
+describe.skip('eyeball implicit distribution', () => {
+    test('log distribution', () => {
+        const ri = createRoll(0)
+        const counts: Record<string, number> = {}
+        for (let i = 0; i < 1000; i++) {
+            const item = rollBaseItem('mainhand', ri)
+            if (!item) continue
+            counts[item.name] = (counts[item.name] ?? 0) + 1
+        }
+        console.log(counts)
+    })
+})
 
 // seed fishing: locates seeds whose RollInstance.roll(101) lands on 1 (perfection 0)
 // and 101 (perfection 100). Found seed 35 -> 1, seed 43 -> 101. Rearm if these break.
@@ -57,6 +70,25 @@ describe('rollRank distribution', () => {
         } */
 
         assert.equal(counts[3], 444)
+    })
+})
+
+describe('rollBaseItem', () => {
+    test('rolls a base item proportional to weight across the mainhand table', () => {
+        const ri = createRoll(0)
+
+        const counts: Record<string, number> = {}
+        for (let i = 0; i < 1000; i++) {
+            const item = rollBaseItem('mainhand', ri)
+            if (!item) continue
+            counts[item.name] = (counts[item.name] ?? 0) + 1
+        }
+
+        assert.equal(counts['longsword'], 186)
+    })
+
+    test('returns undefined for a slot with no base item table', () => {
+        expect(rollBaseItem('offhand', createRoll(0))).toBeUndefined()
     })
 })
 

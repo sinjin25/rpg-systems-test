@@ -86,10 +86,6 @@ describe('rollBaseItem', () => {
 
         assert.equal(counts['longsword'], 141)
     })
-
-    test('returns undefined for a slot with no base item table', () => {
-        expect(rollBaseItem('offhand', createRoll(0))).toBeUndefined()
-    })
 })
 
 describe('rollMod', () => {

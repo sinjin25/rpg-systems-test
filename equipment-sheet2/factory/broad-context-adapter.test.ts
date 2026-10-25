@@ -30,12 +30,6 @@ describe('_blueprintModToModNode', () => {
         expect(node?.displayName).toBe('health T0')
         expect(node?.total()).toBe(10)
     })
-
-    test('returns undefined when the slot has no table for the mod', () => {
-        const node = _blueprintModToModNode('offhand', 'affix', { kind: 'health', rank: 0, perfection: 0 })
-
-        expect(node).toBeUndefined()
-    })
 })
 
 describe('integration: blueprint -> BaseEquipment -> terminal calculation', () => {

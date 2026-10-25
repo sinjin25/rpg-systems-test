@@ -11,6 +11,10 @@ import powerAttack from './power-attack'
 // do not include in possibleFeats
 import { testFeatMeleeWeaponFighting } from './test-feats'
 import dodge from './dodge'
+import featExoticProficiency from './exotic-proficiency'
+import featMartialProficiency from './martial-proficiency'
+import featShieldProficiency from './shield-proficiency'
+import featTowerShieldProficiency from './tower-shield-proficiency'
 
 export const deriveFeatName = (feat: Feat2) => feat.displayName
 
@@ -26,6 +30,10 @@ export const possibleFeats = {
     [conSaves.displayName]: conSaves,
     [powerAttack.displayName]: powerAttack,
     [dodge.displayName]: dodge,
+    [featExoticProficiency.displayName]: featExoticProficiency,
+    [featMartialProficiency.displayName]: featMartialProficiency,
+    [featShieldProficiency.displayName]: featShieldProficiency,
+    [featTowerShieldProficiency.displayName]: featTowerShieldProficiency,
 } satisfies Record<string, Feat2>
 
 // 'Armor Training' | 'Battle Focus' | ... etc
@@ -44,6 +52,10 @@ export {
     testFeatMeleeWeaponFighting,
     conSaves,
     powerAttack,
+    featExoticProficiency,
+    featMartialProficiency,
+    featShieldProficiency,
+    featTowerShieldProficiency,
 }
 
 export default possibleFeats

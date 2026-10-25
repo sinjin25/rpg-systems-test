@@ -1,5 +1,8 @@
 import { createDefaultOwner } from '../../actor2'
 import { bastardSword, dagger, longsword } from '../../equipment-sheet2/defaults'
+import featExoticProficiency from '../../feat2/feats/exotic-proficiency.ts'
+import { deriveFeatName } from '../../feat2/feats/index.ts'
+import featMartialProficiency from '../../feat2/feats/martial-proficiency.ts'
 import proficientInEquipment from './proficient-in-equipment.ts'
 import { describe, test, assert, expect } from 'vitest'
 
@@ -28,10 +31,7 @@ describe('proficientInEquipment', () => {
                 'mainhand': longsword,
             },
             fs: {
-                'martial proficiency': {
-                    displayName: 'feat',
-                    broadContexts: {},
-                }
+                [deriveFeatName(featMartialProficiency)]: featMartialProficiency
             }
         })
 
@@ -46,10 +46,7 @@ describe('proficientInEquipment', () => {
                 'mainhand': bastardSword,
             },
             fs: {
-                'exotic proficiency': {
-                    displayName: 'feat',
-                    broadContexts: {},
-                }
+                [deriveFeatName(featExoticProficiency)]: featExoticProficiency
             }
         })
 

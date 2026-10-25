@@ -25,7 +25,7 @@ export type AbilityTags = | 'magic'
     | 'cold'
     | 'lightning'
 
-export type WeaponClass = 'martial' | 'exotic'
+export type WeaponClass = 'martial' | 'exotic' | 'shield' | 'tower-shield'
 // from terminal branches
 export type TerminalTags = | 'standard-attack'
     | 'crit-confirm'

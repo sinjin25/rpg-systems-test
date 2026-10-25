@@ -2,7 +2,7 @@ import { EquipmentSlot } from "../types";
 import { BaseItemLookupValue, LookupTableValue, ModKind } from "./types";
 import { weaponAffixLookupTable, weaponBaseItemLookupTable, weaponSuffixLookupTable } from "./tables/weapon";
 import { twohandAffixLookupTable, twohandBaseItemLookupTable, twohandSuffixLookupTable } from "./tables/twohand";
-import { armorAffixLookupTable, armorSuffixLookupTable } from "./tables/armor";
+import { armorAffixLookupTable, armorBaseItemLookupTable, armorSuffixLookupTable } from "./tables/armor";
 import { ringAffixLookupTable, ringSuffixLookupTable } from "./tables/ring";
 import { amuletAffixLookupTable, amuletSuffixLookupTable } from "./tables/amulet";
 
@@ -22,7 +22,7 @@ const slotBaseItemTables: Record<EquipmentSlot, Record<string, BaseItemLookupVal
     mainhand: weaponBaseItemLookupTable,
     offhand: {},
     twohanded: twohandBaseItemLookupTable,
-    armor: {},
+    armor: armorBaseItemLookupTable,
     ring: {},
     amulet: {},
 }

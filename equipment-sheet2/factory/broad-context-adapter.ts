@@ -23,6 +23,7 @@ export const MOD_KIND_TO_BROAD_CONTEXT_KEY: Record<Exclude<ModKind, 'roll-damage
     speed: 'speed-equipment-mod',
     initiative: 'initiative-equipment-mod',
     dr: 'damage-taken-equipment-mod',
+    'max-dex': 'max-dex-of-equipment',
 }
 
 // these replace instead of augment

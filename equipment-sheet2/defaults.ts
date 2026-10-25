@@ -7,6 +7,7 @@ import type { BaseEquipment, EquipmentSheet, EquipmentSlot } from './types'
 import { classLevelCounts } from '../class-level2/derive'
 import { blueprintToBaseEquipment } from './factory/broad-context-adapter'
 import { weaponBaseItemLookupTable } from './factory/tables/weapon'
+import { armorBaseItemLookupTable } from './factory/tables/armor'
 
 export const SLOT_TYPE: Record<string, BaseEquipment['acceptableSlots']> = {
     weapon: ['mainhand', 'offhand'],
@@ -14,26 +15,6 @@ export const SLOT_TYPE: Record<string, BaseEquipment['acceptableSlots']> = {
     armor: ['armor'],
     amulet: ['amulet'],
     ring: ['ring'],
-}
-
-// generic is to provide inference
-const buildOutBaseArmor = <const T extends readonly (readonly [string, number, number])[]>(
-    data: T
-): Record<T[number][0], BaseEquipment> => {
-    const record = {} as Record<T[number][0], BaseEquipment>
-
-    data.forEach(([dn, ac, maxDex]) => {
-        record[dn as T[number][0]] = {
-            acceptableSlots: SLOT_TYPE.armor,
-            displayName: dn,
-            broadContexts: {
-                'ac-of-equipment': () => leaf(dn, ac),
-                'max-dex-of-equipment': () => leaf(dn, maxDex)
-            }
-        }
-    })
-
-    return record
 }
 
 // built from weaponBaseItemLookupTable via the factory pipeline instead of a hand-written
@@ -47,17 +28,25 @@ const buildWeapon = (name: keyof typeof weaponBaseItemLookupTable): BaseEquipmen
     acceptableSlots: SLOT_TYPE.weapon,
 })
 
-export const armors = buildOutBaseArmor([
-    ['clothing', 0, 10],
-    ['padded armor', 1, 8],
-    ['leather', 2, 6],
-    ['chain shirt', 4, 4],
-    ['scale mail', 5, 3],
-    ['breastplate', 6, 3],
-    ['splint mail', 7, 0],
-    ['banded mail', 7, 1],
-    ['plate', 8, 1],
-])
+const buildArmor = (name: keyof typeof armorBaseItemLookupTable): BaseEquipment => ({
+    ...blueprintToBaseEquipment(
+        { slot: 'armor', base: { name, ...armorBaseItemLookupTable[name] }, affix: [], suffix: [] },
+        name,
+    ),
+    acceptableSlots: SLOT_TYPE.armor,
+})
+
+export const armors: Record<keyof typeof armorBaseItemLookupTable, BaseEquipment> = {
+    clothing: buildArmor('clothing'),
+    'padded armor': buildArmor('padded armor'),
+    leather: buildArmor('leather'),
+    'chain shirt': buildArmor('chain shirt'),
+    'scale mail': buildArmor('scale mail'),
+    breastplate: buildArmor('breastplate'),
+    'splint mail': buildArmor('splint mail'),
+    'banded mail': buildArmor('banded mail'),
+    plate: buildArmor('plate'),
+}
 
 export const buckler: BaseEquipment = (() => {
     const dn = 'buckler'

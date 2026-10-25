@@ -1,5 +1,80 @@
-import { ArmorAffixKind, ArmorSuffixKind, LookupTableValue } from "../types";
+import { ArmorAffixKind, ArmorSuffixKind, BaseItemLookupValue, LookupTableValue } from "../types";
 import { tuplesToLookupTableValues } from "./lookup-table-tuples";
+
+export const armorBaseItemLookupTable: Record<string, BaseItemLookupValue> = {
+    clothing: {
+        weight: 100,
+        base: { displayName: 'clothing' },
+        implicit: [
+            { kind: 'ac', value: 0 },
+            { kind: 'max-dex', value: 10 }
+        ],
+    },
+    'padded armor': {
+        weight: 100,
+        base: { displayName: 'padded armor' },
+        implicit: [
+            { kind: 'ac', value: 1 },
+            { kind: 'max-dex', value: 8 }
+        ],
+    },
+    leather: {
+        weight: 100,
+        base: { displayName: 'leather' },
+        implicit: [
+            { kind: 'ac', value: 2 },
+            { kind: 'max-dex', value: 6 }
+        ],
+    },
+    'chain shirt': {
+        weight: 100,
+        base: { displayName: 'chain shirt' },
+        implicit: [
+            { kind: 'ac', value: 4 },
+            { kind: 'max-dex', value: 4 }
+        ],
+    },
+    'scale mail': {
+        weight: 100,
+        base: { displayName: 'scale mail' },
+        implicit: [
+            { kind: 'ac', value: 5 },
+            { kind: 'max-dex', value: 3 }
+        ],
+    },
+    breastplate: {
+        weight: 100,
+        base: { displayName: 'breastplate' },
+        implicit: [
+            { kind: 'ac', value: 6 },
+            { kind: 'max-dex', value: 3 }
+        ],
+    },
+    'splint mail': {
+        weight: 100,
+        base: { displayName: 'splint mail' },
+        implicit: [
+            { kind: 'ac', value: 7 },
+            { kind: 'max-dex', value: 0 }
+        ],
+    },
+    'banded mail': {
+        weight: 100,
+        base: { displayName: 'banded mail' },
+        implicit: [
+            { kind: 'ac', value: 7 },
+            { kind: 'max-dex', value: 1 }
+        ],
+    },
+    plate: {
+        weight: 100,
+        base: { displayName: 'plate' },
+        implicit: [
+            { kind: 'ac', value: 8 },
+            { kind: 'max-dex', value: 1 }
+        ],
+    },
+}
 
 const STAT_RANGES = tuplesToLookupTableValues(
     [[4, 2, 1],
@@ -41,4 +116,9 @@ export const armorSuffixLookupTable: Record<ArmorSuffixKind, LookupTableValue[]>
     fortitude: structuredClone(SAVE_RANGES),
     will: structuredClone(SAVE_RANGES),
     reflex: structuredClone(SAVE_RANGES),
+    'max-dex': tuplesToLookupTableValues([
+        [3, 2, 1],
+        [2, 1, 2],
+        [1, 1, 3],
+    ]),
 }

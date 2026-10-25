@@ -13,6 +13,7 @@ import moddedCsScore from '../../log2/composition/modded-cs-score'
 import critMultiplier from '../../log2/composition/crit-multiplier'
 import flatDamage from '../../log2/composition/flat-damage'
 import damageTaken from '../../log2/terminal-composition/damage-taken'
+import maxDexOfEquipment from '../../log2/composition/max-dex-of-equipment'
 import { blueprintToBaseEquipment, MOD_KIND_TO_BROAD_CONTEXT_KEY } from './broad-context-adapter'
 import { getModByRank, getModValueByPerfection } from './util'
 import { weaponAffixLookupTable, weaponSuffixLookupTable } from './tables/weapon'
@@ -42,6 +43,7 @@ const runTerminalForKind = (kind: TestableModKind, owner: OwnerMaximal): ModNode
         case 'speed': return speed(owner)
         case 'initiative': return initiative(owner)
         case 'dr': return damageTaken({ node: leaf('incoming', 0) })(owner)
+        case 'max-dex': return maxDexOfEquipment(owner)!
     }
 }
 
@@ -119,7 +121,7 @@ describe('equipment safety: twohanded', () => {
 describe('equipment safety: armor', () => {
     test('affix/suffix identity is locked', () => {
         expect(Object.keys(armorAffixLookupTable)).toEqual(['ac', 'dr', 'health', 'initiative'])
-        expect(Object.keys(armorSuffixLookupTable)).toEqual(['con', 'str', 'dex', 'int', 'fortitude', 'will', 'reflex'])
+        expect(Object.keys(armorSuffixLookupTable)).toEqual(['con', 'str', 'dex', 'int', 'fortitude', 'will', 'reflex', 'max-dex'])
     })
 
     test('every affix/suffix shows up in its terminal calculation', () => {

@@ -34,6 +34,7 @@ export type ModKind =
     | 'initiative'
     | 'dr'
     | 'health'
+    | 'max-dex'
     | 'fortitude'
     | 'will'
     | 'reflex'
@@ -55,7 +56,7 @@ export type TwohandSuffixKind = WeaponSuffixKind
 export type ArmorAffixKind = keyof Pick<AllMods,
     'ac' | 'dr' | 'health' | 'initiative'>
 export type ArmorSuffixKind = keyof Pick<AllMods,
-    CsScore | 'fortitude' | 'will' | 'reflex'>
+    CsScore | 'fortitude' | 'will' | 'reflex' | 'max-dex'>
 export type RingAffixKind = keyof Pick<AllMods,
     'health' | 'speed' | 'initiative' | 'crit-threat-range' | 'crit-multiplier' | CsScore | 'dc'>
 export type RingSuffixKind = keyof Pick<AllMods,

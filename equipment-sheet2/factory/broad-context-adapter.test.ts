@@ -30,6 +30,20 @@ describe('_blueprintModToModNode', () => {
         expect(node?.displayName).toBe('health T0')
         expect(node?.total()).toBe(10)
     })
+
+    test('crit-multiplier rounds to tenths instead of whole numbers', () => {
+        // mainhand suffix crit-multiplier rank 0 is {min: 1, max: 2} — perfection 50 lands on 1.5
+        const node = _blueprintModToModNode('mainhand', 'suffix', { kind: 'crit-multiplier', rank: 0, perfection: 50 })
+
+        expect(node?.total()).toBe(1.5)
+    })
+
+    test('crit-threat-range still rounds to whole numbers (dice don\'t roll fractions)', () => {
+        // mainhand affix crit-threat-range rank 0 is {min: 2, max: 3} — perfection 50 lands on 2.5, rounded to 3
+        const node = _blueprintModToModNode('mainhand', 'affix', { kind: 'crit-threat-range', rank: 0, perfection: 50 })
+
+        expect(node?.total()).toBe(3)
+    })
 })
 
 describe('integration: blueprint -> BaseEquipment -> terminal calculation', () => {

@@ -41,9 +41,16 @@ export const getModByRank = (
     return valueToReturn
 }
 
+export type GetModValueByPerfectionOpts = {
+    roundToTenths?: boolean,
+}
+
 export const getModValueByPerfection = (
     ltv: LookupTableValue,
     perfection: number, // 0-100
+    opts: GetModValueByPerfectionOpts = {},
 ): number => {
-    return Math.round(ltv.min + (ltv.max - ltv.min) * (perfection / 100))
+    const raw = ltv.min + (ltv.max - ltv.min) * (perfection / 100)
+    if (opts.roundToTenths) return Math.round(raw * 10) / 10
+    return Math.round(raw)
 }

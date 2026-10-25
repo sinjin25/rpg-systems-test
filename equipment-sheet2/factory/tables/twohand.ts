@@ -154,8 +154,8 @@ export const twohandAffixLookupTable: Record<TwohandAffix['kind'], LookupTableVa
 
 export const twohandSuffixLookupTable: Record<TwohandSuffix['kind'], LookupTableValue[]> = {
     'crit-multiplier': tuplesToLookupTableValues([
-        [1, 1, .5],
-        [1, 1, 1],
+        [2, 1, .5],
+        [1.5, .5, .5],
     ]),
     con: structuredClone(STAT_RANGES),
     str: structuredClone(STAT_RANGES),

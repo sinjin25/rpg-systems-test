@@ -44,7 +44,8 @@ export const _blueprintModToModNode = (
     const ltv = getModByRank(slot, position, mod.kind, mod.rank)
     if (!ltv) return undefined
 
-    const value = getModValueByPerfection(ltv, mod.perfection)
+    const roundToTenths = mod.kind === 'crit-multiplier'
+    const value = getModValueByPerfection(ltv, mod.perfection, { roundToTenths })
     return leaf(`${mod.kind} T${mod.rank}`, value)
 }
 

@@ -169,9 +169,10 @@ export const weaponAffixLookupTable: Record<WeaponAffix['kind'], LookupTableValu
 }
 
 export const weaponSuffixLookupTable: Record<WeaponSuffix['kind'], LookupTableValue[]> = {
+    // uses tenths
     'crit-multiplier': tuplesToLookupTableValues([
-        [3, 1, .5],
         [2, 1, .5],
+        [1.5, .5, .5],
     ]),
     con: structuredClone(STAT_RANGES),
     str: structuredClone(STAT_RANGES),

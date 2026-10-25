@@ -6,9 +6,16 @@ import { findNodeMatching, leaf } from '..'
 import improvedCritical from '../feats/improved-critical'
 import modNodeToText from '../format'
 import { SLOT_TYPE } from '../../equipment-sheet2/defaults'
+import { BaseEquipment } from '../../equipment-sheet2/types'
+
+const weaponWithNoCritRange: BaseEquipment = {
+    displayName: 'weapon with no crit range',
+    acceptableSlots: SLOT_TYPE.weapon,
+    broadContexts: {},
+}
 
 describe('crit-threat-range (terminal)', () => {
-    const owner = createDefaultOwner()
+    const owner = createDefaultOwner({ es: { mainhand: weaponWithNoCritRange } })
     test('defaults to 20 when the weapon declares no critRange and no feats apply', () => {
         const node = critThreatRange(owner)
         console.log(modNodeToText(node))
@@ -35,6 +42,7 @@ describe('crit-threat-range (terminal)', () => {
 
     test('Feats can modify the range (and are negative)', () => {
         const owner = createDefaultOwner({
+            es: { mainhand: weaponWithNoCritRange },
             fs: {
                 improvedCritical
             }
@@ -49,6 +57,7 @@ describe('crit-threat-range (terminal)', () => {
 
     test('the default range tracks a widened die instead of staying pinned to 20', () => {
         const owner = createDefaultOwner({
+            es: { mainhand: weaponWithNoCritRange },
             fs: {
                 attackSidesPlus: {
                     displayName: 'attack-sides-plus',

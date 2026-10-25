@@ -1,5 +1,93 @@
-import { AmuletAffixKind, AmuletSuffixKind, LookupTableValue } from "../types";
+import { AmuletAffixKind, AmuletSuffixKind, BaseItemLookupValue, LookupTableValue } from "../types";
 import { tuplesToLookupTableValues } from "./lookup-table-tuples";
+
+export const amuletBaseItemLookupTable: Record<string, BaseItemLookupValue> = {
+    plainCharm: {
+        weight: 500,
+        base: {
+            displayName: 'plain charm',
+            tags: []
+        },
+        implicit: [],
+    },
+    onyxAmulet: {
+        weight: 100,
+        base: {
+            displayName: 'onyx charm',
+            tags: []
+        },
+        implicit: [
+            {
+                kind: 'str',
+                value: 1,
+            },
+            {
+                kind: 'dex',
+                value: 1,
+            },
+            {
+                kind: 'con',
+                value: 1,
+            },
+            {
+                kind: 'int',
+                value: 1,
+            },
+        ],
+    },
+    featherAmulet: {
+        weight: 100,
+        base: {
+            displayName: 'feather charm',
+            tags: []
+        },
+        implicit: [
+            {
+                kind: 'fortitude',
+                value: 2,
+            }
+        ],
+    },
+    stoneAmulet: {
+        weight: 75,
+        base: {
+            displayName: 'stone charm',
+            tags: []
+        },
+        implicit: [
+            {
+                kind: 'fortitude',
+                value: 2,
+            }
+        ],
+    },
+    clarityAmulet: {
+        weight: 75,
+        base: {
+            displayName: 'charm of clarity',
+            tags: []
+        },
+        implicit: [
+            {
+                kind: 'will',
+                value: 2,
+            }
+        ],
+    },
+    trackerAmulet: {
+        weight: 75,
+        base: {
+            displayName: "tracker's charm",
+            tags: []
+        },
+        implicit: [
+            {
+                kind: 'initiative',
+                value: 4,
+            },
+        ],
+    },
+}
 
 const STAT_RANGES = tuplesToLookupTableValues(
     [[4, 2, 1],

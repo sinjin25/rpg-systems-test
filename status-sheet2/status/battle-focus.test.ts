@@ -6,10 +6,15 @@ import { decayRoundsElapsed } from '../decay'
 import battleFocus, { BATTLE_FOCUS_ATTACK_BONUS, BATTLE_FOCUS_DAMAGE_BONUS, battleFocusActiveStatus, battleFocusChargingStatus } from './battle-focus.ts'
 import { inst } from '../testing.ts'
 import { describe, test, assert, expect } from 'vitest'
+import modNodeToText from '../../log2/format.ts'
+import { longsword } from '../../equipment-sheet2/defaults.ts'
 
 describe('battle-focus', () => {
     test('initial status grants no buff', () => {
         const owner = createDefaultOwner({
+            es: {
+                mainhand: longsword,
+            },
             cs: {
                 str: 10,
             },
@@ -18,6 +23,7 @@ describe('battle-focus', () => {
             },
         })
         const atk = attack(owner)
+        console.log(modNodeToText(atk))
         assert.equal(atk.total(), 1) // + 1 bab
 
         assert.exists(owner.ss.battleFocus)

@@ -1,5 +1,5 @@
 import { CharacterSheet, defaultCharacterSheet } from "../character-sheet"
-import { shortsword } from "../equipment-sheet2/defaults"
+import { longsword, shortsword } from "../equipment-sheet2/defaults"
 import { BaseEquipment, EquipmentSheet } from "../equipment-sheet2/types"
 import { Tags } from "../log2/tags"
 import { StatusSheet } from "../status-sheet2"
@@ -68,7 +68,7 @@ export const createDefaultOwner = (data: Partial<{
     as?: Partial<AbilitySheet>,
     experience?: Partial<Experience>,
 }> = {}): OwnerMaximal => {
-    const defaultWp = shortsword
+    const defaultWp = longsword
     const fs = data.fs ?? {}
     const ss = data.ss ?? {}
     const cloneLevels = (d: ClassLevelPickLog): ClassLevelPickLog => {

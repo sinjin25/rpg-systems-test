@@ -107,7 +107,7 @@ describe('implicit crit-threat-range routing', () => {
     })
 
     test('a crit-threat-range affix and a crit-threat-range implicit stay separate', () => {
-        // mainhand affix crit-threat-range rank 0 is {min: 1, max: 4} — perfection 0 lands on min (1)
+        // mainhand affix crit-threat-range rank 0 is {min: 2, max: 3} — perfection 0 lands on min (2)
         const blueprint: EquipmentBlueprint = {
             slot: 'mainhand',
             base: {
@@ -115,7 +115,7 @@ describe('implicit crit-threat-range routing', () => {
                 base: syntheticBase,
                 implicit: [{ kind: 'crit-threat-range', value: 18 }],
             },
-            affix: [{ kind: 'crit-threat-range', rank: 0, perfection: 0 }], // -> 1
+            affix: [{ kind: 'crit-threat-range', rank: 0, perfection: 0 }], // -> 2
             suffix: [],
         }
 
@@ -133,9 +133,9 @@ describe('implicit crit-threat-range routing', () => {
         // ...while the affix still stacks additively through -equipment-mod, on top of that
         const affixNode = findNodeMatching(node, /^crit-threat-range-equipment-mod$/)
         assert.exists(affixNode)
-        expect(affixNode?.total()).toBe(1)
+        expect(affixNode?.total()).toBe(2)
 
-        expect(node.total()).toBe(19)
+        expect(node.total()).toBe(20)
     })
 })
 

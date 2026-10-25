@@ -1,5 +1,123 @@
-import { RingAffixKind, RingSuffixKind, LookupTableValue } from "../types";
+import flatHealth from "../../../log2/composition/flat-health";
+import { RingAffixKind, RingSuffixKind, LookupTableValue, BaseItemLookupValue } from "../types";
 import { tuplesToLookupTableValues } from "./lookup-table-tuples";
+
+export const ringBaseItemLookupTable: Record<string, BaseItemLookupValue> = {
+    plainRing: {
+        weight: 500,
+        base: {
+            displayName: 'plain ring',
+            tags: []
+        },
+        implicit: [],
+    },
+    luckyRing: {
+        weight: 100,
+        base: {
+            displayName: 'lucky ring',
+            tags: []
+        },
+        implicit: [
+            {
+                kind: 'fortitude',
+                value: 1,
+            },
+            {
+                kind: 'reflex',
+                value: 1,
+            },
+            {
+                kind: 'will',
+                value: 1,
+            },
+        ],
+    },
+    coralRing: {
+        weight: 100,
+        base: {
+            displayName: 'coral ring',
+            tags: []
+        },
+        implicit: [
+            {
+                kind: 'health',
+                value: 10,
+            }
+        ],
+    },
+    ironRing: {
+        weight: 100,
+        base: {
+            displayName: 'iron ring',
+            tags: []
+        },
+        implicit: [
+            {
+                kind: 'flat-damage',
+                value: 1,
+            }
+        ],
+    },
+    steelRing: {
+        weight: 100,
+        base: {
+            displayName: 'steel ring',
+            tags: []
+        },
+        implicit: [
+            {
+                kind: 'dr',
+                value: 1,
+            }
+        ],
+    },
+    vermillionRing: {
+        weight: 50,
+        base: {
+            displayName: 'vermillion ring',
+            tags: []
+        },
+        implicit: [
+            {
+                kind: 'health',
+                value: 30,
+            },
+            {
+                kind: 'fortitude',
+                value: 1,
+            },
+            {
+                kind: 'reflex',
+                value: 1,
+            },
+            {
+                kind: 'will',
+                value: 1,
+            },
+        ],
+    },
+    bladeRing: {
+        weight: 50,
+        base: {
+            displayName: 'blade ring',
+            tags: []
+        },
+        implicit: [
+            {
+                kind: 'health',
+                value: -20,
+            },
+            {
+                kind: 'dr',
+                value: 2,
+            },
+            {
+                kind: 'flat-damage',
+                value: 2,
+            }
+        ],
+    }
+}
 
 const STAT_RANGES = tuplesToLookupTableValues(
     [[4, 2, 1],

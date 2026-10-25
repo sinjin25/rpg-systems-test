@@ -24,10 +24,12 @@ export type AbilityTags = | 'magic'
     | 'fire'
     | 'cold'
     | 'lightning'
+
+export type WeaponClass = 'martial' | 'exotic'
 // from terminal branches
 export type TerminalTags = | 'standard-attack'
     | 'crit-confirm'
-export type Tags = EquipmentTags | TerminalTags | AbilityTags
+export type Tags = EquipmentTags | TerminalTags | AbilityTags | WeaponClass
 
 export const addTags = (list: Tags[], toAdd: Tags | Tags[]) => {
     if (Array.isArray(toAdd)) return [...list, ...toAdd]

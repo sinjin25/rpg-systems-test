@@ -14,6 +14,13 @@ const dagger: BaseEquipment = {
     broadContexts: {
     }
 }
+const nonFinesseWeapon: BaseEquipment = {
+    displayName: 'non-finesse weapon',
+    acceptableSlots: SLOT_TYPE.weapon,
+    tags: ['melee'],
+    broadContexts: {
+    }
+}
 const daggerPlusOne: BaseEquipment = {
     displayName: 'dagger plus one',
     acceptableSlots: SLOT_TYPE.weapon,
@@ -45,7 +52,7 @@ describe('attack-equipment-mod', () => {
         expect(withFinesse.total()).toBe(1)
 
         const withoutFinesse = attackEquipmentMod(createDefaultOwner({
-            es: { ring: ringPlusOneFinesseAttack },
+            es: { mainhand: nonFinesseWeapon, ring: ringPlusOneFinesseAttack },
         }))
         expect(withoutFinesse.total()).toBe(0)
     })

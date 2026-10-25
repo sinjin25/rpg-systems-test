@@ -92,9 +92,9 @@ export const heavyShield: BaseEquipment = (() => {
 
 export const shortsword: BaseEquipment = buildWeapon('shortsword')
 
-const shortswordPlusOne: BaseEquipment = buildWeapon('shortsword')
+export const shortswordPlusOne: BaseEquipment = buildWeapon('shortsword')
 {
-    shortsword.displayName = 'shortsword-plus-one'
+    shortswordPlusOne.displayName = 'shortsword-plus-one'
     shortswordPlusOne.broadContexts.enhancement = (o: OwnerLog2) => {
         return leaf('shortsword-plus-one', 1)
     }

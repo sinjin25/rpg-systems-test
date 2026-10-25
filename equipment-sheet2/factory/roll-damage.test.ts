@@ -18,9 +18,9 @@ describe('buildDamageBroadContext', () => {
             const first = broadContextHandler(owner, { rollInstance })
             const second = broadContextHandler(owner, { rollInstance })
 
-            console.log('mytest')
+            /* console.log('mytest')
             console.log(modNodeToText(first!))
-            console.log(modNodeToText(second!))
+            console.log(modNodeToText(second!)) */
         })
     })
     test('Can generate new ', () => {
@@ -79,7 +79,7 @@ describe('buildRollDamageModBroadContext', () => {
         assert.exists(nodeDamageSides)
         assert.equal(nodeDamageSides.total(), 2)
 
-        console.log(modNodeToText(first))
+        /* console.log(modNodeToText(first)) */
     })
 })
 

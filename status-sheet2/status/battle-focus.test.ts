@@ -12,9 +12,6 @@ import { longsword } from '../../equipment-sheet2/defaults.ts'
 describe('battle-focus', () => {
     test('initial status grants no buff', () => {
         const owner = createDefaultOwner({
-            es: {
-                mainhand: longsword,
-            },
             cs: {
                 str: 10,
             },

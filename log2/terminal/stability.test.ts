@@ -1,6 +1,6 @@
 import { findNodeMatching, leaf } from ".."
 import { createDefaultOwner, OwnerMaximal } from "../../actor2"
-import { shortsword, longsword } from "../../equipment-sheet2/defaults"
+import { shortsword, longsword, testshortsword } from "../../equipment-sheet2/defaults"
 import { BaseEquipment } from "../../equipment-sheet2/types"
 import { Feat2 } from "../../feat2"
 import addFeat from "../../feat2/add-feat"
@@ -25,7 +25,7 @@ describe('Assumption errors', () => {
                 }
             }
         }
-        const owner = createDefaultOwner({ es: { mainhand: longsword } })
+        const owner = createDefaultOwner()
         addFeat(owner, myFeat)
 
         const nonFinesseAttack = attack(owner)

@@ -194,7 +194,7 @@ describe('calculateCritConfirm', () => {
         })
         const result = calculateCritConfirm(owner, { relevantSlot: owner.es.mainhand, rollInstance: createRoll(SEED) })
 
-        console.log('modnodetotext', modNodeToText(result))
+        /* console.log('modnodetotext', modNodeToText(result)) */
         const maxRoll = findNodeMatching(result, /maximum-dice-sides/i)
         const actualRoll = findNodeMatching(result, /roll-total/i)
 

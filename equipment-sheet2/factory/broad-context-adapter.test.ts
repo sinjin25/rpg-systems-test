@@ -64,8 +64,8 @@ describe('blueprint -> BaseEquipment -> terminal calculation (integration)', () 
         expect(threatNode?.children).toHaveLength(1)
         expect(threatNode?.total()).toBe(1)
 
-        console.log(modNodeToText(node))
-        console.log(modNodeToText(threatNode))
+        /* console.log(modNodeToText(node))
+        console.log(modNodeToText(threatNode)) */
     })
 
     test('a rolled rapier carries its crit stats through from its implicit entry', () => {
@@ -123,7 +123,7 @@ describe('implicit crit-threat-range routing', () => {
         const owner = createDefaultOwner({ es: { mainhand: weapon } })
 
         const node = critThreatRange(owner)
-        console.log(modNodeToText(node))
+        /* console.log(modNodeToText(node)) */
 
         // the implicit replaced the base (18, not summed with the engine default of 20)...
         const baseNode = findNodeMatching(node, /^test weapon$/)
@@ -186,6 +186,6 @@ describe('roll-damage: implicit and affix both contribute, each as its own live 
 
         expect(node?.total()).toBe(10)
 
-        console.log(modNodeToText(node!))
+        /* console.log(modNodeToText(node!)) */
     })
 })

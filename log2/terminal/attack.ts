@@ -10,6 +10,7 @@ import attackEquipmentMod from "../composition/attack-equipment-mod";
 import featContribution from "../composition/feat-contribution";
 import { Tags } from "../tags";
 import { stripSelectModNodeIfEmpty } from "../strip-if-empty";
+import proficientInEquipment from "../bases/proficient-in-equipment";
 
 const displayName: EveryTree = 'attack'
 
@@ -24,10 +25,11 @@ export default (owner: OwnerLog2, opts: ModNodeOpts = {}) => {
 
     const subproblems: TreeSubproblems = {
         'effective-attack-stat': effectiveAttackStat(owner, localOpts),
-        'base-attack-bonus':     baseAttackBonus(owner, localOpts),
-        'attack-feat-mod':       featContribution('attack-feat-mod')(owner, localOpts),
-        'attack-status-mod':     attackStatusMod(owner, localOpts),
-        'attack-equipment-mod':  attackEquipmentMod(owner, localOpts),
+        'base-attack-bonus': baseAttackBonus(owner, localOpts),
+        'attack-feat-mod': featContribution('attack-feat-mod')(owner, localOpts),
+        'attack-status-mod': attackStatusMod(owner, localOpts),
+        'attack-equipment-mod': attackEquipmentMod(owner, localOpts),
+        'proficiency-penalty': proficientInEquipment(owner, localOpts),
     }
     const subpr = stripSelectModNodeIfEmpty(Object.values(subproblems))
 

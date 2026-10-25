@@ -16,12 +16,14 @@ const DEFAULT_STRIP_DN: LiteralRecord = {
     'fortitude-equipment-mod': true,
     'will-equipment-mod': true,
     'reflex-equipment-mod': true,
+    'proficiency-penalty': true,
 }
 
 const shouldStrip = (
-    node: ModNode,
+    node: ModNode | undefined,
     stripIfIn: LiteralRecord,
 ) => {
+    if (node === undefined) return true
     if (node.total() !== 0) return false
     if (!stripIfIn[node.displayName as EveryTree]) return false
     return true

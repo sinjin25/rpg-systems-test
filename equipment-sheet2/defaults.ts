@@ -117,3 +117,13 @@ export const dagger: BaseEquipment = buildWeapon('dagger')
 export const rapier: BaseEquipment = buildWeapon('rapier')
 
 export const bastardSword: BaseEquipment = buildWeapon('bastardSword')
+
+// a lot of the tests used a shortsword which didn't have martial properties
+// this makes testing a pain in the ass since you have to include martial prof in everything
+export const testshortsword: BaseEquipment = buildWeapon('shortsword')
+{
+    const ind = testshortsword.tags?.findIndex(a => a === 'finesse')!
+    testshortsword.tags?.splice(ind, 1)
+    const ind2 = testshortsword.tags?.findIndex(a => a === 'martial')!
+    testshortsword.tags?.splice(ind2, 1)
+}

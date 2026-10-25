@@ -115,3 +115,5 @@ export const longsword: BaseEquipment = buildWeapon('longsword')
 export const dagger: BaseEquipment = buildWeapon('dagger')
 
 export const rapier: BaseEquipment = buildWeapon('rapier')
+
+export const bastardSword: BaseEquipment = buildWeapon('bastardSword')

@@ -135,6 +135,7 @@ export type EveryTree =
     | 'spell-dc-status-mod'
     | 'spell-dc-from-equipment'
     | 'base-dc' // gotten from Ability
+    | 'proficiency-penalty' // ex: 'martial'
     | Health
     | 'levels'
     | SaveModSources

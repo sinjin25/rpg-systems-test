@@ -10,6 +10,9 @@ import critMultiplier from '../../log2/composition/crit-multiplier'
 import modNodeToText from '../../log2/format'
 import { RollInstance } from '../../roll/types'
 import { weaponBaseItemLookupTable } from './tables/weapon'
+import { amuletBaseItemLookupTable } from './tables/amulet'
+import { slotBaseItemTables } from './tables'
+import save from '../../log2/terminal/save'
 
 // every die rolls its own max — deterministic without depending on a real seed's output
 const maxRoll: RollInstance = {
@@ -35,7 +38,7 @@ describe('_blueprintModToModNode', () => {
     })
 })
 
-describe('blueprint -> BaseEquipment -> terminal calculation (integration)', () => {
+describe('integration: blueprint -> BaseEquipment -> terminal calculation', () => {
     test('health (affix+suffix) and crit-threat-range (affix only) stay separate, both named after the item', () => {
         // ring health rank 0 is {min: 10, max: 20}; ring crit-threat-range rank 0 is {min: 1, max: 4}
         const blueprint: EquipmentBlueprint = {
@@ -136,6 +139,36 @@ describe('implicit crit-threat-range routing', () => {
         expect(affixNode?.total()).toBe(2)
 
         expect(node.total()).toBe(20)
+    })
+
+    test('Implicit and explicit mod overlap', () => {
+        const blueprint: EquipmentBlueprint = {
+            slot: 'amulet',
+            base: { name: 'featherAmulet', ...amuletBaseItemLookupTable.featherAmulet },
+            affix: [],
+            suffix: [{ kind: 'reflex', rank: 0, perfection: 0 }], // -> 1
+        }
+
+        const amulet = blueprintToBaseEquipment(blueprint, 'test feather amulet')
+        const owner = createDefaultOwner({ es: { amulet } })
+
+        const node = save('reflex')(owner)
+
+        const equipmentModNode = findNodeMatching(node, /^reflex-equipment-mod$/)
+        assert.exists(equipmentModNode)
+
+        const itemNode = findNodeMatching(equipmentModNode!, /^test feather amulet$/)
+        assert.exists(itemNode)
+        expect(itemNode?.children).toHaveLength(2)
+        expect(itemNode?.total()).toBe(3)
+
+        const implicitNode = findNodeMatching(itemNode!, /^reflex implicit$/)
+        assert.exists(implicitNode)
+        expect(implicitNode?.total()).toBe(2)
+
+        const suffixNode = findNodeMatching(itemNode!, /^reflex T0$/)
+        assert.exists(suffixNode)
+        expect(suffixNode?.total()).toBe(1)
     })
 })
 

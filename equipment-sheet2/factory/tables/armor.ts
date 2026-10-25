@@ -1,7 +1,7 @@
 import { ArmorAffixKind, ArmorSuffixKind, BaseItemLookupValue, LookupTableValue } from "../types";
 import { tuplesToLookupTableValues } from "./lookup-table-tuples";
 
-export const armorBaseItemLookupTable: Record<string, BaseItemLookupValue> = {
+export const armorBaseItemLookupTable = {
     clothing: {
         weight: 100,
         base: { displayName: 'clothing' },
@@ -74,7 +74,7 @@ export const armorBaseItemLookupTable: Record<string, BaseItemLookupValue> = {
             { kind: 'max-dex', value: 1 }
         ],
     },
-}
+} satisfies Record<string, BaseItemLookupValue>
 
 const STAT_RANGES = tuplesToLookupTableValues(
     [[4, 2, 1],

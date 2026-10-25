@@ -51,18 +51,27 @@ export type WeaponAffixKind = keyof Pick<AllMods,
     'crit-threat-range' | 'flat-damage' | 'roll-damage' | 'attack' | 'ac'>
 export type WeaponSuffixKind = keyof Pick<AllMods,
     'crit-multiplier' | CsScore | 'speed' | 'initiative'>
+
 export type TwohandAffixKind = WeaponSuffixKind
 export type TwohandSuffixKind = WeaponSuffixKind
+
 export type ArmorAffixKind = keyof Pick<AllMods,
     'ac' | 'dr' | 'health' | 'initiative'>
 export type ArmorSuffixKind = keyof Pick<AllMods,
     CsScore | 'fortitude' | 'will' | 'reflex' | 'max-dex'>
+
 export type RingAffixKind = keyof Pick<AllMods,
     'health' | 'speed' | 'initiative' | 'crit-threat-range' | 'crit-multiplier' | CsScore | 'dc'>
 export type RingSuffixKind = keyof Pick<AllMods,
     'health' | 'initiative' | 'fortitude' | 'will' | 'reflex'>
+
 export type AmuletAffixKind = RingAffixKind
 export type AmuletSuffixKind = RingSuffixKind
+
+export type ShieldAffixKind = keyof Pick<AllMods,
+    'ac' | 'dr' | 'health' | 'initiative'>
+export type ShieldSuffixKind = keyof Pick<AllMods,
+    CsScore | 'fortitude' | 'will' | 'reflex' | 'max-dex'>
 
 export type WeaponImplicit = {
     kind: WeaponImplicitKind,
@@ -85,12 +94,12 @@ export type TwohandSuffix = {
 } & EquipmentModifierRoll
 
 export type ShieldAffix = {
-    kind: '',
-} & EquipmentModifierRoll
+    kind: ShieldAffixKind,
+}
 
 export type ShieldSuffix = {
-    kind: '',
-} & EquipmentModifierRoll
+    kind: ShieldSuffixKind,
+}
 
 // consider special mods (ghost-touch, finesse, etc.)
 

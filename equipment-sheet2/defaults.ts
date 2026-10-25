@@ -8,6 +8,7 @@ import { classLevelCounts } from '../class-level2/derive'
 import { blueprintToBaseEquipment } from './factory/broad-context-adapter'
 import { weaponBaseItemLookupTable } from './factory/tables/weapon'
 import { armorBaseItemLookupTable } from './factory/tables/armor'
+import { offhandBaseItemLookupTable } from './factory/tables/offhand'
 
 export const SLOT_TYPE: Record<string, BaseEquipment['acceptableSlots']> = {
     weapon: ['mainhand', 'offhand'],
@@ -23,7 +24,7 @@ export const SLOT_TYPE: Record<string, BaseEquipment['acceptableSlots']> = {
 const buildWeapon = (name: keyof typeof weaponBaseItemLookupTable): BaseEquipment => ({
     ...blueprintToBaseEquipment(
         { slot: 'mainhand', base: { name, ...weaponBaseItemLookupTable[name] }, affix: [], suffix: [] },
-        name,
+        weaponBaseItemLookupTable[name].base.displayName,
     ),
     acceptableSlots: SLOT_TYPE.weapon,
 })
@@ -48,56 +49,23 @@ export const armors: Record<keyof typeof armorBaseItemLookupTable, BaseEquipment
     plate: buildArmor('plate'),
 }
 
-export const buckler: BaseEquipment = (() => {
-    const dn = 'buckler'
-    return {
-        displayName: dn,
-        acceptableSlots: SLOT_TYPE.shield,
-        broadContexts: {
-            "ac-of-equipment": (o: OwnerLog2) => leaf(
-                dn,
-                1,
-            )
-        },
-        tags: ['shield']
-    }
-})()
+const buildOffhand = (name: keyof typeof offhandBaseItemLookupTable): BaseEquipment => ({
+    ...blueprintToBaseEquipment(
+        { slot: 'offhand', base: { name, ...offhandBaseItemLookupTable[name] }, affix: [], suffix: [] },
+        offhandBaseItemLookupTable[name].base.displayName,
+    ),
+    acceptableSlots: SLOT_TYPE.shield,
+})
 
-export const heavyShield: BaseEquipment = (() => {
-    const dn = 'heavy shield'
+export const buckler: BaseEquipment = buildOffhand('buckler')
 
-    return {
-        displayName: dn,
-        acceptableSlots: SLOT_TYPE.shield,
-        broadContexts: {
-            "ac-of-equipment": (o: OwnerLog2) => leaf(
-                dn,
-                2,
-            )
-        },
-        tags: ['shield', 'heavy-armor']
-    }
-})()
+export const lightShield: BaseEquipment = buildOffhand('lightShield')
+
+export const heavyShield: BaseEquipment = buildOffhand('heavyShield')
+
+export const towerShield: BaseEquipment = buildOffhand('towerShield')
 
 export const shortsword: BaseEquipment = buildWeapon('shortsword')
-
-export const shortswordPlusOne: BaseEquipment = buildWeapon('shortsword')
-{
-    shortswordPlusOne.displayName = 'shortsword-plus-one'
-    shortswordPlusOne.broadContexts.enhancement = (o: OwnerLog2) => {
-        return leaf('shortsword-plus-one', 1)
-    }
-}
-
-export const shortswordPlusOneIfFighter: BaseEquipment = buildWeapon('shortsword')
-{
-    shortswordPlusOneIfFighter.displayName = 'shortsword-plus-one-if-fighter'
-    shortswordPlusOneIfFighter.broadContexts.enhancement = (o: OwnerLog2) => {
-        const fLevelCnt = classLevelCounts(o.cs.levels).fighter
-        if (fLevelCnt === undefined) return leaf('shortswordPlusOneIfFighter', 0)
-        return leaf('shortswordPlusOneIfFighter', fLevelCnt)
-    }
-}
 
 export const longsword: BaseEquipment = buildWeapon('longsword')
 
@@ -115,4 +83,22 @@ export const testshortsword: BaseEquipment = buildWeapon('shortsword')
     testshortsword.tags?.splice(ind, 1)
     const ind2 = testshortsword.tags?.findIndex(a => a === 'martial')!
     testshortsword.tags?.splice(ind2, 1)
+}
+
+export const shortswordPlusOne: BaseEquipment = buildWeapon('shortsword')
+{
+    shortswordPlusOne.displayName = 'shortsword-plus-one'
+    shortswordPlusOne.broadContexts.enhancement = (o: OwnerLog2) => {
+        return leaf('shortsword-plus-one', 1)
+    }
+}
+
+export const shortswordPlusOneIfFighter: BaseEquipment = buildWeapon('shortsword')
+{
+    shortswordPlusOneIfFighter.displayName = 'shortsword-plus-one-if-fighter'
+    shortswordPlusOneIfFighter.broadContexts.enhancement = (o: OwnerLog2) => {
+        const fLevelCnt = classLevelCounts(o.cs.levels).fighter
+        if (fLevelCnt === undefined) return leaf('shortswordPlusOneIfFighter', 0)
+        return leaf('shortswordPlusOneIfFighter', fLevelCnt)
+    }
 }

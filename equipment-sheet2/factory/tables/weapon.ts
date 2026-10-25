@@ -1,7 +1,7 @@
 import { BaseItemLookupValue, LookupTableValue, WeaponAffix, WeaponSuffix } from "../types";
 import { tuplesToLookupTableValues } from "./lookup-table-tuples";
 
-export const weaponBaseItemLookupTable: Record<string, BaseItemLookupValue> = {
+export const weaponBaseItemLookupTable = {
     dagger: { // simple finesse/crit
         weight: 100,
         base: {
@@ -130,7 +130,7 @@ export const weaponBaseItemLookupTable: Record<string, BaseItemLookupValue> = {
         ],
         damageDiceSides: 4 + 2 + 2 + 2
     }
-}
+} satisfies Record<string, BaseItemLookupValue>
 
 const STAT_RANGES = tuplesToLookupTableValues(
     [[4, 2, 1],

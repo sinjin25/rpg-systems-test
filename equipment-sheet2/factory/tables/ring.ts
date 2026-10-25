@@ -2,7 +2,7 @@ import flatHealth from "../../../log2/composition/flat-health";
 import { RingAffixKind, RingSuffixKind, LookupTableValue, BaseItemLookupValue } from "../types";
 import { tuplesToLookupTableValues } from "./lookup-table-tuples";
 
-export const ringBaseItemLookupTable: Record<string, BaseItemLookupValue> = {
+export const ringBaseItemLookupTable = {
     plainRing: {
         weight: 500,
         base: {
@@ -117,7 +117,7 @@ export const ringBaseItemLookupTable: Record<string, BaseItemLookupValue> = {
             }
         ],
     }
-}
+} satisfies Record<string, BaseItemLookupValue>
 
 const STAT_RANGES = tuplesToLookupTableValues(
     [[4, 2, 1],

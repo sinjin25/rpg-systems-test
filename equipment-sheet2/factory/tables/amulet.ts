@@ -1,7 +1,7 @@
 import { AmuletAffixKind, AmuletSuffixKind, BaseItemLookupValue, LookupTableValue } from "../types";
 import { tuplesToLookupTableValues } from "./lookup-table-tuples";
 
-export const amuletBaseItemLookupTable: Record<string, BaseItemLookupValue> = {
+export const amuletBaseItemLookupTable = {
     plainCharm: {
         weight: 500,
         base: {
@@ -43,7 +43,7 @@ export const amuletBaseItemLookupTable: Record<string, BaseItemLookupValue> = {
         },
         implicit: [
             {
-                kind: 'fortitude',
+                kind: 'reflex',
                 value: 2,
             }
         ],
@@ -87,7 +87,7 @@ export const amuletBaseItemLookupTable: Record<string, BaseItemLookupValue> = {
             },
         ],
     },
-}
+} satisfies Record<string, BaseItemLookupValue>
 
 const STAT_RANGES = tuplesToLookupTableValues(
     [[4, 2, 1],

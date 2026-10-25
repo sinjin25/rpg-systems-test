@@ -1,7 +1,7 @@
 import { BaseItemLookupValue, LookupTableValue, TwohandAffix, TwohandSuffix } from "../types";
 import { tuplesToLookupTableValues } from "./lookup-table-tuples";
 
-export const twohandBaseItemLookupTable: Record<string, BaseItemLookupValue> = {
+export const twohandBaseItemLookupTable = {
     greatclub: { // simple dmg/dmg
         weight: 100,
         base: {
@@ -126,7 +126,7 @@ export const twohandBaseItemLookupTable: Record<string, BaseItemLookupValue> = {
         ],
         damageDiceSides: 6 + 2 + 2
     },
-}
+} satisfies Record<string, BaseItemLookupValue>
 
 const STAT_RANGES = tuplesToLookupTableValues(
     [[4, 2, 1],

@@ -230,3 +230,13 @@ describe('roll-damage: implicit and affix both contribute, each as its own live 
         /* console.log(modNodeToText(node!)) */
     })
 })
+
+describe('blueprintToBaseEquipment', () => {
+    test('stores a pointer back to its blueprint', () => {
+        const blueprint: EquipmentBlueprint = { slot: 'mainhand', affix: [], suffix: [] }
+
+        const result: BaseEquipment = blueprintToBaseEquipment(blueprint, 'Test Item')
+
+        expect(result.blueprint).toBe(blueprint)
+    })
+})

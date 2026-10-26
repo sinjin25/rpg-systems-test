@@ -3,7 +3,7 @@ import newModNode, { leaf, ModNode, sumFunc } from '../log2'
 import { Tags } from '../log2/tags'
 import { ModNodeOpts, ObjectWithBroadContexts, OwnerLog2 } from '../log2/types'
 import rollTree from '../log2/roll'
-import type { BaseEquipment, EquipmentSheet, EquipmentSlot } from './types'
+import type { BaseEquipment, EquipmentSheet } from './types'
 import { classLevelCounts } from '../class-level2/derive'
 import { blueprintToBaseEquipment } from './factory/broad-context-adapter'
 import { weaponBaseItemLookupTable } from './factory/tables/weapon'
@@ -18,44 +18,50 @@ export const SLOT_TYPE: Record<string, BaseEquipment['acceptableSlots']> = {
     ring: ['ring'],
 }
 
-// built from weaponBaseItemLookupTable via the factory pipeline instead of a hand-written
-// closure — acceptableSlots is widened back to SLOT_TYPE.weapon since the factory's blueprint
-// slot only governs which affix/suffix roll tables apply, not final equip eligibility
-const buildWeapon = (name: keyof typeof weaponBaseItemLookupTable): BaseEquipment => ({
-    ...blueprintToBaseEquipment(
-        { slot: 'mainhand', base: { name, ...weaponBaseItemLookupTable[name] }, affix: [], suffix: [] },
-        weaponBaseItemLookupTable[name].base.displayName,
-    ),
-    acceptableSlots: SLOT_TYPE.weapon,
-})
-
-const buildArmor = (name: keyof typeof armorBaseItemLookupTable): BaseEquipment => ({
-    ...blueprintToBaseEquipment(
-        { slot: 'armor', base: { name, ...armorBaseItemLookupTable[name] }, affix: [], suffix: [] },
-        name,
-    ),
-    acceptableSlots: SLOT_TYPE.armor,
-})
-
 export const armors: Record<keyof typeof armorBaseItemLookupTable, BaseEquipment> = {
-    clothing: buildArmor('clothing'),
-    'padded armor': buildArmor('padded armor'),
-    leather: buildArmor('leather'),
-    'chain shirt': buildArmor('chain shirt'),
-    'scale mail': buildArmor('scale mail'),
-    breastplate: buildArmor('breastplate'),
-    'splint mail': buildArmor('splint mail'),
-    'banded mail': buildArmor('banded mail'),
-    plate: buildArmor('plate'),
+    clothing: blueprintToBaseEquipment(
+        { slot: 'armor', base: { name: 'clothing', ...armorBaseItemLookupTable['clothing'] }, affix: [], suffix: [] },
+        'clothing',
+    ),
+    'padded armor': blueprintToBaseEquipment(
+        { slot: 'armor', base: { name: 'padded armor', ...armorBaseItemLookupTable['padded armor'] }, affix: [], suffix: [] },
+        'padded armor',
+    ),
+    leather: blueprintToBaseEquipment(
+        { slot: 'armor', base: { name: 'leather', ...armorBaseItemLookupTable['leather'] }, affix: [], suffix: [] },
+        'leather',
+    ),
+    'chain shirt': blueprintToBaseEquipment(
+        { slot: 'armor', base: { name: 'chain shirt', ...armorBaseItemLookupTable['chain shirt'] }, affix: [], suffix: [] },
+        'chain shirt',
+    ),
+    'scale mail': blueprintToBaseEquipment(
+        { slot: 'armor', base: { name: 'scale mail', ...armorBaseItemLookupTable['scale mail'] }, affix: [], suffix: [] },
+        'scale mail',
+    ),
+    breastplate: blueprintToBaseEquipment(
+        { slot: 'armor', base: { name: 'breastplate', ...armorBaseItemLookupTable['breastplate'] }, affix: [], suffix: [] },
+        'breastplate',
+    ),
+    'splint mail': blueprintToBaseEquipment(
+        { slot: 'armor', base: { name: 'splint mail', ...armorBaseItemLookupTable['splint mail'] }, affix: [], suffix: [] },
+        'splint mail',
+    ),
+    'banded mail': blueprintToBaseEquipment(
+        { slot: 'armor', base: { name: 'banded mail', ...armorBaseItemLookupTable['banded mail'] }, affix: [], suffix: [] },
+        'banded mail',
+    ),
+    plate: blueprintToBaseEquipment(
+        { slot: 'armor', base: { name: 'plate', ...armorBaseItemLookupTable['plate'] }, affix: [], suffix: [] },
+        'plate',
+    ),
 }
 
-const buildOffhand = (name: keyof typeof offhandBaseItemLookupTable): BaseEquipment => ({
-    ...blueprintToBaseEquipment(
+const buildOffhand = (name: keyof typeof offhandBaseItemLookupTable): BaseEquipment =>
+    blueprintToBaseEquipment(
         { slot: 'offhand', base: { name, ...offhandBaseItemLookupTable[name] }, affix: [], suffix: [] },
         offhandBaseItemLookupTable[name].base.displayName,
-    ),
-    acceptableSlots: SLOT_TYPE.shield,
-})
+    )
 
 export const buckler: BaseEquipment = buildOffhand('buckler')
 
@@ -65,19 +71,37 @@ export const heavyShield: BaseEquipment = buildOffhand('heavyShield')
 
 export const towerShield: BaseEquipment = buildOffhand('towerShield')
 
-export const shortsword: BaseEquipment = buildWeapon('shortsword')
+export const shortsword: BaseEquipment = blueprintToBaseEquipment(
+    { slot: 'mainhand', base: { name: 'shortsword', ...weaponBaseItemLookupTable['shortsword'] }, affix: [], suffix: [] },
+    weaponBaseItemLookupTable['shortsword'].base.displayName,
+)
 
-export const longsword: BaseEquipment = buildWeapon('longsword')
+export const longsword: BaseEquipment = blueprintToBaseEquipment(
+    { slot: 'mainhand', base: { name: 'longsword', ...weaponBaseItemLookupTable['longsword'] }, affix: [], suffix: [] },
+    weaponBaseItemLookupTable['longsword'].base.displayName,
+)
 
-export const dagger: BaseEquipment = buildWeapon('dagger')
+export const dagger: BaseEquipment = blueprintToBaseEquipment(
+    { slot: 'mainhand', base: { name: 'dagger', ...weaponBaseItemLookupTable['dagger'] }, affix: [], suffix: [] },
+    weaponBaseItemLookupTable['dagger'].base.displayName,
+)
 
-export const rapier: BaseEquipment = buildWeapon('rapier')
+export const rapier: BaseEquipment = blueprintToBaseEquipment(
+    { slot: 'mainhand', base: { name: 'rapier', ...weaponBaseItemLookupTable['rapier'] }, affix: [], suffix: [] },
+    weaponBaseItemLookupTable['rapier'].base.displayName,
+)
 
-export const bastardSword: BaseEquipment = buildWeapon('bastardSword')
+export const bastardSword: BaseEquipment = blueprintToBaseEquipment(
+    { slot: 'mainhand', base: { name: 'bastardSword', ...weaponBaseItemLookupTable['bastardSword'] }, affix: [], suffix: [] },
+    weaponBaseItemLookupTable['bastardSword'].base.displayName,
+)
 
 // a lot of the tests used a shortsword which didn't have martial properties
 // this makes testing a pain in the ass since you have to include martial prof in everything
-export const testshortsword: BaseEquipment = buildWeapon('shortsword')
+export const testshortsword: BaseEquipment = blueprintToBaseEquipment(
+    { slot: 'mainhand', base: { name: 'shortsword', ...weaponBaseItemLookupTable['shortsword'] }, affix: [], suffix: [] },
+    weaponBaseItemLookupTable['shortsword'].base.displayName,
+)
 {
     const ind = testshortsword.tags?.findIndex(a => a === 'finesse')!
     testshortsword.tags?.splice(ind, 1)
@@ -85,7 +109,10 @@ export const testshortsword: BaseEquipment = buildWeapon('shortsword')
     testshortsword.tags?.splice(ind2, 1)
 }
 
-export const shortswordPlusOne: BaseEquipment = buildWeapon('shortsword')
+export const shortswordPlusOne: BaseEquipment = blueprintToBaseEquipment(
+    { slot: 'mainhand', base: { name: 'shortsword', ...weaponBaseItemLookupTable['shortsword'] }, affix: [], suffix: [] },
+    weaponBaseItemLookupTable['shortsword'].base.displayName,
+)
 {
     shortswordPlusOne.displayName = 'shortsword-plus-one'
     shortswordPlusOne.broadContexts.enhancement = (o: OwnerLog2) => {
@@ -93,7 +120,10 @@ export const shortswordPlusOne: BaseEquipment = buildWeapon('shortsword')
     }
 }
 
-export const shortswordPlusOneIfFighter: BaseEquipment = buildWeapon('shortsword')
+export const shortswordPlusOneIfFighter: BaseEquipment = blueprintToBaseEquipment(
+    { slot: 'mainhand', base: { name: 'shortsword', ...weaponBaseItemLookupTable['shortsword'] }, affix: [], suffix: [] },
+    weaponBaseItemLookupTable['shortsword'].base.displayName,
+)
 {
     shortswordPlusOneIfFighter.displayName = 'shortsword-plus-one-if-fighter'
     shortswordPlusOneIfFighter.broadContexts.enhancement = (o: OwnerLog2) => {

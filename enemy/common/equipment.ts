@@ -1,32 +1,32 @@
-import { OwnerMaximal } from "../../actor2";
 import { BaseEquipment } from "../../equipment-sheet2/types";
-import { SLOT_TYPE } from "../../equipment-sheet2/defaults";
-import newModNode, { leaf, sumFunc } from "../../log2";
-import { ModNodeOpts, OwnerLog2 } from "../../log2/types";
-import roll from "../../log2/roll";
+import { EquipmentBlueprint } from "../../equipment-sheet2/factory/types";
+import { blueprintToBaseEquipment } from "../../equipment-sheet2/factory/broad-context-adapter";
 
-export const clawSmall: BaseEquipment = (() => {
-    const dn = 'Claw (Small)'
-    return {
-        displayName: dn,
-        acceptableSlots: SLOT_TYPE.weapon,
-        broadContexts: {
-            damage: (o: OwnerLog2, opts: ModNodeOpts = {}) => {
-                const sides = 4
-                return newModNode(dn, [roll({ diceSides: sides })(o, opts)], sumFunc)
-            }
-        },
-        tags: ['melee']
-    }
-})()
+const clawSmallBlueprint: EquipmentBlueprint = {
+    slot: 'mainhand',
+    affix: [],
+    suffix: [],
+    base: {
+        name: 'Claw (Small)',
+        base: { displayName: 'Claw (Small)', tags: ['melee'] },
+        implicit: [],
+        damageDiceSides: 4,
+    },
+}
+
+export const clawSmall: BaseEquipment = blueprintToBaseEquipment(clawSmallBlueprint, 'Claw (Small)')
 
 export const naturalAc = (amnt: number): BaseEquipment => {
     const displayName = `Natural Armor +${amnt}`
-    return {
-        displayName: `Natural Armor +${amnt}`,
-        acceptableSlots: SLOT_TYPE.armor,
-        broadContexts: {
-            'ac-of-equipment': () => leaf(displayName, amnt)
+    const blueprint: EquipmentBlueprint = {
+        slot: 'armor',
+        affix: [],
+        suffix: [],
+        base: {
+            name: displayName,
+            base: { displayName },
+            implicit: [{ kind: 'ac', value: amnt }],
         },
     }
+    return blueprintToBaseEquipment(blueprint, displayName)
 }

@@ -26,6 +26,16 @@ export const MOD_KIND_TO_BROAD_CONTEXT_KEY: Record<Exclude<ModKind, 'roll-damage
     'max-dex': 'max-dex-of-equipment',
 }
 
+// lookup table to acceptable slots router
+export const ACCEPTABLE_SLOTS_BY_BLUEPRINT_SLOT: Record<EquipmentSlot, EquipmentSlot[]> = {
+    mainhand: ['mainhand', 'offhand'],
+    offhand: ['offhand'],
+    twohanded: ['twohanded'],
+    armor: ['armor'],
+    ring: ['ring'],
+    amulet: ['amulet'],
+}
+
 // these replace instead of augment
 const IMPLICIT_REPLACE_KEY: Partial<Record<ModKind, EveryTree>> = {
     'crit-threat-range': 'crit-threat-range',
@@ -129,8 +139,9 @@ export const blueprintToBaseEquipment = (
 
     return {
         displayName,
-        acceptableSlots: [blueprint.slot],
+        acceptableSlots: ACCEPTABLE_SLOTS_BY_BLUEPRINT_SLOT[blueprint.slot],
         broadContexts,
         tags: blueprint.base?.base.tags,
+        blueprint,
     }
 }

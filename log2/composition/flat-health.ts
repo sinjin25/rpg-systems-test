@@ -4,7 +4,7 @@ import featContribution from "./feat-contribution";
 
 const displayName: EveryTree = 'flat-health'
 export default (owner: OwnerLog2, opts: ModNodeOpts = {}) => {
-    const fromEquipment = Object.values(owner.es).map(a => {
+    const fromEquipment = Object.values(owner.es).filter(a => !!a).map(a => {
         return a.broadContexts['health-equipment-mod']
     }).filter(a => !!a).map(a => a(owner, opts)).filter(a => !!a)
     const subproblems: TreeSubproblems = {

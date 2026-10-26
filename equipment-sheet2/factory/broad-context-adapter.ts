@@ -37,7 +37,7 @@ export const ACCEPTABLE_SLOTS_BY_BLUEPRINT_SLOT: Record<EquipmentSlot, Equipment
 }
 
 // these replace instead of augment
-const IMPLICIT_REPLACE_KEY: Partial<Record<ModKind, EveryTree>> = {
+export const IMPLICIT_REPLACE_KEY: Partial<Record<ModKind, EveryTree>> = {
     'crit-threat-range': 'crit-threat-range',
     'crit-multiplier': 'crit-multiplier',
 }
@@ -61,7 +61,7 @@ export const _blueprintModToModNode = (
 
 export type AugmentableModKind = Exclude<ModKind, 'roll-damage'>
 
-const _collectModNodesByKind = (
+export const _collectModNodesByKind = (
     slot: EquipmentSlot,
     blueprint: EquipmentBlueprint,
 ): Partial<Record<ModKind, ModNode[]>> => {

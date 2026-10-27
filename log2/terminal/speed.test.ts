@@ -1,7 +1,7 @@
 import { findNodeMatching, leaf } from '..'
 import { createDefaultOwner } from '../../actor2'
 import addFeat from '../../feat2/add-feat/index.ts'
-import { Feat2 } from '../../feat2/index.ts'
+import { Feat2 } from '../../feat2/types.ts'
 import { addStatusToStatusSheet } from '../../status-sheet2/add-status-to-status-sheet.ts'
 import { makeWrapper } from '../../status-sheet2/index.ts'
 import modNodeToText from '../format'

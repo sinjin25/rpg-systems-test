@@ -1,4 +1,4 @@
-import { Feat2 } from "..";
+import { Feat2 } from "../types";
 
 export const displayName = 'Shield Proficiency'
 export const featShieldProficiency = {

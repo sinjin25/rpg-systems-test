@@ -1,6 +1,6 @@
 import { applyOnFightStartFeatHandlers, getOnFightStartFeatHandlers } from './fight-start.ts'
 import { describe, test, assert, expect } from 'vitest'
-import { Feat2 } from './index.ts'
+import { Feat2 } from './types.ts'
 import { makeWrapper } from '../status-sheet2/index.ts'
 import { createDefaultOwner } from '../actor2/index.ts'
 

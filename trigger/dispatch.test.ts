@@ -1,6 +1,6 @@
 import { describe, test, assert } from 'vitest'
 import { runTrigger } from './dispatch.ts'
-import { Feat2 } from '../feat2/index.ts'
+import { Feat2 } from '../feat2/types.ts'
 import { StatusEffect } from '../status-sheet2/types.ts'
 import { createDefaultOwner } from '../actor2/index.ts'
 

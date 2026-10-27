@@ -1,4 +1,4 @@
-import { Feat2 } from "..";
+import { Feat2 } from "../types";
 
 // see proficient-in-equipment.ts
 export const displayName = 'Martial Proficiency'

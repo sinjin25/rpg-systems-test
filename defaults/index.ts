@@ -5,7 +5,7 @@ import { fakeCharacterLevels } from '../character-sheet'
 import { ClassLevelPickLog } from '../class-level2/types'
 import { shortsword } from '../equipment-sheet2/defaults'
 import { EquipmentSheet } from '../equipment-sheet2/types'
-import { FeatSheet } from '../feat2'
+import { FeatSheet } from '../feat2/types'
 import { StatusSheet } from '../status-sheet2'
 
 export const defaultCharacterSheet: CharacterSheet = {

@@ -1,5 +1,5 @@
 // used by rage.ts status to improve the stats
-import { Feat2 } from "..";
+import { Feat2 } from "../types";
 
 export const displayName = 'Improved Rage'
 export const featImprovedRage = {

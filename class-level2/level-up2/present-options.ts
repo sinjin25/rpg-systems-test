@@ -1,5 +1,5 @@
 import { createDefaultOwner, OwnerMaximal } from "../../actor2";
-import { FeatSheet } from "../../feat2";
+import { FeatSheet } from "../../feat2/types";
 import addFeat from "../../feat2/add-feat";
 import possibleFeats, { PossibleFeatKey } from "../../feat2/feats";
 import { classLevelCounts, registry } from "../derive";

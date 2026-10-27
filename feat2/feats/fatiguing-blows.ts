@@ -1,5 +1,5 @@
 import { leaf } from "../../log2";
-import { Feat2 } from "..";
+import { Feat2 } from "../types";
 import fbStatus from '../../status-sheet2/status/fatiguing-blows'
 
 const displayName = 'Fatiguing Blows'

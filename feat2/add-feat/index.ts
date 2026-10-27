@@ -1,4 +1,4 @@
-import { Feat2 } from "..";
+import { Feat2 } from "../types";
 import { OwnerMaximal } from "../../actor2";
 
 export const addFeat = (

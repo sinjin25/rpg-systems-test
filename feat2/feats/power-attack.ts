@@ -1,4 +1,4 @@
-import { Feat2 } from "..";
+import { Feat2 } from "../types";
 import { leaf } from "../../log2";
 
 const displayName = 'Power Attack'

@@ -1,5 +1,5 @@
 import { leaf } from "../../log2";
-import { Feat2 } from "..";
+import { Feat2 } from "../types";
 import roll from "../../roll";
 import { divineProtection as dpStatus } from "../../status-sheet2";
 

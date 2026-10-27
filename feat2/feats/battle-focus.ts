@@ -1,5 +1,5 @@
 import { leaf } from "../../log2";
-import { Feat2 } from "..";
+import { Feat2 } from "../types";
 import { BATTLE_FOCUS_CHARGE_ROUNDS, battleFocusChargingStatus } from "../../status-sheet2";
 
 const displayName = 'Battle Focus'

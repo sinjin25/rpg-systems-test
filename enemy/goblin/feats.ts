@@ -1,4 +1,4 @@
-import { Feat2 } from "../../feat2"
+import { Feat2 } from "../../feat2/types"
 import { leaf } from "../../log2"
 
 export const ambush: Feat2 = {

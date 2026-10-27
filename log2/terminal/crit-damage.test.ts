@@ -5,7 +5,7 @@ import { OwnerLog2, ObjectWithBroadContexts } from '../types'
 import { leaf, findNodeMatching } from '..'
 import modNodeToText from '../format'
 import roll from '../../roll'
-import { Feat2 } from '../../feat2'
+import { Feat2 } from '../../feat2/types'
 import { BaseEquipment } from '../../equipment-sheet2/types'
 import { SLOT_TYPE } from '../../equipment-sheet2/defaults'
 

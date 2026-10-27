@@ -1,6 +1,6 @@
 import { findNodeMatching, leaf } from '..'
 import { createDefaultOwner, OwnerMaximal } from '../../actor2'
-import { Feat2 } from '../../feat2'
+import { Feat2 } from '../../feat2/types'
 import initiative from './initiative'
 import { describe, test, assert, expect } from 'vitest'
 

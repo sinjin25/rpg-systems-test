@@ -1,5 +1,5 @@
 import { leaf } from "../../log2";
-import { Feat2 } from "..";
+import { Feat2 } from "../types";
 
 const displayName = 'Armor Training'
 export default {

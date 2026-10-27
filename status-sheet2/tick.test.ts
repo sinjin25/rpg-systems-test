@@ -1,7 +1,7 @@
 import { describe, test, assert } from 'vitest'
 import { createDefaultOwner, instantiateActor } from '../actor2'
 import { leaf } from '../log2'
-import { Feat2 } from '../feat2'
+import { Feat2 } from '../feat2/types'
 import addFeat from '../feat2/add-feat'
 import { addStatusToStatusSheet, makeWrapper } from './index'
 import { calculateDamageTicks, calculateHealTicks } from './tick'

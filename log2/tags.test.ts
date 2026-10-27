@@ -1,6 +1,6 @@
 import { describe, test, expect, assert } from 'vitest'
 import { hasAnyTag, hasAllTags, mutateOwnerTags } from './tags'
-import { Feat2 } from '../feat2'
+import { Feat2 } from '../feat2/types'
 import { findNodeMatching, leaf } from '.'
 import attack from './terminal/attack'
 import { createDefaultOwner } from '../actor2'

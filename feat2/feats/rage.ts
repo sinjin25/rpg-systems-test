@@ -1,4 +1,4 @@
-import { Feat2 } from "..";
+import { Feat2 } from "../types";
 import { OwnerMaximal } from "../../actor2";
 import { rage as rageStatus } from '../../status-sheet2/status/index'
 

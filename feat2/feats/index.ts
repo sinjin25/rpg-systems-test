@@ -1,4 +1,4 @@
-import { Feat2 } from '..'
+import { Feat2 } from '../types'
 import armorTraining from './armor-training'
 import battleFocus from './battle-focus'
 import divineProtection from './divine-protection'

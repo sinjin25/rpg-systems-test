@@ -1,5 +1,5 @@
 import newModNode, { leaf, ModNode, sumFunc } from "..";
-import { deriveFeatName, featExoticProficiency, featMartialProficiency } from "../../feat2/feats";
+import { deriveFeatKey, featExoticProficiency, featMartialProficiency } from "../../feat2/registry";
 import { EveryTree, ModNodeOpts, OwnerLog2 } from "../types";
 
 const displayName: EveryTree = 'proficiency-penalty'
@@ -14,13 +14,13 @@ export default (owner: OwnerLog2, opts: ModNodeOpts = {}) => {
 
     if (opts.tags
         && opts.tags.includes('martial')
-        && owner.fs[deriveFeatName(featMartialProficiency)] === undefined) {
+        && owner.fs[deriveFeatKey(featMartialProficiency)] === undefined) {
         children.push(leaf('not proficient (martial)', PENALTY))
     }
 
     if (opts.tags
         && opts.tags.includes('exotic')
-        && owner.fs[deriveFeatName(featExoticProficiency)] === undefined) {
+        && owner.fs[deriveFeatKey(featExoticProficiency)] === undefined) {
         children.push(leaf('not proficient (exotic)', PENALTY))
     }
 

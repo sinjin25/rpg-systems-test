@@ -30,3 +30,26 @@ export type RequiredFeatData = {
     cs: CharacterSheet,
     fs: FeatSheet,
 }
+
+export type FeatIds =
+    | 'Armor Training'
+    | 'Battle Focus'
+    | 'Divine Protection'
+    | 'Fatiguing Blows'
+    | 'Improved Initiative'
+    | 'Improved Rage'
+    | 'Rage'
+    | 'Hardy'
+    | 'Power Attack'
+    | 'Dodge'
+    | 'Exotic Proficiency'
+    | 'Martial Proficiency'
+    | 'Shield Proficiency'
+    | 'Tower Shield Proficiency'
+
+export type Feat2Wrapper = {
+    id: FeatIds,
+    pointer: Feat2,
+    meetsPrereq: boolean,
+    owned: boolean,
+}

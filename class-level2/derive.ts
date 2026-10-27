@@ -1,4 +1,4 @@
-import { PossibleFeatKey } from "../feat2/feats"
+import { FeatIds } from "../feat2/types"
 import newModNode, { leaf, ModNode, sumFunc } from "../log2"
 import fighter from "./fighter"
 import rogue from "./rogue"
@@ -54,9 +54,9 @@ export const deriveBonus = (
 // PROBABLY THROW THIS AWAY FUCK IT
 // every feat the character has, class grants and free picks alike, in the order
 // they were acquired. deduped, since a multiclass can be granted the same feat twice.
-export const featsFromLog = (clpl: ClassLevelPickLog): PossibleFeatKey[] => {
-    const seen: Partial<Record<PossibleFeatKey, true>> = {}
-    const out: PossibleFeatKey[] = []
+export const featsFromLog = (clpl: ClassLevelPickLog): FeatIds[] => {
+    const seen: Partial<Record<FeatIds, true>> = {}
+    const out: FeatIds[] = []
     const taken: Partial<Record<ClassKeys, number>> = {}
 
     for (const entry of clpl) {

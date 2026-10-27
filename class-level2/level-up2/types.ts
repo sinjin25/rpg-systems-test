@@ -1,4 +1,4 @@
-import { PossibleFeatKey } from "../../feat2/feats";
+import { FeatIds } from "../../feat2/types";
 import { ClassKeys, ClassLevelSumKeys } from "../types";
 
 // adapted from types.ts ClassLevel
@@ -6,6 +6,6 @@ export type ClassLevelProposal = {
     [K in ClassLevelSumKeys]: number
 } & {
     key: ClassKeys,
-    classFeats: PossibleFeatKey[],
+    classFeats: FeatIds[],
     hasFreeFeats: boolean,
 }

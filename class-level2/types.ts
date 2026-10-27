@@ -1,4 +1,4 @@
-import { PossibleFeatKey } from "../feat2/feats"
+import { FeatIds } from "../feat2/types"
 
 export type ClassKeys = 'fighter' | 'rogue'
 
@@ -8,11 +8,11 @@ export type ClassLevel = {
     [K in ClassLevelSumKeys]: number[]
 } & {
     key: ClassKeys,
-    classFeats: PossibleFeatKey[][],
+    classFeats: FeatIds[][],
     hasFreeFeats: boolean[],
 }
 
 export type ClassLevelPickLog = {
     key: ClassKeys, // maybe fighter
-    freeFeats: PossibleFeatKey[],
+    freeFeats: FeatIds[],
 }[]

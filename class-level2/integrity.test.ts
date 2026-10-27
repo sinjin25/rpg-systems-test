@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vitest'
 import { registry } from './derive'
 import { ClassLevel } from './types'
-import possibleFeats from '../feat2/feats'
+import featRegistry from '../feat2/registry'
 
 const columnLengths = (cl: ClassLevel): Record<string, number> =>
     Object.fromEntries(
@@ -36,7 +36,7 @@ describe('class tables only grant feats that exist', () => {
             granted.forEach((featsAtLevel, index) => {
                 if (featsAtLevel.length === 0) return
                 test(`level ${index + 1} grants ${featsAtLevel.join(', ')}`, () => {
-                    const missing = featsAtLevel.filter((feat) => !(feat in possibleFeats))
+                    const missing = featsAtLevel.filter((feat) => !(feat in featRegistry))
                     expect(missing).toEqual([])
                 })
             })
@@ -45,7 +45,7 @@ describe('class tables only grant feats that exist', () => {
                 const total = granted.reduce((n, feats) => n + feats.length, 0)
                 const known = granted
                     .flat()
-                    .filter((feat) => feat in possibleFeats).length
+                    .filter((feat) => feat in featRegistry).length
                 expect(known).toEqual(total)
             })
         })

@@ -1,4 +1,4 @@
-import { ClassLevel } from "./types";
+import { ClassLevelTable } from "./types";
 export default {
     key: 'rogue',
     fortitude: [0, 0, 1, 0, 0],
@@ -6,5 +6,5 @@ export default {
     will: [1, 0, 1, 0, 1],
     attackBonus: [0, 1, 1, 1, 0],
     classFeats: [[], [], [], [], []],
-    hasFreeFeats: [false, false, false, false, false],
-} satisfies ClassLevel
+    hasFreeFeats: [[], [], [], [], []],
+} satisfies ClassLevelTable

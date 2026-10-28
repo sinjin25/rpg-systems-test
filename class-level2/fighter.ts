@@ -1,4 +1,4 @@
-import { ClassLevel } from "./types";
+import { ClassLevelTable } from "./types";
 
 export default {
     key: 'fighter',
@@ -16,5 +16,11 @@ export default {
         [],
         [],
     ],
-    hasFreeFeats: [true, false, true, false, true]
-} satisfies ClassLevel
+    hasFreeFeats: [
+        [{ levelHasFreeFeats: true }],
+        [],
+        [{ levelHasFreeFeats: true }],
+        [],
+        [{ levelHasFreeFeats: true }],
+    ]
+} satisfies ClassLevelTable

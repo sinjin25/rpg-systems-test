@@ -6,13 +6,13 @@ import { describe, test, expect, assert } from 'vitest'
 import { createDefaultOwner, instantiateActor, OwnerMaximal } from '../../actor2/index.ts'
 import { simulateFight } from '../../simulate2/index.ts'
 import { setupWorldState } from '../../simulate2/setup.ts'
-import { chooseOptionAndMutate, presentOptions } from '../../class-level2/level-up2/present-options.ts'
+import { chooseOptionAndMutate, newClassLevelList } from '../../class-level2/level-up2/present-options.ts'
 
 const SHOW_DEBUG = true
 
 const defaultPlayer: OwnerMaximal = createDefaultOwner({})
 
-const pickFighter = (options: ReturnType<typeof presentOptions>) => {
+const pickFighter = (options: ReturnType<typeof newClassLevelList>) => {
     return options.find(a => a.key === 'fighter')!
 }
 
@@ -47,18 +47,18 @@ describe('Compare difficulties - consecutive wins', () => {
     const fighter4 = createDefaultOwner({})
 
     chooseOptionAndMutate(fighter4, {
-        clp: pickFighter(presentOptions(fighter4.cs.levels)),
+        clp: pickFighter(newClassLevelList(fighter4.cs.levels)),
         freeFeat: 'Dodge',
     })
     chooseOptionAndMutate(fighter4, {
-        clp: pickFighter(presentOptions(fighter4.cs.levels)),
+        clp: pickFighter(newClassLevelList(fighter4.cs.levels)),
     })
     chooseOptionAndMutate(fighter4, {
-        clp: pickFighter(presentOptions(fighter4.cs.levels)),
+        clp: pickFighter(newClassLevelList(fighter4.cs.levels)),
         freeFeat: 'Fatiguing Blows',
     })
     chooseOptionAndMutate(fighter4, {
-        clp: pickFighter(presentOptions(fighter4.cs.levels)),
+        clp: pickFighter(newClassLevelList(fighter4.cs.levels)),
     })
     const players = { fighter1, fighter4 }
     const encounters = {
@@ -208,18 +208,18 @@ describe('Expected Difficulty: Level 1', () => {
         const fighter = createDefaultOwner({ cs: { ...defaultCharacterSheet, levels: [] } })
 
         chooseOptionAndMutate(fighter, {
-            clp: pickFighter(presentOptions(fighter.cs.levels)),
+            clp: pickFighter(newClassLevelList(fighter.cs.levels)),
             freeFeat: 'Dodge',
         })
         chooseOptionAndMutate(fighter, {
-            clp: pickFighter(presentOptions(fighter.cs.levels)),
+            clp: pickFighter(newClassLevelList(fighter.cs.levels)),
         })
         chooseOptionAndMutate(fighter, {
-            clp: pickFighter(presentOptions(fighter.cs.levels)),
+            clp: pickFighter(newClassLevelList(fighter.cs.levels)),
             freeFeat: 'Fatiguing Blows',
         })
         chooseOptionAndMutate(fighter, {
-            clp: pickFighter(presentOptions(fighter.cs.levels)),
+            clp: pickFighter(newClassLevelList(fighter.cs.levels)),
         })
 
         expect(fighter.cs.levels.length).toEqual(4)

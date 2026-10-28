@@ -1,1 +1,1 @@
-export { chooseOptionAndMutate, presentOptions } from './present-options'
+export { chooseOptionAndMutate, newClassLevelList } from './present-options'

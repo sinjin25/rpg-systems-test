@@ -3,21 +3,20 @@ import { FeatIds } from "../../feat2/types";
 import addFeat from "../../feat2/add-feat";
 import featRegistry from "../../feat2/registry";
 import { classLevelCounts, registry } from "../derive";
-import { ClassKeys, ClassLevel, ClassLevelPickLog, ClassLevelSumKeys } from "../types";
-import { ClassLevelProposal } from "./types";
+import { ClassKeys, ClassLevel, ClassLevelPickLog, ClassLevelTable } from "../types";
 
-// a propsal is a sheet we can work off of (UI) before comitting
-// not be confused with being able to see all the levels from all the classes ahead of time
-export const presentOptions = (clpl: ClassLevelPickLog): ClassLevelProposal[] => {
+// a single level's row, resolved against what the character has already taken —
+// not to be confused with being able to see all the levels from all the classes ahead of time
+export const newClassLevelList = (clpl: ClassLevelPickLog): ClassLevel[] => {
     // by default, everything is good if you can take more levels
     // in the future: there may be prereqs for classes
     const allClasses: ClassKeys[] = ['fighter', 'rogue']
 
     const freq = classLevelCounts(clpl)
-    const proposals: ClassLevelProposal[] = []
+    const proposals: ClassLevel[] = []
 
     for (let key of allClasses) {
-        const cl = registry[key] as ClassLevel
+        const cl = registry[key] as ClassLevelTable
         if (!cl) continue
 
         // does it have another level to get?
@@ -27,8 +26,8 @@ export const presentOptions = (clpl: ClassLevelPickLog): ClassLevelProposal[] =>
         proposals.push({
             attackBonus: cl.attackBonus[level],
             will: cl.will[level],
-            fortitude: cl.attackBonus[level],
-            reflex: cl.attackBonus[level],
+            fortitude: cl.fortitude[level],
+            reflex: cl.reflex[level],
             classFeats: cl.classFeats[level],
             hasFreeFeats: cl.hasFreeFeats[level],
             key: cl.key
@@ -41,7 +40,7 @@ export const presentOptions = (clpl: ClassLevelPickLog): ClassLevelProposal[] =>
 export const chooseOptionAndMutate = (
     owner: OwnerMaximal,
     data: {
-        clp: ClassLevelProposal, freeFeat?: FeatIds
+        clp: ClassLevel, freeFeat?: FeatIds
     }
 ) => {
     const { clp, freeFeat } = data
@@ -49,7 +48,7 @@ export const chooseOptionAndMutate = (
     fakeOwner.cs = owner.cs // required for prereqs
     fakeOwner.fs = { ...owner.fs }
     try {
-        if (clp.hasFreeFeats) {
+        if (clp.hasFreeFeats.length > 0) {
             if (!freeFeat) return false
             const f = featRegistry[freeFeat]
             if (!f) throw Error(`!f for ${freeFeat}`)

@@ -1,9 +1,9 @@
 import { describe, test, expect } from 'vitest'
 import { registry } from './derive'
-import { ClassLevel } from './types'
+import { ClassLevelTable } from './types'
 import featRegistry from '../feat2/registry'
 
-const columnLengths = (cl: ClassLevel): Record<string, number> =>
+const columnLengths = (cl: ClassLevelTable): Record<string, number> =>
     Object.fromEntries(
         Object.entries(cl)
             .filter(([, v]) => Array.isArray(v))
@@ -31,7 +31,7 @@ describe('class table integrity', () => {
 describe('class tables only grant feats that exist', () => {
     for (const [registryKey, cl] of Object.entries(registry)) {
         describe(registryKey, () => {
-            const granted = (cl as ClassLevel).classFeats
+            const granted = (cl as ClassLevelTable).classFeats
 
             granted.forEach((featsAtLevel, index) => {
                 if (featsAtLevel.length === 0) return

@@ -52,4 +52,5 @@ export type Feat2Wrapper = {
     pointer: Feat2,
     meetsPrereq: boolean,
     owned: boolean,
+    hide: boolean, // ex: deactivated
 }

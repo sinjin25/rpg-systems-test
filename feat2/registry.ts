@@ -20,7 +20,7 @@ import { testFeatMeleeWeaponFighting } from './feats/test-feats'
 export const deriveFeatKey = <F extends Feat2>(feat: F): F['displayName'] => feat.displayName
 
 // missing or extra keys vs FeatIds are a type error here
-export const registry: Record<FeatIds, Feat2> = {
+export const registry = {
     [deriveFeatKey(armorTraining)]: armorTraining,
     [deriveFeatKey(battleFocus)]: battleFocus,
     [deriveFeatKey(divineProtection)]: divineProtection,
@@ -35,7 +35,7 @@ export const registry: Record<FeatIds, Feat2> = {
     [deriveFeatKey(featMartialProficiency)]: featMartialProficiency,
     [deriveFeatKey(featShieldProficiency)]: featShieldProficiency,
     [deriveFeatKey(featTowerShieldProficiency)]: featTowerShieldProficiency,
-}
+} satisfies Record<FeatIds, Feat2>
 
 export {
     armorTraining,

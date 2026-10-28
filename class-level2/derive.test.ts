@@ -1,6 +1,8 @@
 import { describe, test, expect } from 'vitest'
-import { classLevelCounts, deriveBonus, featsFromLog, registry } from './derive'
+import { classLevelCounts, deriveBonus, featsFromLog, getNumberOfLevelupsAvailable, registry } from './derive'
 import { ClassKeys, ClassLevelPickLog, ClassLevelSumKeys } from './types'
+import { createDefaultExperience } from '../experience'
+import { Experience } from '../experience/types'
 
 const sumKeys: ClassLevelSumKeys[] = ['fortitude', 'reflex', 'attackBonus']
 
@@ -20,7 +22,7 @@ describe('registry', () => {
     test('rogue grants no feats and offers no picks at any level', () => {
         const rogue = registry.rogue
         expect(rogue.classFeats.every((feats) => feats.length === 0)).toBe(true)
-        expect(rogue.hasFreeFeats.every((offers) => offers === false)).toBe(true)
+        expect(rogue.hasFreeFeats.every((slots) => slots.length === 0)).toBe(true)
     })
 })
 
@@ -126,6 +128,44 @@ describe('deriveBonus: multiclass', () => {
         expect(deriveBonus(rogue1, 'reflex').total()).toEqual(2)
         expect(deriveBonus(rogue1, 'attackBonus').total()).toEqual(0)
         expect(featsFromLog(rogue1)).toEqual([])
+    })
+})
+
+describe('getNumberOfLevelupsAvailable', () => {
+    // breakpoints are [50, 150, 300, 600, 1000, 1500, 9999999]
+    // clpl is always at least 1 entry here — a real character is never level 0
+    // (createDefaultOwner seeds one level on creation), and currLevel is 1-indexed
+    // against that: level 1 has spent 0 thresholds, level n has spent n-1 of them.
+    const exp = (currentXp: number): Experience => ({ ...createDefaultExperience(), currentXp })
+
+    test('Start at level 1, w/o a level up available', () => {
+        expect(getNumberOfLevelupsAvailable(exp(0), dip('fighter', 1))).toEqual(0)
+    })
+
+    test('Under xp breakpoint behavior', () => {
+        expect(getNumberOfLevelupsAvailable(exp(49), dip('fighter', 1))).toEqual(0)
+    })
+
+    test('>= breakpoint', () => {
+        expect(getNumberOfLevelupsAvailable(exp(50), dip('fighter', 1))).toEqual(1)
+    })
+
+    test('>= multiple breakpoints', () => {
+        // clears 50/150/300/600/1000 - 3 thresholds, 0 spent at level 1
+        expect(getNumberOfLevelupsAvailable(exp(300), dip('fighter', 1))).toEqual(3)
+    })
+
+    test('>= multiple breakpoints w/ levels spent', () => {
+        // 3 thresholds cleared, 1 spent (again start at level 1, not 0)
+        expect(getNumberOfLevelupsAvailable(exp(300), dip('fighter', 2))).toEqual(2)
+    })
+
+    // this might happen if breakpoints were modified mid run (although breakpoints are serialized so this actually wouldn't happen but w/e)
+    test('Safety clamp - more levels than normal', () => {
+        // 50/150/300/600/1000
+        // should be level 5
+        expect(getNumberOfLevelupsAvailable(exp(1000), dip('fighter', 6))).toEqual(0)
+        expect(getNumberOfLevelupsAvailable(exp(1000), dip('fighter', 99))).toEqual(0)
     })
 })
 

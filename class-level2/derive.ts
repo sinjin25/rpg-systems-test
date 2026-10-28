@@ -1,10 +1,11 @@
+import { Experience } from "../experience/types"
 import { FeatIds } from "../feat2/types"
 import newModNode, { leaf, ModNode, sumFunc } from "../log2"
 import fighter from "./fighter"
 import rogue from "./rogue"
-import { ClassKeys, ClassLevel, ClassLevelPickLog, ClassLevelSumKeys } from "./types"
+import { ClassKeys, ClassLevelPickLog, ClassLevelSumKeys, ClassLevelTable } from "./types"
 
-export const registry: Record<ClassKeys, ClassLevel> = {
+export const registry: Record<ClassKeys, ClassLevelTable> = {
     fighter,
     rogue,
 }
@@ -16,6 +17,15 @@ export const classLevelCounts = (clpl: ClassLevelPickLog): Partial<Record<ClassK
         freq[entry.key] = (freq[entry.key] ?? 0) + 1
     }
     return freq
+}
+
+export const getCurrentLevel = (clpl: ClassLevelPickLog): number => {
+    let currLevel = 0
+    const counts = classLevelCounts(clpl)
+    for (let freq of Object.values(counts)) {
+        currLevel += freq
+    }
+    return currLevel
 }
 
 // total of one numeric column across the whole log, as a ModNode: one leaf per
@@ -75,4 +85,23 @@ export const featsFromLog = (clpl: ClassLevelPickLog): FeatIds[] => {
     }
 
     return out
+}
+
+// if somehow you were able to get free levels or something
+// this assumption would break
+export const getNumberOfLevelupsAvailable = (
+    ownerExperience: Experience,
+    clpl: ClassLevelPickLog
+) => {
+    let currLevel = getCurrentLevel(clpl)
+
+    const { breakpoints, currentXp } = ownerExperience
+    let maxLevel = 0
+    for (let i = 0; i < breakpoints.length; i++) {
+        if (currentXp < breakpoints[i]) break
+        maxLevel++
+    }
+
+    // at 0 xp you are level 1, therefore 1 off moment
+    return Math.max(0, maxLevel - (currLevel - 1))
 }

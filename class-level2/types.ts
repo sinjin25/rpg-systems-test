@@ -1,3 +1,4 @@
+import { OwnerMaximal } from "../actor2"
 import { Feat2, FeatIds } from "../feat2/types"
 
 export type ClassKeys = 'fighter' | 'rogue'
@@ -40,3 +41,25 @@ export type ClassLevelPickLog = {
     key: ClassKeys, // ex: 'fighter'
     freeFeats: FeatIds[],
 }[]
+
+export type LevelUpProposal = {
+    // the next level for each class given a character
+    classLevelList: ClassLevel[],
+    nextLevel: number,
+    freeFeatsFromLevel: ClassLevelFreeFeats[],
+}
+
+export type MutationOutcomeResultSuccess = {
+    kind: 'success'
+}
+
+export type MutationOutcomeResultFailure = {
+    kind: 'failure'
+    reason: 'feat requirement not met' | 'improper clone provided' | 'feat does not exist' | 'duplicate feat chosen',
+}
+
+export type MutationResult = {
+    result: MutationOutcomeResultFailure | MutationOutcomeResultSuccess,
+    original: OwnerMaximal,
+    clone: OwnerMaximal,
+}

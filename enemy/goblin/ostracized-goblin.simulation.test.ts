@@ -6,7 +6,7 @@ import { describe, test, expect, assert } from 'vitest'
 import { createDefaultOwner, instantiateActor, OwnerMaximal } from '../../actor2/index.ts'
 import { simulateFight } from '../../simulate2/index.ts'
 import { setupWorldState } from '../../simulate2/setup.ts'
-import { chooseOptionAndMutate, newClassLevelList } from '../../class-level2/level-up2/present-options.ts'
+import { chooseOptionAndMutate, newClassLevelList } from '../../class-level2/level-up2/index.ts'
 
 const SHOW_DEBUG = true
 

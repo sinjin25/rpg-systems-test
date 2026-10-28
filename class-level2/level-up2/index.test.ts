@@ -1,5 +1,5 @@
 import { createDefaultOwner } from '../../actor2/index.ts'
-import { chooseOptionAndMutate, newClassLevelList, } from './present-options.ts'
+import { chooseOptionAndMutate, newClassLevelList, } from './index.ts'
 import { describe, test, assert, expect } from 'vitest'
 
 const pickFighter = (options: ReturnType<typeof newClassLevelList>) => {

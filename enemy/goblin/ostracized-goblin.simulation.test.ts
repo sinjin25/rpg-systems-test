@@ -6,14 +6,23 @@ import { describe, test, expect, assert } from 'vitest'
 import { createDefaultOwner, instantiateActor, OwnerMaximal } from '../../actor2/index.ts'
 import { simulateFight } from '../../simulate2/index.ts'
 import { setupWorldState } from '../../simulate2/setup.ts'
-import { chooseOptionAndMutate, newClassLevelList } from '../../class-level2/level-up2/index.ts'
+import { patchCloneWithProposal, newLevelUpProposal } from '../../class-level2/level-up2/index.ts'
+import { testUtilCloneOwner } from '../../class-level2/level-up2/clone.ts'
+import { ClassLevel } from '../../class-level2/types.ts'
+import { FeatIds } from '../../feat2/types.ts'
 
 const SHOW_DEBUG = true
 
 const defaultPlayer: OwnerMaximal = createDefaultOwner({})
 
-const pickFighter = (options: ReturnType<typeof newClassLevelList>) => {
+const pickFighter = (options: ClassLevel[]) => {
     return options.find(a => a.key === 'fighter')!
+}
+
+const levelUpFighter = (original: OwnerMaximal, chosenFeats: FeatIds[] = []) => {
+    const clone = testUtilCloneOwner(original)
+    const cl = pickFighter(newLevelUpProposal(original).classLevelList)
+    return patchCloneWithProposal({ original, clone }, { cl, chosenFeats }) ?? original
 }
 
 describe('A default player can win', () => {
@@ -44,22 +53,12 @@ describe('Compare difficulties - consecutive wins', () => {
     const MAX_CONSECUTIVE_FIGHTS = 20
 
     const fighter1 = createDefaultOwner({})
-    const fighter4 = createDefaultOwner({})
+    let fighter4 = createDefaultOwner({})
 
-    chooseOptionAndMutate(fighter4, {
-        clp: pickFighter(newClassLevelList(fighter4.cs.levels)),
-        freeFeat: 'Dodge',
-    })
-    chooseOptionAndMutate(fighter4, {
-        clp: pickFighter(newClassLevelList(fighter4.cs.levels)),
-    })
-    chooseOptionAndMutate(fighter4, {
-        clp: pickFighter(newClassLevelList(fighter4.cs.levels)),
-        freeFeat: 'Fatiguing Blows',
-    })
-    chooseOptionAndMutate(fighter4, {
-        clp: pickFighter(newClassLevelList(fighter4.cs.levels)),
-    })
+    fighter4 = levelUpFighter(fighter4, ['Dodge'])
+    fighter4 = levelUpFighter(fighter4)
+    fighter4 = levelUpFighter(fighter4, ['Fatiguing Blows'])
+    fighter4 = levelUpFighter(fighter4)
     const players = { fighter1, fighter4 }
     const encounters = {
         '1 goblin': [ostracizedGoblin],

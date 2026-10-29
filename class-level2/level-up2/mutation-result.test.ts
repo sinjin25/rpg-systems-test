@@ -1,7 +1,10 @@
-import { describe, test, assert, vi } from 'vitest'
-import { createDefaultOwner } from '../../actor2'
+import { describe, test, assert } from 'vitest'
+import { createDefaultOwner, OwnerMaximal } from '../../actor2'
 import { mutationResult } from './index'
-import { ClassLevel } from '../types'
+import { Feat2 } from '../../feat2/types'
+import featRegistry from '../../feat2/registry'
+import hardy from '../../feat2/feats/con-saves'
+import { ClassLevel, MutationFailureReasons } from '../types'
 
 const baseCl: ClassLevel = {
     key: 'fighter',
@@ -21,7 +24,7 @@ describe('mutationResult', () => {
             { cl: baseCl, chosenFeats: ['Dodge'] }
         )
         assert.equal(result.result.kind, 'failure')
-        assert.equal((result.result as any).reason, 'improper clone provided')
+        assert.equal((result.result as any).reason, MutationFailureReasons.improperClone)
     })
 
     test('fails when a chosen feat does not exist', () => {
@@ -32,7 +35,7 @@ describe('mutationResult', () => {
             { cl: baseCl, chosenFeats: ['Not A Real Feat' as any] }
         )
         assert.equal(result.result.kind, 'failure')
-        assert.equal((result.result as any).reason, 'feat does not exist')
+        assert.equal((result.result as any).reason, MutationFailureReasons.featDoesNotExist)
     })
 
     test('fails when the same free feat is chosen twice', () => {
@@ -43,7 +46,7 @@ describe('mutationResult', () => {
             { cl: baseCl, chosenFeats: ['Dodge', 'Dodge'] }
         )
         assert.equal(result.result.kind, 'failure')
-        assert.equal((result.result as any).reason, 'duplicate feat chosen')
+        assert.equal((result.result as any).reason, MutationFailureReasons.duplicateFeat)
     })
 
     test('fails when a chosen free feat duplicates one of the class feats', () => {
@@ -54,7 +57,7 @@ describe('mutationResult', () => {
             { cl: baseCl, chosenFeats: ['Hardy'] }
         )
         assert.equal(result.result.kind, 'failure')
-        assert.equal((result.result as any).reason, 'duplicate feat chosen')
+        assert.equal((result.result as any).reason, MutationFailureReasons.duplicateFeat)
     })
 
     test('class feats are never prereq-checked', () => {
@@ -82,35 +85,44 @@ describe('mutationResult', () => {
     })
 })
 
-describe('mutationResult prereqs', () => {
-    test('fails when a chosen free feat prereq is not met on the clone', async () => {
-        vi.resetModules()
-        vi.doMock('../../feat2/registry', async () => {
-            const actual = await vi.importActual<typeof import('../../feat2/registry')>('../../feat2/registry')
-            return {
-                ...actual,
-                default: {
-                    ...actual.default,
-                    Dodge: {
-                        ...actual.default.Dodge,
-                        prerequisites: () => false,
-                    },
-                },
-            }
+describe('mutationResult chosen feat order', () => {
+    const featA: Feat2 = {
+        displayName: 'A',
+        broadContexts: {},
+    }
+    const featB: Feat2 = {
+        displayName: 'B',
+        broadContexts: {},
+        prerequisites: (o: OwnerMaximal) => 'A' in o.fs,
+    }
+    const featC: Feat2 = {
+        displayName: 'C',
+        broadContexts: {},
+        prerequisites: (o: OwnerMaximal) => 'Hardy' in o.fs,
+    }
+    // featRegistry requires FeatIds as keys
+    // @ts-ignore
+    featRegistry.A = featA
+    // @ts-ignore
+    featRegistry.B = featB
+    // @ts-ignore
+    featRegistry.C = featC
+
+    test('a bad pick order (C, B, A) still succeeds', () => {
+        const original = createDefaultOwner()
+        // ex: supplied by display layer
+        const clone = createDefaultOwner({
+            fs: { Hardy: hardy, A: featA, B: featB, C: featC },
         })
 
-        const { mutationResult: mutationResultWithMock } = await import('./index')
-
-        const original = createDefaultOwner()
-        const clone = createDefaultOwner()
-        const result = mutationResultWithMock(
+        const result = mutationResult(
             { original, clone },
-            { cl: baseCl, chosenFeats: ['Dodge'] }
+            {
+                cl: { ...baseCl, classFeats: ['Hardy'] },
+                chosenFeats: ['C', 'B', 'A'] as any,
+            }
         )
-        assert.equal(result.result.kind, 'failure')
-        assert.equal((result.result as any).reason, 'feat requirement not met')
 
-        vi.doUnmock('../../feat2/registry')
-        vi.resetModules()
+        assert.deepEqual(result.result, { kind: 'success' })
     })
 })

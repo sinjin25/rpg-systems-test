@@ -1,3 +1,4 @@
+import registry, { deriveFeatKey } from "../feat2/registry";
 import { ClassLevelTable } from "./types";
 
 export default {
@@ -7,11 +8,11 @@ export default {
     will: [0, 0, 1, 0, 0],
     attackBonus: [1, 1, 1, 1, 1],
     classFeats: [
-        ['Improved Initiative'],
-        ['Hardy'],
+        [deriveFeatKey(registry['Improved Initiative']),],
+        [deriveFeatKey(registry['Hardy']),],
         [
-            'Power Attack',
-            'Armor Training',
+            deriveFeatKey(registry['Power Attack']),
+            deriveFeatKey(registry['Armor Training']),
         ],
         [],
         [],

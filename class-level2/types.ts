@@ -53,9 +53,18 @@ export type MutationOutcomeResultSuccess = {
     kind: 'success'
 }
 
+export const MutationFailureReasons = {
+    prereqNotMet: 'feat requirement not met',
+    improperClone: 'improper clone provided',
+    featDoesNotExist: 'feat does not exist',
+    duplicateFeat: 'duplicate feat chosen',
+} as const
+
+export type MutationFailureReason = typeof MutationFailureReasons[keyof typeof MutationFailureReasons]
+
 export type MutationOutcomeResultFailure = {
     kind: 'failure'
-    reason: 'feat requirement not met' | 'improper clone provided' | 'feat does not exist' | 'duplicate feat chosen',
+    reason: MutationFailureReason,
 }
 
 export type MutationResult = {

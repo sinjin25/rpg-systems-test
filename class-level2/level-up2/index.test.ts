@@ -1,15 +1,23 @@
 import { createDefaultOwner } from '../../actor2/index.ts'
-import { chooseOptionAndMutate, newClassLevelList, } from './index.ts'
+import { patchCloneWithProposal, newLevelUpProposal } from './index.ts'
+import { testUtilCloneOwner } from './clone.ts'
+import { ClassLevel } from '../types.ts'
 import { describe, test, assert, expect } from 'vitest'
 
-const pickFighter = (options: ReturnType<typeof newClassLevelList>) => {
+const pickFighter = (options: ClassLevel[]) => {
     return options.find(a => a.key === 'fighter')!
+}
+
+const levelUpFighter = (original: ReturnType<typeof createDefaultOwner>, chosenFeats: string[] = ['Power Attack']) => {
+    const clone = testUtilCloneOwner(original)
+    const cl = pickFighter(newLevelUpProposal(original).classLevelList)
+    return patchCloneWithProposal({ original, clone }, { cl, chosenFeats: chosenFeats as any }) ?? original
 }
 
 describe('Proposes the correct items', () => {
     test('A level 0 character should have all options presented', () => {
         const owner = createDefaultOwner()
-        const options = newClassLevelList(owner.cs.levels)
+        const options = newLevelUpProposal(owner).classLevelList
         /* console.log(options) */
         assert.equal(options.length, 2)
         // has keys
@@ -17,29 +25,15 @@ describe('Proposes the correct items', () => {
     })
 
     test('A max level fighter should not have fighter options presented', () => {
-        const owner = createDefaultOwner()
+        let owner = createDefaultOwner()
+        assert.equal(newLevelUpProposal(owner).classLevelList.length, 2)
         // NOTE: NOTHING STOPS YOU FROM PASSING IN THE SAME ITEMS
-        chooseOptionAndMutate(owner, {
-            clp: pickFighter(newClassLevelList(owner.cs.levels)),
-            freeFeat: 'Power Attack',
-        })
-        chooseOptionAndMutate(owner, {
-            clp: pickFighter(newClassLevelList(owner.cs.levels)),
-            freeFeat: 'Power Attack',
-        })
-        chooseOptionAndMutate(owner, {
-            clp: pickFighter(newClassLevelList(owner.cs.levels)),
-            freeFeat: 'Power Attack',
-        })
-        chooseOptionAndMutate(owner, {
-            clp: pickFighter(newClassLevelList(owner.cs.levels)),
-            freeFeat: 'Power Attack',
-        })
-        chooseOptionAndMutate(owner, {
-            clp: pickFighter(newClassLevelList(owner.cs.levels)),
-            freeFeat: 'Power Attack',
-        })
-        const opt = newClassLevelList(owner.cs.levels)
-        assert.equal(opt.length, 1)
+        owner = levelUpFighter(owner)
+        owner = levelUpFighter(owner)
+        owner = levelUpFighter(owner)
+        owner = levelUpFighter(owner)
+
+        // out of levels here
+        assert.equal(newLevelUpProposal(owner).classLevelList.length, 1)
     })
 })

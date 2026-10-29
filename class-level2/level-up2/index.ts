@@ -1,15 +1,13 @@
-import { createDefaultOwner, OwnerMaximal } from "../../actor2";
+import { OwnerMaximal } from "../../actor2";
 import { FeatIds } from "../../feat2/types";
 import addFeat from "../../feat2/add-feat";
-import featRegistry from "../../feat2/registry";
+import { deriveFeatKey, registry as featRegistry } from "../../feat2/registry";
 import meetsPrereq from "../../feat2/meets-prereq";
 import { classLevelCounts, getCurrentLevel, registry } from "../derive";
-import { ClassKeys, ClassLevel, ClassLevelPickLog, ClassLevelTable, LevelUpProposal, MutationOutcomeResultFailure, MutationResult } from "../types";
+import { ClassKeys, ClassLevel, ClassLevelPickLog, ClassLevelTable, LevelUpProposal, MutationFailureReason, MutationFailureReasons, MutationResult } from "../types";
 import { _verifyOwnerIsClone } from "./clone";
 
-// a single level's row, resolved against what the character has already taken —
-// not to be confused with being able to see all the levels from all the classes ahead of time
-export const newClassLevelList = (clpl: ClassLevelPickLog): ClassLevel[] => {
+const _newClassLevelList = (clpl: ClassLevelPickLog): ClassLevel[] => {
     // by default, everything is good if you can take more levels
     // in the future: there may be prereqs for classes
     const allClasses: ClassKeys[] = ['fighter', 'rogue']
@@ -46,7 +44,7 @@ export const newLevelUpProposal = (
     const nextLevel = currentLevel + 1
     const levelHasFreeFeat = nextLevel % 2 === 1 // odd levels
 
-    const classLevelList = newClassLevelList(owner.cs.levels)
+    const classLevelList = _newClassLevelList(owner.cs.levels)
 
     return {
         classLevelList,
@@ -57,46 +55,48 @@ export const newLevelUpProposal = (
     }
 }
 
-export const chooseOptionAndMutate = (
-    owner: OwnerMaximal,
+// should provide a new clone every time if running multiple times
+export const patchCloneWithProposal = (
+    owner: {
+        original: OwnerMaximal,
+        clone: OwnerMaximal,
+    },
     data: {
-        clp: ClassLevel, freeFeat?: FeatIds
+        cl: ClassLevel, // chosen one
+        chosenFeats: FeatIds[],
     }
-) => {
-    const { clp, freeFeat } = data
-    const fakeOwner = createDefaultOwner()
-    fakeOwner.cs = owner.cs // required for prereqs
-    fakeOwner.fs = { ...owner.fs }
-    try {
-        if (clp.hasFreeFeats.length > 0) {
-            if (!freeFeat) return false
-            const f = featRegistry[freeFeat]
-            if (!f) throw Error(`!f for ${freeFeat}`)
-            // this mutates
-            const canAddFeat = addFeat(owner, f)
-            if (!canAddFeat) throw Error('!canAddFeat')
-        }
+): OwnerMaximal | null => {
+    // ASSUMPTION: original is in same state as clone at this point
+    // IF this is violated, you have a callsite issue
+    const isOkay = _verifyOwnerIsClone(owner)
+    if (!isOkay) return null
+    const { clone } = owner
 
-        for (let classFeatKey of clp.classFeats) {
-            const f = featRegistry[classFeatKey]
-            if (!f) throw Error(`!f for ${classFeatKey}`)
-            owner.fs = { ...owner.fs, [classFeatKey]: f }
-        }
+    // get the set of FeatIds from ClassLevel.classFeats
+    // get the ones from chosenFeats
+    const classFeatsToAdd = [...data.cl.classFeats]
+    for (let f of classFeatsToAdd) {
+        const pointer = featRegistry[f]
+        // bypass addFeat to avoid prereq
+        if (pointer) clone.fs[deriveFeatKey(pointer)] = pointer
+    }
 
-        owner.cs = {
-            ...owner.cs,
-            levels: [...owner.cs.levels, {
-                freeFeats: freeFeat ? [freeFeat] : [],
-                key: clp.key,
-            }],
-        }
-        return true
+    for (let f of data.chosenFeats) {
+        const pointer = featRegistry[f]
+        // bypass addFeat to avoid prereq
+        // mutationResult 's job
+        if (pointer) clone.fs[deriveFeatKey(pointer)] = pointer
     }
-    catch (e) {
-        // restore fs and abort
-        owner.fs = { ...fakeOwner.fs }
-        return false
-    }
+
+    // modify ClassLevelPickLog
+    const newCs = structuredClone(clone.cs)
+    newCs.levels.push({
+        key: data.cl.key,
+        freeFeats: [...data.chosenFeats]
+    })
+    clone.cs = newCs
+
+    return clone
 }
 
 /* 
@@ -124,26 +124,26 @@ export const mutationResult = (
     const { original, clone } = owner
     const { cl, chosenFeats } = data
 
-    const fail = (reason: MutationOutcomeResultFailure['reason']): MutationResult => ({
+    const fail = (reason: MutationFailureReason): MutationResult => ({
         result: { kind: 'failure', reason },
         original,
         clone,
     })
 
-    if (!_verifyOwnerIsClone({ original, clone })) return fail('improper clone provided')
+    if (!_verifyOwnerIsClone({ original, clone })) return fail(MutationFailureReasons.improperClone)
 
     for (const id of chosenFeats) {
-        if (!featRegistry[id]) return fail('feat does not exist')
+        if (!featRegistry[id]) return fail(MutationFailureReasons.featDoesNotExist)
     }
 
     const seen = new Set<FeatIds>(cl.classFeats)
     for (const id of chosenFeats) {
-        if (seen.has(id)) return fail('duplicate feat chosen')
+        if (seen.has(id)) return fail(MutationFailureReasons.duplicateFeat)
         seen.add(id)
     }
 
     for (const id of chosenFeats) {
-        if (!meetsPrereq(clone, featRegistry[id])) return fail('feat requirement not met')
+        if (!meetsPrereq(clone, featRegistry[id])) return fail(MutationFailureReasons.prereqNotMet)
     }
 
     return {

@@ -1,5 +1,14 @@
 import { OwnerMaximal } from "../../actor2"
 
+// shallow clone
+// because the real cloner is in a different repo
+export const testUtilCloneOwner = (owner: OwnerMaximal): OwnerMaximal => ({
+    ...owner,
+    cs: { ...owner.cs, levels: [...owner.cs.levels] },
+    fs: { ...owner.fs },
+    as: { ...owner.as },
+})
+
 export type OwnerWithClone = {
     original: OwnerMaximal,
     clone: OwnerMaximal,

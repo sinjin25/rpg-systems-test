@@ -13,6 +13,12 @@ import featExoticProficiency from './feats/exotic-proficiency'
 import featMartialProficiency from './feats/martial-proficiency'
 import featShieldProficiency from './feats/shield-proficiency'
 import featTowerShieldProficiency from './feats/tower-shield-proficiency'
+import finesseWeaponFighting from './feats/finesse-weapon-fighting'
+import meleeWeaponFighting from './feats/melee-weapon-fighting'
+import shieldMastery from './feats/shield-mastery'
+import heavyArmorMastery from './feats/heavy-armor-mastery'
+import critFocus from './feats/crit-focus'
+import improvedCritical from './feats/improved-critical'
 // do not include in registry
 import { testFeatMeleeWeaponFighting } from './feats/test-feats'
 
@@ -35,6 +41,12 @@ export const registry = {
     [deriveFeatKey(featMartialProficiency)]: featMartialProficiency,
     [deriveFeatKey(featShieldProficiency)]: featShieldProficiency,
     [deriveFeatKey(featTowerShieldProficiency)]: featTowerShieldProficiency,
+    [deriveFeatKey(finesseWeaponFighting)]: finesseWeaponFighting,
+    [deriveFeatKey(meleeWeaponFighting)]: meleeWeaponFighting,
+    [deriveFeatKey(shieldMastery)]: shieldMastery,
+    [deriveFeatKey(heavyArmorMastery)]: heavyArmorMastery,
+    [deriveFeatKey(critFocus)]: critFocus,
+    [deriveFeatKey(improvedCritical)]: improvedCritical,
 } satisfies Record<FeatIds, Feat2>
 
 export {
@@ -52,6 +64,12 @@ export {
     featMartialProficiency,
     featShieldProficiency,
     featTowerShieldProficiency,
+    finesseWeaponFighting,
+    meleeWeaponFighting,
+    shieldMastery,
+    heavyArmorMastery,
+    critFocus,
+    improvedCritical,
 }
 
 export default registry

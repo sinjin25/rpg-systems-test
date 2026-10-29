@@ -46,6 +46,12 @@ export type FeatIds =
     | 'Martial Proficiency'
     | 'Shield Proficiency'
     | 'Tower Shield Proficiency'
+    | 'Finesse Weapon Fighting'
+    | 'Melee Weapon Fighting'
+    | 'Shield Mastery'
+    | 'Heavy Armor Mastery'
+    | 'Crit Focus'
+    | 'Improved Critical'
 
 export type Feat2Wrapper = {
     id: FeatIds,

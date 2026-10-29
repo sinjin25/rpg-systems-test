@@ -3,7 +3,7 @@ import critThreatRange from './crit-threat-range'
 import { createDefaultOwner } from '../../actor2'
 import { OwnerLog2 } from '../types'
 import { findNodeMatching, leaf } from '..'
-import improvedCritical from '../feats/improved-critical'
+import improvedCritical from '../../feat2/feats/improved-critical'
 import modNodeToText from '../format'
 import { SLOT_TYPE } from '../../equipment-sheet2/defaults'
 import { BaseEquipment } from '../../equipment-sheet2/types'
@@ -51,7 +51,7 @@ describe('crit-threat-range (terminal)', () => {
         expect(node.total()).toBe(19) // base 20 + (-1)
         const mod = findNodeMatching(node, /crit-threat-range-mod/i)
         expect(mod?.total()).toBe(-1)
-        expect(findNodeMatching(mod!, /improved-critical/i)).toBeTruthy()
+        expect(findNodeMatching(mod!, /improved critical/i)).toBeTruthy()
         /* console.log(modNodeToText(node)) */
     })
 

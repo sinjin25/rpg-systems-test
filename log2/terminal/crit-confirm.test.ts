@@ -1,7 +1,7 @@
 import { describe, test, expect, assert } from 'vitest'
 import critConfirm from './crit-confirm'
 import { createDefaultOwner } from '../../actor2'
-import critFocus from '../feats/crit-focus'
+import critFocus from '../../feat2/feats/crit-focus'
 import { findNodeMatching } from '..'
 import modNodeToText from '../format'
 import { TerminalTags } from '../tags'
@@ -28,7 +28,7 @@ describe('crit-confirm (terminal)', () => {
         const node = critConfirm(createDefaultOwner({ fs: { critFocus } }))
         const critConfirmMod = findNodeMatching(node, /crit\-confirm\-mod/i)
         expect(critConfirmMod?.total()).toBe(4)
-        expect(findNodeMatching(critConfirmMod!, /crit\-focus/i)).toBeTruthy()
+        expect(findNodeMatching(critConfirmMod!, /crit focus/i)).toBeTruthy()
         /* console.log(modNodeToText(node)) */
     })
 

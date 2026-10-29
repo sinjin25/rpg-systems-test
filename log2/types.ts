@@ -31,11 +31,6 @@ export type ObjectWithBroadContexts = {
     broadContexts: Partial<Record<EveryTree, (owner: OwnerLog2, opts: ModNodeOpts) => ModNode | undefined>>
 }
 
-export type AllFeats =
-    | 'finesse-weapon-fighting' | 'melee-weapon-fighting'
-    | 'dodgy' | 'shield-mastery' | 'heavy-armor-mastery' | 'crit-focus'
-    | 'improved-critical'
-
 export type AllStatusEffects = 'cats-grace' | 'flat-footed'
 
 export type Saves = 'fortitude' | 'will' | 'reflex'

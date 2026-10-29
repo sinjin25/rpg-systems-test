@@ -4,8 +4,8 @@ import catsGrace from '../../status-sheet2/status/cats-grace'
 import divineProtection from '../../status-sheet2/status/divine-protection'
 import { createDefaultOwner } from '../../actor2'
 import { inst } from '../../status-sheet2/testing'
-import dodgy from '../feats/dodgy'
-import shieldMastery from '../feats/shield-mastery'
+import dodge from '../../feat2/feats/dodge'
+import shieldMastery from '../../feat2/feats/shield-mastery'
 import featShieldProficiency from '../../feat2/feats/shield-proficiency'
 import modNodeToText from '../format'
 import { armors, heavyShield } from '../../equipment-sheet2/defaults'
@@ -18,7 +18,7 @@ describe('ac (terminal)', () => {
             cs: { dex: 14 },
             es: { armor: armors['banded mail'], offhand: heavyShield },
             ss: { catsGrace: [inst(catsGrace)] },
-            fs: { dodgy, shieldMastery },
+            fs: { dodge, shieldMastery },
         })
         assert.equal(owner.tags.length, 0)
         ac(owner)
@@ -52,12 +52,12 @@ describe('ac (terminal)', () => {
             cs: { dex: 14 },
             es: { armor: armors['banded mail'], offhand: heavyShield },
             ss: { catsGrace: [inst(catsGrace)] },
-            fs: { dodgy, shieldMastery, [featShieldProficiency.displayName]: featShieldProficiency },
+            fs: { dodge, shieldMastery, [featShieldProficiency.displayName]: featShieldProficiency },
         })
         const node = ac(owner)
         /* console.log(modNodeToText(node)) */
-        // armored 20 (from the first case) + Dodgy 4 + Shield Mastery 1
-        expect(node.total()).toBe(17)
+        // armored (from the first case) + Dodge 1 + Shield Mastery 1
+        expect(node.total()).toBe(BASE_AC + 1 + 7 + 2 + 1 + 1)
         /* console.log(modNodeToText(result)) */
     })
 

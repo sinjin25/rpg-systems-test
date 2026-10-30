@@ -10,12 +10,12 @@ const factory = (): AttackAbility => ({
     }],
 })
 
-export const normalAttack: AttackAbilitySheetDefinition = {
+export const normalAttack = {
     kind: 'attack',
     castType: 'standard',
     displayName: 'normal attack',
     description: 'A single weapon attack against the first enemy.',
     factory,
-}
+} as const satisfies AttackAbilitySheetDefinition
 
 export default normalAttack

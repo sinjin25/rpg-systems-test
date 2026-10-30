@@ -21,7 +21,7 @@ export type {
 } from './attack-ability/types'
 
 
-export const getAbilityKey = (ability: AnyAbilitySheetDefinition) => ability.displayName
+export const getAbilityKey = <A extends AnyAbilitySheetDefinition>(ability: A): A['displayName'] => ability.displayName
 
 export const addAbility = (
     owner: OwnerMaximal,

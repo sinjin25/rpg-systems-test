@@ -22,10 +22,10 @@ const factory: AbilitySheetDefinition['factory'] = () => {
     return { steps: [targetFirstEnemy] }
 }
 
-export const studiedTarget: AbilitySheetDefinition = {
+export const studiedTarget = {
     castType: 'free',
     displayName,
     factory,
-}
+} as const satisfies AbilitySheetDefinition
 
 export default studiedTarget

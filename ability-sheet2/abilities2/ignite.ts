@@ -33,11 +33,11 @@ const factory: AbilitySheetDefinition['factory'] = () => {
     return { steps: [targetFirstEnemy] }
 }
 
-export const ignite: AbilitySheetDefinition = {
+export const ignite = {
     castType: 'standard',
     displayName,
     description: 'Deal fire damage; on a failed reflex save the target catches fire',
     factory,
-}
+} as const satisfies AbilitySheetDefinition
 
 export default ignite

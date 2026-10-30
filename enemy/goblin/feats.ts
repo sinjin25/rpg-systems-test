@@ -1,3 +1,4 @@
+import { deriveFeatKey } from "../../feat2/registry"
 import { Feat2 } from "../../feat2/types"
 import { leaf } from "../../log2"
 
@@ -8,3 +9,7 @@ export const ambush: Feat2 = {
         'initiative-feat-mod': () => leaf('Ambush!', 4)
     }
 }
+
+export const enemyFeatRegistry = {
+    [deriveFeatKey(ambush)]: ambush,
+} as Record<string, Feat2>

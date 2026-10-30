@@ -10,6 +10,12 @@ export type AnyAbilitySheetDefinition = AbilitySheetDefinition | AttackAbilitySh
 
 export type AbilityCatalog = Record<string, AnyAbilitySheetDefinition>
 
+// do-a-lot is test-only; excluded on purpose (mirrors feat2's testFeatMeleeWeaponFighting)
+export type AbilityIdsTest =
+    | 'ignite'
+    | 'Studied Target'
+    | 'normal attack'
+
 export type AbilityCategory = {
     items: AbilityCatalog,
     // ability usage order for category

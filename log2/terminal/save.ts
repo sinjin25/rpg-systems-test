@@ -1,6 +1,6 @@
 import newModNode, { sumFunc } from "..";
 import { OwnerLog2, EveryTree, TreeSubproblems, CsScore, ModNodeOpts } from "../types";
-import baseSave from "../composition/base-save";
+import baseSave from "../composition/save-from-class-levels";
 import saveStatusMod from "../composition/status/save-status-mod";
 import csAsMod from "../composition/cs-as-mod";
 import featContribution from "../composition/feat-contribution";

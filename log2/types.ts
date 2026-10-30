@@ -34,7 +34,7 @@ export type ObjectWithBroadContexts = {
 export type AllStatusEffects = 'cats-grace' | 'flat-footed'
 
 export type Saves = 'fortitude' | 'will' | 'reflex'
-export type BaseSaves = `base-${Saves}`
+export type BaseSaves = `class-${Saves}`
 export type SaveModSources = `${Saves}-feat-mod`
     | `${Saves}-status-mod`
     | `${Saves}-equipment-mod`

@@ -12,12 +12,6 @@ export type ClassLevelFreeFeats = {
     registry?: Record<FeatIds, Feat2>
 }
 
-// one level's row out of a ClassLevelTable — whatever is a per-level array
-// there becomes a single entry here, everything else carries through as-is
-/* export type ClassLevel = {
-    [K in keyof ClassLevelTable]: ClassLevelTable[K] extends (infer U)[] ? U : ClassLevelTable[K]
-} */
-
 export type ClassLevel = {
     key: ClassKeys,
     // always ignores prereqs

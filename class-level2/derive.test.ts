@@ -3,6 +3,7 @@ import { classLevelCounts, deriveBonus, featsFromLog, getNumberOfLevelupsAvailab
 import { ClassKeys, ClassLevelPickLog, ClassLevelSumKeys } from './types'
 import { createDefaultExperience } from '../experience'
 import { Experience } from '../experience/types'
+import { FeatIds } from '../feat2/types'
 
 const sumKeys: ClassLevelSumKeys[] = ['fortitude', 'reflex', 'attackBonus']
 
@@ -63,7 +64,8 @@ describe('deriveBonus: single class', () => {
 
     test('collects class grants and picks in acquisition order', () => {
         expect(featsFromLog(fighter3)).toEqual([
-            'Improved Initiative', // fighter 1 grant
+            'Martial Proficiency', // fighter 1 grant
+            'Shield Proficiency', // fighter 1 grant
             'Rage',                // fighter 1 pick
             'Hardy',               // fighter 2 grant
             'Power Attack',        // fighter 3 grant
@@ -104,10 +106,11 @@ describe('deriveBonus: multiclass', () => {
 
     test('the rogue level adds no feats', () => {
         expect(featsFromLog(mixed)).toEqual([
-            'Improved Initiative',
+            'Martial Proficiency',
+            'Shield Proficiency',
             'Rage',
             'Hardy',
-        ])
+        ] as FeatIds[])
     })
 
     // the whole point of a log: order of acquisition must not change the totals
@@ -132,7 +135,7 @@ describe('deriveBonus: multiclass', () => {
 })
 
 describe('getNumberOfLevelupsAvailable', () => {
-    // breakpoints are [50, 150, 300, 600, 1000, 1500, 9999999]
+    // breakpoints are [10, 50, 200, 400, 700, 1000, 9999999]
     // clpl is always at least 1 entry here — a real character is never level 0
     // (createDefaultOwner seeds one level on creation), and currLevel is 1-indexed
     // against that: level 1 has spent 0 thresholds, level n has spent n-1 of them.
@@ -143,15 +146,15 @@ describe('getNumberOfLevelupsAvailable', () => {
     })
 
     test('Under xp breakpoint behavior', () => {
-        expect(getNumberOfLevelupsAvailable(exp(49), dip('fighter', 1))).toEqual(0)
+        expect(getNumberOfLevelupsAvailable(exp(9), dip('fighter', 1))).toEqual(0)
     })
 
     test('>= breakpoint', () => {
-        expect(getNumberOfLevelupsAvailable(exp(50), dip('fighter', 1))).toEqual(1)
+        expect(getNumberOfLevelupsAvailable(exp(10), dip('fighter', 1))).toEqual(1)
     })
 
     test('>= multiple breakpoints', () => {
-        // clears 50/150/300/600/1000 - 3 thresholds, 0 spent at level 1
+        // clears 10/50/200 - 3 thresholds, 0 spent at level 1
         expect(getNumberOfLevelupsAvailable(exp(300), dip('fighter', 1))).toEqual(3)
     })
 
@@ -162,9 +165,8 @@ describe('getNumberOfLevelupsAvailable', () => {
 
     // this might happen if breakpoints were modified mid run (although breakpoints are serialized so this actually wouldn't happen but w/e)
     test('Safety clamp - more levels than normal', () => {
-        // 50/150/300/600/1000
-        // should be level 5
-        expect(getNumberOfLevelupsAvailable(exp(1000), dip('fighter', 6))).toEqual(0)
+        // 10/50/200/400/700/1000 - 6 thresholds clear, so level 7 is attainable
+        expect(getNumberOfLevelupsAvailable(exp(1000), dip('fighter', 7))).toEqual(0)
         expect(getNumberOfLevelupsAvailable(exp(1000), dip('fighter', 99))).toEqual(0)
     })
 })

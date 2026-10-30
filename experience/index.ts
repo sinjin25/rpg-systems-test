@@ -2,7 +2,7 @@ import { OwnerMaximal } from '../actor2'
 import { ModNode } from '../log2'
 import { Experience, ExperienceBreakpoints } from './types'
 
-export const experienceBreakpoints: ExperienceBreakpoints = [50, 150, 300, 600, 1000, 1500, 9999999]
+export const experienceBreakpoints: ExperienceBreakpoints = [10, 50, 200, 400, 700, 1000, 9999999]
 
 export const mutateCurrentExperience = (target: OwnerMaximal, amount: ModNode): {
     amount: ModNode,

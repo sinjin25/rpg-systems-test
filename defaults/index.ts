@@ -1,5 +1,6 @@
 import { AbilitySheet, createDefaultAbilitySheet } from '../ability-sheet2'
-import { OwnerMaximal, createDefaultOwner } from '../actor2'
+import { createDefaultOwner } from '../actor2'
+import { OwnerMaximal } from '../actor2/types'
 import { CharacterSheet } from '../character-sheet'
 import { fakeCharacterLevels } from '../character-sheet'
 import { ClassLevelPickLog } from '../class-level2/types'

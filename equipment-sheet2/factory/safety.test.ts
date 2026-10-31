@@ -1,5 +1,6 @@
 import { describe, expect, test, assert } from 'vitest'
-import { createDefaultOwner, OwnerMaximal } from '../../actor2'
+import { createDefaultOwner } from '../../actor2'
+import { OwnerMaximal } from '../../actor2/types'
 import { findNodeMatching, leaf, ModNode } from '../../log2'
 import ac from '../../log2/terminal/ac'
 import attack from '../../log2/terminal/attack'

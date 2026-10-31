@@ -1,5 +1,6 @@
 import { describe, test, assert } from 'vitest'
-import { Actor2, createDefaultOwner, instantiateActor } from '../../actor2'
+import { createDefaultOwner, instantiateActor } from '../../actor2'
+import { Actor2 } from '../../actor2/types'
 import newModNode, { findNodeMatching, leaf, ModNode, sumFunc } from '../../log2'
 import rollTree from '../../log2/roll'
 import { setSeed, clearSeed } from '../../roll'

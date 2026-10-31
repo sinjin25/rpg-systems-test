@@ -1,5 +1,5 @@
 import { ObjectWithBroadContexts, ModNodeOpts } from "../log2/types"
-import { OwnerMaximal } from "../actor2"
+import { OwnerMaximal } from "../actor2/types"
 import { ModNode } from "../log2"
 import { StatusExpiration, StatusPersistTypes } from "./decay/types"
 

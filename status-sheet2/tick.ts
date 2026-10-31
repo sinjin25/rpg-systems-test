@@ -1,4 +1,4 @@
-import { Actor2, OwnerMaximal } from "../actor2";
+import { Actor2, OwnerMaximal } from "../actor2/types";
 import { ModNode } from "../log2";
 import damageOverTime from "../log2/terminal/damage-over-time";
 import healOverTime from "../log2/terminal/heal-over-time";

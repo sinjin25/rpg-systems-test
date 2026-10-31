@@ -1,4 +1,5 @@
-import { Actor2, createDefaultOwner } from "../../actor2"
+import { createDefaultOwner } from "../../actor2"
+import { Actor2 } from "../../actor2/types"
 import { leaf, ModNode } from "../../log2"
 import dc from "../../log2/terminal/dc"
 import { StatusEffectWrapper } from "../../status-sheet2"

@@ -1,4 +1,4 @@
-import type { Actor2, OwnerMaximal } from "."
+import type { Actor2, Health, OwnerMaximal, Speed } from "./types"
 import newModNode, { leaf, ModNode, sumFunc } from "../log2"
 import initiative from "../log2/terminal/initiative"
 import maximumHealth from "../log2/terminal/maximum-health"
@@ -8,17 +8,6 @@ import {
     flatFooted,
     newStatusInstance,
 } from '../status-sheet2'
-
-export type Speed = {
-    remainder: number, // speed remaining until action
-    isAlive: boolean, // expand to include "stunned" | "dead" etc
-}
-
-export type Health = {
-    max: number,
-    curr: number,
-    temporary: number,
-}
 
 export const STD_SPEED = 35 // average of 2d6 is 3.5
 

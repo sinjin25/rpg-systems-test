@@ -1,4 +1,4 @@
-import { OwnerMaximal } from '../actor2'
+import { OwnerMaximal } from '../actor2/types'
 import type { AbilityCastType, AbilityCategory, AbilitySheet, AnyAbilitySheetDefinition } from './types'
 export { AbilityCastType, AbilityCatalog, AbilityCategory, AbilitySheet, AbilityTags, AnyAbilitySheetDefinition } from './types'
 export { resolveAbility } from './abilities2'

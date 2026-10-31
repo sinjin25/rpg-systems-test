@@ -1,4 +1,5 @@
-import { Actor2, instantiateActor, OwnerMaximal } from "../actor2"
+import { instantiateActor } from "../actor2"
+import { Actor2, OwnerMaximal } from "../actor2/types"
 import { instantiateSpeed } from "../actor2/instantiate"
 import { ModNodeOpts } from "../log2/types"
 import { participantIsActor } from "./type-guard"

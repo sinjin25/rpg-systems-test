@@ -1,4 +1,4 @@
-import { Actor2 } from ".."
+import { Actor2 } from "../types"
 import { AbilityCastType, AnyAbilitySheetDefinition, AttackDiscreteTargetGroupPayloadResolution, DiscreteTargetGroupPayloadResolution } from "../../ability-sheet2"
 import { applyDamage, applyHeal } from "../../health"
 import damageTakenTree from '../../log2/terminal-composition/damage-taken'

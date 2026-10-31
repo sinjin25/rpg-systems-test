@@ -1,5 +1,6 @@
 import { describe, test, assert } from 'vitest'
-import { createDefaultOwner, OwnerMaximal } from '../../actor2'
+import { createDefaultOwner } from '../../actor2'
+import { OwnerMaximal } from '../../actor2/types'
 import { mutationResult } from './index'
 import { Feat2 } from '../../feat2/types'
 import featRegistry from '../../feat2/registry'

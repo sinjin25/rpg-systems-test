@@ -1,4 +1,4 @@
-import { OwnerMaximal } from "../../actor2";
+import { OwnerMaximal } from "../../actor2/types";
 import newModNode, { sumFunc } from "../../log2";
 import roll from "../../log2/roll";
 import save from "../../log2/terminal/save";

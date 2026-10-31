@@ -1,4 +1,4 @@
-import { Actor2 } from '../../actor2'
+import { Actor2 } from '../../actor2/types'
 import { leaf } from '../../log2'
 import { ignite as igniteStatus } from '../../status-sheet2/status'
 import { AbilitySheetDefinition, DiscreteTargetGroup } from './types'

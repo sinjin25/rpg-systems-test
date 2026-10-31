@@ -1,4 +1,4 @@
-import { Actor2 } from '../../actor2'
+import { Actor2 } from '../../actor2/types'
 import { leaf } from '../../log2'
 import { AbilitySheet } from '../types'
 import { Ability, AbilityPayload, AbilitySheetDefinition, DiscreteTargetGroup, DiscreteTargetGroupPayload } from './types'

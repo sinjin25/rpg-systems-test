@@ -1,5 +1,5 @@
 import { ObjectWithBroadContexts } from "../log2/types";
-import { OwnerMaximal } from "../actor2";
+import { OwnerMaximal } from "../actor2/types";
 import { TriggerHooks } from "../trigger/core-types";
 
 type FeatFightStartFunction = (owner: OwnerMaximal) => StatusEffectWrapper | StatusEffectWrapper[] | undefined

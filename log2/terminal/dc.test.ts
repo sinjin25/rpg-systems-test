@@ -1,4 +1,5 @@
-import { createDefaultOwner, OwnerMaximal } from '../../actor2'
+import { createDefaultOwner } from '../../actor2'
+import { OwnerMaximal } from '../../actor2/types'
 import modNodeToText from '../format.ts'
 import { findNodeMatching, leaf } from '../index.ts'
 import { hasAllTags, hasAnyTag } from '../tags.ts'

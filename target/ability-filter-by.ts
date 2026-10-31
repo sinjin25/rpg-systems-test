@@ -1,6 +1,6 @@
 // an ability determines the conditions for it to target or not target someone
 
-import { Actor2 } from "../actor2";
+import { Actor2 } from "../actor2/types";
 import { GenericFilter } from "./generic-filter/types";
 
 const abilityCanTarget = (

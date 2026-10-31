@@ -1,30 +1,15 @@
 import { CharacterSheet, defaultCharacterSheet } from "../character-sheet"
 import { longsword, shortsword, testshortsword } from "../equipment-sheet2/defaults"
 import { BaseEquipment, EquipmentSheet } from "../equipment-sheet2/types"
-import { Tags } from "../log2/tags"
+import { instantiateHealth, instantiateSpeed } from "./instantiate"
 import { StatusSheet } from "../status-sheet2"
-import { Health, instantiateHealth, instantiateSpeed, Speed } from "./instantiate"
 import { ModNodeOpts } from "../log2/types"
-import { FeatSheet } from "../feat2/types"
 import { AbilitySheet, createDefaultAbilitySheet } from "../ability-sheet2"
 import { ClassLevelPickLog } from "../class-level2/types"
 import { Experience } from "../experience/types"
 import { leaf } from "../log2"
 import { createDefaultExperience, experienceBreakpoints } from "../experience"
-
-// no better place to put rn
-export type RewardIds = | 'weak_goblin'
-export type OwnerMaximal = {
-    cs: CharacterSheet,
-    fs: FeatSheet,
-    ss: StatusSheet,
-    es: EquipmentSheet,
-    tags: Tags[], // starts empty, a terminal tree should mutate it. Use the utility functions from tags.ts
-    // not checked:
-    as: AbilitySheet,
-    experience: Experience, // remove soon
-    rewardId?: RewardIds,
-}
+import { Actor2, OwnerMaximal } from "./types"
 
 export const generatePlayerId = (() => {
     const RESERVED_PLAYER_ID = 1
@@ -40,13 +25,6 @@ export const generateNonPlayerId = (() => {
         return idToReturn
     }
 })()
-
-export type Actor2 = {
-    id: number,
-    speed: Speed,
-    health: Health,
-    owner: OwnerMaximal,
-}
 
 export const instantiateActor = (owner: OwnerMaximal, isPlayer = false, opts: ModNodeOpts = {}): Actor2 => {
     const { health, tree } = instantiateHealth(owner)

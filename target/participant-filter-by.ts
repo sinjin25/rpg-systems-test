@@ -1,4 +1,4 @@
-import { Actor2 } from "../actor2"
+import { Actor2 } from "../actor2/types"
 import { GenericFilter } from "./generic-filter/types"
 
 // the target has decided it doesn't want to be targeted

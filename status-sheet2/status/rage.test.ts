@@ -1,4 +1,5 @@
-import { createDefaultOwner, OwnerMaximal } from '../../actor2'
+import { createDefaultOwner } from '../../actor2'
+import { OwnerMaximal } from '../../actor2/types'
 import featImprovedRage from '../../feat2/feats/improved-rage'
 import { addStatusToStatusSheet } from '..'
 import { leaf, findNodeMatching } from '../../log2'

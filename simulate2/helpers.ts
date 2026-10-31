@@ -1,4 +1,4 @@
-import { Actor2, OwnerMaximal } from "../actor2"
+import { Actor2, OwnerMaximal } from "../actor2/types"
 import { decayEnemyKilled } from "../status-sheet2/decay"
 /* import runTrigger from "../trigger/dispatch" */
 

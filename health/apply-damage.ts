@@ -1,7 +1,7 @@
 // the point of this is to create testable, pure functions for things like status effects. This handles the actual mutation after they are computed
 // intent is explicit: this only ever reduces health. A non-positive amount deals 0
 
-import { Actor2 } from "../actor2"
+import { Actor2 } from "../actor2/types"
 
 // (rather than the old signed convention, where a negative "damage" would heal).
 export const applyDamage = (

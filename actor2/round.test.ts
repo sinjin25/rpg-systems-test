@@ -2,7 +2,8 @@ import { createDefaultOwner, instantiateActor } from '.'
 import { iterate } from '../simulate/util/iterate.ts'
 import { makeWrapper, StatusSheet } from '../status-sheet2'
 import { inst } from '../status-sheet2/testing'
-import { Round, round } from './round.ts'
+import { round } from './round.ts'
+import { Round } from './types'
 import { describe, test, assert, expect } from 'vitest'
 
 const VERBOSE = false

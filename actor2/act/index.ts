@@ -1,4 +1,4 @@
-import { Actor2 } from '..'
+import { Actor2 } from '../types'
 import { AbilityCastType, AbilitySheetDefinition, AttackAbilitySheetDefinition, advanceAbilityCategoryIndex } from '../../ability-sheet2'
 import { ModNodeOpts } from '../../log2/types'
 import { selectAndPrepAbility } from './ability'

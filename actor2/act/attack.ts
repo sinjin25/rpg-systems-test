@@ -1,4 +1,4 @@
-import { Actor2, OwnerMaximal } from ".."
+import { Actor2, OwnerMaximal } from "../types"
 import { BaseEquipment } from "../../equipment-sheet2/types"
 import newModNode, { findNodeMatching, leaf, ModNode, sumFunc } from "../../log2"
 import { ac, attack, critConfirm, critDamage, critThreatRange, damage } from "../../log2/terminal"

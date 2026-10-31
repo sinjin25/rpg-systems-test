@@ -1,4 +1,5 @@
-import { createDefaultOwner, OwnerMaximal } from '../../actor2/index.ts'
+import { createDefaultOwner } from '../../actor2/index.ts'
+import { OwnerMaximal } from '../../actor2/types'
 import registry, { rage } from '../registry.ts'
 import addFeat from '../add-feat/index.ts'
 import { newFeatsForOwnerList } from './index.ts'

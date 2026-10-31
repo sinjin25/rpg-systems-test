@@ -1,4 +1,4 @@
-import { Actor2 } from '../actor2'
+import { Actor2 } from '../actor2/types'
 import abilityFilterBy from './ability-filter-by'
 import filterByTeam from './filter-by-team'
 import isAlive from './generic-filter/is-alive'

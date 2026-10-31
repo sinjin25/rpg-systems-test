@@ -1,5 +1,5 @@
 import { ModNode } from ".";
-import { OwnerMaximal } from "../actor2";
+import { OwnerMaximal } from "../actor2/types";
 import { BaseEquipment, EquipmentSheet } from "../equipment-sheet2/types";
 import { RollInstance } from "../roll/types";
 import { Tags } from "./tags";

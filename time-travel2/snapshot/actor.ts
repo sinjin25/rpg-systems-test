@@ -1,5 +1,5 @@
 import { AbilityCatalog, AbilitySheet } from "../../ability-sheet2";
-import type { Actor2, OwnerMaximal } from "../../actor2";
+import type { Actor2, OwnerMaximal } from "../../actor2/types";
 import { StatusEffect, StatusSheet } from "../../status-sheet2";
 import { FrozenStatus } from "../types";
 import freezeStatus from "./status";

@@ -1,4 +1,4 @@
-import { OwnerMaximal } from '../actor2'
+import { OwnerMaximal } from '../actor2/types'
 import { ModNode } from '../log2'
 import { Experience, ExperienceBreakpoints } from './types'
 

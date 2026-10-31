@@ -1,4 +1,4 @@
-import { Actor2 } from "../../actor2";
+import { Actor2 } from "../../actor2/types";
 
 // TRUE means that you CAN target something
 // if it doesn't match up, flip the question

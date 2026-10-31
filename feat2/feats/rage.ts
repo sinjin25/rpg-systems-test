@@ -1,5 +1,5 @@
 import { Feat2 } from "../types";
-import { OwnerMaximal } from "../../actor2";
+import { OwnerMaximal } from "../../actor2/types";
 import { rage as rageStatus } from '../../status-sheet2/status/index'
 
 const displayName = 'Rage'

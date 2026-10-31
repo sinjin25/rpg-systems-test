@@ -1,4 +1,4 @@
-import type { OwnerMaximal } from "../actor2"
+import type { OwnerMaximal } from "../actor2/types"
 import { newStatusInstance } from "./instance"
 import { StatusEffectInstance, StatusEffectWrapper } from "./types"
 

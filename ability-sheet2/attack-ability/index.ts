@@ -1,4 +1,4 @@
-import { Actor2 } from '../../actor2'
+import { Actor2 } from '../../actor2/types'
 import { calculateAc, outputRawSar, SAR_AGAINST_TARGET_DEFAULT_OPTS, sarAgainstTarget, StandardActionResult } from '../../actor2/act'
 import newModNode, { sumFunc } from '../../log2'
 import { ModNodeOpts } from '../../log2/types'

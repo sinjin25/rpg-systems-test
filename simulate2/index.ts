@@ -1,4 +1,5 @@
-import { Actor2, instantiateActor, OwnerMaximal } from "../actor2"
+import { instantiateActor } from "../actor2"
+import { Actor2, OwnerMaximal } from "../actor2/types"
 import { act, actionIsAbility, actionIsAttackAbility, applyAttackResolutions, applyResolutions, outputFinalSar } from "../actor2/act"
 import { resolveAbility, resolveAttackAbility } from "../ability-sheet2"
 import { instantiateSpeed, reinstantiateHealth, STD_SPEED } from "../actor2/instantiate"

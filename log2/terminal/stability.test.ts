@@ -1,5 +1,6 @@
 import { findNodeMatching, leaf } from ".."
-import { createDefaultOwner, OwnerMaximal } from "../../actor2"
+import { createDefaultOwner } from "../../actor2"
+import { OwnerMaximal } from "../../actor2/types"
 import { shortsword, longsword, testshortsword } from "../../equipment-sheet2/defaults"
 import { BaseEquipment } from "../../equipment-sheet2/types"
 import { Feat2 } from "../../feat2/types"

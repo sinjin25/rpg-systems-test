@@ -1,5 +1,6 @@
 import { makeWrapper, StatusEffectInstance, StatusEffectWrapper } from '..'
-import { createDefaultOwner, OwnerMaximal } from '../../actor2'
+import { createDefaultOwner } from '../../actor2'
+import { OwnerMaximal } from '../../actor2/types'
 import { decaySaveSucceeded } from './decay-save-succeeded'
 import { describe, test, assert, afterEach } from 'vitest'
 import { setSeed, clearSeed } from '../../roll'

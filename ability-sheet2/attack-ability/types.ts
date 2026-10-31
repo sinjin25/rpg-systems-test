@@ -1,7 +1,7 @@
 // an attack-ability inherits from attack and provides additional augments
 // we basically provide a tree for each element of a standardActionResult
 
-import { Actor2 } from "../../actor2"
+import { Actor2 } from "../../actor2/types"
 import { FinalStandardActionResult, StandardActionResult } from "../../actor2/act"
 import { ModNode } from "../../log2"
 import { TargetPriority } from "../../target/types"

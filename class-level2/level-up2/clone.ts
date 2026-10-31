@@ -1,4 +1,4 @@
-import { OwnerMaximal } from "../../actor2"
+import { OwnerMaximal } from "../../actor2/types"
 
 // shallow clone
 // because the real cloner is in a different repo

@@ -1,5 +1,6 @@
 import { describe, test, expect, assert } from 'vitest'
-import { createDefaultOwner, instantiateActor, Actor2, OwnerMaximal } from '..'
+import { createDefaultOwner, instantiateActor } from '..'
+import { Actor2, OwnerMaximal } from '../types'
 import newModNode, { findNodeMatching, leaf, ModNode, sumFunc } from '../../log2'
 import modNodeToText from '../../log2/format'
 import { BaseEquipment } from '../../equipment-sheet2/types'

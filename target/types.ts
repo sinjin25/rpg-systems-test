@@ -7,7 +7,7 @@
 // ex: invisible, dead
 // apply targeting rules
 
-import { Actor2 } from "../actor2"
+import { Actor2 } from "../actor2/types"
 import { GenericFilter } from "./generic-filter/types"
 
 export type OverrideFunction = (

@@ -1,23 +1,12 @@
-import { Actor2 } from "."
 import { ModNode, sumFunc } from "../log2"
 import newModNode from "../log2"
 import roll from "../log2/roll"
 import speedTerminal from "../log2/terminal/speed"
 import { ModNodeOpts } from "../log2/types"
 import { decaySpeedElapsed } from "../status-sheet2/decay"
-import { Speed } from "./instantiate"
+import { Round, RoundResult, Speed } from "./types"
 
 export const DEFAULT_SPEED = 35
-
-export type Round = {
-    participants: Actor2[],
-    speedSum: number, // default 35
-}
-
-export type RoundResult = {
-    acting: Actor2[],
-    modNodes: Map<number, ModNode>,
-}
 
 export const roundOrderBySpeed = <A extends {
     speed: Speed,

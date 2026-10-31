@@ -1,5 +1,6 @@
 import { StatusEffectInstance } from '..'
-import { createDefaultOwner, OwnerMaximal } from '../../actor2'
+import { createDefaultOwner } from '../../actor2'
+import { OwnerMaximal } from '../../actor2/types'
 import { decaySpeedElapsed } from './decay-speed-elapsed'
 import { describe, test, assert } from 'vitest'
 

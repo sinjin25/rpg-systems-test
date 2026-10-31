@@ -1,4 +1,4 @@
-import { OwnerMaximal } from "../../actor2"
+import { OwnerMaximal } from "../../actor2/types"
 import { leaf } from "../../log2"
 import featContribution from "../../log2/composition/feat-contribution"
 import roll from "../../roll"

@@ -1,5 +1,6 @@
 import { makeWrapper, StatusEffectInstance, StatusEffectWrapper } from '..'
-import { createDefaultOwner, OwnerMaximal } from '../../actor2'
+import { createDefaultOwner } from '../../actor2'
+import { OwnerMaximal } from '../../actor2/types'
 import { expireStatusesAfterFight } from './expire-statuses-after-fight'
 import { DecayOwner } from './types'
 import { describe, test, assert } from 'vitest'

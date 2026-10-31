@@ -1,7 +1,7 @@
 import { Feat2 } from "../types"
 import { leaf } from "../../log2"
 import { hasAllTags, hasAnyTag } from "../../log2/tags"
-import { OwnerMaximal } from "../../actor2"
+import { OwnerMaximal } from "../../actor2/types"
 import { OwnerLog2 } from "../../log2/types"
 
 export const testFeatMeleeWeaponFighting: Feat2 = {

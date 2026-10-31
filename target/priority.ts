@@ -1,6 +1,6 @@
 // given a completed list of participants who can be targeted, who should be targeted?
 
-import { Actor2 } from "../actor2";
+import { Actor2 } from "../actor2/types";
 import { TargetPriority } from "./types";
 
 const targetPriority = (

@@ -1,4 +1,5 @@
-import { createDefaultOwner, OwnerMaximal } from '../../actor2/index.ts'
+import { createDefaultOwner } from '../../actor2/index.ts'
+import { OwnerMaximal } from '../../actor2/types'
 import { Feat2 } from '../types.ts'
 import addFeat from './index.ts'
 import { describe, test, assert, expect } from 'vitest'

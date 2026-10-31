@@ -1,4 +1,4 @@
-import { OwnerMaximal } from "../../actor2";
+import { OwnerMaximal } from "../../actor2/types";
 import { FeatIds } from "../../feat2/types";
 import addFeat from "../../feat2/add-feat";
 import { deriveFeatKey, registry as featRegistry } from "../../feat2/registry";

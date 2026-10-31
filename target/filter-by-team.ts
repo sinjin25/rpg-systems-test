@@ -1,4 +1,4 @@
-import { Actor2 } from "../actor2";
+import { Actor2 } from "../actor2/types";
 
 export default (participants: {
     playerTeam: Actor2[],

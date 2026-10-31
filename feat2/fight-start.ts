@@ -1,6 +1,6 @@
 import { FeatSheet } from "./types"
 import { CharacterSheet } from "../character-sheet"
-import { OwnerMaximal } from "../actor2"
+import { OwnerMaximal } from "../actor2/types"
 import { newStatusInstance } from "../status-sheet2"
 
 

@@ -1,5 +1,5 @@
 import { createDefaultAbilitySheet } from "../../ability-sheet2";
-import { OwnerMaximal } from "../../actor2";
+import { OwnerMaximal } from "../../actor2/types";
 import { defaultCharacterSheet, defaultEnemySheet } from "../../character-sheet";
 import { experienceBreakpoints } from "../../experience";
 import { deriveFeatKey } from "../../feat2/registry";

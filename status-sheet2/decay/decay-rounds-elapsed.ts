@@ -1,4 +1,4 @@
-import { Actor2, OwnerMaximal } from "../../actor2";
+import { Actor2, OwnerMaximal } from "../../actor2/types";
 import { chainStatus } from "./chain-status";
 import { expireStatus } from "./expire-status";
 import { StatusExpiration, StatusExpirationRoundsElapsed } from "./types";

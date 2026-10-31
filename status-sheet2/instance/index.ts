@@ -1,4 +1,4 @@
-import { OwnerMaximal } from "../../actor2";
+import { OwnerMaximal } from "../../actor2/types";
 import { StatusExpiration } from "../decay/types";
 import {
     StatusEffect,

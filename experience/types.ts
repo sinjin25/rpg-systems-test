@@ -1,4 +1,4 @@
-import { OwnerMaximal } from "../actor2";
+import { OwnerMaximal } from "../actor2/types";
 
 export type ExperienceBreakpoints = [10, 50, 200, 400, 700, 1000, 9999999]
 

@@ -4,14 +4,9 @@ import { ModNode, sumFunc } from "..";
 import { OwnerLog2, EveryTree, RollSidesMod, ModNodeOpts } from "../types";
 import finalSides from "./final-sides";
 import roll from "../../roll";
+import { Log2RollOpts } from "./types";
 
 const displayName: EveryTree = 'roll-total'
-
-type Log2RollOpts = {
-    diceSides?: number,
-    diceNumber?: number,
-    member?: RollSidesMod,
-}
 
 const DEFAULTS = {
     diceSides: 20,

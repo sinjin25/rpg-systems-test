@@ -6,10 +6,7 @@ import roll from "../../log2/roll"
 import modNodeToText from "../../log2/format"
 import { ModNodeOpts } from "../../log2/types"
 import type { SARAgainstTargetOpts } from "../../ability-sheet2/attack-ability/types"
-
-type AttackOpts = ModNodeOpts & {
-    relevantSlot: BaseEquipment,
-}
+import { AttackOpts, FinalStandardActionResult, StandardActionResult } from './types'
 
 export const calculateAttack = (
     owner: OwnerMaximal,
@@ -22,21 +19,21 @@ export const calculateAttack = (
     )
 }
 
-const calculateDamage = (
+export const calculateDamage = (
     owner: OwnerMaximal,
     opts: AttackOpts
 ) => {
     return damage(owner, opts)
 }
 
-const calculateCritDamage = (
+export const calculateCritDamage = (
     owner: OwnerMaximal,
     opts: AttackOpts
 ) => {
     return critDamage(owner, opts)
 }
 
-const calculateThreat = (
+export const calculateThreat = (
     owner: OwnerMaximal,
     opts: AttackOpts
 ) => {
@@ -58,20 +55,6 @@ export const calculateAc = (
     owner: OwnerMaximal
 ) => {
     return ac(owner)
-}
-
-export type StandardActionResult = {
-    relevantSlot: BaseEquipment,
-    attackResult: ReturnType<typeof calculateAttack>,
-    damageResult: ReturnType<typeof calculateDamage>,
-    threatResult: ReturnType<typeof calculateThreat>,
-    critConfirmResult: ReturnType<typeof calculateCritConfirm>,
-    critDamageResult: ReturnType<typeof calculateCritDamage>,
-}
-
-export type FinalStandardActionResult = Partial<StandardActionResult> & {
-    acResult: ReturnType<typeof calculateAc>,
-    relevantSlot: BaseEquipment,
 }
 
 export const calculateSAR = (

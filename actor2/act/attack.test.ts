@@ -10,12 +10,12 @@ import {
     calculateCritConfirm,
     calculateSAR,
     critDidConfirm,
-    FinalStandardActionResult,
     hitDidConfirm,
     outputFinalSar,
     outputRawSar,
     sarAgainstTarget,
 } from './attack'
+import { FinalStandardActionResult } from './types'
 import rollTree from '../../log2/roll'
 import { SLOT_TYPE } from '../../equipment-sheet2/defaults'
 import { createRoll } from '../../roll'

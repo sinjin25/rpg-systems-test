@@ -2,13 +2,14 @@ import { Actor2 } from '../types'
 import { AbilityCastType, AbilitySheetDefinition, AttackAbilitySheetDefinition, advanceAbilityCategoryIndex } from '../../ability-sheet2'
 import { ModNodeOpts } from '../../log2/types'
 import { selectAndPrepAbility } from './ability'
-import { outputRawSar, StandardActionResult } from './attack'
+import { outputRawSar } from './attack'
+import { Action } from './types'
 
-export { FinalStandardActionResult, StandardActionResult, SAR_AGAINST_TARGET_DEFAULT_OPTS, calculateAc, calculateAttack, calculateCritConfirm, calculateSAR, critDidConfirm, hitDidConfirm, outputFinalSar, outputRawSar, sarAgainstTarget } from './attack'
+export { SAR_AGAINST_TARGET_DEFAULT_OPTS, calculateAc, calculateAttack, calculateCritConfirm, calculateSAR, critDidConfirm, hitDidConfirm, outputFinalSar, outputRawSar, sarAgainstTarget } from './attack'
 
 export { applyResolutions, applyAttackResolutions, selectAndPrepAbility } from './ability'
 
-export type Action = StandardActionResult | AbilitySheetDefinition | AttackAbilitySheetDefinition
+export type { Action, FinalStandardActionResult, StandardActionResult } from './types'
 
 // both definition kinds carry a castType, so the `kind` discriminant separates them
 export const actionIsAttackAbility = (

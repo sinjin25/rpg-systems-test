@@ -18,6 +18,7 @@ export type ClassLevel = {
     classFeats: FeatIds[],
     // ex: one level offers any free feat as well as a feat from a subset (multiple) or it offers 0, etc.
     hasFreeFeats: ClassLevelFreeFeats[],
+    classAbilities: string[],
 } & {
     [K in ClassLevelSumKeys]: number
 }
@@ -26,6 +27,7 @@ export type ClassLevelTable = {
     key: ClassKeys,
     classFeats: FeatIds[][],
     hasFreeFeats: ClassLevelFreeFeats[][],
+    classAbilities: string[][],
 } & {
     [K in ClassLevelSumKeys]: number[]
 }

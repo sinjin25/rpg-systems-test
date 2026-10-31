@@ -23,5 +23,6 @@ export default {
         [{ levelHasFreeFeats: true }],
         [],
         [{ levelHasFreeFeats: true }],
-    ]
+    ],
+    classAbilities: [[], [], [], [], []],
 } satisfies ClassLevelTable

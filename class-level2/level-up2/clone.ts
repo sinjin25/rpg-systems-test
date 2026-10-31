@@ -6,7 +6,11 @@ export const testUtilCloneOwner = (owner: OwnerMaximal): OwnerMaximal => ({
     ...owner,
     cs: { ...owner.cs, levels: [...owner.cs.levels] },
     fs: { ...owner.fs },
-    as: { ...owner.as },
+    as: {
+        free: { ...owner.as.free },
+        standard: { ...owner.as.standard },
+        swift: { ...owner.as.swift }
+    },
 })
 
 export type OwnerWithClone = {

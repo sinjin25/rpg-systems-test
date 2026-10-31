@@ -2,10 +2,12 @@ import { OwnerMaximal } from "../../actor2";
 import { FeatIds } from "../../feat2/types";
 import addFeat from "../../feat2/add-feat";
 import { deriveFeatKey, registry as featRegistry } from "../../feat2/registry";
+import { registry as abilityRegistry } from '../../ability-sheet2/registry'
 import meetsPrereq from "../../feat2/meets-prereq";
 import { classLevelCounts, getCurrentLevel, registry } from "../derive";
 import { ClassKeys, ClassLevel, ClassLevelPickLog, ClassLevelTable, LevelUpProposal, MutationFailureReason, MutationFailureReasons, MutationResult } from "../types";
 import { _verifyOwnerIsClone } from "./clone";
+import { addAbility, AnyAbilitySheetDefinition } from "../../ability-sheet2";
 
 const _newClassLevelList = (clpl: ClassLevelPickLog): ClassLevel[] => {
     // by default, everything is good if you can take more levels
@@ -30,7 +32,8 @@ const _newClassLevelList = (clpl: ClassLevelPickLog): ClassLevel[] => {
             reflex: cl.reflex[level],
             classFeats: cl.classFeats[level],
             hasFreeFeats: cl.hasFreeFeats[level],
-            key: cl.key
+            key: cl.key,
+            classAbilities: cl.classAbilities[level],
         })
     }
 
@@ -64,7 +67,8 @@ export const patchCloneWithProposal = (
     data: {
         cl: ClassLevel, // chosen one
         chosenFeats: FeatIds[],
-    }
+    },
+    aRegistry: Record<string, AnyAbilitySheetDefinition> = abilityRegistry,
 ): OwnerMaximal | null => {
     // ASSUMPTION: original is in same state as clone at this point
     // IF this is violated, you have a callsite issue
@@ -72,10 +76,16 @@ export const patchCloneWithProposal = (
     if (!isOkay) return null
     const { clone } = owner
 
+    // add abilities from ClassLevel
+    for (let a of data.cl.classAbilities) {
+        const pointer = aRegistry[a]
+
+        if (pointer) addAbility(owner.clone, pointer)
+    }
+
     // get the set of FeatIds from ClassLevel.classFeats
     // get the ones from chosenFeats
-    const classFeatsToAdd = [...data.cl.classFeats]
-    for (let f of classFeatsToAdd) {
+    for (let f of data.cl.classFeats) {
         const pointer = featRegistry[f]
         // bypass addFeat to avoid prereq
         if (pointer) clone.fs[deriveFeatKey(pointer)] = pointer
@@ -123,6 +133,8 @@ export const mutationResult = (
 ): MutationResult => {
     const { original, clone } = owner
     const { cl, chosenFeats } = data
+
+    // no check is done on the ability sheet
 
     const fail = (reason: MutationFailureReason): MutationResult => ({
         result: { kind: 'failure', reason },

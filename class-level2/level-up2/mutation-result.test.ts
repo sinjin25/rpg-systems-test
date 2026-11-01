@@ -1,11 +1,14 @@
 import { describe, test, assert } from 'vitest'
 import { createDefaultOwner } from '../../actor2'
 import { OwnerMaximal } from '../../actor2/types'
-import { mutationResult } from './index'
+import { mutationResult, patchCloneWithProposal } from './index'
 import { Feat2 } from '../../feat2/types'
 import featRegistry from '../../feat2/registry'
 import hardy from '../../feat2/feats/con-saves'
 import { ClassLevel, MutationFailureReasons } from '../types'
+import { getAbilityKey } from '../../ability-sheet2'
+import studiedTarget from '../../ability-sheet2/abilities2/studied-target'
+import { testUtilCloneOwner } from './clone'
 
 const baseCl: ClassLevel = {
     key: 'fighter',
@@ -15,6 +18,7 @@ const baseCl: ClassLevel = {
     fortitude: 0,
     reflex: 0,
     will: 0,
+    classAbilities: [getAbilityKey(studiedTarget)],
 }
 
 describe('mutationResult', () => {
@@ -73,7 +77,7 @@ describe('mutationResult', () => {
         assert.equal(result.result.kind, 'success')
     })
 
-    test('succeeds when everything checks out', () => {
+    test('succeeds when everything passes', () => {
         const original = createDefaultOwner()
         const clone = createDefaultOwner()
         const result = mutationResult(
@@ -125,5 +129,30 @@ describe('mutationResult chosen feat order', () => {
         )
 
         assert.deepEqual(result.result, { kind: 'success' })
+    })
+})
+
+describe('Can add abilities', () => {
+    test('Should add studied target', () => {
+        const owner = createDefaultOwner()
+
+        assert.notExists(
+            owner.as.free.items[getAbilityKey(studiedTarget)]
+        )
+
+        const patchedClone = patchCloneWithProposal(
+            { original: owner, clone: testUtilCloneOwner(owner) },
+            { cl: baseCl, chosenFeats: ['Dodge'] }
+        )
+        assert.exists(patchedClone)
+
+        const result = mutationResult(
+            { original: owner, clone: patchedClone! },
+            { cl: baseCl, chosenFeats: ['Dodge'] }
+        )
+
+        assert.exists(
+            result.clone.as.free.items[getAbilityKey(studiedTarget)]
+        )
     })
 })

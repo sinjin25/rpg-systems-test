@@ -1,4 +1,4 @@
-import { DiscreteTargetGroupPayloadResolution } from "../ability-sheet2"
+import { DiscreteTargetGroupPayloadResolution } from "../ability-sheet2/abilities2/types"
 import { FinalStandardActionResult } from "../actor2/act"
 import { BaseEquipment } from "../equipment-sheet2/types"
 import { ModNode } from "../log2"

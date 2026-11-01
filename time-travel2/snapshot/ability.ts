@@ -1,4 +1,4 @@
-import { DiscreteTargetGroupPayloadResolution } from "../../ability-sheet2";
+import { DiscreteTargetGroupPayloadResolution } from "../../ability-sheet2/abilities2/types";
 import { ModNode } from "../../log2";
 import { FrozenAbilityNode } from "../types";
 import freezeModNodeRecursive from "./mod-node";

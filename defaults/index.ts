@@ -1,4 +1,5 @@
-import { AbilitySheet, createDefaultAbilitySheet } from '../ability-sheet2'
+import { AbilitySheet } from '../ability-sheet2/types'
+import { createDefaultAbilitySheet } from '../ability-sheet2'
 import { createDefaultOwner } from '../actor2'
 import { OwnerMaximal } from '../actor2/types'
 import { CharacterSheet } from '../character-sheet'

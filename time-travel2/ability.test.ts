@@ -1,4 +1,5 @@
-import { addAbility, getAbilityKey, resolveAbility } from '../ability-sheet2'
+import { addAbility, getAbilityKey } from '../ability-sheet2'
+import { resolveAbility } from '../ability-sheet2/abilities2'
 import ignite from '../ability-sheet2/abilities2/ignite'
 import { createDefaultOwner, instantiateActor } from '../actor2'
 import { applyResolutions } from '../actor2/act'

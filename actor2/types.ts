@@ -4,7 +4,7 @@ import { ModNode } from "../log2"
 import { Tags } from "../log2/tags"
 import { StatusSheet } from "../status-sheet2"
 import { FeatSheet } from "../feat2/types"
-import { AbilitySheet } from "../ability-sheet2"
+import { AbilitySheet } from "../ability-sheet2/types"
 import { Experience } from "../experience/types"
 
 // no better place to put rn

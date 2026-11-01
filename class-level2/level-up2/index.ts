@@ -7,7 +7,8 @@ import meetsPrereq from "../../feat2/meets-prereq";
 import { classLevelCounts, getCurrentLevel, registry } from "../derive";
 import { ClassKeys, ClassLevel, ClassLevelPickLog, ClassLevelTable, LevelUpProposal, MutationFailureReason, MutationFailureReasons, MutationResult } from "../types";
 import { _verifyOwnerIsClone } from "./clone";
-import { addAbility, AnyAbilitySheetDefinition } from "../../ability-sheet2";
+import { addAbility } from "../../ability-sheet2";
+import { AnyAbilitySheetDefinition } from "../../ability-sheet2/types";
 
 const _newClassLevelList = (clpl: ClassLevelPickLog): ClassLevel[] => {
     // by default, everything is good if you can take more levels

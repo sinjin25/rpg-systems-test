@@ -1,5 +1,7 @@
 import { Actor2 } from "../types"
-import { AbilityCastType, AnyAbilitySheetDefinition, AttackDiscreteTargetGroupPayloadResolution, DiscreteTargetGroupPayloadResolution } from "../../ability-sheet2"
+import { AbilityCastType, AnyAbilitySheetDefinition } from "../../ability-sheet2/types"
+import { AttackDiscreteTargetGroupPayloadResolution } from "../../ability-sheet2/attack-ability/types"
+import { DiscreteTargetGroupPayloadResolution } from "../../ability-sheet2/abilities2/types"
 import { applyDamage, applyHeal } from "../../health"
 import damageTakenTree from '../../log2/terminal-composition/damage-taken'
 import { ModNodeOpts, OwnerLog2 } from '../../log2/types'

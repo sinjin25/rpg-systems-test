@@ -1,6 +1,7 @@
 import { createDefaultOwner, instantiateActor } from '..'
 import ignite from '../../ability-sheet2/abilities2/ignite.ts'
-import { addAbility, resolveAbility } from '../../ability-sheet2/index.ts'
+import { addAbility } from '../../ability-sheet2/index.ts'
+import { resolveAbility } from '../../ability-sheet2/abilities2/index.ts'
 import { findNodeMatching } from '../../log2/index.ts'
 import { clearSeed, setSeed } from '../../roll/index.ts'
 import { applyResolutions, selectAndPrepAbility } from './ability.ts'

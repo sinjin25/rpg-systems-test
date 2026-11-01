@@ -1,4 +1,4 @@
-import { AbilityCatalog, AbilitySheet } from "../../ability-sheet2";
+import { AbilityCatalog, AbilitySheet } from "../../ability-sheet2/types";
 import type { Actor2, OwnerMaximal } from "../../actor2/types";
 import { StatusEffect, StatusSheet } from "../../status-sheet2";
 import { FrozenStatus } from "../types";

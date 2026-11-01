@@ -1,25 +1,5 @@
 import { OwnerMaximal } from '../actor2/types'
 import type { AbilityCastType, AbilityCategory, AbilitySheet, AnyAbilitySheetDefinition } from './types'
-export { AbilityCastType, AbilityCatalog, AbilityCategory, AbilitySheet, AbilityTags, AnyAbilitySheetDefinition } from './types'
-export { resolveAbility } from './abilities2'
-export { resolveAttackAbility } from './attack-ability'
-export type { Participants } from './abilities2'
-export type {
-    Ability,
-    AbilityPayload,
-    AbilitySheetDefinition,
-    DiscreteTargetGroup,
-    DiscreteTargetGroupPayload,
-    DiscreteTargetGroupPayloadResolution,
-} from './abilities2/types'
-export type {
-    AttackAbility,
-    AttackAbilitySheetDefinition,
-    AttackDiscreteTargetGroup,
-    AttackDiscreteTargetGroupPayload,
-    AttackDiscreteTargetGroupPayloadResolution,
-} from './attack-ability/types'
-
 
 export const getAbilityKey = <A extends AnyAbilitySheetDefinition>(ability: A): A['displayName'] => ability.displayName
 

@@ -1,4 +1,4 @@
-/* import { getAbilityKey } from "../ability-sheet2"; */
+import { getAbilityKey } from "../ability-sheet2";
 import studiedTarget from "../ability-sheet2/abilities2/studied-target";
 import { ClassLevelTable } from "./types";
 export default {
@@ -9,5 +9,5 @@ export default {
     attackBonus: [0, 1, 1, 1, 0],
     classFeats: [[], [], [], [], []],
     hasFreeFeats: [[], [], [], [], []],
-    classAbilities: [[/* getAbilityKey(studiedTarget) */], [], [], [], []],
+    classAbilities: [[getAbilityKey(studiedTarget)], [], [], [], []],
 } satisfies ClassLevelTable

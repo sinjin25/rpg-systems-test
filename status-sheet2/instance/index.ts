@@ -50,7 +50,7 @@ export const makeWrapper = (
     const factory: StatusEffectInstanceFactory = (source) => ({
         pointer,
         source, // as in the caster, not the definition
-        expiration: typeof opts.expiration === 'function' ? opts.expiration() : opts.expiration,
+        expiration: typeof opts.expiration === 'function' ? opts.expiration() : opts.expiration && { ...opts.expiration },
         tick: resolveTick(pointer.tick, source),
     })
     return { ...pointer, factory }

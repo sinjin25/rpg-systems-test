@@ -117,9 +117,9 @@ describe('Round reports participants who are ready to act', () => {
             speedSum: STANDARD_SPEED,
         }
 
-        iterate(5, () => {
+        iterate(5, (_seed, rollInstance) => {
             roundData.participants.forEach(a => a.speed.remainder = 34)
-            const { acting: result } = round(roundData)
+            const { acting: result } = round(roundData, { rollInstance })
             for (let i = 1; i < result.length; i++) {
                 const prev = result[i - 1]
                 const curr = result[i]

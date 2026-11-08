@@ -2,8 +2,8 @@ import { makeWrapper, StatusEffectInstance, StatusEffectWrapper } from '..'
 import { createDefaultOwner } from '../../actor2'
 import { OwnerMaximal } from '../../actor2/types'
 import { decaySaveSucceeded } from './decay-save-succeeded'
-import { describe, test, assert, afterEach } from 'vitest'
-import { setSeed, clearSeed } from '../../roll'
+import { describe, test, assert } from 'vitest'
+import { createRoll } from '../../roll'
 import save from '../../log2/terminal/save'
 import newModNode, { leaf, ModNode, sumFunc } from '../../log2'
 
@@ -15,8 +15,6 @@ describe('decaySaveSucceeded', () => {
     const NAT_20 = 36
     // first roll is a natural 1, second is a natural 20
     const NAT_1_THEN_NAT_20 = 79
-
-    afterEach(() => clearSeed())
 
     const saveBuff = (dc: ModNode, onExpiration?: () => StatusEffectWrapper): StatusEffectInstance => ({
         pointer: { displayName: 'saveBuff', broadContexts: {}, stack: { kind: 'highest' }, onExpiration },
@@ -36,8 +34,7 @@ describe('decaySaveSucceeded', () => {
             newModNode('saveBuffDc', [leaf('who cares', 10), reflexMod(owner)], sumFunc)
         )]
 
-        setSeed(NAT_10)
-        const result = decaySaveSucceeded(owner)
+        const result = decaySaveSucceeded(owner, { rollInstance: createRoll(NAT_10) })
         assert.notExists(owner.ss.test)
 
         // decaySaveSucceeded returns a log
@@ -56,8 +53,7 @@ describe('decaySaveSucceeded', () => {
         const owner = createDefaultOwner()
         owner.ss.test = [saveBuff(newModNode('saveBuffDc', [leaf('who cares', 11), reflexMod(owner)], sumFunc))]
 
-        setSeed(NAT_10)
-        decaySaveSucceeded(owner)
+        decaySaveSucceeded(owner, { rollInstance: createRoll(NAT_10) })
         assert.exists(owner.ss.test)
     })
 
@@ -65,8 +61,7 @@ describe('decaySaveSucceeded', () => {
         const owner = createDefaultOwner()
         owner.ss.test = [saveBuff(newModNode('saveBuffDc', [leaf('who cares', 100), reflexMod(owner)], sumFunc))]
 
-        setSeed(NAT_20)
-        const result = decaySaveSucceeded(owner)
+        const result = decaySaveSucceeded(owner, { rollInstance: createRoll(NAT_20) })
         assert.notExists(owner.ss.test)
     })
 
@@ -74,8 +69,7 @@ describe('decaySaveSucceeded', () => {
         const owner = createDefaultOwner()
         owner.ss.test = [saveBuff(leaf('who cares', 1))]
 
-        setSeed(NAT_1)
-        decaySaveSucceeded(owner)
+        decaySaveSucceeded(owner, { rollInstance: createRoll(NAT_1) })
         assert.exists(owner.ss.test)
     })
 
@@ -90,8 +84,7 @@ describe('decaySaveSucceeded', () => {
             }
         })
 
-        setSeed(NAT_20)
-        decaySaveSucceeded(owner)
+        decaySaveSucceeded(owner, { rollInstance: createRoll(NAT_20) })
         assert.exists(owner.ss.test)
     })
 
@@ -100,8 +93,7 @@ describe('decaySaveSucceeded', () => {
         const owner = createDefaultOwner()
         owner.ss.test = [saveBuff(leaf('who cares', 1), () => followUp)]
 
-        setSeed(NAT_20)
-        decaySaveSucceeded(owner)
+        decaySaveSucceeded(owner, { rollInstance: createRoll(NAT_20) })
         assert.notExists(owner.ss.test)
         assert.equal(owner.ss['follow up']![0]!.pointer.displayName, 'follow up')
     })

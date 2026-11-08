@@ -25,8 +25,8 @@ describe('divine-protection', () => {
     test('Defaults to 1d4, 1d4 for duration and range', () => {
 
         const set = new Set<number>()
-        iterate(20, () => {
-            const st = inst(divineProtection())
+        iterate(20, (_seed, rollInstance) => {
+            const st = inst(divineProtection(undefined, undefined, { rollInstance }))
             // @ts-expect-error
             set.add(st.expiration.remaining)
         })

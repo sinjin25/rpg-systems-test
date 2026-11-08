@@ -3,26 +3,24 @@ import { createDefaultOwner, instantiateActor } from '../actor2/index.ts'
 import damageTakenTree from '../log2/terminal-composition/damage-taken.ts'
 import { OwnerLog2 } from '../log2/types.ts'
 import modNodeToText from '../log2/format.ts'
-import { clearSeed, setSeed } from '../roll/index.ts'
+import { createRoll } from '../roll/index.ts'
+import { RollInstance } from '../roll/types.ts'
 import snapshotActor from './snapshot/actor.ts'
 import standardActionResult from './standard-action-result.ts'
-import { describe, test, assert, afterEach } from 'vitest'
+import { describe, test, assert } from 'vitest'
 
-const ownerActorUtil = () => {
+const ownerActorUtil = (rollInstance: RollInstance) => {
     const owner = createDefaultOwner()
     return {
         owner,
-        actor: instantiateActor(owner)
+        actor: instantiateActor(owner, false, { rollInstance })
     }
 }
 describe('standardActionResult (time-travel2)', () => {
-    afterEach(() => {
-        clearSeed()
-    })
     test('freezes each present ModNode result and passes relevantSlot through', () => {
-        setSeed(5) // attack hits
-        const { actor } = ownerActorUtil()
-        const rawSar = outputRawSar(actor)
+        const ri = createRoll(5) // attack hits
+        const { actor } = ownerActorUtil(ri)
+        const rawSar = outputRawSar(actor, { rollInstance: ri })
 
         // just attack self for simplicity
         const finalSar = outputFinalSar(rawSar, actor)
@@ -45,16 +43,16 @@ describe('standardActionResult (time-travel2)', () => {
     })
 
     test('freezes damageTakenResult when provided', () => {
-        setSeed(5) // attack hits
+        const ri = createRoll(5) // attack hits
         const owner = createDefaultOwner()
-        const actor = instantiateActor(owner)
-        const rawSar = outputRawSar(actor)
+        const actor = instantiateActor(owner, false, { rollInstance: ri })
+        const rawSar = outputRawSar(actor, { rollInstance: ri })
         const finalSar = outputFinalSar(rawSar, actor)
         const fs = finalSar[0]
 
         const damageNode = fs.critDamageResult ?? fs.damageResult
         assert.exists(damageNode, 'seed 5 should produce damage')
-        const dtNode = damageTakenTree({ node: damageNode! })(actor.owner as unknown as OwnerLog2)
+        const dtNode = damageTakenTree({ node: damageNode! })(actor.owner as unknown as OwnerLog2, { rollInstance: ri })
 
         const asLog = standardActionResult({
             source: snapshotActor(actor),

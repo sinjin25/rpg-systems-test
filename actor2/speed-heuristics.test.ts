@@ -1,13 +1,12 @@
-import { describe, test, assert, expect, afterEach } from 'vitest'
+import { describe, test, assert, expect } from 'vitest'
 import { instantiateSpeed } from './instantiate'
 import { createDefaultOwner } from '.'
 import improvedInitiative from '../feat2/feats/improved-initiative'
-import { clearSeed, setSeed } from '../roll'
+import { createRoll } from '../roll'
 
 describe('initiative: Dex/Feats are meaningful', () => {
-    afterEach(() => clearSeed())
     test('+3 => .64, +7 => .78', () => {
-        setSeed(1)
+        const ri = createRoll(1)
         // const REAL_PROPORTION = .66 // many n
         // const REAL_PROPORTION_FEAT = .805 // many n
         const EXPECTED = .63
@@ -35,9 +34,9 @@ describe('initiative: Dex/Feats are meaningful', () => {
         let dexActsFirstResult = 0
         let featDexActsFirstResult = 0
         for (let i = 0; i < iterations; i++) {
-            const ovf = instantiateSpeed(ownerVeryFast).tree
-            const of = instantiateSpeed(ownerFast).tree
-            const os = instantiateSpeed(ownerSlow).tree
+            const ovf = instantiateSpeed(ownerVeryFast, { rollInstance: ri }).tree
+            const of = instantiateSpeed(ownerFast, { rollInstance: ri }).tree
+            const os = instantiateSpeed(ownerSlow, { rollInstance: ri }).tree
 
             /* console.log(ovf, of, os) */
             if (of.total() > os.total()) dexActsFirstResult++

@@ -4,7 +4,7 @@ import { addAbility } from '../../ability-sheet2'
 import { resolveAttackAbility } from '../../ability-sheet2/attack-ability'
 import { AttackAbility, AttackAbilitySheetDefinition } from '../../ability-sheet2/attack-ability/types'
 import { leaf } from '../../log2'
-import { setSeed, clearSeed } from '../../roll'
+import { createRoll } from '../../roll'
 import { act, actionIsAbility, actionIsAttackAbility, applyAttackResolutions } from './index'
 
 // a standard-action attack ability that strikes the first enemy; +100 to-hit guarantees a landing
@@ -45,9 +45,9 @@ describe('resolveAttackAbility + applyAttackResolutions', () => {
         // find a seed that actually hits (not a nat-1), then apply on fresh actors under it
         let applied = false
         for (let seed = 0; seed < 100 && !applied; seed++) {
-            setSeed(seed)
-            const caster = instantiateActor(createDefaultOwner())
-            const enemy = instantiateActor(createDefaultOwner())
+            const ri = createRoll(seed)
+            const caster = instantiateActor(createDefaultOwner(), false, { rollInstance: ri })
+            const enemy = instantiateActor(createDefaultOwner(), false, { rollInstance: ri })
             const enemyHpBefore = enemy.health.curr
             const casterHpBefore = caster.health.curr
 
@@ -55,6 +55,7 @@ describe('resolveAttackAbility + applyAttackResolutions', () => {
                 { enemy: [enemy], ally: [caster] },
                 caster,
                 makeAttackDef().factory(),
+                { rollInstance: ri },
             )
             assert.equal(resolutions.length, 1)
 
@@ -65,7 +66,6 @@ describe('resolveAttackAbility + applyAttackResolutions', () => {
             assert.equal(caster.health.curr, casterHpBefore) // an attack ability doesn't hurt the caster
             applied = true
         }
-        clearSeed()
         assert.isTrue(applied, 'expected at least one hitting seed in [0,100)')
     })
 })

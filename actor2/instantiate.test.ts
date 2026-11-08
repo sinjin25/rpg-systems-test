@@ -1,20 +1,17 @@
-import { describe, test, expect, assert, beforeEach, afterEach } from 'vitest'
+import { describe, test, expect, assert } from 'vitest'
 import { createDefaultOwner, instantiateActor } from '.'
 import { instantiateSpeed, instantiateHealth, applyFlatFooted, STD_SPEED, _reinstantiateHealth, reinstantiateHealth } from './instantiate'
-import { setSeed, clearSeed } from '../roll'
+import { createRoll } from '../roll'
 import { findNodeMatching } from '../log2'
 import { iterate } from '../simulate/util/iterate'
 import { addStatusToStatusSheet, bearsEndurance, getStatusKey } from '../status-sheet2'
 import { decayRoundsElapsed } from '../status-sheet2/decay'
 
 describe('instantiateSpeed', () => {
-    beforeEach(() => setSeed(1))
-    afterEach(() => clearSeed())
-
     test('Returns a tree and a speed object', () => {
         const owner = createDefaultOwner({})
 
-        const { tree, speed } = instantiateSpeed(owner)
+        const { tree, speed } = instantiateSpeed(owner, { rollInstance: createRoll(1) })
 
         assert.exists(findNodeMatching(tree, /starting speed/, { depth: 0, includeRoot: true }))
 
@@ -27,7 +24,7 @@ describe('instantiateSpeed', () => {
         // dex 100 is a +45 mod, so any d20 roll puts the total past STD_SPEED
         const owner = createDefaultOwner({ cs: { dex: 100 } })
 
-        const { tree, speed } = instantiateSpeed(owner)
+        const { tree, speed } = instantiateSpeed(owner, { rollInstance: createRoll(1) })
 
         expect(tree.total()).toBeGreaterThan(STD_SPEED)
         assert.equal(speed.remainder, STD_SPEED - tree.total())
@@ -37,8 +34,8 @@ describe('instantiateSpeed', () => {
     test('Rolls produce different results', () => {
         const owner = createDefaultOwner({})
         const set = new Set<number>()
-        iterate(10, () => {
-            const { tree, speed } = instantiateSpeed(owner)
+        iterate(10, (_seed, rollInstance) => {
+            const { tree, speed } = instantiateSpeed(owner, { rollInstance })
             set.add(speed.remainder)
         })
 

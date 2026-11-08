@@ -3,19 +3,15 @@ import ignite from '../../ability-sheet2/abilities2/ignite.ts'
 import { addAbility } from '../../ability-sheet2/index.ts'
 import { resolveAbility } from '../../ability-sheet2/abilities2/index.ts'
 import { findNodeMatching } from '../../log2/index.ts'
-import { clearSeed, setSeed } from '../../roll/index.ts'
+import { createRoll } from '../../roll/index.ts'
 import { applyResolutions, selectAndPrepAbility } from './ability.ts'
-import { describe, test, assert, afterEach } from 'vitest'
+import { describe, test, assert } from 'vitest'
 
 describe('resolveAbility + applyResolutions', () => {
-    afterEach(() => {
-        clearSeed()
-    })
-
     test('integration: ignite deals damage and, on a failed save, applies the ignite status', () => {
-        setSeed(0)
-        const caster = instantiateActor(createDefaultOwner())
-        const receiver = instantiateActor(createDefaultOwner({ cs: { dex: -999 } }))
+        const ri = createRoll(0)
+        const caster = instantiateActor(createDefaultOwner(), false, { rollInstance: ri })
+        const receiver = instantiateActor(createDefaultOwner({ cs: { dex: -999 } }), false, { rollInstance: ri })
 
         assert.notExists(receiver.owner.ss['ignite'])
         assert.equal(receiver.health.max, receiver.health.curr)
@@ -24,6 +20,7 @@ describe('resolveAbility + applyResolutions', () => {
             { enemy: [receiver], ally: [caster] },
             caster,
             ignite.factory(),
+            { rollInstance: ri },
         )
         applyResolutions(resolutions)
 
@@ -54,14 +51,15 @@ describe('resolveAbility + applyResolutions', () => {
     })
 
     test('on a successful save the status is not applied but damage still lands', () => {
-        setSeed(0)
-        const caster = instantiateActor(createDefaultOwner())
-        const receiver = instantiateActor(createDefaultOwner({ cs: { dex: 999 } }))
+        const ri = createRoll(0)
+        const caster = instantiateActor(createDefaultOwner(), false, { rollInstance: ri })
+        const receiver = instantiateActor(createDefaultOwner({ cs: { dex: 999 } }), false, { rollInstance: ri })
 
         const resolutions = resolveAbility(
             { enemy: [receiver], ally: [caster] },
             caster,
             ignite.factory(),
+            { rollInstance: ri },
         )
         applyResolutions(resolutions)
 

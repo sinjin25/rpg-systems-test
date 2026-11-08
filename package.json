@@ -1,19 +1,21 @@
 {
   "name": "rpg-tests",
   "version": "1.0.0",
-  "type": "module",
   "exports": {
     "./actor2": {
+      "types": "./dist/actor2/index.d.ts",
       "import": "./dist/actor2/index.js",
-      "types": "./dist/actor2/index.d.ts"
+      "require": "./dist/actor2/index.js"
     },
     "./actor2/act": {
+      "types": "./dist/actor2/act/index.d.ts",
       "import": "./dist/actor2/act/index.js",
-      "types": "./dist/actor2/act/index.d.ts"
+      "require": "./dist/actor2/act/index.js"
     },
     "./*": {
+      "types": "./dist/*.d.ts",
       "import": "./dist/*.js",
-      "types": "./dist/*.d.ts"
+      "require": "./dist/*.js"
     }
   },
   "scripts": {

@@ -31,10 +31,10 @@ describe('A default player can win', () => {
         const ITERATIONS = 200
         const EXPECTED_WIN_RATE = 0.95
 
-        const results = iterate(ITERATIONS, () => simulateFight({
+        const results = iterate(ITERATIONS, (_seed, rollInstance) => simulateFight({
             player: [defaultPlayer],
             enemy: [ostracizedGoblin],
-        }))
+        }, { rollInstance }))
 
         const wins = results.filter(r => r.winner === 'player').length
         expect(wins / ITERATIONS).toBeGreaterThanOrEqual(EXPECTED_WIN_RATE)
@@ -67,11 +67,11 @@ describe('Compare difficulties - consecutive wins', () => {
     }
 
     const consecutiveWinsStats = (player: OwnerMaximal, enemy: OwnerMaximal[]) =>
-        boxPlotStats(iterate(ITERATIONS, () => {
+        boxPlotStats(iterate(ITERATIONS, (_seed, rollInstance) => {
             const ws = setupWorldState({ player })
             let wins = 0
             while (wins < MAX_CONSECUTIVE_FIGHTS) {
-                const result = simulateFight({ player: ws.playerActors, enemy })
+                const result = simulateFight({ player: ws.playerActors, enemy }, { rollInstance })
                 if (result.winner !== 'player') break
                 wins++
                 ws.playersAfterFight()
@@ -105,7 +105,7 @@ describe('Expected Difficulty: Level 1', () => {
     const ITERATIONS = 50
     const MAX_CONSECUTIVE_FIGHTS = 30
     test('how many consecutive fights a player can win in a row', () => {
-        const winsPerRun = iterate(ITERATIONS, () => {
+        const winsPerRun = iterate(ITERATIONS, (_seed, rollInstance) => {
             const ws = setupWorldState({ player: defaultPlayer })
             let wins = 0
 
@@ -113,7 +113,7 @@ describe('Expected Difficulty: Level 1', () => {
                 const result = simulateFight({
                     player: ws.playerActors,
                     enemy: [ostracizedGoblin],
-                })
+                }, { rollInstance })
                 if (result.winner !== 'player') break
                 wins++
                 ws.playersAfterFight()
@@ -132,10 +132,10 @@ describe('Expected Difficulty: Level 1', () => {
     })
 
     test('hp loss per fight against one goblin', () => {
-        const results = iterate(ITERATIONS, () => simulateFight({
+        const results = iterate(ITERATIONS, (_seed, rollInstance) => simulateFight({
             player: [defaultPlayer],
             enemy: [ostracizedGoblin],
-        }))
+        }, { rollInstance }))
 
         const stats = boxPlotStats(hpLosses(results))
         const maxHp = instantiateActor(defaultPlayer).health.max
@@ -150,10 +150,10 @@ describe('Expected Difficulty: Level 1', () => {
     })
 
     test('rounds to resolve a fight, split by outcome', () => {
-        const results = iterate(ITERATIONS, () => simulateFight({
+        const results = iterate(ITERATIONS, (_seed, rollInstance) => simulateFight({
             player: [defaultPlayer],
             enemy: [ostracizedGoblin],
-        }))
+        }, { rollInstance }))
 
         const roundsByOutcome = (winner: 'player' | 'enemy' | 'draw') =>
             results.filter(r => r.winner === winner).map(r => r.rounds)
@@ -179,14 +179,14 @@ describe('Expected Difficulty: Level 1', () => {
 
     // only interesting if I provide feats that make help with fighting multiple people
     test.skip('hp loss is higher fighting two goblins than one', () => {
-        const oneGoblin = iterate(ITERATIONS, () => simulateFight({
+        const oneGoblin = iterate(ITERATIONS, (_seed, rollInstance) => simulateFight({
             player: [defaultPlayer],
             enemy: [ostracizedGoblin],
-        }))
-        const twoGoblins = iterate(ITERATIONS, () => simulateFight({
+        }, { rollInstance }))
+        const twoGoblins = iterate(ITERATIONS, (_seed, rollInstance) => simulateFight({
             player: [defaultPlayer],
             enemy: [ostracizedGoblin, ostracizedGoblin],
-        }))
+        }, { rollInstance }))
 
         const statsOne = boxPlotStats(hpLosses(oneGoblin))
         const statsTwo = boxPlotStats(hpLosses(twoGoblins))

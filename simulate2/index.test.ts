@@ -2,9 +2,9 @@ import ignite from '../ability-sheet2/abilities2/ignite.ts'
 import { addAbility } from '../ability-sheet2/index.ts'
 import { createDefaultOwner } from '../actor2/index.ts'
 import { fakeCharacterLevels } from '../character-sheet'
-import roll, { clearSeed, createRoll, setSeed } from '../roll/index.ts'
+import { createRoll } from '../roll/index.ts'
 import { simulateFight } from './index.ts'
-import { describe, test, assert, afterEach } from 'vitest'
+import { describe, test, assert, vi } from 'vitest'
 
 describe('simulateFight', () => {
     test('', () => {
@@ -58,21 +58,8 @@ describe('Integration: TimeTravel', () => {
 })
 
 describe('Full integration with rollInstance', () => {
-    afterEach(() => {
-        clearSeed()
-    })
-    test('control', () => {
-        setSeed(0)
-        const r = roll(1000)
-        setSeed(0)
-        const r2 = roll(1000)
-        assert.equal(r, r2)
-    })
-    test('Does not advance global seed when provided ri', () => {
-        // did the roll advance
-        setSeed(0)
-        const ROLL = roll(1000)
-        setSeed(0)
+    test('never falls back to Math.random when provided a full rollInstance', () => {
+        const spy = vi.spyOn(Math, 'random')
 
         const o1 = createDefaultOwner({
             cs: {
@@ -94,7 +81,7 @@ describe('Full integration with rollInstance', () => {
             },
         })
 
-        const sim = simulateFight(
+        simulateFight(
             {
                 player: [o2],
                 enemy: [o1],
@@ -104,9 +91,8 @@ describe('Full integration with rollInstance', () => {
         }
         )
 
-
-        const ROLL2 = roll(1000)
-        // if this is not true, then something advanced the global rng and rollInstance was not forwarded to all rolls
-        assert.equal(ROLL, ROLL2)
+        // if this fires, something fell through to the global rng instead of using rollInstance
+        assert.isFalse(spy.mock.calls.length > 0)
+        spy.mockRestore()
     })
 })

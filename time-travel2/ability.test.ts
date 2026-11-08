@@ -4,21 +4,18 @@ import ignite from '../ability-sheet2/abilities2/ignite'
 import { createDefaultOwner, instantiateActor } from '../actor2'
 import { applyResolutions } from '../actor2/act'
 import ability from './ability.ts'
-import { describe, test, assert, afterEach } from 'vitest'
+import { describe, test, assert } from 'vitest'
 import snapshotActor from './snapshot/actor.ts'
-import { clearSeed, setSeed } from '../roll/index.ts'
+import { createRoll } from '../roll/index.ts'
 
 describe('Integration: works with ignite', () => {
-    afterEach(() => {
-        clearSeed()
-    })
     test('Can create multiple logs per singular ability', () => {
-        setSeed(0)
+        const ri = createRoll(0)
         const owner = createDefaultOwner()
         addAbility(owner, ignite)
 
-        const caster = instantiateActor(owner)
-        const receiver = instantiateActor(createDefaultOwner({ cs: { dex: -999 } }))
+        const caster = instantiateActor(owner, false, { rollInstance: ri })
+        const receiver = instantiateActor(createDefaultOwner({ cs: { dex: -999 } }), false, { rollInstance: ri })
 
         const ign = owner.as.standard.items[getAbilityKey(ignite)]
         assert.exists(ign)
@@ -27,6 +24,7 @@ describe('Integration: works with ignite', () => {
             { enemy: [receiver], ally: [caster] },
             caster,
             ign!.factory(),
+            { rollInstance: ri },
         )
         assert.equal(resolutions.length, 2)
 

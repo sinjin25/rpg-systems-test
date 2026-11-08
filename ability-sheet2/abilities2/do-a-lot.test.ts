@@ -1,25 +1,22 @@
 import { createDefaultOwner, instantiateActor } from '../../actor2'
 import { resolveAbility } from './index.ts'
 import doALot from './do-a-lot.ts'
-import { describe, test, assert, afterEach } from 'vitest'
-import { clearSeed, setSeed } from '../../roll/index.ts'
+import { describe, test, assert } from 'vitest'
+import { createRoll } from '../../roll/index.ts'
 
 describe('resolveAbility: doALot', () => {
-    afterEach(() => {
-        clearSeed()
-    })
-
     test('resolves every step against its own targets', () => {
-        setSeed(0)
-        const caster = instantiateActor(createDefaultOwner())
-        const ally = instantiateActor(createDefaultOwner())
-        const e1 = instantiateActor(createDefaultOwner())
-        const e2 = instantiateActor(createDefaultOwner())
+        const ri = createRoll(0)
+        const caster = instantiateActor(createDefaultOwner(), false, { rollInstance: ri })
+        const ally = instantiateActor(createDefaultOwner(), false, { rollInstance: ri })
+        const e1 = instantiateActor(createDefaultOwner(), false, { rollInstance: ri })
+        const e2 = instantiateActor(createDefaultOwner(), false, { rollInstance: ri })
 
         const resolutions = resolveAbility(
             { enemy: [e1, e2], ally: [caster, ally] },
             caster,
             doALot.factory(),
+            { rollInstance: ri },
         )
 
         // selfTarget: 1 ally  x 1 payload = 1

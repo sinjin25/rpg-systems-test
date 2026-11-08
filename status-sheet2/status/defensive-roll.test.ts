@@ -2,31 +2,21 @@ import { describe, test, expect } from 'vitest'
 import defensiveRoll from './defensive-roll'
 import { createDefaultOwner } from '../../actor2'
 import { findNodeMatching } from '../../log2'
-import { setSeed, clearSeed } from '../../roll'
+import { createRoll } from '../../roll'
 
 // LAYER: defensive-roll (a status definition). Its damage-taken-status-mod producer returns a node whose
 // total is -(1d4) - a frozen die (resolved once) negated so it REDUCES incoming damage.
 
 describe('defensive-roll', () => {
     test('registers a negated 1d4 in [-4, -1]', () => {
-        setSeed(42)
-        try {
-            const node = defensiveRoll.broadContexts['damage-taken-status-mod']!(createDefaultOwner({}), {})!
-            expect(node.total()).toBeGreaterThanOrEqual(-4)
-            expect(node.total()).toBeLessThanOrEqual(-1)
-        } finally {
-            clearSeed()
-        }
+        const node = defensiveRoll.broadContexts['damage-taken-status-mod']!(createDefaultOwner({}), { rollInstance: createRoll(42) })!
+        expect(node.total()).toBeGreaterThanOrEqual(-4)
+        expect(node.total()).toBeLessThanOrEqual(-1)
     })
 
     test('amount is stable across reads', () => {
-        setSeed(7)
-        try {
-            const node = defensiveRoll.broadContexts['damage-taken-status-mod']!(createDefaultOwner({}), {})!
-            const first = node.total()
-            expect(node.total()).toBe(first)
-        } finally {
-            clearSeed()
-        }
+        const node = defensiveRoll.broadContexts['damage-taken-status-mod']!(createDefaultOwner({}), { rollInstance: createRoll(7) })!
+        const first = node.total()
+        expect(node.total()).toBe(first)
     })
 })

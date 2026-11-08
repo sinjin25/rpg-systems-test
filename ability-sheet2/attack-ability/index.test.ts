@@ -3,7 +3,8 @@ import { createDefaultOwner, instantiateActor } from '../../actor2'
 import { Actor2 } from '../../actor2/types'
 import newModNode, { findNodeMatching, leaf, ModNode, sumFunc } from '../../log2'
 import rollTree from '../../log2/roll'
-import { setSeed, clearSeed } from '../../roll'
+import { createRoll } from '../../roll'
+import { RollInstance } from '../../roll/types'
 import { BaseEquipment } from '../../equipment-sheet2/types'
 import { iterate } from '../../simulate/util/iterate'
 import { Participants } from '../abilities2'
@@ -21,34 +22,34 @@ const testWeapon = (displayName: string): BaseEquipment => ({
     acceptableSlots: SLOT_TYPE.weapon,
     tags: ['melee'],
     broadContexts: {
-        damage: (o) => newModNode(displayName, [rollTree({ diceSides: 6 })(o, {})], sumFunc),
+        damage: (o, opts) => newModNode(displayName, [rollTree({ diceSides: 6 })(o, opts)], sumFunc),
         'crit-multiplier': () => leaf(displayName, 2),
     },
 })
 
-const armedActor = (): Actor2 =>
+const armedActor = (rollInstance: RollInstance): Actor2 =>
     instantiateActor(createDefaultOwner({
         cs: { str: 10, dex: 10 },
         es: { mainhand: testWeapon('mainhand-weapon') },
-    }))
+    }), false, { rollInstance })
 
 // AC 10 (base + 0 dex, weapon contributes no AC), so an ordinary d20 decides hit/threat
-const targetActor = (): Actor2 =>
+const targetActor = (rollInstance: RollInstance): Actor2 =>
     instantiateActor(createDefaultOwner({
         cs: { str: 10, dex: 10 },
         es: {
             mainhand: testWeapon('target-weapon'),
             armor: armors.breastplate
         },
-    }))
+    }), false, { rollInstance })
 
 // dumped dex tanks the AC so any threat confirms - isolates the confirmed-crit branch
 // (mirrors attack.test.ts using a TRIVIAL_AC to reach crits)
-const weakTarget = (): Actor2 =>
+const weakTarget = (rollInstance: RollInstance): Actor2 =>
     instantiateActor(createDefaultOwner({
         cs: { str: 10, dex: -999 },
         es: { mainhand: testWeapon('target-weapon') },
-    }))
+    }), false, { rollInstance })
 
 const rollOf = (node: ModNode) => {
     const child = findNodeMatching(node, /roll-total/)
@@ -70,9 +71,9 @@ const stampedPayload: AttackDiscreteTargetGroupPayload = {
 
 test.skip('SEED FINDER — rearm to locate seeds, then re-disable', () => {
     // outcome routing seeds (stampedPayload vs targetActor)
-    const routing = iterate(2000, (seed) => ({
+    const routing = iterate(2000, (seed, ri) => ({
         seed,
-        res: resolvePayload(armedActor(), targetActor(), stampedPayload),
+        res: resolvePayload(armedActor(ri), targetActor(ri), stampedPayload, undefined, { rollInstance: ri }),
     }))
     console.log('miss seed:', routing.find(x => x.res.result.hook === 'onMiss')?.seed)
     console.log('hit seed:', routing.find(x => x.res.result.hook === 'onHit')?.seed)
@@ -83,9 +84,9 @@ test.skip('SEED FINDER — rearm to locate seeds, then re-disable', () => {
         ...stampedPayload,
         augments: { threatResult: { override: () => leaf('wide-threat', 2) } },
     }
-    const crits = iterate(2000, (seed) => ({
+    const crits = iterate(2000, (seed, ri) => ({
         seed,
-        res: resolvePayload(armedActor(), weakTarget(), critForcing),
+        res: resolvePayload(armedActor(ri), weakTarget(ri), critForcing, undefined, { rollInstance: ri }),
     }))
     console.log('crit seed (critForcing+weakTarget):', crits.find(x => x.res.result.hook === 'onCrit')?.seed)
 
@@ -93,17 +94,17 @@ test.skip('SEED FINDER — rearm to locate seeds, then re-disable', () => {
         onHit: () => ({ damage: [leaf('only-hit', 3)] }),
         augments: { threatResult: { override: () => leaf('wide-threat', 2) } },
     }
-    const critsHitOnly = iterate(2000, (seed) => ({
+    const critsHitOnly = iterate(2000, (seed, ri) => ({
         seed,
-        res: resolvePayload(armedActor(), weakTarget(), hitOnly),
+        res: resolvePayload(armedActor(ri), weakTarget(ri), hitOnly, undefined, { rollInstance: ri }),
     }))
     console.log('crit seed (hitOnly fallthrough):', critsHitOnly.find(x => x.res.result.hook === 'onCrit')?.seed)
 
     // misc seeds (targetActor)
     const base: AttackDiscreteTargetGroupPayload = { onMiss: () => ({}), onHit: () => ({}) }
-    const misc = iterate(2000, (seed) => ({
+    const misc = iterate(2000, (seed, ri) => ({
         seed,
-        res: resolvePayload(armedActor(), targetActor(), base),
+        res: resolvePayload(armedActor(ri), targetActor(ri), base, undefined, { rollInstance: ri }),
     }))
     console.log('hit seed (no hooks):', misc.find(x => x.res.result.hook === 'onHit')?.seed)
     console.log('hit seed (roll < 20):', misc.find(x =>
@@ -119,9 +120,9 @@ test.skip('SEED FINDER — rearm to locate seeds, then re-disable', () => {
         onHit: () => ({}), onThreaten: () => ({}), onCrit: () => ({}),
         augments: { threatResult: { override: (s) => leaf('src-threat', s.owner.cs.str) } },
     }
-    const overrideMisc = iterate(2000, (seed) => ({
+    const overrideMisc = iterate(2000, (seed, ri) => ({
         seed,
-        res: resolvePayload(armedActor(), targetActor(), withSrcOverride),
+        res: resolvePayload(armedActor(ri), targetActor(ri), withSrcOverride, undefined, { rollInstance: ri }),
     }))
     console.log('hit seed (state-aware override):', overrideMisc.find(x => x.res.result.hook !== 'onMiss')?.seed)
 
@@ -130,9 +131,9 @@ test.skip('SEED FINDER — rearm to locate seeds, then re-disable', () => {
         onHit: () => ({}),
         augments: { threatResult: { override: () => leaf('wide-threat', 2) } },
     }
-    const noCritSeeds = iterate(2000, (seed) => ({
+    const noCritSeeds = iterate(2000, (seed, ri) => ({
         seed,
-        res: resolvePayload(armedActor(), weakTarget(), critForcingNoCrit),
+        res: resolvePayload(armedActor(ri), weakTarget(ri), critForcingNoCrit, undefined, { rollInstance: ri }),
     }))
     console.log('crit seed (canCrit:false):', noCritSeeds.find(x => x.res.result.hook === 'onCrit')?.seed)
 })
@@ -142,9 +143,8 @@ test.skip('SEED FINDER — rearm to locate seeds, then re-disable', () => {
 
 describe('resolvePayload outcome routing', () => {
     test('a miss fires onMiss, reports defenderSuccess, and carries no weapon damage', () => {
-        setSeed(0)
-        const { defenderSuccess, result } = resolvePayload(armedActor(), targetActor(), stampedPayload)
-        clearSeed()
+        const ri = createRoll(0)
+        const { defenderSuccess, result } = resolvePayload(armedActor(ri), targetActor(ri), stampedPayload, undefined, { rollInstance: ri })
 
         assert.equal(result.hook, 'onMiss')
         assert.isTrue(defenderSuccess)
@@ -154,9 +154,8 @@ describe('resolvePayload outcome routing', () => {
     })
 
     test('a hit fires onHit; weapon damage comes from the SAR, hook damage stacks on top', () => {
-        setSeed(1)
-        const { defenderSuccess, result } = resolvePayload(armedActor(), targetActor(), stampedPayload)
-        clearSeed()
+        const ri = createRoll(1)
+        const { defenderSuccess, result } = resolvePayload(armedActor(ri), targetActor(ri), stampedPayload, undefined, { rollInstance: ri })
 
         assert.equal(result.hook, 'onHit')
         assert.isFalse(defenderSuccess)
@@ -166,9 +165,8 @@ describe('resolvePayload outcome routing', () => {
     })
 
     test('a threat that does not confirm fires onThreaten', () => {
-        setSeed(73)
-        const { result } = resolvePayload(armedActor(), targetActor(), stampedPayload)
-        clearSeed()
+        const ri = createRoll(73)
+        const { result } = resolvePayload(armedActor(ri), targetActor(ri), stampedPayload, undefined, { rollInstance: ri })
 
         assert.equal(result.hook, 'onThreaten')
         assert.exists(result.sar.critConfirmResult)
@@ -181,9 +179,8 @@ describe('resolvePayload outcome routing', () => {
             ...stampedPayload,
             augments: { threatResult: { override: () => leaf('wide-threat', 2) } },
         }
-        setSeed(0)
-        const { result } = resolvePayload(armedActor(), weakTarget(), critForcing)
-        clearSeed()
+        const ri = createRoll(0)
+        const { result } = resolvePayload(armedActor(ri), weakTarget(ri), critForcing, undefined, { rollInstance: ri })
 
         assert.equal(result.hook, 'onCrit')
         assert.exists(result.sar.critDamageResult)
@@ -200,18 +197,16 @@ describe('hook fallthrough', () => {
             onHit: () => ({ damage: [leaf('only-hit', 3)] }),
             augments: { threatResult: { override: () => leaf('wide-threat', 2) } },
         }
-        setSeed(0)
-        const { result } = resolvePayload(armedActor(), weakTarget(), hitOnly)
-        clearSeed()
+        const ri = createRoll(0)
+        const { result } = resolvePayload(armedActor(ri), weakTarget(ri), hitOnly, undefined, { rollInstance: ri })
 
         assert.equal(result.hook, 'onCrit')
         assert.deepEqual(names(result.damage), ['only-hit'])
     })
 
     test('a missing hook is a no-op rather than a crash', () => {
-        setSeed(1)
-        const { result } = resolvePayload(armedActor(), targetActor(), {})
-        clearSeed()
+        const ri = createRoll(1)
+        const { result } = resolvePayload(armedActor(ri), targetActor(ri), {}, undefined, { rollInstance: ri })
 
         assert.equal(result.hook, 'onHit')
         assert.deepEqual(names(result.damage), [])
@@ -225,16 +220,14 @@ describe('augments', () => {
     test('a to-hit penalty augment turns an ordinary hit into a miss at the same seed', () => {
         const base: AttackDiscreteTargetGroupPayload = { onMiss: () => ({}), onHit: () => ({}) }
 
-        setSeed(1)
-        const hit = resolvePayload(armedActor(), targetActor(), base)
-        clearSeed()
+        const ri1 = createRoll(1)
+        const hit = resolvePayload(armedActor(ri1), targetActor(ri1), base, undefined, { rollInstance: ri1 })
 
-        setSeed(1)
-        const penalized = resolvePayload(armedActor(), targetActor(), {
+        const ri2 = createRoll(1)
+        const penalized = resolvePayload(armedActor(ri2), targetActor(ri2), {
             ...base,
             augments: { attackResult: { mod: leaf('big-penalty', -100) } },
-        })
-        clearSeed()
+        }, undefined, { rollInstance: ri2 })
 
         assert.notEqual(hit.result.hook, 'onMiss')
         assert.isTrue(rollOf(hit.result.sar.attackResult!) < 20)
@@ -254,25 +247,22 @@ describe('augments', () => {
         const plain: AttackDiscreteTargetGroupPayload = { onMiss: () => ({}), onHit: () => ({}) }
 
         // seed 0: plain attack misses a full-life target (roll > 1)
-        setSeed(0)
-        const plainMiss = resolvePayload(armedActor(), targetActor(), plain)
-        clearSeed()
+        const ri1 = createRoll(0)
+        const plainMiss = resolvePayload(armedActor(ri1), targetActor(ri1), plain, undefined, { rollInstance: ri1 })
         assert.equal(plainMiss.result.hook, 'onMiss')
         assert.isTrue(rollOf(plainMiss.result.sar.attackResult!) > 1)
 
         // same seed, full-life target -> +100 applies -> now a hit
-        setSeed(0)
-        const full = resolvePayload(armedActor(), targetActor(), vital)
-        clearSeed()
+        const ri2 = createRoll(0)
+        const full = resolvePayload(armedActor(ri2), targetActor(ri2), vital, undefined, { rollInstance: ri2 })
         assert.notEqual(full.result.hook, 'onMiss')
 
         // same seed, a damaged target -> predicate false, +0 -> still a miss
-        setSeed(0)
-        const source = armedActor()
-        const damagedTarget = targetActor()
+        const ri3 = createRoll(0)
+        const source = armedActor(ri3)
+        const damagedTarget = targetActor(ri3)
         applyDamage(damagedTarget.health, 1) // no longer full life
-        const damaged = resolvePayload(source, damagedTarget, vital)
-        clearSeed()
+        const damaged = resolvePayload(source, damagedTarget, vital, undefined, { rollInstance: ri3 })
         assert.equal(damaged.result.hook, 'onMiss')
     })
 
@@ -283,9 +273,8 @@ describe('augments', () => {
             onCrit: () => ({}),
             augments: { threatResult: { override: (s) => leaf('src-threat', s.owner.cs.str) } },
         }
-        setSeed(1)
-        const hit = resolvePayload(armedActor(), targetActor(), payload)
-        clearSeed()
+        const ri = createRoll(1)
+        const hit = resolvePayload(armedActor(ri), targetActor(ri), payload, undefined, { rollInstance: ri })
 
         assert.notEqual(hit.result.hook, 'onMiss')
         assert.equal(hit.result.sar.threatResult?.total(), 10)
@@ -298,8 +287,9 @@ describe('chainOnly', () => {
     // firstMod skews the first payload's to-hit so its outcome is forced (nat-1/nat-20 aside)
     const runChain = (firstMod: number, seed: number) => {
         let secondTriggered = false
-        const source = armedActor()
-        const p: Participants = { ally: [source], enemy: [targetActor()] }
+        const ri = createRoll(seed)
+        const source = armedActor(ri)
+        const p: Participants = { ally: [source], enemy: [targetActor(ri)] }
         const step: AttackDiscreteTargetGroup = {
             tp: { filters: [], simple: 'first', team: 'enemy' },
             payload: [
@@ -315,9 +305,7 @@ describe('chainOnly', () => {
                 },
             ],
         }
-        setSeed(seed)
-        const res = resolveStep(p, source, step)
-        clearSeed()
+        const res = resolveStep(p, source, step, { rollInstance: ri })
         return { firstHook: res[0].hook, secondTriggered, count: res.length }
     }
 
@@ -347,11 +335,10 @@ describe('self channel', () => {
     }
 
     test('a hit routes the self payload to the source and damages it', () => {
-        setSeed(1)
-        const source = armedActor()
-        const target = targetActor()
-        const { result } = resolvePayload(source, target, recoilPayload)
-        clearSeed()
+        const ri = createRoll(1)
+        const source = armedActor(ri)
+        const target = targetActor(ri)
+        const { result } = resolvePayload(source, target, recoilPayload, undefined, { rollInstance: ri })
 
         assert.equal(result.hook, 'onHit')
         assert.exists(result.self?.damage)
@@ -361,11 +348,10 @@ describe('self channel', () => {
     })
 
     test('a miss produces no self payload and leaves the source untouched', () => {
-        setSeed(0)
-        const source = armedActor()
-        const target = targetActor()
-        const { result } = resolvePayload(source, target, recoilPayload)
-        clearSeed()
+        const ri = createRoll(0)
+        const source = armedActor(ri)
+        const target = targetActor(ri)
+        const { result } = resolvePayload(source, target, recoilPayload, undefined, { rollInstance: ri })
 
         assert.equal(result.hook, 'onMiss')
         assert.isUndefined(result.self)
@@ -392,21 +378,18 @@ describe('resolution opts', () => {
     })
 
     test('mustCrit:true forces a confirmed crit on any seed', () => {
-        setSeed(0)
-        const { result } = resolvePayload(armedActor(), targetActor(), { onCrit: () => ({}) }, { mustCrit: true })
-        clearSeed()
+        const ri = createRoll(0)
+        const { result } = resolvePayload(armedActor(ri), targetActor(ri), { onCrit: () => ({}) }, { mustCrit: true }, { rollInstance: ri })
         assert.equal(result.hook, 'onCrit')
         assert.exists(result.sar.critDamageResult)
     })
 
     test('canMiss:false makes a would-be miss land', () => {
-        setSeed(0)
-        const miss = resolvePayload(armedActor(), targetActor(), {})
-        clearSeed()
+        const ri1 = createRoll(0)
+        const miss = resolvePayload(armedActor(ri1), targetActor(ri1), {}, undefined, { rollInstance: ri1 })
 
-        setSeed(0)
-        const forced = resolvePayload(armedActor(), targetActor(), {}, { canMiss: false })
-        clearSeed()
+        const ri2 = createRoll(0)
+        const forced = resolvePayload(armedActor(ri2), targetActor(ri2), {}, { canMiss: false }, { rollInstance: ri2 })
 
         assert.equal(miss.result.hook, 'onMiss')
         assert.notEqual(forced.result.hook, 'onMiss')
@@ -418,36 +401,33 @@ describe('resolution opts', () => {
             augments: { threatResult: { override: () => leaf('wide-threat', 2) } },
         }
 
-        setSeed(0)
-        const crit = resolvePayload(armedActor(), weakTarget(), critForcing)
-        clearSeed()
+        const ri1 = createRoll(0)
+        const crit = resolvePayload(armedActor(ri1), weakTarget(ri1), critForcing, undefined, { rollInstance: ri1 })
 
-        setSeed(0)
-        const noCrit = resolvePayload(armedActor(), weakTarget(), critForcing, { canCrit: false })
-        clearSeed()
+        const ri2 = createRoll(0)
+        const noCrit = resolvePayload(armedActor(ri2), weakTarget(ri2), critForcing, { canCrit: false }, { rollInstance: ri2 })
 
         assert.equal(crit.result.hook, 'onCrit')
         assert.equal(noCrit.result.hook, 'onHit')
     })
 
     test('opts on the payload flow through resolveStep to sarAgainstTarget', () => {
-        setSeed(0)
-        const missCheck = resolvePayload(armedActor(), targetActor(), {})
-        clearSeed()
+        const ri1 = createRoll(0)
+        const missCheck = resolvePayload(armedActor(ri1), targetActor(ri1), {}, undefined, { rollInstance: ri1 })
         assert.equal(missCheck.result.hook, 'onMiss')
 
         // same seed, but the payload declares canMiss:false - resolveStep must honour it
-        setSeed(0)
-        const source = armedActor()
+        const ri2 = createRoll(0)
+        const source = armedActor(ri2)
         const res = resolveStep(
-            { ally: [source], enemy: [targetActor()] },
+            { ally: [source], enemy: [targetActor(ri2)] },
             source,
             {
                 tp: { filters: [], simple: 'first', team: 'enemy' },
                 payload: [{ opts: { canMiss: false }, onHit: () => ({}) }],
             },
+            { rollInstance: ri2 },
         )
-        clearSeed()
 
         assert.equal(res[0]!.hook, 'onHit')
     })

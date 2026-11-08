@@ -7,7 +7,7 @@ import defensiveRoll from '../../status-sheet2/status/defensive-roll'
 import { makeWrapper } from '../../status-sheet2'
 import { inst } from '../../status-sheet2/testing'
 import { leaf, findNodeMatching } from '..'
-import roll, { setSeed, clearSeed, createRoll } from '../../roll'
+import { createRoll } from '../../roll'
 import modNodeToText from '../format'
 import { BaseEquipment } from '../../equipment-sheet2/types'
 import { SLOT_TYPE } from '../../equipment-sheet2/defaults'
@@ -51,19 +51,14 @@ describe('damage-taken (terminal)', () => {
     })
 
     test('A roll is stable across reads. Feats can reduce/increase', () => {
-        setSeed(42)
-        try {
-            const defender = createDefaultOwner({ ss: { 'Defensive Roll': [inst(defensiveRoll)] } })
-            const node = damageTaken({
-                node: leaf('incoming', 10),
-            })(defender)
-            const first = node.total()
-            expect(first).toBeGreaterThanOrEqual(6) // 10 - 4
-            expect(first).toBeLessThanOrEqual(9)    // 10 - 1
-            expect(node.total()).toBe(first)        // die frozen, not rerolled
-        } finally {
-            clearSeed()
-        }
+        const defender = createDefaultOwner({ ss: { 'Defensive Roll': [inst(defensiveRoll)] } })
+        const node = damageTaken({
+            node: leaf('incoming', 10),
+        })(defender, { rollInstance: createRoll(42) })
+        const first = node.total()
+        expect(first).toBeGreaterThanOrEqual(6) // 10 - 4
+        expect(first).toBeLessThanOrEqual(9)    // 10 - 1
+        expect(node.total()).toBe(first)        // die frozen, not rerolled
     })
 
     test('cross-actor: consumes the attacker\'s finished crit-damage tree', () => {
@@ -116,25 +111,5 @@ describe('Takes a rollInstance', () => {
         assert.equal(ri._totalRolls(), 1)
         expect(node.total()).toBeGreaterThanOrEqual(6) // 10 - 4
         expect(node.total()).toBeLessThanOrEqual(9)    // 10 - 1
-    })
-    test('If no ri passed, uses global rng', () => {
-        const defender = createDefaultOwner({ ss: { 'Defensive Roll': [inst(defensiveRoll)] } })
-        setSeed(0)
-        const r0 = roll(5)
-        setSeed(0)
-        const r1 = roll(5)
-        assert.equal(r0, r1)
-
-        setSeed(0)
-        const node = damageTaken({
-            // bypass needing additional rolls
-            // this means totalRolls can be guaranteed 1
-            node: leaf('incoming', 10),
-        })(defender, {})
-        const r2 = roll(5)
-        // damageTaken has rolled therefore r2 is not the first roll of seed1
-        assert.notEqual(r1, r2)
-
-        clearSeed()
     })
 })

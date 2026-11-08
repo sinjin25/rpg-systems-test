@@ -2,7 +2,7 @@ import { describe, test, assert } from 'vitest'
 import { createDefaultOwner, instantiateActor } from '../../actor2'
 import { act, actionIsAbility, actionIsAttackAbility, applyAttackResolutions, calculateAc, FinalStandardActionResult, outputRawSar, sarAgainstTarget } from '../../actor2/act'
 import { addAbility } from '../../ability-sheet2'
-import { setSeed, clearSeed } from '../../roll'
+import { createRoll } from '../../roll'
 import { resolveAttackAbility } from './index'
 import normalAttack from './normal-attack'
 import { iterate } from '../../simulate/util/iterate'
@@ -44,19 +44,20 @@ describe('normal attack (AttackAbility)', () => {
         const attackerA = instantiateActor(attacker)
         const AttackedA = instantiateActor(attacked)
 
-        // iterate re-seeds to `seed` before each call, so pass i drives both loops identically
-        iterate(LEN, () => {
+        // each loop hands the matching index the same freshly-seeded instance, so pass i drives both loops identically
+        iterate(LEN, (_seed, rollInstance) => {
             // raw standard action, resolved by hand
-            const sar = outputRawSar(attackerA)[0]!
+            const sar = outputRawSar(attackerA, { rollInstance })[0]!
             const final = sarAgainstTarget(sar, calculateAc(AttackedA.owner))
             attacks.push(summarize(final))
         })
-        iterate(LEN, () => {
+        iterate(LEN, (_seed, rollInstance) => {
             // the same attack, dispatched through the ability path
             const [res] = resolveAttackAbility(
                 { enemy: [AttackedA], ally: [attackerA] },
                 attackerA,
                 normalAttack.factory(),
+                { rollInstance },
             )
             attacksAsAbility.push(summarize(res!.sar))
         })
@@ -74,9 +75,9 @@ describe('normal attack (AttackAbility)', () => {
         // seed-fish a hit (a bare payload has no augment to force one), mirroring index.test.ts
         let applied = false
         for (let seed = 0; seed < 200 && !applied; seed++) {
-            setSeed(seed)
-            const caster = instantiateActor(createDefaultOwner())
-            const enemy = instantiateActor(createDefaultOwner())
+            const ri = createRoll(seed)
+            const caster = instantiateActor(createDefaultOwner(), false, { rollInstance: ri })
+            const enemy = instantiateActor(createDefaultOwner(), false, { rollInstance: ri })
             const enemyHpBefore = enemy.health.curr
             const casterHpBefore = caster.health.curr
 
@@ -84,6 +85,7 @@ describe('normal attack (AttackAbility)', () => {
                 { enemy: [enemy], ally: [caster] },
                 caster,
                 normalAttack.factory(),
+                { rollInstance: ri },
             )
             assert.equal(resolutions.length, 1)
             assert.equal(resolutions[0]!.target, enemy)
@@ -95,7 +97,6 @@ describe('normal attack (AttackAbility)', () => {
             assert.equal(caster.health.curr, casterHpBefore)
             applied = true
         }
-        clearSeed()
         assert.isTrue(applied, 'expected at least one hitting seed in [0,200)')
     })
 })

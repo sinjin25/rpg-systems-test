@@ -8,24 +8,11 @@ const mulberry32 = (seed: number) => () => {
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296
 }
 
-let rng: () => number = Math.random
-
-// just used to make sure we know if this has changed for tests
-export const getGlobalRng = () => rng
-// same seed => identical sequence of rolls; use for reproducible sims and tests
-export const setSeed = (seed: number) => {
-    rng = mulberry32(seed)
-}
-
-export const clearSeed = () => {
-    rng = Math.random
-}
-
 const rollFrom = (rng: () => number) => (diceSides: number) => {
     return Math.floor(rng() * diceSides) + 1
 }
 
-const roll = rollFrom(() => rng())
+const roll = rollFrom(Math.random)
 
 export default roll
 

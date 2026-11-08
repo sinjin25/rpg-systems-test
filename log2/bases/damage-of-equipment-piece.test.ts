@@ -1,7 +1,7 @@
 import { describe, test, expect, assert } from 'vitest'
 import damageOfEquipmentPiece from './damage-of-equipment-piece'
 import { shortsword, SLOT_TYPE } from '../../equipment-sheet2/defaults'
-import { setSeed, clearSeed } from '../../roll'
+import { createRoll } from '../../roll'
 import { BaseEquipment } from '../../equipment-sheet2/types'
 import newModNode, { findNodeMatching, leaf } from '..'
 import { createDefaultOwner } from '../../actor2'
@@ -39,15 +39,10 @@ describe('damage-of-equipment-piece', () => {
     })
 
     test('Stays stable across reads', () => {
-        setSeed(42)
-        try {
-            const node = damageOfEquipmentPiece(weapon(8))(owner)
-            const first = node.total()
-            expect(first).toBeGreaterThanOrEqual(1)
-            expect(first).toBeLessThanOrEqual(8)
-            expect(node.total()).toBe(first)
-        } finally {
-            clearSeed()
-        }
+        const node = damageOfEquipmentPiece(weapon(8))(owner, { rollInstance: createRoll(42) })
+        const first = node.total()
+        expect(first).toBeGreaterThanOrEqual(1)
+        expect(first).toBeLessThanOrEqual(8)
+        expect(node.total()).toBe(first)
     })
 })

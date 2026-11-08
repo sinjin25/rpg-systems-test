@@ -88,9 +88,9 @@ describe('Integration: attack', () => {
         })
 
         const results = new Set<number>()
-        iterate(200, (i) => {
-            const attackMod = attack(owner)
-            const attackRoll = rollTree({ diceSides: 20, diceNumber: 1, member: 'attack-sides-mod' })(owner, {})
+        iterate(200, (i, rollInstance) => {
+            const attackMod = attack(owner, { rollInstance })
+            const attackRoll = rollTree({ diceSides: 20, diceNumber: 1, member: 'attack-sides-mod' })(owner, { rollInstance })
             const tree = newModNode(
                 'attack',
                 [attackMod, attackRoll],

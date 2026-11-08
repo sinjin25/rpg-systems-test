@@ -4,7 +4,7 @@ import { DiscreteTargetGroup } from './types.ts'
 import { ignite } from '../../status-sheet2/index.ts'
 import { createDefaultOwner, instantiateActor } from '../../actor2/index.ts'
 import { leaf } from '../../log2/index.ts'
-import { clearSeed, setSeed } from '../../roll/index.ts'
+import { createRoll } from '../../roll/index.ts'
 
 describe('?:chainOnly DiscreteTargetGroupPayload', () => {
     let shouldProceed
@@ -44,19 +44,18 @@ describe('?:chainOnly DiscreteTargetGroupPayload', () => {
         ]
     }
     afterEach(() => {
-        clearSeed()
         shouldProceed = undefined
         hasTriggered = undefined
     })
     test('Chains on success', () => {
-        setSeed(2)
+        const ri = createRoll(2)
         const alwaysFail = createDefaultOwner({
             cs: { dex: -999 }
         })
 
         const caster = createDefaultOwner()
-        const alwaysFailA = instantiateActor(alwaysFail)
-        const casterA = instantiateActor(caster)
+        const alwaysFailA = instantiateActor(alwaysFail, false, { rollInstance: ri })
+        const casterA = instantiateActor(caster, false, { rollInstance: ri })
 
         assert.isUndefined(shouldProceed)
         assert.isUndefined(hasTriggered)
@@ -64,20 +63,20 @@ describe('?:chainOnly DiscreteTargetGroupPayload', () => {
         const result = resolveStep({
             ally: [casterA],
             enemy: [alwaysFailA],
-        }, casterA, chainPayload)
+        }, casterA, chainPayload, { rollInstance: ri })
 
         assert.isTrue(shouldProceed)
         assert.isTrue(hasTriggered)
     })
     test('Stops further payload resolution on save succeed', () => {
-        setSeed(3)
+        const ri = createRoll(3)
         const alwaysPass = createDefaultOwner({
             cs: { dex: 999 }
         })
 
         const caster = createDefaultOwner()
-        const alwaysPassA = instantiateActor(alwaysPass)
-        const casterA = instantiateActor(caster)
+        const alwaysPassA = instantiateActor(alwaysPass, false, { rollInstance: ri })
+        const casterA = instantiateActor(caster, false, { rollInstance: ri })
 
         assert.isUndefined(shouldProceed)
         assert.isUndefined(hasTriggered)
@@ -85,7 +84,7 @@ describe('?:chainOnly DiscreteTargetGroupPayload', () => {
         const result = resolveStep({
             ally: [casterA],
             enemy: [alwaysPassA],
-        }, casterA, chainPayload)
+        }, casterA, chainPayload, { rollInstance: ri })
 
         assert.isFalse(shouldProceed)
         console.log('hasTriggered', hasTriggered)

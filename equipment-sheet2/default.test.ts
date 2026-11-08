@@ -46,8 +46,8 @@ describe('Weapons roll fresh each tree, nodes are steady per tree', () => {
             },
         })
         const final = new Set<number>()
-        iterate(30, () => {
-            const d = damage(owner)
+        iterate(30, (_seed, rollInstance) => {
+            const d = damage(owner, { rollInstance })
             final.add(d.total())
 
             assert.equal(d.total(), d.total())

@@ -19,6 +19,7 @@ import { FinalStandardActionResult } from './types'
 import rollTree from '../../log2/roll'
 import { SLOT_TYPE } from '../../equipment-sheet2/defaults'
 import { createRoll } from '../../roll'
+import { RollInstance } from '../../roll/types'
 
 // --- fixtures -------------------------------------------------------------
 
@@ -62,11 +63,11 @@ const testActor = (es?: OwnerMaximal['es']): Actor2 => instantiateActor(testOwne
 // Nothing about the seed is hardcoded, so changing the PRNG - or changing how many dice a
 // tree consumes - just moves which seed answers, and the test still passes.
 const findRun = <T>(
-    build: (seed: number) => T,
+    build: (rollInstance: RollInstance) => T,
     pred: (result: T) => boolean,
     iterations = 400,
 ): T => {
-    const hit = iterate(iterations, build).find(pred)
+    const hit = iterate(iterations, (_seed, rollInstance) => build(rollInstance)).find(pred)
     if (!hit) throw Error(`No seed in [0, ${iterations}) produced a matching run`)
     return hit
 }
@@ -98,9 +99,9 @@ const shapeOf = (result: FinalStandardActionResult) => {
 const keysOf = (result: FinalStandardActionResult) => Object.keys(result).sort()
 
 // builds a whole SAR against a fresh owner, then resolves it against `targetAc`
-const resolveAgainst = (targetAc: number) => (): FinalStandardActionResult => {
+const resolveAgainst = (targetAc: number) => (rollInstance: RollInstance): FinalStandardActionResult => {
     const owner = testOwner()
-    const sar = calculateSAR({ owner, relevantSlot: owner.es.mainhand! })
+    const sar = calculateSAR({ owner, relevantSlot: owner.es.mainhand!, rollInstance })
     return sarAgainstTarget(sar, ac(targetAc))
 }
 
@@ -123,9 +124,9 @@ describe('calculateAttack', () => {
     })
 
     test('exposes the raw roll as a direct child named "roll"', () => {
-        const rolls = iterate(200, () => {
+        const rolls = iterate(200, (_seed, rollInstance) => {
             const owner = testOwner()
-            return rollOf(calculateAttack(owner, { relevantSlot: owner.es.mainhand! }))
+            return rollOf(calculateAttack(owner, { relevantSlot: owner.es.mainhand!, rollInstance }))
         })
 
         assert.isTrue(rolls.every(r => Number.isInteger(r) && r >= 1 && r <= 20))
@@ -148,9 +149,9 @@ describe('calculateCritConfirm', () => {
     })
 
     test('exposes the raw roll as a direct child named "roll"', () => {
-        const rolls = iterate(200, () => {
+        const rolls = iterate(200, (_seed, rollInstance) => {
             const owner = testOwner()
-            return rollOf(calculateCritConfirm(owner, { relevantSlot: owner.es.mainhand! }))
+            return rollOf(calculateCritConfirm(owner, { relevantSlot: owner.es.mainhand!, rollInstance }))
         })
 
         assert.isTrue(rolls.every(r => Number.isInteger(r) && r >= 1 && r <= 20))
@@ -172,8 +173,8 @@ describe('calculateCritConfirm', () => {
 
 
 
-        const rolls = iterate(100, (seed) => {
-            return [seed, calculateCritConfirm(owner, { relevantSlot: owner.es.mainhand, rollInstance: createRoll(seed) })]
+        const rolls = iterate(100, (seed, rollInstance) => {
+            return [seed, calculateCritConfirm(owner, { relevantSlot: owner.es.mainhand, rollInstance })]
         })
 
         // @ts-expect-error
@@ -208,9 +209,9 @@ describe('calculateCritConfirm', () => {
 })
 
 describe('attack hit resolution', () => {
-    const anAttack = () => {
+    const anAttack = (rollInstance: RollInstance) => {
         const owner = testOwner()
-        return calculateAttack(owner, { relevantSlot: owner.es.mainhand! })
+        return calculateAttack(owner, { relevantSlot: owner.es.mainhand!, rollInstance })
     }
 
     test('hits when the attack total meets the target AC', () => {
@@ -233,9 +234,9 @@ describe('attack hit resolution', () => {
         assert.isFalse(hitDidConfirm(attack, ac(attack.total())))
     })
 
-    const aWidenedAttack = () => {
+    const aWidenedAttack = (rollInstance: RollInstance) => {
         const owner = widenedOwner()
-        return calculateAttack(owner, { relevantSlot: owner.es.mainhand! })
+        return calculateAttack(owner, { relevantSlot: owner.es.mainhand!, rollInstance })
     }
 
     test('a natural max face on a widened die counts as a natural 20', () => {
@@ -250,9 +251,9 @@ describe('attack hit resolution', () => {
 })
 
 describe('crit confirmation', () => {
-    const aConfirm = () => {
+    const aConfirm = (rollInstance: RollInstance) => {
         const owner = testOwner()
-        return calculateCritConfirm(owner, { relevantSlot: owner.es.mainhand! })
+        return calculateCritConfirm(owner, { relevantSlot: owner.es.mainhand!, rollInstance })
     }
 
     test('confirms when the confirm total meets the target AC', () => {
@@ -275,9 +276,9 @@ describe('crit confirmation', () => {
         assert.isFalse(critDidConfirm(confirm, ac(confirm.total())))
     })
 
-    const aWidenedConfirm = () => {
+    const aWidenedConfirm = (rollInstance: RollInstance) => {
         const owner = widenedOwner()
-        return calculateCritConfirm(owner, { relevantSlot: owner.es.mainhand! })
+        return calculateCritConfirm(owner, { relevantSlot: owner.es.mainhand!, rollInstance })
     }
 
     test('a natural max face on a widened confirm die always confirms', () => {
@@ -395,7 +396,7 @@ describe('outputRawSar', () => {
 })
 
 describe('outputFinalSar', () => {
-    const dualWieldRun = () => {
+    const dualWieldRun = (rollInstance: RollInstance) => {
         const mainhand = testWeapon('mainhand-weapon')
         const offhand = testWeapon('offhand-weapon')
         const attacker = testActor({ mainhand, offhand })
@@ -404,7 +405,7 @@ describe('outputFinalSar', () => {
         return {
             mainhand,
             offhand,
-            final: outputFinalSar(outputRawSar(attacker), target),
+            final: outputFinalSar(outputRawSar(attacker, { rollInstance }), target),
         }
     }
 
@@ -419,7 +420,7 @@ describe('outputFinalSar', () => {
     })
 
     test('preserves the relevantSlot of each SAR through resolution', () => {
-        const { mainhand, offhand, final } = dualWieldRun()
+        const { mainhand, offhand, final } = dualWieldRun(createRoll())
 
         assert.equal(final.length, 2)
         assert.equal(final[0].relevantSlot, mainhand)

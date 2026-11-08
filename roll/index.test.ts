@@ -1,5 +1,5 @@
-import roll, { setSeed, clearSeed, createRoll } from './index.ts'
-import { describe, test, assert, expect, afterEach } from 'vitest'
+import roll, { createRoll } from './index.ts'
+import { describe, test, assert, expect } from 'vitest'
 
 describe('roll', () => {
     test('produces a number', () => {
@@ -7,59 +7,6 @@ describe('roll', () => {
             typeof roll(10),
             'number'
         )
-    })
-})
-
-describe('seeded rolls', () => {
-    // keep seeding from leaking into the statistical tests below
-    afterEach(() => clearSeed())
-
-    test('same seed produces the same sequence', () => {
-        setSeed(42)
-        const first = [roll(20), roll(20), roll(20), roll(6), roll(6)]
-
-        setSeed(42)
-        const second = [roll(20), roll(20), roll(20), roll(6), roll(6)]
-
-        assert.deepEqual(first, second)
-    })
-
-    test('different seeds produce different sequences', () => {
-        const sequence = (seed: number) => {
-            setSeed(seed)
-            const rolls: number[] = []
-            for (let i = 0; i < 20; i++) rolls.push(roll(20))
-            return rolls.join(',')
-        }
-
-        assert.notEqual(sequence(1), sequence(2))
-    })
-
-    test('seeded rolls stay 1-indexed and in range', () => {
-        setSeed(7)
-        for (let i = 0; i < 1000; i++) {
-            const result = roll(6)
-            expect(result).toBeGreaterThanOrEqual(1)
-            expect(result).toBeLessThanOrEqual(6)
-        }
-    })
-
-    test('clearSeed restores unseeded behavior', () => {
-        setSeed(42)
-        const seeded = roll(20)
-        clearSeed()
-
-        // an unseeded sequence should not replay the seeded one;
-        // 20 consecutive matches by chance is ~20^-20
-        setSeed(42)
-        const replay: number[] = []
-        for (let i = 0; i < 20; i++) replay.push(roll(20))
-        clearSeed()
-        const fresh: number[] = []
-        for (let i = 0; i < 20; i++) fresh.push(roll(20))
-
-        assert.equal(typeof seeded, 'number')
-        assert.notEqual(replay.join(','), fresh.join(','))
     })
 })
 
@@ -100,37 +47,6 @@ describe('createRoll', () => {
         }
 
         assert.notEqual(sequence(1), sequence(2))
-    })
-
-    test('is independent from the global singleton', () => {
-        const instance = createRoll(42)
-        const beforeInstanceRoll = [instance.roll(20), instance.roll(20)]
-
-        // seeding/rolling/clearing the global should not perturb the instance
-        setSeed(1)
-        roll(20)
-        roll(20)
-        clearSeed()
-
-        const instanceReplay = createRoll(42)
-        assert.deepEqual(
-            [instanceReplay.roll(20), instanceReplay.roll(20)],
-            beforeInstanceRoll,
-        )
-
-        // rolling on the instance should not perturb the global's sequence either
-        setSeed(1)
-        const globalFirst = [roll(20), roll(20)]
-        clearSeed()
-
-        instance.roll(20)
-        instance.roll(20)
-
-        setSeed(1)
-        const globalSecond = [roll(20), roll(20)]
-        clearSeed()
-
-        assert.deepEqual(globalFirst, globalSecond)
     })
 
     test('sibling instances are independent from one another', () => {

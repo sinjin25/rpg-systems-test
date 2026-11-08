@@ -28,7 +28,7 @@ export type FightResult = {
     rounds: number,
     playerActors: Actor2[],
     enemyActors: Actor2[],
-    timeTravelReplayer?: TimeTravelReplayer,
+    timeTravelReplayer?: TimeTravelReplayer<any>,
     debugData: {
         player0HpStart: number,
         player0HpEnd: number,
@@ -50,7 +50,7 @@ export const simulateFight = (
     },
     options?: {
         verbose?: boolean,
-        timeTravelReplayer?: TimeTravelReplayer,
+        timeTravelReplayer?: TimeTravelReplayer<any>,
         seed?: number, // recorded on the fight-start log only; does not seed anything
         rollInstance?: RollInstance, // the fight's whole duration runs on this; absent => global rng
     }

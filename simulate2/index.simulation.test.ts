@@ -2,7 +2,7 @@ import { createDefaultOwner } from '../actor2/index.ts'
 import { simulateFight } from './index.ts'
 import { describe, test, assert } from 'vitest'
 import newTimeTravelLogReplayer from '../time-travel2/replay/index.ts'
-import ttrvTextVisualizer from '../time-travel2/replay/text-visualizer.ts'
+import ttrvTextAugmenter, { consumeTextAugmentedLogs } from '../time-travel2/replay/text-visualizer.ts'
 import { makeWrapper } from '../status-sheet2/index.ts'
 import { inst } from '../status-sheet2/testing.ts'
 import { Handlers } from '../time-travel2/types.ts'
@@ -30,7 +30,7 @@ describe('Integration: TimeTravel', () => {
             }
         })
         onFireEnemy.ss['poison'] = [inst(poison, onFireEnemy)]
-        const ttr = newTimeTravelLogReplayer(ttrvTextVisualizer)
+        const ttr = newTimeTravelLogReplayer(ttrvTextAugmenter)
         simulateFight(
             {
                 enemy: [onFireEnemy],
@@ -47,7 +47,7 @@ describe('Integration: TimeTravel', () => {
             /* console.log('checking', log, f) */
             assert.exists(f)
         }
-        // this can timeout vitest
-        await ttr.playback()
+        const augmented = ttr.playback()
+        await consumeTextAugmentedLogs(augmented)
     })
 })

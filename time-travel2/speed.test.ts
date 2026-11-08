@@ -4,7 +4,7 @@ import { describe, test, expect } from 'vitest'
 import speed from './speed'
 import snapshotActor from './snapshot/actor'
 import newTimeTravelLogReplayer from './replay/index'
-import ttrvTextVisualizer from './replay/text-visualizer'
+import ttrvTextAugmenter from './replay/text-visualizer'
 import { StoredLog } from './replay/types'
 
 describe('Replayer recreates turn order', () => {
@@ -13,7 +13,7 @@ describe('Replayer recreates turn order', () => {
         const a1 = instantiateActor(owner)
         const a2 = instantiateActor(owner)
 
-        const replayer = newTimeTravelLogReplayer(ttrvTextVisualizer)
+        const replayer = newTimeTravelLogReplayer(ttrvTextAugmenter)
 
         // ground-truth turn order per round, captured live from round()
         const matrix: number[][] = []

@@ -1,7 +1,7 @@
 import { TimeTravelContext } from '../types'
 import { AnyStoredLog } from './types'
 import newTimeTravelLogReplayer from './index.ts'
-import ttrvTextVisualizer from './text-visualizer.ts'
+import ttrvTextAugmenter from './text-visualizer.ts'
 import { describe, test, assert } from 'vitest'
 import { createDefaultOwner, instantiateActor } from '../../actor2/index.ts'
 import snapshotActor from '../snapshot/actor.ts'
@@ -17,7 +17,7 @@ const aSARLog = (): AnyStoredLog => ({
 
 describe('newTimeTravelLogReplayer (time-travel2)', () => {
     test('replays null -> a log -> null as the cursor runs out', () => {
-        const replayer = newTimeTravelLogReplayer(ttrvTextVisualizer)
+        const replayer = newTimeTravelLogReplayer(ttrvTextAugmenter)
 
         // nothing appended yet: stepping returns null
         assert.equal(replayer.replayStep(), null)

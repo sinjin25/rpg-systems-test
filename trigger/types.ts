@@ -1,0 +1,21 @@
+import type { StatusEffectWrapper } from "../status-sheet2/types"
+type FeatModRequiredData = Record<string, unknown>
+
+export type TriggerEffectApplyStatus = {
+    kind: 'apply-status',
+    recipient: 'self' | 'target',
+    status: StatusEffectWrapper,
+}
+
+export type TriggerEffect = TriggerEffectApplyStatus
+
+// invoked from simulate2/index.ts's attack resolution in reaction to an attack's
+// outcome (hit/miss/crit/kill/damage-taken)
+export type FeatTriggerFunction = (data?: Partial<FeatModRequiredData>) => TriggerEffect | TriggerEffect[] | undefined
+
+export type TriggerHookName = 'onHit' | 'onMiss' | 'onCrit' | 'onKill' | 'onDamageTaken'
+
+// group keys, attach to something (ex: Feats.triggers)
+export type TriggerHooks = {
+    [K in TriggerHookName]?: FeatTriggerFunction
+}

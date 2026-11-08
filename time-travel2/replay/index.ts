@@ -1,8 +1,8 @@
-import { AnyStoredLog, AnyAugmentedLog, TimeTravelReplayer, TimeTravelAugmenter } from "./types"
+import { AnyStoredLog, AnyAugmentedLog, StoredLog, TimeTravelReplayer, TimeTravelAugmenter } from "./types"
 import { TTLogKeys } from "../types"
 
-const newTimeTravelLogReplayer = <AugmentedMap extends { [K in TTLogKeys]: unknown }>(
-    augmenter: TimeTravelAugmenter<AugmentedMap>,
+const newTimeTravelLogReplayer = <AugmentedMap extends { [K in TTLogKeys]: unknown } = { [K in TTLogKeys]: StoredLog<K> }>(
+    augmenter?: TimeTravelAugmenter<AugmentedMap>,
 ): TimeTravelReplayer<AugmentedMap> => ({
     augmenter,
     logs: [],
@@ -22,7 +22,7 @@ const newTimeTravelLogReplayer = <AugmentedMap extends { [K in TTLogKeys]: unkno
         const out: AnyAugmentedLog<AugmentedMap>[] = []
         let log = this.replayStep()
         while (log !== null) {
-            const fn = this.augmenter[log.kind] as (l: AnyStoredLog) => AnyAugmentedLog<AugmentedMap>
+            const fn = (this.augmenter?.[log.kind] ?? ((l: AnyStoredLog) => l)) as (l: AnyStoredLog) => AnyAugmentedLog<AugmentedMap>
             out.push(fn(log))
             log = this.replayStep()
         }

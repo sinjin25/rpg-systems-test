@@ -16,9 +16,9 @@ export type AnyAugmentedLog<AugmentedMap extends { [K in TTLogKeys]: unknown }> 
     AugmentedMap[TTLogKeys]
 
 export type TimeTravelReplayer<
-    AugmentedMap extends { [K in TTLogKeys]: unknown } = { [K in TTLogKeys]: unknown }
+    AugmentedMap extends { [K in TTLogKeys]: unknown } = { [K in TTLogKeys]: StoredLog<K> }
 > = {
-    augmenter: TimeTravelAugmenter<AugmentedMap>
+    augmenter?: TimeTravelAugmenter<AugmentedMap>
     logs: AnyStoredLog[]
     appendLog(...ttls: AnyStoredLog[]): void
     replayStep(): AnyStoredLog | null

@@ -1,6 +1,6 @@
-import { OwnerMaximal } from "../../actor2/types";
-import { StatusExpiration } from "../decay/types";
-import {
+import type { OwnerMaximal } from "../../actor2/types";
+import type { StatusExpiration } from "../decay/types";
+import type {
     StatusEffect,
     StatusEffectInstance,
     StatusEffectInstanceFactory,

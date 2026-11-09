@@ -1,5 +1,5 @@
-import { StatusEffect, StatusEffectInstance } from "../../status-sheet2"
-import { FrozenExpiration, FrozenStatus } from "../types"
+import type { StatusEffect, StatusEffectInstance } from "../../status-sheet2"
+import type { FrozenExpiration, FrozenStatus } from "../types"
 import freezeModNodeRecursive from "./mod-node"
 
 // we've left a lot of keys out which causes problems when you try to plug a snapshotted actor into anything wanting an Actor2

@@ -1,5 +1,5 @@
-import { OwnerMaximal } from "../actor2/types"
-import { Feat2, FeatIds } from "../feat2/types"
+import type { OwnerMaximal } from "../actor2/types"
+import type { Feat2, FeatIds } from "../feat2/types"
 
 export type ClassKeys = 'fighter' | 'rogue'
 

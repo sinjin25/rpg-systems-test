@@ -1,9 +1,10 @@
-import { Experience } from "../experience/types"
-import { FeatIds } from "../feat2/types"
-import newModNode, { leaf, ModNode, sumFunc } from "../log2"
+import type { Experience } from "../experience/types"
+import type { FeatIds } from "../feat2/types"
+import newModNode, { leaf, sumFunc } from "../log2"
+import type { ModNode } from "../log2"
 import fighter from "./fighter"
 import rogue from "./rogue"
-import { ClassKeys, ClassLevelPickLog, ClassLevelSumKeys, ClassLevelTable } from "./types"
+import type { ClassKeys, ClassLevelPickLog, ClassLevelSumKeys, ClassLevelTable } from "./types"
 
 export const registry: Record<ClassKeys, ClassLevelTable> = {
     fighter,

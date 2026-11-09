@@ -1,4 +1,4 @@
-import { CsScore, EveryTree } from "../../log2/types"
+import type { CsScore, EveryTree } from "../../log2/types"
 import type { BaseEquipment, EquipmentSlot } from "../types"
 
 export type EquipmentForFactory = {

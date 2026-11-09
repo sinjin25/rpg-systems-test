@@ -1,11 +1,11 @@
-import { CharacterSheet } from "../character-sheet"
-import { EquipmentSheet } from "../equipment-sheet2/types"
-import { ModNode } from "../log2"
-import { Tags } from "../log2/tags"
-import { StatusSheet } from "../status-sheet2"
-import { FeatSheet } from "../feat2/types"
-import { AbilitySheet } from "../ability-sheet2/types"
-import { Experience } from "../experience/types"
+import type { CharacterSheet } from "../character-sheet"
+import type { EquipmentSheet } from "../equipment-sheet2/types"
+import type { ModNode } from "../log2"
+import type { Tags } from "../log2/tags"
+import type { StatusSheet } from "../status-sheet2"
+import type { FeatSheet } from "../feat2/types"
+import type { AbilitySheet } from "../ability-sheet2/types"
+import type { Experience } from "../experience/types"
 
 // no better place to put rn
 export type RewardIds = | 'weak_goblin'

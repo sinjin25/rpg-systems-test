@@ -1,6 +1,6 @@
-import { OwnerMaximal } from "../actor2/types"
+import type { OwnerMaximal } from "../actor2/types"
 import { newStatusInstance } from "./instance"
-import { StatusEffect, StatusEffectWrapper } from "./types"
+import type { StatusEffect, StatusEffectWrapper } from "./types"
 
 export const getStatusKey = (status: {
     displayName: string,

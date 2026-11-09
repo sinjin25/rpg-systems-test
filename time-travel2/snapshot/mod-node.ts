@@ -1,4 +1,4 @@
-import { FrozenModNode } from "../types"
+import type { FrozenModNode } from "../types"
 import type { ModNode } from "../../log2"
 
 const freezeModNodeRecursive = (root: ModNode): FrozenModNode => ({

@@ -1,8 +1,8 @@
-import { ModNode } from ".";
-import { OwnerMaximal } from "../actor2/types";
-import { BaseEquipment, EquipmentSheet } from "../equipment-sheet2/types";
-import { RollInstance } from "../roll/types";
-import { Tags } from "./tags";
+import type { ModNode } from ".";
+import type { OwnerMaximal } from "../actor2/types";
+import type { BaseEquipment, EquipmentSheet } from "../equipment-sheet2/types";
+import type { RollInstance } from "../roll/types";
+import type { Tags } from "./tags";
 
 export type ModNodeOpts = {
     tags?: Tags[]

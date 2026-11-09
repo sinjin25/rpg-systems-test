@@ -1,5 +1,5 @@
-import { AbilitySheetDefinition } from "./abilities2/types"
-import { AttackAbilitySheetDefinition } from "./attack-ability/types"
+import type { AbilitySheetDefinition } from "./abilities2/types"
+import type { AttackAbilitySheetDefinition } from "./attack-ability/types"
 
 export type AbilityCastType = 'standard' | 'swift' | 'free'
 

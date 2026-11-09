@@ -1,12 +1,11 @@
-import { Actor2, OwnerMaximal } from "../types"
-import { BaseEquipment } from "../../equipment-sheet2/types"
-import newModNode, { findNodeMatching, leaf, ModNode, sumFunc } from "../../log2"
+import type { Actor2, OwnerMaximal } from "../types"
+import type { BaseEquipment } from "../../equipment-sheet2/types"
+import newModNode, { findNodeMatching, sumFunc } from "../../log2"
 import { ac, attack, critConfirm, critDamage, critThreatRange, damage } from "../../log2/terminal"
 import roll from "../../log2/roll"
-import modNodeToText from "../../log2/format"
-import { ModNodeOpts } from "../../log2/types"
+import type { ModNodeOpts } from "../../log2/types"
 import type { SARAgainstTargetOpts } from "../../ability-sheet2/attack-ability/types"
-import { AttackOpts, FinalStandardActionResult, StandardActionResult } from './types'
+import type { AttackOpts, FinalStandardActionResult, StandardActionResult } from './types'
 
 export const calculateAttack = (
     owner: OwnerMaximal,

@@ -1,4 +1,4 @@
-import { OwnerMaximal } from '../actor2/types'
+import type { OwnerMaximal } from '../actor2/types'
 import type { AbilityCastType, AbilityCategory, AbilitySheet, AnyAbilitySheetDefinition } from './types'
 
 export const getAbilityKey = <A extends AnyAbilitySheetDefinition>(ability: A): A['displayName'] => ability.displayName

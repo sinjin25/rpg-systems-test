@@ -1,10 +1,10 @@
-import { Actor2 } from "../types"
-import { AbilityCastType, AnyAbilitySheetDefinition } from "../../ability-sheet2/types"
-import { AttackDiscreteTargetGroupPayloadResolution } from "../../ability-sheet2/attack-ability/types"
-import { DiscreteTargetGroupPayloadResolution } from "../../ability-sheet2/abilities2/types"
+import type { Actor2 } from "../types"
+import type { AbilityCastType, AnyAbilitySheetDefinition } from "../../ability-sheet2/types"
+import type { AttackDiscreteTargetGroupPayloadResolution } from "../../ability-sheet2/attack-ability/types"
+import type { DiscreteTargetGroupPayloadResolution } from "../../ability-sheet2/abilities2/types"
 import { applyDamage, applyHeal } from "../../health"
 import damageTakenTree from '../../log2/terminal-composition/damage-taken'
-import { ModNodeOpts, OwnerLog2 } from '../../log2/types'
+import type { ModNodeOpts, OwnerLog2 } from '../../log2/types'
 import { addStatusToStatusSheet } from "../../status-sheet2"
 
 export const applyResolutions = (resolutions: DiscreteTargetGroupPayloadResolution[], opts: ModNodeOpts = {}) => {

@@ -1,7 +1,7 @@
-import { ObjectWithBroadContexts, ModNodeOpts } from "../log2/types"
-import { OwnerMaximal } from "../actor2/types"
-import { ModNode } from "../log2"
-import { StatusExpiration, StatusPersistTypes } from "./decay/types"
+import type { ObjectWithBroadContexts, ModNodeOpts } from "../log2/types"
+import type { OwnerMaximal } from "../actor2/types"
+import type { ModNode } from "../log2"
+import type { StatusExpiration, StatusPersistTypes } from "./decay/types"
 
 export type {
     StatusExpirationSpeedElapsed,

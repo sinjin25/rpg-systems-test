@@ -1,4 +1,4 @@
-import { ClassLevelPickLog } from "../class-level2/types"
+import type { ClassLevelPickLog } from "../class-level2/types"
 
 export interface FlavorSheet {
     displayName: string,

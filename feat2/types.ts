@@ -1,5 +1,5 @@
-import { ObjectWithBroadContexts } from "../log2/types";
-import { OwnerMaximal } from "../actor2/types";
+import type { ObjectWithBroadContexts } from "../log2/types";
+import type { OwnerMaximal } from "../actor2/types";
 import { TriggerHooks } from "../trigger/core-types";
 
 type FeatFightStartFunction = (owner: OwnerMaximal) => StatusEffectWrapper | StatusEffectWrapper[] | undefined
@@ -21,8 +21,8 @@ export type Feat2 = ObjectWithBroadContexts & {
     tags?: string[],
 }
 
-import { CharacterSheet } from '../character-sheet'
-import { StatusEffectWrapper } from "../status-sheet2";
+import type { CharacterSheet } from '../character-sheet'
+import type { StatusEffectWrapper } from "../status-sheet2";
 
 export type FeatSheet = Record<string, Feat2>
 

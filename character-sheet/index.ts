@@ -1,5 +1,5 @@
 export * from './types'
-import { ClassLevelPickLog } from "../class-level2/types"
+import type { ClassLevelPickLog } from "../class-level2/types"
 import { CharacterSheet, defaultFlavorSheet } from './types'
 
 export const fakeCharacterLevels = (n: number): ClassLevelPickLog => {

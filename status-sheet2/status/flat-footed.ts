@@ -1,6 +1,6 @@
 import newModNode from "../../log2";
-import { AllStatusEffects } from "../../log2/types";
-import { OwnerMaximal } from "../../actor2/types";
+import type { AllStatusEffects } from "../../log2/types";
+import type { OwnerMaximal } from "../../actor2/types";
 import { makeWrapper } from "../instance";
 
 const displayName: AllStatusEffects = 'flat-footed'

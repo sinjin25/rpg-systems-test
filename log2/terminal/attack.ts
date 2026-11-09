@@ -2,13 +2,13 @@
 // contributions, all summed. See attack-readme.md for which children are still bridged to legacy.
 
 import newModNode, { sumFunc } from "..";
-import { OwnerLog2, EveryTree, TreeSubproblems, ModNodeOpts } from "../types";
+import type { OwnerLog2, EveryTree, TreeSubproblems, ModNodeOpts } from "../types";
 import effectiveAttackStat from "../composition/effective-attack-stat";
 import baseAttackBonus from "../composition/base-attack-bonus";
 import attackStatusMod from "../composition/attack-status-mod";
 import attackEquipmentMod from "../composition/attack-equipment-mod";
 import featContribution from "../composition/feat-contribution";
-import { Tags } from "../tags";
+import type { Tags } from "../tags";
 import { stripSelectModNodeIfEmpty } from "../strip-if-empty";
 import proficientInEquipment from "../bases/proficient-in-equipment";
 

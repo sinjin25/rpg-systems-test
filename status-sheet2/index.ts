@@ -1,4 +1,4 @@
-import { StatusSheet } from "./types"
+import type { StatusSheet } from "./types"
 
 export type {
     StatusEffect,

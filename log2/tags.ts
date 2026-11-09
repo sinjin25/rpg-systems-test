@@ -2,7 +2,7 @@
 // these are intended to be for equipment (trees have access to broadContext to apply on relevant tree mods)
 // this is intended for subrequirements (ex: attack roll when you have a shield. Damage taken when you have heavy armor, etc.)
 
-import { OwnerLog2 } from "./types"
+import type { OwnerLog2 } from "./types"
 
 // it is theoretically possible that we can pre-collect some tags based on outside circumstances (ex: "ac WHEN is attacked by ranged") but this is NOT THE CURRENT STATE OF IT
 export type EquipmentTags = | 'melee'

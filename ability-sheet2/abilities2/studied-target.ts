@@ -1,5 +1,5 @@
 import { studiedTarget as stStatus } from '../../status-sheet2/status'
-import { AbilitySheetDefinition, DiscreteTargetGroup } from './types'
+import type { AbilitySheetDefinition, DiscreteTargetGroup } from './types'
 
 const displayName = 'Studied Target'
 

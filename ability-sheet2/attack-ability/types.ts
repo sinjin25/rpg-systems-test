@@ -1,12 +1,12 @@
 // an attack-ability inherits from attack and provides additional augments
 // we basically provide a tree for each element of a standardActionResult
 
-import { Actor2 } from "../../actor2/types"
-import { FinalStandardActionResult, StandardActionResult } from "../../actor2/act"
-import { ModNode } from "../../log2"
-import { TargetPriority } from "../../target/types"
-import { AbilityCastType } from "../types"
-import { AbilityPayload } from "../abilities2/types"
+import type { Actor2 } from "../../actor2/types"
+import type { FinalStandardActionResult, StandardActionResult } from "../../actor2/act"
+import type { ModNode } from "../../log2"
+import type { TargetPriority } from "../../target/types"
+import type { AbilityCastType } from "../types"
+import type { AbilityPayload } from "../abilities2/types"
 
 export type SARAgainstTargetOpts = {
     canMiss: boolean,

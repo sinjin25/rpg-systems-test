@@ -1,6 +1,6 @@
-import { Saves } from "../../log2/types"
-import { ModNode } from "../../log2"
-import { StatusEffect, StatusSheet } from "../types"
+import type { Saves } from "../../log2/types"
+import type { ModNode } from "../../log2"
+import type { StatusEffect, StatusSheet } from "../types"
 
 const decayKinds = ['speed-elapsed', 'actions-elapsed', 'save-succeeded', 'enemy-killed', 'rounds-elapsed',] as const
 

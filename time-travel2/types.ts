@@ -1,10 +1,10 @@
-import { DiscreteTargetGroupPayloadResolution } from "../ability-sheet2/abilities2/types"
-import { FinalStandardActionResult } from "../actor2/act"
-import { BaseEquipment } from "../equipment-sheet2/types"
-import { ModNode } from "../log2"
-import { Saves } from "../log2/types"
-import { StatusEffect, StatusEffectInstance } from "../status-sheet2"
-import { Actor2Snapshot } from "./snapshot/actor"
+import type { DiscreteTargetGroupPayloadResolution } from "../ability-sheet2/abilities2/types"
+import type { FinalStandardActionResult } from "../actor2/act"
+import type { BaseEquipment } from "../equipment-sheet2/types"
+import type { ModNode } from "../log2"
+import type { Saves } from "../log2/types"
+import type { StatusEffect, StatusEffectInstance } from "../status-sheet2"
+import type { Actor2Snapshot } from "./snapshot/actor"
 
 export type FrozenModNode = {
     displayName: string

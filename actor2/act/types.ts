@@ -1,8 +1,8 @@
-import { ModNodeOpts } from '../../log2/types'
-import { BaseEquipment } from "../../equipment-sheet2/types"
-import { AbilitySheetDefinition } from '../../ability-sheet2/abilities2/types'
-import { AttackAbilitySheetDefinition } from '../../ability-sheet2/attack-ability/types'
-import { calculateAc, calculateAttack, calculateCritConfirm, calculateCritDamage, calculateDamage, calculateThreat } from './attack'
+import type { ModNodeOpts } from '../../log2/types'
+import type { BaseEquipment } from "../../equipment-sheet2/types"
+import type { AbilitySheetDefinition } from '../../ability-sheet2/abilities2/types'
+import type { AttackAbilitySheetDefinition } from '../../ability-sheet2/attack-ability/types'
+import type { calculateAc, calculateAttack, calculateCritConfirm, calculateCritDamage, calculateDamage, calculateThreat } from './attack'
 
 export type AttackOpts = ModNodeOpts & {
     relevantSlot: BaseEquipment,

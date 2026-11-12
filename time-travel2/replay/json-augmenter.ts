@@ -15,6 +15,8 @@ export const ttrvJsonAugmenter: TimeTravelAugmenter<JsonAugmentedLogMap> = {
     'heal-over-time-taken': toJson,
     'actor-death': toJson,
     'ability': toJson,
+    'pre-fight-feat-applied': toJson,
+    'post-fight': toJson,
 }
 
 export default ttrvJsonAugmenter

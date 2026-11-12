@@ -14,28 +14,28 @@ describe('expireStatusesAfterFight', () => {
         source: {} as OwnerMaximal,
     })
 
-    test('removes statuses flagged persists.afterBattle', () => {
+    test('keeps statuses flagged persists.afterBattle', () => {
         const owner: DecayOwner = createDefaultOwner({ ss: { test: [afterBattleBuff()] } })
 
         expireStatusesAfterFight(owner)
-        assert.notExists(owner.ss.test)
+        assert.exists(owner.ss.test)
     })
 
-    test('keeps statuses flagged persists.afterBattle === false', () => {
+    test('removes statuses not flagged persists.afterBattle', () => {
         const owner: DecayOwner = createDefaultOwner({
             ss: {
                 test: [{
-                    pointer: { displayName: 'lingering', broadContexts: {}, stack: { kind: 'highest' }, persists: { afterBattle: false } },
+                    pointer: { displayName: 'remove', broadContexts: {}, stack: { kind: 'highest' }, persists: { afterBattle: false } },
                     source: {} as OwnerMaximal,
                 }]
             }
         })
 
         expireStatusesAfterFight(owner)
-        assert.exists(owner.ss.test)
+        assert.notExists(owner.ss.test)
     })
 
-    test('keeps statuses with no persists field', () => {
+    test('ignores statuses with no persists field', () => {
         const owner: DecayOwner = createDefaultOwner({
             ss: {
                 test: [{
@@ -49,9 +49,22 @@ describe('expireStatusesAfterFight', () => {
         assert.exists(owner.ss.test)
     })
 
-    test('runs onExpiration for the statuses it removes', () => {
+    test('runs onExpiration (chainStatus) for the statuses it removes', () => {
         const followUp = makeWrapper({ displayName: 'follow up', broadContexts: {} })
-        const owner: DecayOwner = createDefaultOwner({ ss: { test: [afterBattleBuff('afterBattleBuff', () => followUp)] } })
+        const owner: DecayOwner = createDefaultOwner({
+            ss: {
+                test: [{
+                    pointer: {
+                        displayName: 'remove',
+                        broadContexts: {},
+                        stack: { kind: 'highest' },
+                        persists: { afterBattle: false },
+                        onExpiration: () => followUp,
+                    },
+                    source: {} as OwnerMaximal,
+                }]
+            }
+        })
 
         expireStatusesAfterFight(owner)
         assert.notExists(owner.ss.test)

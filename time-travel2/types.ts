@@ -1,6 +1,7 @@
 import type { DiscreteTargetGroupPayloadResolution } from "../ability-sheet2/abilities2/types"
 import type { FinalStandardActionResult } from "../actor2/act"
 import type { BaseEquipment } from "../equipment-sheet2/types"
+import type { FeatIds } from "../feat2/types"
 import type { ModNode } from "../log2"
 import type { Saves } from "../log2/types"
 import type { StatusEffect, StatusEffectInstance } from "../status-sheet2"
@@ -50,6 +51,7 @@ export type TimeTravelContext = {
 }
 
 type TimeTravelKind = | 'fight-start'
+    | 'pre-fight-feat-applied'
     | 'resolve-participants'
     | 'round'
     | 'speed' // people moving, regardless of if they act
@@ -63,6 +65,7 @@ type TimeTravelKind = | 'fight-start'
     | 'team-victory' // anyActorAlive
     | 'damage-over-time-taken'
     | 'heal-over-time-taken'
+    | 'post-fight'
 
 export interface TTLogMap {
     'fight-start': {
@@ -73,6 +76,16 @@ export interface TTLogMap {
             seed?: number,
         } & TimeTravelContext,
     }
+    'pre-fight-feat-applied': {
+        input: TimeTravelContext & {
+            featsTriggered: FeatIds[],
+        },
+        output: TimeTravelContext & {
+            kind: 'pre-fight-feat-applied',
+            source: Actor2Snapshot,
+            featsTriggered: FeatIds[],
+        },
+    },
     'standard-action-result': {
         input: TimeTravelContext & FinalStandardActionResult & { damageTakenResult?: ModNode },
         output: TimeTravelContext & {
@@ -148,6 +161,15 @@ export interface TTLogMap {
         output: TimeTravelContext & {
             kind: 'ability',
         } & FrozenAbilityNode
+    },
+    'post-fight': {
+        input: {
+            source: Actor2Snapshot,
+        },
+        output: {
+            kind: 'post-fight',
+            source: Actor2Snapshot,
+        },
     },
 }
 

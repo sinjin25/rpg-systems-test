@@ -11,7 +11,7 @@ import damageTakenTree from '../log2/terminal-composition/damage-taken'
 import { ModNodeOpts, OwnerLog2 } from '../log2/types'
 import { RollInstance } from "../roll/types"
 import { decayActionsElapsed, decayEnemyKilled, decayRoundsElapsed, decaySaveSucceeded } from "../status-sheet2/decay"
-import { anyActorAlive, chooseTarget, determineFightWinner, handlePotentialDeath, ownerIsMemberOf } from "./helpers"
+import { anyActorAlive, chooseTarget, determineFightWinner, handlePostFight, handlePotentialDeath, handlePreFight, ownerIsMemberOf } from "./helpers"
 import { /* instantiateParticipants */resolveParticipants } from "./setup"
 import { snapshotActor, timeTravel } from "../time-travel2"
 import { AnyStoredLog, TimeTravelReplayer } from "../time-travel2/replay/types"
@@ -82,6 +82,7 @@ export const simulateFight = (
 
     const playerActors = resolveParticipants(participants.player, opts)
     const enemyActors = resolveParticipants(participants.enemy, opts)
+    handlePreFight([...playerActors, ...enemyActors], ttr)
     // this will get filtered constantly to make sure only alive actors are here
     let activeActors = [...playerActors, ...enemyActors]
 
@@ -267,6 +268,8 @@ export const simulateFight = (
             })
         )
     }
+    // we don't care about enemyActors on purpose
+    handlePostFight([...playerActors], ttr)
 
     debugData.player0HpEnd = Math.max(playerActors[0]!.health.curr, 0)
     return {

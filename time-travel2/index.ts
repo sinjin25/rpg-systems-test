@@ -8,6 +8,8 @@ import damageOverTime from "./damage-over-time-taken";
 import healOverTime from "./heal-over-time-taken";
 import ability from "./ability";
 import actorDeath from "./actor-death";
+import preFightFeatApplied from "./pre-fight-feat-applied";
+import postFight from "./post-fight";
 export { default as snapshotActor } from './snapshot/actor'
 
 export const timeTravel: Handlers = {
@@ -21,4 +23,6 @@ export const timeTravel: Handlers = {
     'heal-over-time-taken': healOverTime,
     'ability': ability,
     'actor-death': actorDeath,
+    'pre-fight-feat-applied': preFightFeatApplied,
+    'post-fight': postFight,
 }

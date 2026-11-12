@@ -1,5 +1,11 @@
-import { Actor2, OwnerMaximal } from "../actor2/types"
-import { decayEnemyKilled } from "../status-sheet2/decay"
+import { resetAbilityCategoryIndex } from "../ability-sheet2"
+import type { AbilityCastType } from "../ability-sheet2/types"
+import type { Actor2, OwnerMaximal } from "../actor2/types"
+import { applyOnFightStartFeatHandlers, getOnFightStartFeatHandlers } from "../feat2/fight-start"
+import type { FeatIds } from "../feat2/types"
+import { decayEnemyKilled, expireStatusesAfterFight } from "../status-sheet2/decay"
+import { snapshotActor, timeTravel } from "../time-travel2"
+import { TimeTravelReplayer } from "../time-travel2/replay/types"
 /* import runTrigger from "../trigger/dispatch" */
 
 // helper for figuring out whose team someone belongs to (ex: are they a member of some subset of all the actors)
@@ -64,4 +70,45 @@ export const determineFightWinner = (
     return {
         winner,
     }
+}
+
+export const handlePostFight = (
+    actors: Actor2[],
+    timeTravelReplayer?: TimeTravelReplayer<any>,
+) => {
+    actors.forEach(a => {
+        expireStatusesAfterFight(a.owner)
+        for (const cat of ['free', "standard", "swift"] as AbilityCastType[]) {
+            resetAbilityCategoryIndex(a.owner, cat)
+        }
+
+        if (timeTravelReplayer) {
+            timeTravelReplayer.appendLog(
+                timeTravel['post-fight']({
+                    source: snapshotActor(a),
+                })
+            )
+        }
+    })
+}
+
+export const handlePreFight = (
+    actors: Actor2[],
+    timeTravelReplayer?: TimeTravelReplayer<any>,
+) => {
+    actors.forEach(a => {
+        const handlers = getOnFightStartFeatHandlers(a.owner)
+        if (handlers.length === 0) return
+
+        applyOnFightStartFeatHandlers(a.owner, handlers)
+
+        if (timeTravelReplayer) {
+            timeTravelReplayer.appendLog(
+                timeTravel['pre-fight-feat-applied']({
+                    featsTriggered: handlers.map(a => a[1].displayName as FeatIds),
+                    source: snapshotActor(a),
+                })
+            )
+        }
+    })
 }

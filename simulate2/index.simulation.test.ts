@@ -9,10 +9,15 @@ import { Handlers } from '../time-travel2/types.ts'
 import { addAbility } from '../ability-sheet2/index.ts'
 import { default as igniteAbility } from '../ability-sheet2/abilities2/ignite.ts'
 import { leaf } from '../log2/index.ts'
+import { deriveFeatKey, rage } from '../feat2/registry.ts'
 
 describe('Integration: TimeTravel', () => {
     test('Works with a ttr passed', async () => {
-        const igniteAbilityOwner = createDefaultOwner()
+        const igniteAbilityOwner = createDefaultOwner({
+            fs: {
+                [deriveFeatKey(rage)]: rage,
+            }
+        })
         addAbility(igniteAbilityOwner, igniteAbility)
         /* console.log('igniteAbilityOwner', igniteAbilityOwner.as) */
 
@@ -41,7 +46,10 @@ describe('Integration: TimeTravel', () => {
             }
         )
         assert.isTrue(ttr.logs.length > 2)
-        const EXPECTED_LOG_TYPES: Array<keyof Handlers> = ['act-start', 'damage-over-time-taken', 'ability', 'fight-start', 'speed', 'standard-action-result', 'team-victory']
+        const EXPECTED_LOG_TYPES: Array<keyof Handlers> = ['act-start', 'damage-over-time-taken', 'ability', 'fight-start', 'speed', 'standard-action-result', 'team-victory',
+            // only passed if a relevant feat is provided
+            'pre-fight-feat-applied',
+            'post-fight']
         for (let log of EXPECTED_LOG_TYPES) {
             const f = ttr.logs.find(a => a.kind === log)
             /* console.log('checking', log, f) */

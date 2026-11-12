@@ -125,7 +125,20 @@ export const ttrvTextAugmenter: TimeTravelAugmenter<TextAugmentedLogMap> = {
             logCalls,
             delayMs: DELAY,
         }
-    }
+    },
+    'pre-fight-feat-applied': (log) => ({
+        kind: 'pre-fight-feat-applied',
+        logCalls: [[
+            cc.dim,
+            `${displayActor(log.source)} feat(s) trigger:`,
+            log.featsTriggered.join(', '),
+            cc.reset,
+        ]],
+    }),
+    'post-fight': (log) => ({
+        kind: 'post-fight',
+        logCalls: [[cc.dim, `${displayActor(log.source)} cleaned up post-fight`, cc.reset]],
+    }),
 }
 
 export const consumeTextAugmentedLogs = async (

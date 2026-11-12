@@ -8,8 +8,10 @@ export const expireStatusesAfterFight = (
     const keys = Object.keys(owner.ss)
     for (let key of keys) {
         for (const inst of [...owner.ss[key]!]) {
-            if (!inst.pointer.persists?.afterBattle) continue
+            if (!inst.pointer.persists) continue
+            if (inst.pointer.persists?.afterBattle) continue
             chainStatus(owner, expireStatus(owner, key, inst))
+            /* owner.ss[key].splice(0, 1) */
         }
     }
 }

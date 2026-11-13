@@ -6,7 +6,6 @@ import { describe, test, expect, assert } from 'vitest'
 import { createDefaultOwner, instantiateActor } from '../../actor2/index.ts'
 import { OwnerMaximal } from '../../actor2/types'
 import { simulateFight } from '../../simulate2/index.ts'
-import { setupWorldState } from '../../simulate2/setup.ts'
 import { patchCloneWithProposal, newLevelUpProposal } from '../../class-level2/level-up2/index.ts'
 import { testUtilCloneOwner } from '../../class-level2/level-up2/clone.ts'
 import { ClassLevel } from '../../class-level2/types.ts'
@@ -68,13 +67,12 @@ describe('Compare difficulties - consecutive wins', () => {
 
     const consecutiveWinsStats = (player: OwnerMaximal, enemy: OwnerMaximal[]) =>
         boxPlotStats(iterate(ITERATIONS, (_seed, rollInstance) => {
-            const ws = setupWorldState({ player })
+            const playerActors = [instantiateActor(player, true)]
             let wins = 0
             while (wins < MAX_CONSECUTIVE_FIGHTS) {
-                const result = simulateFight({ player: ws.playerActors, enemy }, { rollInstance })
+                const result = simulateFight({ player: playerActors, enemy }, { rollInstance })
                 if (result.winner !== 'player') break
                 wins++
-                ws.playersAfterFight()
             }
             return wins
         }))
@@ -106,17 +104,16 @@ describe('Expected Difficulty: Level 1', () => {
     const MAX_CONSECUTIVE_FIGHTS = 30
     test('how many consecutive fights a player can win in a row', () => {
         const winsPerRun = iterate(ITERATIONS, (_seed, rollInstance) => {
-            const ws = setupWorldState({ player: defaultPlayer })
+            const playerActors = [instantiateActor(defaultPlayer, true)]
             let wins = 0
 
             while (wins < MAX_CONSECUTIVE_FIGHTS) {
                 const result = simulateFight({
-                    player: ws.playerActors,
+                    player: playerActors,
                     enemy: [ostracizedGoblin],
                 }, { rollInstance })
                 if (result.winner !== 'player') break
                 wins++
-                ws.playersAfterFight()
             }
             return wins
         })

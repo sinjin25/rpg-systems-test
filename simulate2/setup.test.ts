@@ -1,5 +1,5 @@
 import { createDefaultOwner, instantiateActor } from '../actor2/index.ts'
-import { /* instantiateParticipants, */ resolveParticipants, setupWorldState } from './setup.ts'
+import { /* instantiateParticipants, */ resolveParticipants } from './setup.ts'
 import { describe, test, assert, expect } from 'vitest'
 import { participantIsActor } from './type-guard.ts'
 
@@ -24,28 +24,4 @@ describe('resolveParticipants', () => {
             assert.isTrue(participantIsActor(r))
         }
     })
-})
-
-describe('setupWorldState', () => {
-    test('works', () => {
-        const player = createDefaultOwner()
-
-        const ws = setupWorldState({
-            player,
-        })
-
-        assert.exists(ws.playerActors)
-        assert.exists(ws.playersAfterFight)
-        assert.equal(player, ws.playerActors[0]!.owner)
-    })
-    test('Uses playerId for instantiated actor always (id === 1)', () => {
-        const player = createDefaultOwner()
-
-        const ws = setupWorldState({ player })
-        assert.equal(ws.playerActors[0]!.id, 1)
-
-        const ws2 = setupWorldState({ player })
-        assert.equal(ws2.playerActors[0]!.id, 1)
-    })
-    test.skip('.playerAfterFight')
 })

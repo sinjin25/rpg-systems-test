@@ -3,24 +3,24 @@ import registry, { deriveFeatKey, featMartialProficiency } from './registry'
 
 describe('deriveFeatKey', () => {
     test('returns a literal in the editor', () => {
-        const funcRequiresLiteral = (str: 'Martial Proficiency') => str
+        const funcRequiresLiteral = (str: 'martialProficiency') => str
 
         const martialKey = deriveFeatKey(featMartialProficiency)
 
         const shouldNotTsError = funcRequiresLiteral(martialKey)
-        assert.equal(shouldNotTsError, featMartialProficiency.displayName)
+        assert.equal(shouldNotTsError, featMartialProficiency.id)
     })
 })
 
 describe('registry', () => {
     test('Behavior', () => {
-        const mwp = registry['Martial Proficiency']
+        const mwp = registry['martialProficiency']
         assert.exists(mwp)
 
-        const funcRequiresLiteral = (str: 'Martial Proficiency') => str
+        const funcRequiresLiteral = (str: 'martialProficiency') => str
 
         // registry provides the actual object
-        funcRequiresLiteral(mwp.displayName)
+        funcRequiresLiteral(mwp.id)
 
         // is a pointer
         assert.equal(mwp, featMartialProficiency)

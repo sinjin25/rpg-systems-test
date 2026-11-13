@@ -3,6 +3,8 @@ import { leaf } from "../../log2"
 
 const displayName = 'Improved Initiative'
 const improvedInitiative = {
+    id: 'improvedInitiative',
+    hidden: false,
     displayName,
     broadContexts: {
         'initiative-feat-mod': () => leaf(displayName, 4)

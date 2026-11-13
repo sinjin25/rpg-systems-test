@@ -6,6 +6,8 @@ import { describe, test, assert, expect } from 'vitest'
 
 describe('Works with a test feat', () => {
     const ArequiresB: Feat2 = {
+        id: 'A',
+        hidden: false,
         displayName: 'A',
         broadContexts: {},
         prerequisites: (o: OwnerMaximal) => {
@@ -14,6 +16,8 @@ describe('Works with a test feat', () => {
         }
     }
     const CrequiresDF: Feat2 = {
+        id: 'C',
+        hidden: false,
         displayName: 'C',
         broadContexts: {},
         prerequisites: (o: OwnerMaximal) => {
@@ -23,21 +27,29 @@ describe('Works with a test feat', () => {
     }
 
     const B: Feat2 = {
+        id: 'B',
+        hidden: false,
         displayName: 'B',
         broadContexts: {},
     }
 
     const D: Feat2 = {
+        id: 'D',
+        hidden: false,
         displayName: 'D',
         broadContexts: {},
     }
 
     const F: Feat2 = {
+        id: 'F',
+        hidden: false,
         displayName: 'F',
         broadContexts: {},
     }
 
     const G: Feat2 = {
+        id: 'G',
+        hidden: false,
         displayName: 'G',
         broadContexts: {},
         prerequisites: (o: OwnerMaximal) => {
@@ -88,6 +100,8 @@ describe('Works with a test feat', () => {
 describe('add-feat past bug fixes', () => {
     test('addFeat properly doesnt add feats where prereqs are not met', () => {
         const ArequiresB: Feat2 = {
+            id: 'A',
+            hidden: false,
             displayName: 'A',
             broadContexts: {},
             prerequisites: (o: OwnerMaximal) => {

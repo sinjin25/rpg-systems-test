@@ -47,9 +47,9 @@ describe('deriveBonus: table slicing', () => {
 
 describe('deriveBonus: single class', () => {
     const fighter3: ClassLevelPickLog = [
-        { key: 'fighter', freeFeats: ['Rage'] },        // L1 offers a pick
+        { key: 'fighter', freeFeats: ['rage'] },        // L1 offers a pick
         { key: 'fighter', freeFeats: [] },              // L2 does not
-        { key: 'fighter', freeFeats: ['Battle Focus'] },// L3 offers a pick
+        { key: 'fighter', freeFeats: ['battleFocus'] },// L3 offers a pick
     ]
 
     test('counts three fighter levels', () => {
@@ -64,13 +64,13 @@ describe('deriveBonus: single class', () => {
 
     test('collects class grants and picks in acquisition order', () => {
         expect(featsFromLog(fighter3)).toEqual([
-            'Martial Proficiency', // fighter 1 grant
-            'Shield Proficiency', // fighter 1 grant
-            'Rage',                // fighter 1 pick
-            'Hardy',               // fighter 2 grant
-            'Power Attack',        // fighter 3 grant
-            'Armor Training',      // fighter 3 grant
-            'Battle Focus',        // fighter 3 pick
+            'martialProficiency', // fighter 1 grant
+            'shieldProficiency', // fighter 1 grant
+            'rage',                // fighter 1 pick
+            'hardy',               // fighter 2 grant
+            'powerAttack',        // fighter 3 grant
+            'armorTraining',      // fighter 3 grant
+            'battleFocus',        // fighter 3 pick
         ])
     })
 })
@@ -78,7 +78,7 @@ describe('deriveBonus: single class', () => {
 describe('deriveBonus: multiclass', () => {
     // fighter 2 / rogue 1, taken in that order
     const mixed: ClassLevelPickLog = [
-        { key: 'fighter', freeFeats: ['Rage'] },
+        { key: 'fighter', freeFeats: ['rage'] },
         { key: 'fighter', freeFeats: [] },
         { key: 'rogue', freeFeats: [] },
     ]
@@ -106,17 +106,17 @@ describe('deriveBonus: multiclass', () => {
 
     test('the rogue level adds no feats', () => {
         expect(featsFromLog(mixed)).toEqual([
-            'Martial Proficiency',
-            'Shield Proficiency',
-            'Rage',
-            'Hardy',
+            'martialProficiency',
+            'shieldProficiency',
+            'rage',
+            'hardy',
         ] as FeatIds[])
     })
 
     // the whole point of a log: order of acquisition must not change the totals
     test('interleaving the same levels gives the same sums', () => {
         const interleaved: ClassLevelPickLog = [
-            { key: 'fighter', freeFeats: ['Rage'] },
+            { key: 'fighter', freeFeats: ['rage'] },
             { key: 'rogue', freeFeats: [] },
             { key: 'fighter', freeFeats: [] },
         ]

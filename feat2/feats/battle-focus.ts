@@ -4,6 +4,8 @@ import { BATTLE_FOCUS_CHARGE_ROUNDS, battleFocusChargingStatus } from "../../sta
 
 const displayName = 'Battle Focus'
 export default {
+    id: 'battleFocus',
+    hidden: false,
     displayName,
     description: 'Increases your stats after X rounds',
     broadContexts: {},

@@ -9,7 +9,7 @@ import { serializeAbilitySheet, deserializeAbilitySheet } from "./ability-sheet"
 import { describe, test, assert, expect } from 'vitest'
 import _verifyOwnerIsClone from "../../class-level2/level-up2/clone"
 import addFeat from "../../feat2/add-feat/index"
-import { ambush } from "../../enemy/goblin/feats"
+import ambush from "../../feat2/feats/enemy/ambush"
 
 // this covers leveling up where you can modify a clone of the owner (rather than the owner iteself)
 // data layer -> level up info -> clone the owner for the display layer -> modify copy -> send back in
@@ -33,9 +33,9 @@ describe('Integration: _verifyOwnerIsClone', () => {
 
 describe('Behavior', () => {
     test('test feats: not kept because it doesnt forward a relevant fallback', () => {
-        // the fallback forward (10-30-2026) is the enemy registry
-
         const bunkFeat: Feat2 = {
+            id: 'random',
+            hidden: false,
             displayName: 'Random',
             broadContexts: {},
         }

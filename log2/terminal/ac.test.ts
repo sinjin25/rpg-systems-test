@@ -11,6 +11,7 @@ import modNodeToText from '../format'
 import { armors, heavyShield } from '../../equipment-sheet2/defaults'
 import { BASE_AC } from '../bases/base-ac'
 import { ostracizedGoblin } from '../../enemy/enemy'
+import { deriveFeatKey } from '../../feat2/registry'
 
 describe('ac (terminal)', () => {
     test('owner.tags is not mutated', () => {
@@ -29,7 +30,7 @@ describe('ac (terminal)', () => {
             cs: { dex: 14 },
             es: { armor: armors['banded mail'], offhand: heavyShield },
             ss: { catsGrace: [inst(catsGrace)] },
-            fs: { [featShieldProficiency.displayName]: featShieldProficiency },
+            fs: { [deriveFeatKey(featShieldProficiency)]: featShieldProficiency },
         })
         // 10 base + min(4 dex, 1 cap) + (7 + 2 armor)
         const node = ac(owner)
@@ -52,7 +53,7 @@ describe('ac (terminal)', () => {
             cs: { dex: 14 },
             es: { armor: armors['banded mail'], offhand: heavyShield },
             ss: { catsGrace: [inst(catsGrace)] },
-            fs: { dodge, shieldMastery, [featShieldProficiency.displayName]: featShieldProficiency },
+            fs: { dodge, shieldMastery, [deriveFeatKey(featShieldProficiency)]: featShieldProficiency },
         })
         const node = ac(owner)
         /* console.log(modNodeToText(node)) */
@@ -66,7 +67,7 @@ describe('ac (terminal)', () => {
             cs: { dex: 14 },
             es: { armor: armors['banded mail'], offhand: heavyShield },
             ss: { catsGrace: [inst(catsGrace)], divineProtection: [inst(divineProtection(2))] },
-            fs: { [featShieldProficiency.displayName]: featShieldProficiency },
+            fs: { [deriveFeatKey(featShieldProficiency)]: featShieldProficiency },
         })
         // armored 20 (from the first case) + Divine Protection 2
         expect(ac(owner).total()).toBe(BASE_AC + 12)

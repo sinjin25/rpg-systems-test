@@ -4,7 +4,7 @@ import { defaultCharacterSheet, defaultEnemySheet } from "../../character-sheet"
 import { experienceBreakpoints } from "../../experience";
 import { deriveFeatKey } from "../../feat2/registry";
 import { clawSmall, naturalAc } from "../common/equipment";
-import { ambush } from "./feats";
+import ambush from "../../feat2/feats/enemy/ambush";
 
 const ostracizedGoblin: OwnerMaximal = {
     cs: {

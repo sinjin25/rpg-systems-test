@@ -14,7 +14,9 @@ describe('newFeatsForOwnerList', () => {
         })
 
         const fakeReg: Partial<Record<FeatIds, Feat2>> = {
-            'Armor Training': {
+            'armorTraining': {
+                id: 'armorTraining',
+                hidden: false,
                 displayName: 'Armor Training',
                 broadContexts: {},
                 description: '',
@@ -27,7 +29,7 @@ describe('newFeatsForOwnerList', () => {
         // @ts-expect-error
         const pass = newFeatsForOwnerList(owner, fakeReg)
         assert.equal(pass.length, 1)
-        const find = pass.find(a => a.id === 'Armor Training' && a.meetsPrereq)
+        const find = pass.find(a => a.id === 'armorTraining' && a.meetsPrereq)
         assert.exists(find)
 
         addFeat(owner, rage)
@@ -35,7 +37,7 @@ describe('newFeatsForOwnerList', () => {
         // @ts-expect-error
         const fail = newFeatsForOwnerList(failOwner, fakeReg)
         assert.equal(fail.length, 1)
-        const find2 = fail.find(a => a.id === 'Armor Training' && a.meetsPrereq)
+        const find2 = fail.find(a => a.id === 'armorTraining' && a.meetsPrereq)
         assert.notExists(find2)
     })
 

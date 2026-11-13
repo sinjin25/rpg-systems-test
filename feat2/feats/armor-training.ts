@@ -3,6 +3,8 @@ import { Feat2 } from "../types";
 
 const displayName = 'Armor Training'
 export default {
+    id: 'armorTraining',
+    hidden: false,
     displayName,
     broadContexts: {
         'max-dex-feat-mod': () => leaf(displayName, 1)

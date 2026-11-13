@@ -55,9 +55,9 @@ describe('Compare difficulties - consecutive wins', () => {
     const fighter1 = createDefaultOwner({})
     let fighter4 = createDefaultOwner({})
 
-    fighter4 = levelUpFighter(fighter4, ['Dodge'])
+    fighter4 = levelUpFighter(fighter4, ['dodge'])
     fighter4 = levelUpFighter(fighter4)
-    fighter4 = levelUpFighter(fighter4, ['Fatiguing Blows'])
+    fighter4 = levelUpFighter(fighter4, ['fatiguingBlows'])
     fighter4 = levelUpFighter(fighter4)
     const players = { fighter1, fighter4 }
     const encounters = {

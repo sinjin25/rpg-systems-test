@@ -4,6 +4,8 @@ import { hasAnyTag } from "../../log2/tags";
 
 const displayName = 'Melee Weapon Fighting'
 export default {
+    id: 'meleeWeaponFighting',
+    hidden: false,
     displayName,
     broadContexts: {
         'attack-feat-mod': (owner, opts) =>

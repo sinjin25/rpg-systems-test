@@ -4,12 +4,13 @@ import { createDefaultOwner } from '../../../actor2'
 import { armors, heavyShield } from '../../../equipment-sheet2/defaults'
 import { findNodeMatching } from '../..'
 import featShieldProficiency from '../../../feat2/feats/shield-proficiency'
+import { deriveFeatKey } from '../../../feat2/registry'
 
 describe('ac-of-equipment', () => {
     test('sums every armor piece, shields included', () => {
         const owner = createDefaultOwner({
             es: { armor: armors['banded mail'], offhand: heavyShield },
-            fs: { [featShieldProficiency.displayName]: featShieldProficiency },
+            fs: { [deriveFeatKey(featShieldProficiency)]: featShieldProficiency },
         })
         const node = acOfEquipment(owner)
         expect(node.total()).toBe(9) // banded mail 7 + heavy shield 2

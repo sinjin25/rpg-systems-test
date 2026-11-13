@@ -3,6 +3,8 @@ import type { Feat2 } from "../types";
 
 export const displayName = 'Improved Rage'
 export const featImprovedRage = {
+    id: 'improvedRage',
+    hidden: false,
     displayName,
     description: 'Improved the bonus provided by rage by 2',
     // see rage.ts

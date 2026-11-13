@@ -6,18 +6,38 @@ type FeatFightStartFunction = (owner: OwnerMaximal) => StatusEffectWrapper | Sta
 
 type FeatPrereqFunction = (owner: OwnerMaximal) => boolean
 
+export type FeatIds =
+    | 'armorTraining'
+    | 'battleFocus'
+    | 'divineProtection'
+    | 'fatiguingBlows'
+    | 'improvedInitiative'
+    | 'improvedRage'
+    | 'rage'
+    | 'hardy'
+    | 'powerAttack'
+    | 'dodge'
+    | 'exoticProficiency'
+    | 'martialProficiency'
+    | 'shieldProficiency'
+    | 'towerShieldProficiency'
+    | 'finesseWeaponFighting'
+    | 'meleeWeaponFighting'
+    | 'shieldMastery'
+    | 'heavyArmorMastery'
+    | 'critFocus'
+    | 'improvedCritical'
+    | 'ambush'
+
 // broadContexts hooks up to log2 tree calcs
 export type Feat2 = ObjectWithBroadContexts & {
-    // replacing from Feat
-    // context: FeatContext replaced by broadContexts
-    // 
-    // from Feat
+    id: string,
+    hidden: boolean,
     description?: string,
     prerequisites?: FeatPrereqFunction,
     onFightStart?: FeatFightStartFunction,
     /* interceptRoll?: InterceptRollFunction, */
     /* trigger?: TriggerHooks, */
-    // from Feat, dead
     tags?: string[],
 }
 
@@ -30,28 +50,6 @@ export type RequiredFeatData = {
     cs: CharacterSheet,
     fs: FeatSheet,
 }
-
-export type FeatIds =
-    | 'Armor Training'
-    | 'Battle Focus'
-    | 'Divine Protection'
-    | 'Fatiguing Blows'
-    | 'Improved Initiative'
-    | 'Improved Rage'
-    | 'Rage'
-    | 'Hardy'
-    | 'Power Attack'
-    | 'Dodge'
-    | 'Exotic Proficiency'
-    | 'Martial Proficiency'
-    | 'Shield Proficiency'
-    | 'Tower Shield Proficiency'
-    | 'Finesse Weapon Fighting'
-    | 'Melee Weapon Fighting'
-    | 'Shield Mastery'
-    | 'Heavy Armor Mastery'
-    | 'Crit Focus'
-    | 'Improved Critical'
 
 export type Feat2Wrapper = {
     id: FeatIds,

@@ -1,4 +1,4 @@
-import { describe, test, assert } from 'vitest'
+import { describe, test, assert, afterAll } from 'vitest'
 import { createDefaultOwner } from '../../actor2'
 import { OwnerMaximal } from '../../actor2/types'
 import { mutationResult, patchCloneWithProposal } from './index'
@@ -12,7 +12,7 @@ import { testUtilCloneOwner } from './clone'
 
 const baseCl: ClassLevel = {
     key: 'fighter',
-    classFeats: ['Hardy'],
+    classFeats: ['hardy'],
     hasFreeFeats: [{ levelHasFreeFeats: true }],
     attackBonus: 1,
     fortitude: 0,
@@ -26,7 +26,7 @@ describe('mutationResult', () => {
         const owner = createDefaultOwner()
         const result = mutationResult(
             { original: owner, clone: owner },
-            { cl: baseCl, chosenFeats: ['Dodge'] }
+            { cl: baseCl, chosenFeats: ['dodge'] }
         )
         assert.equal(result.result.kind, 'failure')
         assert.equal((result.result as any).reason, MutationFailureReasons.improperClone)
@@ -48,7 +48,7 @@ describe('mutationResult', () => {
         const clone = createDefaultOwner()
         const result = mutationResult(
             { original, clone },
-            { cl: baseCl, chosenFeats: ['Dodge', 'Dodge'] }
+            { cl: baseCl, chosenFeats: ['dodge', 'dodge'] }
         )
         assert.equal(result.result.kind, 'failure')
         assert.equal((result.result as any).reason, MutationFailureReasons.duplicateFeat)
@@ -59,7 +59,7 @@ describe('mutationResult', () => {
         const clone = createDefaultOwner()
         const result = mutationResult(
             { original, clone },
-            { cl: baseCl, chosenFeats: ['Hardy'] }
+            { cl: baseCl, chosenFeats: ['hardy'] }
         )
         assert.equal(result.result.kind, 'failure')
         assert.equal((result.result as any).reason, MutationFailureReasons.duplicateFeat)
@@ -72,7 +72,7 @@ describe('mutationResult', () => {
         // path exercised here beyond existence + dupe checks
         const result = mutationResult(
             { original, clone },
-            { cl: baseCl, chosenFeats: ['Dodge'] }
+            { cl: baseCl, chosenFeats: ['dodge'] }
         )
         assert.equal(result.result.kind, 'success')
     })
@@ -82,7 +82,7 @@ describe('mutationResult', () => {
         const clone = createDefaultOwner()
         const result = mutationResult(
             { original, clone },
-            { cl: baseCl, chosenFeats: ['Dodge'] }
+            { cl: baseCl, chosenFeats: ['dodge'] }
         )
         assert.deepEqual(result.result, { kind: 'success' })
         assert.equal(result.original, original)
@@ -93,43 +93,55 @@ describe('mutationResult', () => {
 describe('mutationResult chosen feat order', () => {
     const featA: Feat2 = {
         displayName: 'A',
+        id: 'a',
+        hidden: false,
         broadContexts: {},
     }
     const featB: Feat2 = {
         displayName: 'B',
+        id: 'b',
+        hidden: false,
         broadContexts: {},
-        prerequisites: (o: OwnerMaximal) => 'A' in o.fs,
+        prerequisites: (o: OwnerMaximal) => 'a' in o.fs,
     }
     const featC: Feat2 = {
         displayName: 'C',
+        id: 'c',
+        hidden: false,
         broadContexts: {},
-        prerequisites: (o: OwnerMaximal) => 'Hardy' in o.fs,
+        prerequisites: (o: OwnerMaximal) => 'hardy' in o.fs,
     }
     // featRegistry requires FeatIds as keys
     // @ts-ignore
-    featRegistry.A = featA
+    featRegistry.a = featA
     // @ts-ignore
-    featRegistry.B = featB
+    featRegistry.b = featB
     // @ts-ignore
-    featRegistry.C = featC
+    featRegistry.c = featC
 
     test('a bad pick order (C, B, A) still succeeds', () => {
         const original = createDefaultOwner()
         // ex: supplied by display layer
         const clone = createDefaultOwner({
-            fs: { Hardy: hardy, A: featA, B: featB, C: featC },
+            fs: { hardy: hardy, a: featA, b: featB, c: featC },
         })
 
         const result = mutationResult(
             { original, clone },
             {
-                cl: { ...baseCl, classFeats: ['Hardy'] },
-                chosenFeats: ['C', 'B', 'A'] as any,
+                cl: { ...baseCl, classFeats: ['hardy'] },
+                chosenFeats: ['c', 'b', 'a'] as any,
             }
         )
 
         assert.deepEqual(result.result, { kind: 'success' })
-    })
+    }),
+
+        afterAll(() => {
+            delete featRegistry['a']
+            delete featRegistry['b']
+            delete featRegistry['c']
+        })
 })
 
 describe('Can add abilities', () => {
@@ -142,13 +154,13 @@ describe('Can add abilities', () => {
 
         const patchedClone = patchCloneWithProposal(
             { original: owner, clone: testUtilCloneOwner(owner) },
-            { cl: baseCl, chosenFeats: ['Dodge'] }
+            { cl: baseCl, chosenFeats: ['dodge'] }
         )
         assert.exists(patchedClone)
 
         const result = mutationResult(
             { original: owner, clone: patchedClone! },
-            { cl: baseCl, chosenFeats: ['Dodge'] }
+            { cl: baseCl, chosenFeats: ['dodge'] }
         )
 
         assert.exists(

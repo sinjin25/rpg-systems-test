@@ -4,6 +4,8 @@ import { hasAllTags } from "../../log2/tags";
 
 const displayName = 'Finesse Weapon Fighting'
 export default {
+    id: 'finesseWeaponFighting',
+    hidden: false,
     displayName,
     broadContexts: {
         'attack-feat-mod': (owner, opts) =>

@@ -3,6 +3,8 @@ import { leaf } from "../../log2";
 
 const displayName = 'Improved Critical'
 export default {
+    id: 'improvedCritical',
+    hidden: false,
     displayName,
     broadContexts: {
         'crit-threat-range-mod': () => leaf(displayName, -1),

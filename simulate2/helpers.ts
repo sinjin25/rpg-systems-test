@@ -105,7 +105,7 @@ export const handlePreFight = (
         if (timeTravelReplayer) {
             timeTravelReplayer.appendLog(
                 timeTravel['pre-fight-feat-applied']({
-                    featsTriggered: handlers.map(a => a[1].displayName as FeatIds),
+                    featsTriggered: handlers.map(a => a[1].id as FeatIds),
                     source: snapshotActor(a),
                 })
             )

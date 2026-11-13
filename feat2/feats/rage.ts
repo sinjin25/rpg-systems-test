@@ -4,6 +4,8 @@ import { rage as rageStatus } from '../../status-sheet2/status/index'
 
 const displayName = 'Rage'
 export default {
+    id: 'rage',
+    hidden: false,
     displayName,
     description: 'Increase your stats for X rounds',
     broadContexts: {},

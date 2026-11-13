@@ -5,6 +5,8 @@ import { OwnerMaximal } from "../../actor2/types"
 import { OwnerLog2 } from "../../log2/types"
 
 export const testFeatMeleeWeaponFighting: Feat2 = {
+    id: 'testFeatMeleeWeaponFighting',
+    hidden: false,
     displayName: 'test-feat-melee-weapon-fighting',
     broadContexts: {
         'attack-feat-mod': (owner: OwnerLog2) => hasAnyTag(owner.tags, ['melee'], ['ranged', 'magic']) ? leaf('test-feat-melee-weapon-fighting', 1) : undefined,

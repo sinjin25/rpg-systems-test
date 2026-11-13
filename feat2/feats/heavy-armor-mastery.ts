@@ -4,6 +4,8 @@ import { hasAllTags } from "../../log2/tags";
 
 const displayName = 'Heavy Armor Mastery'
 export default {
+    id: 'heavyArmorMastery',
+    hidden: false,
     displayName,
     broadContexts: {
         'ac-feat-mod': (owner, opts) =>

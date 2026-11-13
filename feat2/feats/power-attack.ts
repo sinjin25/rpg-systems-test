@@ -3,6 +3,8 @@ import { leaf } from "../../log2";
 
 const displayName = 'Power Attack'
 export default {
+    id: 'powerAttack',
+    hidden: false,
     displayName,
     broadContexts: {
         'attack-feat-mod': () => leaf(displayName, 2),

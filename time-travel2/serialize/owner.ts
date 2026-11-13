@@ -6,7 +6,6 @@ import { snapshotStatusSheet } from "./status-effect-instance"
 import { serializeFeatSheet, deserializeFeatSheet } from "./feat-sheet"
 import { serializeAbilitySheet, deserializeAbilitySheet } from "./ability-sheet"
 import type { FrozenEquipmentSheet, OwnerMaximalSnapshot } from "./types"
-import { enemyFeatRegistry } from "../../enemy/goblin/feats"
 
 export const freezeEquipmentSheet = (es: EquipmentSheet): FrozenEquipmentSheet =>
     Object.fromEntries(
@@ -35,15 +34,14 @@ export const deserializeEquipmentSheet = (es: FrozenEquipmentSheet): EquipmentSh
 // catalog values.
 //
 // abilityCatalogFallback is for callers whose live ability catalog isn't the rpg-tests test
-// registry (e.g. rpg-content's full content ability registry) — threaded down to
-// deserializeAbilitySheet the same way enemyFeatRegistry is threaded for feat-sheet.
+// registry (e.g. rpg-content's full content ability registry)
 const snapshotOwner = (owner: OwnerMaximal, abilityCatalogFallback?: AbilityCatalog): OwnerMaximalSnapshot => ({
     // frozen independently of the live cs (see comment above)
     cs: structuredClone(owner.cs),
     // pure blueprint data — no live reference left to alias or mutate
     es: freezeEquipmentSheet(owner.es),
     // frozen independently of the live fs (see comment above)
-    fs: deserializeFeatSheet(serializeFeatSheet(owner.fs), enemyFeatRegistry),
+    fs: deserializeFeatSheet(serializeFeatSheet(owner.fs)),
     rewardId: owner.rewardId,
     // frozen independently of the live as (see comment above)
     as: deserializeAbilitySheet(serializeAbilitySheet(owner.as), abilityCatalogFallback),

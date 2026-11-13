@@ -17,17 +17,17 @@ describe('pre-fight-feat-applied', () => {
         handlePreFight([a], replayer)
 
         // the feat actually ran: Rage's status landed on the actor's own sheet
-        assert.exists(a.owner.ss['Rage'])
-        assert.equal(a.owner.ss['Rage'].length, 1)
+        assert.exists(a.owner.ss['rage'])
+        assert.equal(a.owner.ss['rage'].length, 1)
 
         // and it's visible on the TT log too
         assert.equal(replayer.logs.length, 1)
         const log = replayer.logs[0]!
         assert.equal(log.kind, 'pre-fight-feat-applied')
         if (log.kind !== 'pre-fight-feat-applied') return
-        assert.deepEqual(log.featsTriggered, ['Rage'])
-        assert.exists(log.source.owner.ss['Rage'])
-        assert.equal(log.source.owner.ss['Rage'].length, 1)
-        assert.equal(log.source.owner.ss['Rage'][0]!.displayName, 'Rage')
+        assert.deepEqual(log.featsTriggered, ['rage'])
+        assert.exists(log.source.owner.ss['rage'])
+        assert.equal(log.source.owner.ss['rage'].length, 1)
+        assert.equal(log.source.owner.ss['rage'][0]!.displayName, 'Rage')
     })
 })

@@ -5,6 +5,8 @@ import { divineProtection as dpStatus } from "../../status-sheet2";
 
 const displayName = 'Divine Protection'
 export default {
+    id: 'divineProtection',
+    hidden: false,
     displayName,
     broadContexts: {},
     description: 'Gain 1d4 temporary AC for 1d4 rounds',

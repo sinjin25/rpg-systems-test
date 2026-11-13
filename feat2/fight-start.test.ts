@@ -9,6 +9,8 @@ const testStatus = makeWrapper({
     broadContexts: {},
 })
 const testFeat: Feat2 = {
+    id: 'abcdefg',
+    hidden: false,
     broadContexts: {},
     displayName: 'abcdefg',
     onFightStart: () => {

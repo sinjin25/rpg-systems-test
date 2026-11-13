@@ -8,11 +8,11 @@ export default {
     will: [0, 0, 1, 0, 0],
     attackBonus: [1, 1, 1, 1, 1],
     classFeats: [
-        [deriveFeatKey(registry['Martial Proficiency']), deriveFeatKey(registry['Shield Proficiency']),],
-        [deriveFeatKey(registry['Hardy']),],
+        [deriveFeatKey(registry['martialProficiency']), deriveFeatKey(registry['shieldProficiency']),],
+        [deriveFeatKey(registry['hardy']),],
         [
-            deriveFeatKey(registry['Power Attack']),
-            deriveFeatKey(registry['Armor Training']),
+            deriveFeatKey(registry['powerAttack']),
+            deriveFeatKey(registry['armorTraining']),
         ],
         [],
         [],

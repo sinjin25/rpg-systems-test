@@ -4,6 +4,8 @@ import fbStatus from '../../status-sheet2/status/fatiguing-blows'
 
 const displayName = 'Fatiguing Blows'
 export default {
+    id: 'fatiguingBlows',
+    hidden: false,
     displayName,
     description: 'Debuffs the enemy when you miss within a certain range',
     broadContexts: {},

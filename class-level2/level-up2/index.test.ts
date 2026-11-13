@@ -8,7 +8,7 @@ const pickFighter = (options: ClassLevel[]) => {
     return options.find(a => a.key === 'fighter')!
 }
 
-const levelUpFighter = (original: ReturnType<typeof createDefaultOwner>, chosenFeats: string[] = ['Power Attack']) => {
+const levelUpFighter = (original: ReturnType<typeof createDefaultOwner>, chosenFeats: string[] = ['powerAttack']) => {
     const clone = testUtilCloneOwner(original)
     const cl = pickFighter(newLevelUpProposal(original).classLevelList)
     return patchCloneWithProposal({ original, clone }, { cl, chosenFeats: chosenFeats as any }) ?? original

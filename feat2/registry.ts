@@ -19,11 +19,12 @@ import shieldMastery from './feats/shield-mastery'
 import heavyArmorMastery from './feats/heavy-armor-mastery'
 import critFocus from './feats/crit-focus'
 import improvedCritical from './feats/improved-critical'
+import ambush from './feats/enemy/ambush'
 // do not include in registry
 import { testFeatMeleeWeaponFighting } from './feats/test-feats'
 
 // generic lets constants derive the key in the editor (as a string literal)
-export const deriveFeatKey = <F extends Feat2>(feat: F): F['displayName'] => feat.displayName
+export const deriveFeatKey = <F extends Feat2>(feat: F): F['id'] => feat.id
 
 // missing or extra keys vs FeatIds are a type error here
 export const registry = {
@@ -47,6 +48,7 @@ export const registry = {
     [deriveFeatKey(heavyArmorMastery)]: heavyArmorMastery,
     [deriveFeatKey(critFocus)]: critFocus,
     [deriveFeatKey(improvedCritical)]: improvedCritical,
+    [deriveFeatKey(ambush)]: ambush,
 } satisfies Record<FeatIds, Feat2>
 
 export {
@@ -70,6 +72,7 @@ export {
     heavyArmorMastery,
     critFocus,
     improvedCritical,
+    ambush,
 }
 
 export default registry

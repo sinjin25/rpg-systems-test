@@ -6,6 +6,7 @@ import { makeWrapper } from "../instance";
 const displayName: AllStatusEffects = 'flat-footed'
 
 const status = (duration: number) => makeWrapper({
+    id: 'flatFooted',
     displayName,
     broadContexts: {
         'max-dex-of-equipment': (owner: OwnerMaximal) => {

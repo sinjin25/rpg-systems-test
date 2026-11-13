@@ -5,7 +5,7 @@ import { makeWrapper, newStatusInstance } from './index'
 
 describe('makeWrapper / newStatusInstance', () => {
     test('defaults stack to highest and mints an instance pointing back at the definition', () => {
-        const w = makeWrapper({ displayName: 'buff', broadContexts: {} })
+        const w = makeWrapper({ id: 'buff', displayName: 'buff', broadContexts: {} })
         assert.equal(w.stack.kind, 'highest')
 
         const source = createDefaultOwner()
@@ -18,6 +18,7 @@ describe('makeWrapper / newStatusInstance', () => {
     test('passes expiration through and freezes the tick mod once, at apply time', () => {
         let modCalls = 0
         const w = makeWrapper({
+            id: 'dot',
             displayName: 'dot',
             broadContexts: {},
             tick: {

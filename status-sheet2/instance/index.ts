@@ -12,8 +12,8 @@ import type {
     ResolvedTickCalc,
 } from "../types";
 
-// a status definition minus the stack policy, which makeWrapper defaults to 'highest'.
-type StatusDefinition = Omit<StatusEffect, 'stack'> & { stack?: StatusEffectStack }
+// a status definition minus the stack policy (defaults to 'highest') and hidden (defaults to false)
+type StatusDefinition = Omit<StatusEffect, 'stack' | 'hidden'> & { stack?: StatusEffectStack, hidden?: boolean }
 
 export const newStatusInstance = (
     st: StatusEffectWrapper,
@@ -41,12 +41,13 @@ type MakeWrapperOpts = {
     expiration?: StatusExpiration | (() => StatusExpiration)
 }
 
-// builds the wrapper + default factory; stack defaults to 'highest'
-export const makeWrapper = (
-    statusEffect: StatusDefinition,
+// this return type works but it's a mess
+// revisit at some point
+export const makeWrapper = <const D extends StatusDefinition>(
+    statusEffect: D,
     opts: MakeWrapperOpts = {}
-): StatusEffectWrapper => {
-    const pointer: StatusEffect = { stack: { kind: 'highest' }, ...statusEffect }
+) => {
+    const pointer = { stack: { kind: 'highest' as const }, hidden: false, ...statusEffect }
     const factory: StatusEffectInstanceFactory = (source) => ({
         pointer,
         source, // as in the caster, not the definition

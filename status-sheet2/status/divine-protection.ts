@@ -12,6 +12,7 @@ const divineProtection = (
     acBonus ??= r(4)
     duration ??= r(4)
     return makeWrapper({
+        id: 'divineProtection',
         displayName: 'Divine Protection',
         broadContexts: {
             'ac-status-mod': () => leaf('Divine Protection', acBonus),

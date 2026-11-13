@@ -2,8 +2,8 @@ import { createDefaultOwner } from '../actor2'
 import { addStatusToStatusSheet, getStatusKey, makeWrapper } from './index.ts'
 import { describe, test, assert } from 'vitest'
 
-const buff = makeWrapper({ displayName: 'buff', broadContexts: {} })
-const other = makeWrapper({ displayName: 'other', broadContexts: {} })
+const buff = makeWrapper({ id: 'buff', displayName: 'buff', broadContexts: {} })
+const other = makeWrapper({ id: 'other', displayName: 'other', broadContexts: {} })
 
 describe('addStatusToStatusSheet', () => {
     test('mints an instance under the displayName key, recording the creator as source', () => {

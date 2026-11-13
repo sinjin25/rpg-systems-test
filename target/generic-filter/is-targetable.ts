@@ -3,6 +3,7 @@
 import { getStatusKey, makeWrapper } from "../../status-sheet2";
 import { GenericFilter } from "./types";
 export const demoUntargetable = makeWrapper({
+    id: 'untargetable',
     broadContexts: {},
     displayName: 'untargetable',
     description: 'This foe cannot be targeted',

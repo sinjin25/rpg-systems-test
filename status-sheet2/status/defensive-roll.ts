@@ -4,6 +4,7 @@ import { makeWrapper } from "../instance";
 
 const displayName = `Defensive Roll`
 const defensiveRoll = makeWrapper({
+    id: 'defensiveRoll',
     displayName,
     broadContexts: {
         'damage-taken-status-mod': (owner, opts = {}) => {

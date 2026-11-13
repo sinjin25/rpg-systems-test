@@ -44,7 +44,7 @@ describe('battle-focus', () => {
         decayRoundsElapsed(owner, 1)
         // should be replaced by a new status under a new key
         assert.notExists(owner.ss.battleFocus)
-        const obj2 = owner.ss['Battle Focus (Active)']![0]!
+        const obj2 = owner.ss['battleFocusActive']![0]!
         assert.notEqual(obj.pointer.displayName, obj2.pointer.displayName)
         assert.equal(obj2.pointer.displayName, 'Battle Focus (Active)')
     })

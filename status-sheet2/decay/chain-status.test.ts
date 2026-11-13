@@ -5,8 +5,8 @@ import { chainStatus } from './chain-status'
 import { expireStatus } from './expire-status'
 import { DecayChainStatusLog } from './types'
 
-const followup = makeWrapper({ displayName: 'st2', broadContexts: {} })
-const chaining = makeWrapper({ displayName: 'st1', broadContexts: {}, onExpiration: () => followup })
+const followup = makeWrapper({ id: 'st2', displayName: 'st2', broadContexts: {} })
+const chaining = makeWrapper({ id: 'st1', displayName: 'st1', broadContexts: {}, onExpiration: () => followup })
 
 describe('chainStatus', () => {
     test('mints the follow-up instance under its displayName, inheriting the source', () => {
@@ -25,7 +25,7 @@ describe('chainStatus', () => {
 
     test('does nothing when there is no onExpiration, or no instance', () => {
         const owner = createDefaultOwner()
-        const noChain = newStatusInstance(makeWrapper({ displayName: 'x', broadContexts: {} }), owner)
+        const noChain = newStatusInstance(makeWrapper({ id: 'x', displayName: 'x', broadContexts: {} }), owner)
 
         assert.equal(chainStatus(owner, noChain), undefined)
         assert.equal(chainStatus(owner, undefined), undefined)
@@ -36,6 +36,7 @@ describe('chainStatus', () => {
         const owner = createDefaultOwner()
         let existedDuringCallback: boolean | undefined
         const w = makeWrapper({
+            id: 'test',
             displayName: 'test',
             broadContexts: {},
             onExpiration: () => { existedDuringCallback = owner.ss['test'] !== undefined; return undefined },

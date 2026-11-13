@@ -5,6 +5,7 @@ import { makeWrapper } from '../status-sheet2/index.ts'
 import { createDefaultOwner } from '../actor2/index.ts'
 
 const testStatus = makeWrapper({
+    id: 'testfeatstatus',
     displayName: 'testfeatstatus',
     broadContexts: {},
 })

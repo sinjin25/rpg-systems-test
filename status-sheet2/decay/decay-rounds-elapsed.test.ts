@@ -4,7 +4,7 @@ import { createDefaultOwner } from '../../actor2'
 import { decayRoundsElapsed } from './decay-rounds-elapsed'
 
 const roundsBuff = (remaining: number) =>
-    makeWrapper({ displayName: 'buff', broadContexts: {} }, { expiration: { kind: 'rounds-elapsed', remaining } })
+    makeWrapper({ id: 'buff', displayName: 'buff', broadContexts: {} }, { expiration: { kind: 'rounds-elapsed', remaining } })
 
 describe('decayRoundsElapsed', () => {
     test('decrements per-instance remaining and expires the instance at zero', () => {
@@ -20,7 +20,7 @@ describe('decayRoundsElapsed', () => {
 
     test('ignores instances whose expiration is not rounds-elapsed', () => {
         const owner = createDefaultOwner()
-        const speed = makeWrapper({ displayName: 'slow', broadContexts: {} }, { expiration: { kind: 'speed-elapsed', remaining: 1 } })
+        const speed = makeWrapper({ id: 'slow', displayName: 'slow', broadContexts: {} }, { expiration: { kind: 'speed-elapsed', remaining: 1 } })
         addStatusToStatusSheet(owner, owner, roundsBuff(1), speed)
 
         decayRoundsElapsed(owner, 5)
@@ -30,9 +30,9 @@ describe('decayRoundsElapsed', () => {
 
     test('chains into the follow-up status when an instance expires', () => {
         const owner = createDefaultOwner()
-        const followup = makeWrapper({ displayName: 'next', broadContexts: {} })
+        const followup = makeWrapper({ id: 'next', displayName: 'next', broadContexts: {} })
         const charge = makeWrapper(
-            { displayName: 'charge', broadContexts: {}, onExpiration: () => followup },
+            { id: 'charge', displayName: 'charge', broadContexts: {}, onExpiration: () => followup },
             { expiration: { kind: 'rounds-elapsed', remaining: 1 } },
         )
         addStatusToStatusSheet(owner, owner, charge)

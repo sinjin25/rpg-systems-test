@@ -10,9 +10,9 @@ export const inst = (
     source: OwnerMaximal = {} as OwnerMaximal,
 ): StatusEffectInstance => newStatusInstance(w, source)
 
-// seed one instance per given wrapper, keyed by displayName (mirrors addStatusToStatusSheet)
+// seed one instance per given wrapper, keyed by id (mirrors addStatusToStatusSheet)
 export const seed = (...wrappers: StatusEffectWrapper[]): Record<string, StatusEffectInstance[]> => {
     const ss: Record<string, StatusEffectInstance[]> = {}
-    for (const w of wrappers) (ss[w.displayName] ??= []).push(inst(w))
+    for (const w of wrappers) (ss[w.id] ??= []).push(inst(w))
     return ss
 }

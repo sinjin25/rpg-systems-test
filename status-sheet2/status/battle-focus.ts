@@ -7,6 +7,7 @@ export const BATTLE_FOCUS_DAMAGE_BONUS = 4
 
 const displayName = 'Battle Focus (Active)'
 export const battleFocusActiveStatus = () => makeWrapper({
+    id: 'battleFocusActive',
     displayName,
     description: 'Combat prowess increased after charging up',
     broadContexts: {
@@ -19,6 +20,7 @@ export const battleFocusActiveStatus = () => makeWrapper({
 
 const displayName2 = 'Battle Focus'
 export const battleFocusChargingStatus = (roundsUntilActive: number) => makeWrapper({
+    id: 'battleFocus',
     displayName: displayName2,
     broadContexts: {},
     onExpiration: () => battleFocusActiveStatus(),

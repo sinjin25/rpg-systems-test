@@ -7,6 +7,7 @@ import { addStatusToStatusSheet, makeWrapper } from './index'
 import { calculateDamageTicks, calculateHealTicks } from './tick'
 
 const damageDot = makeWrapper({
+    id: 'dot',
     displayName: 'dot',
     broadContexts: {},
     tick: {
@@ -21,6 +22,8 @@ describe('calculateDamageTicks', () => {
     test('combines base + frozen mod, then applies the live target-side reduction', () => {
         const receiver = createDefaultOwner()
         const dotDefense: Feat2 = {
+            id: 'dotDefense',
+            hidden: false,
             displayName: 'dot-defense',
             broadContexts: { 'damage-over-time-taken-feat-mod': () => leaf('dot-defense', -1) },
         }
@@ -43,6 +46,7 @@ describe('calculateHealTicks', () => {
     test('produces a heal node for tick.calculateHeal statuses', () => {
         const receiver = createDefaultOwner()
         const hot = makeWrapper({
+            id: 'hot',
             displayName: 'hot',
             broadContexts: {},
             tick: {

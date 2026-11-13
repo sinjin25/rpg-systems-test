@@ -6,7 +6,7 @@ import { describe, test, assert } from 'vitest'
 
 describe('decaySpeedElapsed', () => {
     const speedBuff = (): StatusEffectInstance => ({
-        pointer: { displayName: 'test speed status', broadContexts: {}, stack: { kind: 'highest' } },
+        pointer: { id: 'testSpeedStatus', hidden: false, displayName: 'test speed status', broadContexts: {}, stack: { kind: 'highest' } },
         source: {} as OwnerMaximal,
         expiration: { kind: 'speed-elapsed', remaining: 10 },
     })

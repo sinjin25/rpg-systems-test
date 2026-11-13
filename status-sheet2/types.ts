@@ -51,7 +51,25 @@ export type StatusEffectInstance = {
 
 export type StatusEffectInstanceFactory = (source: OwnerMaximal) => StatusEffectInstance
 
+export type StatusIds =
+    | 'battleFocus'
+    | 'battleFocusActive'
+    | 'bearsEndurance'
+    | 'bless'
+    | 'bullsStrength'
+    | 'burningWeapon'
+    | 'catsGrace'
+    | 'defensiveRoll'
+    | 'divineProtection'
+    | 'fatiguingBlows'
+    | 'flatFooted'
+    | 'ignite'
+    | 'rage'
+    | 'studiedTarget'
+
 export type StatusEffect = {
+    id: string,
+    hidden: boolean,
     displayName: string,
     description?: string,
     broadContexts: ObjectWithBroadContexts['broadContexts']

@@ -9,6 +9,7 @@ import { makeWrapper } from '../instance'
 const displayName = 'ignite'
 
 const ignite = makeWrapper({
+    id: 'ignite',
     displayName,
     broadContexts: {},
     tick: {

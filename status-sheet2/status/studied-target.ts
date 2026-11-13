@@ -4,6 +4,7 @@ import { makeWrapper } from "../instance";
 const mod = -1
 
 const studiedTarget = makeWrapper({
+    id: 'studiedTarget',
     displayName: 'Studied Target',
     broadContexts: {
         'ac-status-mod': () => leaf('Studied Target', mod),

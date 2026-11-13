@@ -26,7 +26,7 @@ const testWeapon: BaseEquipment = {
 }
 
 const makeOwner = (data: { improved?: boolean, raging?: boolean, weapon?: BaseEquipment } = {}) => {
-    const fs: FeatSheet = data.improved ? { [featImprovedRage.displayName]: featImprovedRage } : {}
+    const fs: FeatSheet = data.improved ? { [featImprovedRage.id]: featImprovedRage } : {}
     const owner = createDefaultOwner({
         cs: { str: 10, dex: 10 },
         fs,

@@ -10,6 +10,7 @@ import { hasAllTags } from '../tags'
 
 // +2 attack, but only on a melee weapon
 const meleeBless = makeWrapper({
+    id: 'meleeBless',
     displayName: 'Melee Bless',
     broadContexts: {
         'attack-status-mod': (o, opts) => hasAllTags(opts.tags ?? [], ['melee']) ? leaf('Melee Bless', 2) : undefined,
@@ -17,6 +18,7 @@ const meleeBless = makeWrapper({
 })
 
 const rangedOnly = makeWrapper({
+    id: 'rangedOnly',
     displayName: 'Ranged Only',
     broadContexts: {
         'attack-status-mod': (o: OwnerLog2, opts) => hasAllTags(opts.tags ?? [], ['ranged']) ? leaf('Ranged Only', 2) : undefined,

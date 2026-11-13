@@ -6,6 +6,7 @@ import statusContribution from './status-contribution'
 
 const twoInstances = (kind: 'stack' | 'highest') => {
     const w = makeWrapper({
+        id: 'atk',
         displayName: 'atk',
         broadContexts: { 'attack-status-mod': () => leaf('atk', 3) },
         stack: { kind },

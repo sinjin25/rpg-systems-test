@@ -27,6 +27,7 @@ describe('Speed works', () => {
             }
         }
         const speedStatus = makeWrapper({
+            id: 'sps',
             displayName: 'sps',
             broadContexts: {
                 'speed-status-mod': () => leaf('sps', 2)

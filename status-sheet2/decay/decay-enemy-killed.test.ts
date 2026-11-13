@@ -11,7 +11,7 @@ describe('decayEnemyKilled', () => {
         enemy: { health: { curr: number } },
         onExpiration?: () => StatusEffectWrapper,
     ): StatusEffectInstance => ({
-        pointer: { displayName: 'killedBuff', broadContexts: {}, stack: { kind: 'highest' }, onExpiration },
+        pointer: { id: 'killedBuff', hidden: false, displayName: 'killedBuff', broadContexts: {}, stack: { kind: 'highest' }, onExpiration },
         source: {} as OwnerMaximal,
         expiration: { kind: 'enemy-killed', enemy },
     })
@@ -48,7 +48,7 @@ describe('decayEnemyKilled', () => {
         const owner = createDefaultOwner({
             ss: {
                 test: [{
-                    pointer: { displayName: 'roundsBuff', broadContexts: {}, stack: { kind: 'highest' } },
+                    pointer: { id: 'roundsBuff', hidden: false, displayName: 'roundsBuff', broadContexts: {}, stack: { kind: 'highest' } },
                     source: {} as OwnerMaximal,
                     expiration: { kind: 'rounds-elapsed', remaining: 3 },
                 }]
@@ -61,11 +61,11 @@ describe('decayEnemyKilled', () => {
 
     test('runs onExpiration when the enemy dies', () => {
         const enemy = goblin()
-        const followUp = makeWrapper({ displayName: 'follow up', broadContexts: {} })
+        const followUp = makeWrapper({ id: 'followUp', displayName: 'follow up', broadContexts: {} })
         const owner = createDefaultOwner({ ss: { test: [killedBuff(enemy, () => followUp)] } })
 
         decayEnemyKilled([owner], enemy)
         assert.notExists(owner.ss.test)
-        assert.equal(owner.ss['follow up']![0]!.pointer.displayName, 'follow up')
+        assert.equal(owner.ss['followUp']![0]!.pointer.displayName, 'follow up')
     })
 })

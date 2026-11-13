@@ -96,7 +96,7 @@ describe('cloneExperience', () => {
 
 describe('cloneStatusSheet', () => {
     const buff = makeWrapper(
-        { displayName: 'bless', broadContexts: {} },
+        { id: 'bless', displayName: 'bless', broadContexts: {} },
         { expiration: { kind: 'rounds-elapsed', remaining: 3 } },
     )
 

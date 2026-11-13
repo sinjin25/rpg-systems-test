@@ -6,6 +6,7 @@ export const FATIGUING_BLOWS_ROUNDS = 3
 
 const displayName = 'Fatiguing Blows'
 const fatiguingBlows = makeWrapper({
+    id: 'fatiguingBlows',
     displayName,
     broadContexts: {
         'attack-status-mod': () => leaf(displayName, MOD),

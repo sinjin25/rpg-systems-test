@@ -7,12 +7,14 @@ describe('deserializeFeatSheet', () => {
     test('Needs a fallback for enemies/test feats to deserialize', () => {
         // this is not necessarily a problem because registries are pointer anyway
         const fakeFeat: Feat2 = {
+            id: 'random',
+            hidden: false,
             displayName: 'random',
             broadContexts: {},
         }
 
         const owner = createDefaultOwner({
-            fs: { [fakeFeat.displayName]: fakeFeat }
+            fs: { [fakeFeat.id]: fakeFeat }
         })
 
         const serialize = serializeFeatSheet(owner.fs)

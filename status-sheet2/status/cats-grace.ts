@@ -4,6 +4,7 @@ import { makeWrapper } from "../instance";
 const mod = 4
 
 const catsGrace = makeWrapper({
+    id: 'catsGrace',
     displayName: 'cats-grace',
     broadContexts: {
         'dex-from-status': (owner) => leaf('cats-grace', mod),

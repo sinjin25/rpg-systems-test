@@ -21,6 +21,8 @@ describe('ignite', () => {
     test('freezes the source damage-over-time bonus at apply time', () => {
         const source = createDefaultOwner()
         const dotPlus: Feat2 = {
+            id: 'dotPlus',
+            hidden: false,
             displayName: 'dot-plus',
             broadContexts: { 'damage-over-time-feat-mod': () => leaf('dot-plus', 10) },
         }

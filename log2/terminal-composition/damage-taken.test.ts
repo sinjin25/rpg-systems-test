@@ -13,6 +13,7 @@ import { BaseEquipment } from '../../equipment-sheet2/types'
 import { SLOT_TYPE } from '../../equipment-sheet2/defaults'
 
 const dtStatus = (amount: number) => makeWrapper({
+    id: 'testDt',
     displayName: 'Test DT',
     broadContexts: { 'damage-taken-status-mod': () => leaf('Test DT', amount) },
 })

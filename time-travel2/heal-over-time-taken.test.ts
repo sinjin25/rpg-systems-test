@@ -9,6 +9,7 @@ import snapshotActor from "./snapshot/actor.ts";
 
 // regen has no dedicated status yet, so compose one inline the way ignite composes damage
 const regen = makeWrapper({
+    id: 'regen',
     displayName: 'regen',
     broadContexts: {},
     tick: {

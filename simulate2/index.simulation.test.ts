@@ -24,6 +24,7 @@ describe('Integration: TimeTravel', () => {
         const onFireEnemy = createDefaultOwner()
         // add second for more testing
         const poison = makeWrapper({
+            id: 'poison',
             broadContexts: {},
             displayName: 'poison',
             description: '',

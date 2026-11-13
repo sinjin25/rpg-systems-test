@@ -15,6 +15,7 @@ import { fakeCharacterLevels } from '../../character-sheet'
 
 // +2 attack on a finesse weapon
 const finesseBless = makeWrapper({
+    id: 'finesseBless',
     displayName: 'Finesse Bless',
     broadContexts: {
         'attack-status-mod': (o, opts) => hasAllTags(opts.tags ?? [], ['finesse']) ? leaf('Finesse Bless', 2) : undefined,

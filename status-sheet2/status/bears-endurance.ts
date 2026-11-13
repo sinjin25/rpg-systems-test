@@ -5,6 +5,7 @@ const mod = 8
 const displayName = 'bears-endurance'
 
 const bearsEndurance = makeWrapper({
+    id: 'bearsEndurance',
     displayName,
     broadContexts: {
         'con-from-status': (owner) => leaf(displayName, mod),

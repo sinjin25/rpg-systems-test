@@ -10,6 +10,7 @@ const displayName = 'Burning (Burning Weapon)'
 const dc = leaf(displayName, BURNING_WEAPON_SAVE_DC)
 
 export const burningWeaponStatus = makeWrapper({
+    id: 'burningWeapon',
     displayName,
     description: 'Reflex save each round to put out the flames',
     broadContexts: {},

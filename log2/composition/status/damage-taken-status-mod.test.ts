@@ -6,6 +6,7 @@ import { makeWrapper } from '../../../status-sheet2'
 import { inst } from '../../../status-sheet2/testing'
 
 const dtStatus = (amount: number) => makeWrapper({
+    id: 'testDt',
     displayName: 'Test DT',
     broadContexts: { 'damage-taken-status-mod': () => leaf('Test DT', amount) },
 })

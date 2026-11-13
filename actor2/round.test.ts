@@ -91,7 +91,7 @@ describe('Round reports participants who are ready to act', () => {
 
     test('a speed-elapsed status decays alongside the participant\'s speed rolls', () => {
         const ss: StatusSheet = {
-            test: [inst(makeWrapper({ displayName: 'test', broadContexts: {} }, { expiration: { kind: 'speed-elapsed', remaining: 200 } }))],
+            test: [inst(makeWrapper({ id: 'test', displayName: 'test', broadContexts: {} }, { expiration: { kind: 'speed-elapsed', remaining: 200 } }))],
         }
         const p = instantiateActor(defaultPerson())
         p.owner.ss = ss

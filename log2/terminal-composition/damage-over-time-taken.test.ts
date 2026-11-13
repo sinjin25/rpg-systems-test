@@ -36,6 +36,7 @@ describe('damage-taken (terminal)', () => {
         }
     })
     const stackingDot = makeWrapper({
+        id: 'stackingDot',
         broadContexts: {},
         displayName: 'stacking-dot',
         stack: {

@@ -9,17 +9,18 @@ export const RAGE_DAMAGE_BONUS = 2
 
 const displayName = 'Rage'
 export const rageStatus = makeWrapper({
+    id: 'rage',
     displayName,
     description: 'Increased combat prowess for a number of rounds',
     broadContexts: {
         "attack-status-mod": (o: OwnerMaximal) => {
-            const hasImprovedRage = !!o.fs[featImprovedRage.displayName]
+            const hasImprovedRage = !!o.fs[featImprovedRage.id]
             let bonus = RAGE_ATTACK_BONUS
             if (hasImprovedRage) bonus += 2
             return leaf(displayName, bonus)
         },
         "crit-scalable-damage-status-mod": (o: OwnerMaximal) => {
-            const hasImprovedRage = !!o.fs[featImprovedRage.displayName]
+            const hasImprovedRage = !!o.fs[featImprovedRage.id]
             let bonus = RAGE_DAMAGE_BONUS
             if (hasImprovedRage) bonus += 2
             return leaf(displayName, bonus)

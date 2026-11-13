@@ -10,7 +10,7 @@ describe('expireStatusesAfterFight', () => {
         displayName = 'afterBattleBuff',
         onExpiration?: () => StatusEffectWrapper,
     ): StatusEffectInstance => ({
-        pointer: { displayName, broadContexts: {}, stack: { kind: 'highest' }, persists: { afterBattle: true }, onExpiration },
+        pointer: { id: displayName, hidden: false, displayName, broadContexts: {}, stack: { kind: 'highest' }, persists: { afterBattle: true }, onExpiration },
         source: {} as OwnerMaximal,
     })
 
@@ -25,7 +25,7 @@ describe('expireStatusesAfterFight', () => {
         const owner: DecayOwner = createDefaultOwner({
             ss: {
                 test: [{
-                    pointer: { displayName: 'remove', broadContexts: {}, stack: { kind: 'highest' }, persists: { afterBattle: false } },
+                    pointer: { id: 'remove', hidden: false, displayName: 'remove', broadContexts: {}, stack: { kind: 'highest' }, persists: { afterBattle: false } },
                     source: {} as OwnerMaximal,
                 }]
             }
@@ -39,7 +39,7 @@ describe('expireStatusesAfterFight', () => {
         const owner: DecayOwner = createDefaultOwner({
             ss: {
                 test: [{
-                    pointer: { displayName: 'permanent', broadContexts: {}, stack: { kind: 'highest' } },
+                    pointer: { id: 'permanent', hidden: false, displayName: 'permanent', broadContexts: {}, stack: { kind: 'highest' } },
                     source: {} as OwnerMaximal,
                 }]
             }
@@ -50,11 +50,13 @@ describe('expireStatusesAfterFight', () => {
     })
 
     test('runs onExpiration (chainStatus) for the statuses it removes', () => {
-        const followUp = makeWrapper({ displayName: 'follow up', broadContexts: {} })
+        const followUp = makeWrapper({ id: 'followUp', displayName: 'follow up', broadContexts: {} })
         const owner: DecayOwner = createDefaultOwner({
             ss: {
                 test: [{
                     pointer: {
+                        id: 'remove',
+                        hidden: false,
                         displayName: 'remove',
                         broadContexts: {},
                         stack: { kind: 'highest' },
@@ -68,6 +70,6 @@ describe('expireStatusesAfterFight', () => {
 
         expireStatusesAfterFight(owner)
         assert.notExists(owner.ss.test)
-        assert.equal(owner.ss['follow up']![0]!.pointer.displayName, 'follow up')
+        assert.equal(owner.ss['followUp']![0]!.pointer.displayName, 'follow up')
     })
 })

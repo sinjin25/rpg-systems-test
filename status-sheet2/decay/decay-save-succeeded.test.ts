@@ -17,7 +17,7 @@ describe('decaySaveSucceeded', () => {
     const NAT_1_THEN_NAT_20 = 79
 
     const saveBuff = (dc: ModNode, onExpiration?: () => StatusEffectWrapper): StatusEffectInstance => ({
-        pointer: { displayName: 'saveBuff', broadContexts: {}, stack: { kind: 'highest' }, onExpiration },
+        pointer: { id: 'saveBuff', hidden: false, displayName: 'saveBuff', broadContexts: {}, stack: { kind: 'highest' }, onExpiration },
         source: {} as OwnerMaximal,
         expiration: { kind: 'save-succeeded', saveType: 'reflex', dc },
     })
@@ -77,7 +77,7 @@ describe('decaySaveSucceeded', () => {
         const owner = createDefaultOwner({
             ss: {
                 test: [{
-                    pointer: { displayName: 'roundsBuff', broadContexts: {}, stack: { kind: 'highest' } },
+                    pointer: { id: 'roundsBuff', hidden: false, displayName: 'roundsBuff', broadContexts: {}, stack: { kind: 'highest' } },
                     source: {} as OwnerMaximal,
                     expiration: { kind: 'rounds-elapsed', remaining: 3 },
                 }]
@@ -89,12 +89,12 @@ describe('decaySaveSucceeded', () => {
     })
 
     test('runs onExpiration when the save succeeds', () => {
-        const followUp = makeWrapper({ displayName: 'follow up', broadContexts: {} })
+        const followUp = makeWrapper({ id: 'followUp', displayName: 'follow up', broadContexts: {} })
         const owner = createDefaultOwner()
         owner.ss.test = [saveBuff(leaf('who cares', 1), () => followUp)]
 
         decaySaveSucceeded(owner, { rollInstance: createRoll(NAT_20) })
         assert.notExists(owner.ss.test)
-        assert.equal(owner.ss['follow up']![0]!.pointer.displayName, 'follow up')
+        assert.equal(owner.ss['followUp']![0]!.pointer.displayName, 'follow up')
     })
 })

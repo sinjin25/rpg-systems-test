@@ -16,6 +16,7 @@ const weapon = (dmg: number): BaseEquipment =>
 })
 
 const st = makeWrapper({
+    id: 'testDamageStatus',
     displayName: 'test-damage-status',
     broadContexts: {
         'crit-scalable-damage-status-mod': () => leaf('test-damage-status', 2)

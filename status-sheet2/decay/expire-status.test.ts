@@ -3,7 +3,7 @@ import { addStatusToStatusSheet, makeWrapper, newStatusInstance } from '..'
 import { createDefaultOwner } from '../../actor2'
 import { expireStatus } from './expire-status'
 
-const buff = makeWrapper({ displayName: 'buff', broadContexts: {}, stack: { kind: 'stack' } })
+const buff = makeWrapper({ id: 'buff', displayName: 'buff', broadContexts: {}, stack: { kind: 'stack' } })
 
 describe('expireStatus', () => {
     test('removes a single instance and deletes the key once empty', () => {

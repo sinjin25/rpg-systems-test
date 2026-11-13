@@ -4,6 +4,7 @@
 import type { Actor2 } from "../../actor2/types"
 import type { FinalStandardActionResult, StandardActionResult } from "../../actor2/act"
 import type { ModNode } from "../../log2"
+import type { ModNodeOpts } from "../../log2/types"
 import type { TargetPriority } from "../../target/types"
 import type { AbilityCastType } from "../types"
 import type { AbilityPayload } from "../abilities2/types"
@@ -23,9 +24,9 @@ type SARNodeField = Exclude<keyof StandardActionResult, 'relevantSlot'>
 
 type SARAugment = {
     // replace calculation entirely; may read live state
-    override?: (source: Actor2, target: Actor2) => ModNode,
+    override?: (source: Actor2, target: Actor2, opts: ModNodeOpts) => ModNode,
     // add a child to a calculation; a static ModNode or a function of live state
-    mod?: ModNode | ((source: Actor2, target: Actor2) => ModNode),
+    mod?: ModNode | ((source: Actor2, target: Actor2, opts: ModNodeOpts) => ModNode),
 }
 
 type SARAugments = Partial<Record<SARNodeField, SARAugment>>
@@ -34,7 +35,7 @@ type SARAugments = Partial<Record<SARNodeField, SARAugment>>
 // back to the source - applied only because this hook fired (e.g. recoil/self-buff on a hit).
 export type AttackEffectPayload = AbilityPayload & { self?: AbilityPayload }
 
-type AttackEffect = (source: Actor2, target: Actor2) => AttackEffectPayload
+type AttackEffect = (source: Actor2, target: Actor2, opts: ModNodeOpts) => AttackEffectPayload
 
 // ONLY ONE of these will 'trigger'. Optional with fallthrough (see resolvePayload):
 // onCrit -> onHit, onThreaten -> onHit, and any missing hook is a no-op.

@@ -50,6 +50,7 @@ const applyAugments = (
     augments: AttackDiscreteTargetGroupPayload['augments'],
     source: Actor2,
     target: Actor2,
+    modOpts: ModNodeOpts,
 ): StandardActionResult => {
     // its an optional field
     if (!augments) return sar
@@ -58,10 +59,10 @@ const applyAugments = (
         const aug = augments[key]
         if (!aug) continue
         let node = out[key]
-        if (aug.override) node = aug.override(source, target)
+        if (aug.override) node = aug.override(source, target, modOpts)
         // there is never a case where override is present and mod is as well
         else if (aug.mod) {
-            const modNode = typeof aug.mod === 'function' ? aug.mod(source, target) : aug.mod
+            const modNode = typeof aug.mod === 'function' ? aug.mod(source, target, modOpts) : aug.mod
             node = newModNode(node.displayName, [...node.children, modNode], sumFunc)
         }
         out[key] = node
@@ -103,7 +104,7 @@ const resolvePayload = (
     }
     // v1: single primary attack (dual-wield/iteratives deferred)
     const [sar] = outputRawSar(source, modOpts)
-    const augmented = applyAugments(sar, payload.augments, source, target)
+    const augmented = applyAugments(sar, payload.augments, source, target, modOpts)
     const targetAc = calculateAc(target.owner)
     const final = sarAgainstTarget(augmented, targetAc, optsToUse)
 
@@ -115,7 +116,7 @@ const resolvePayload = (
     else if (final.damageResult) hook = 'onHit'
     else hook = 'onMiss'
 
-    const hookPayload = resolveHook(payload, hook)(source, target)
+    const hookPayload = resolveHook(payload, hook)(source, target, modOpts)
 
     return {
         defenderSuccess: hook === 'onMiss',

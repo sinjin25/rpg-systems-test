@@ -1,7 +1,7 @@
 import { CharacterSheet, defaultCharacterSheet } from "../character-sheet"
 import { longsword, shortsword, testshortsword } from "../equipment-sheet2/defaults"
 import { BaseEquipment, EquipmentSheet } from "../equipment-sheet2/types"
-import { instantiateHealth, instantiateSpeed } from "./instantiate"
+import { applyFlatFooted, instantiateHealth, instantiateSpeed } from "./instantiate"
 import { StatusSheet } from "../status-sheet2"
 import { ModNodeOpts } from "../log2/types"
 import { AbilitySheet } from "../ability-sheet2/types"
@@ -30,6 +30,7 @@ export const generateNonPlayerId = (() => {
 export const instantiateActor = (owner: OwnerMaximal, isPlayer = false, opts: ModNodeOpts = {}): Actor2 => {
     const { health, tree } = instantiateHealth(owner)
     const { speed, tree: tree2 } = instantiateSpeed(owner, opts)
+    applyFlatFooted(owner, tree2)
 
     return {
         id: isPlayer ? generatePlayerId() : generateNonPlayerId(),

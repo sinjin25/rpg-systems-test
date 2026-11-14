@@ -1,6 +1,6 @@
 import { instantiateActor } from "../actor2"
 import { Actor2, OwnerMaximal } from "../actor2/types"
-import { instantiateSpeed } from "../actor2/instantiate"
+import { applyFlatFooted, instantiateSpeed } from "../actor2/instantiate"
 import { ModNodeOpts } from "../log2/types"
 import { participantIsActor } from "./type-guard"
 
@@ -16,7 +16,9 @@ export const resolveParticipants = (
             // force a speed reroll (prevents an rng leak from map simulation)
             const speed = instantiateSpeed(p.owner, opts)
             p.speed = speed.speed
+            applyFlatFooted(p.owner, speed.tree)
         }
+        // no matter what, need to apply flatFooted
     }
 
     return part

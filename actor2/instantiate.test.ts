@@ -4,8 +4,26 @@ import { instantiateSpeed, instantiateHealth, applyFlatFooted, STD_SPEED, _reins
 import { createRoll } from '../roll'
 import { findNodeMatching } from '../log2'
 import { iterate } from '../simulate/util/iterate'
-import { addStatusToStatusSheet, bearsEndurance, getStatusKey } from '../status-sheet2'
+import { addStatusToStatusSheet, bearsEndurance, flatFooted, getStatusKey } from '../status-sheet2'
 import { decayRoundsElapsed } from '../status-sheet2/decay'
+import { deriveFeatKey } from '../feat2/registry'
+import { DEFAULT_SPEED } from './round'
+
+describe('instantiateActor', () => {
+    test('applies flatFooted status automatically', () => {
+        const owner = createDefaultOwner({})
+        assert.notExists(owner.ss[deriveFeatKey(flatFooted(0))])
+
+        const actor = instantiateActor(owner, true)
+        assert.exists(owner.ss[deriveFeatKey(flatFooted(0))])
+        assert.exists(actor.owner.ss[deriveFeatKey(flatFooted(0))])
+    })
+    test('Applies initiative to speed immediately', () => {
+        const owner = createDefaultOwner({})
+        const actor = instantiateActor(owner, true)
+        assert.isBelow(actor.speed.remainder, DEFAULT_SPEED)
+    })
+})
 
 describe('instantiateSpeed', () => {
     test('Returns a tree and a speed object', () => {
@@ -44,7 +62,7 @@ describe('instantiateSpeed', () => {
 })
 
 describe('applyFlatFooted', () => {
-    test('Applies correctly', () => {
+    test('Can apply correctly', () => {
         // default owner doesn't have the status
         const owner = createDefaultOwner({})
         const nonExistent = owner.ss['flatFooted']

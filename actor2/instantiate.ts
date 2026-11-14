@@ -8,6 +8,7 @@ import {
     flatFooted,
     newStatusInstance,
 } from '../status-sheet2'
+import { deriveFeatKey } from "../feat2/registry"
 
 export const STD_SPEED = 35 // average of 2d6 is 3.5
 
@@ -41,7 +42,7 @@ export const applyFlatFooted = (owner: OwnerMaximal, tree: ModNode) => {
     const duration = STD_SPEED - tree.total()
     if (duration < 0) return
 
-    owner.ss['flatFooted'] = [newStatusInstance(flatFooted(duration), owner)]
+    owner.ss[deriveFeatKey(flatFooted(0))] = [newStatusInstance(flatFooted(duration), owner)]
 }
 
 export const instantiateHealth = (owner: OwnerMaximal): {

@@ -34,6 +34,8 @@ const factory: AbilitySheetDefinition['factory'] = () => {
 }
 
 export const ignite = {
+    id: 'ignite',
+    hidden: false,
     castType: 'standard',
     displayName,
     description: 'Deal fire damage; on a failed reflex save the target catches fire',

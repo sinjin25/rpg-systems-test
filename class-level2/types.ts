@@ -1,5 +1,6 @@
 import type { OwnerMaximal } from "../actor2/types"
 import type { Feat2, FeatIds } from "../feat2/types"
+import type { AbilityIds } from "../ability-sheet2/types"
 
 export type ClassKeys = 'fighter' | 'rogue'
 
@@ -18,7 +19,7 @@ export type ClassLevel = {
     classFeats: FeatIds[],
     // ex: one level offers any free feat as well as a feat from a subset (multiple) or it offers 0, etc.
     hasFreeFeats: ClassLevelFreeFeats[],
-    classAbilities: string[],
+    classAbilities: AbilityIds[],
 } & {
     [K in ClassLevelSumKeys]: number
 }
@@ -27,7 +28,7 @@ export type ClassLevelTable = {
     key: ClassKeys,
     classFeats: FeatIds[][],
     hasFreeFeats: ClassLevelFreeFeats[][],
-    classAbilities: string[][],
+    classAbilities: AbilityIds[][],
 } & {
     [K in ClassLevelSumKeys]: number[]
 }

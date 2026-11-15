@@ -78,6 +78,8 @@ const factory: AbilitySheetDefinition['factory'] = () => {
 }
 
 export const doALot: AbilitySheetDefinition = {
+    id: 'doALot',
+    hidden: false,
     castType: 'standard',
     displayName: 'testAbility: do a lot',
     description: 'An ability with a lot of steps and a lot of targets',

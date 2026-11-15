@@ -10,6 +10,8 @@ import type { AbilityCastType } from "../types"
 
 export type AbilitySheetDefinition = {
     kind?: 'save', // discriminant vs AttackAbilitySheetDefinition; absent reads as 'save'
+    id: string,
+    hidden: boolean,
     castType: AbilityCastType,
     displayName: string,
     description?: string,

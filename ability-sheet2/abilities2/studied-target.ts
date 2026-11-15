@@ -23,6 +23,8 @@ const factory: AbilitySheetDefinition['factory'] = () => {
 }
 
 export const studiedTarget = {
+    id: 'studiedTarget',
+    hidden: false,
     castType: 'free',
     displayName,
     factory,

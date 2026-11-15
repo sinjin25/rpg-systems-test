@@ -56,6 +56,8 @@ describe('Behavior', () => {
 
     test('ability: lost once there is no live sheet to fall back to', () => {
         const bunkAbility: AbilitySheetDefinition = {
+            id: 'handTypedBunkAbility',
+            hidden: false,
             castType: 'standard',
             displayName: 'Hand-Typed Bunk Ability',
             factory: () => ({ steps: [] }),
@@ -67,7 +69,7 @@ describe('Behavior', () => {
         const rehydrated = deserializeAbilitySheet(frozen)
         // LANDMINE: the ability is gone, not reconstructed, because it was never in abilities/registry
         // and no fallback catalog was forwarded
-        assert.isUndefined(rehydrated.standard.items[bunkAbility.displayName])
+        assert.isUndefined(rehydrated.standard.items[bunkAbility.id])
     })
 
     test('equipment: dropped on serialize even in-process, since it has no .blueprint', () => {

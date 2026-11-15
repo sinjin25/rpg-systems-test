@@ -10,11 +10,20 @@ export type AnyAbilitySheetDefinition = AbilitySheetDefinition | AttackAbilitySh
 
 export type AbilityCatalog = Record<string, AnyAbilitySheetDefinition>
 
-// do-a-lot is test-only; excluded on purpose (mirrors feat2's testFeatMeleeWeaponFighting)
-export type AbilityIdsTest =
+// do-a-lot is test-only; excluded on purpose (mirrors feat2's testFeatMeleeWeaponFighting).
+// rpg-content defines its own ability files but no type of its own — this is the complete
+// catalog of every known ability id, content abilities included, so rpg-tests stays the
+// single source of truth rpg-content imports from.
+export type AbilityIds =
     | 'ignite'
-    | 'Studied Target'
-    | 'normal attack'
+    | 'studiedTarget'
+    | 'normalAttack'
+    | 'cleave'
+    | 'cadence'
+    | 'cursingStrike'
+    | 'enflamingStrike'
+    | 'swordOfDamocles'
+    | 'boneshatter'
 
 export type AbilityCategory = {
     items: AbilityCatalog,

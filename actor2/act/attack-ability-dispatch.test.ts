@@ -10,6 +10,8 @@ import { act, actionIsAbility, actionIsAttackAbility, applyAttackResolutions } f
 // a standard-action attack ability that strikes the first enemy; +100 to-hit guarantees a landing
 // (nat-1 aside), so damage is deterministic enough to seed-fish quickly
 const makeAttackDef = (): AttackAbilitySheetDefinition => ({
+    id: 'testStrike',
+    hidden: false,
     kind: 'attack',
     castType: 'standard',
     displayName: 'test-strike',

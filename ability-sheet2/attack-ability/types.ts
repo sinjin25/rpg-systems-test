@@ -76,6 +76,8 @@ export type AttackAbility = {
 // lets act()/simulate tell an attack ability apart from a save ability (both carry a castType).
 export type AttackAbilitySheetDefinition = {
     kind: 'attack',
+    id: string,
+    hidden: boolean,
     castType: AbilityCastType,
     displayName: string,
     description?: string,

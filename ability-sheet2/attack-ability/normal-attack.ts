@@ -11,6 +11,8 @@ const factory = (): AttackAbility => ({
 })
 
 export const normalAttack = {
+    id: 'normalAttack',
+    hidden: false,
     kind: 'attack',
     castType: 'standard',
     displayName: 'normal attack',

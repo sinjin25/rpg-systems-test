@@ -8,7 +8,7 @@ export type FrozenAbilityCategory = {
 
 export type FrozenAbilitySheet = Record<AbilityCastType, FrozenAbilityCategory>
 
-// items is keyed by displayName (see ability-sheet2/index's addAbility), so priority+index alone
+// items is keyed by id (see ability-sheet2/index's addAbility), so priority+index alone
 // is a complete, JSON-safe description; deserializing re-indexes into the registry - same
 // pattern as serialize/deserializeFeatSheet.
 const serializeCategory = (cat: AbilityCategory): FrozenAbilityCategory => ({

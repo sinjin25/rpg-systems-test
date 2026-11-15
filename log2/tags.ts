@@ -36,13 +36,6 @@ export const addTags = (list: Tags[], toAdd: Tags | Tags[]) => {
     return [...list, toAdd]
 }
 
-export const mutateOwnerTags = (owner: OwnerLog2, ...arbitraryTags: Tags[]) => {
-    const tags = owner?.tags || []
-    const tg = Array.from(new Set<Tags>([...tags, ...arbitraryTags]))
-    owner.tags = tg
-    /* console.log('mutateOwnerTags', owner.tags, tg) */
-}
-
 export const hasAnyTag = (list: Tags[], whitelist: Tags[], blacklist: Tags[] = []) => {
     if (blacklist.some((tag) => list.includes(tag))) return false
     return whitelist.some((tag) => list.includes(tag))

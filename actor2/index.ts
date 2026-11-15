@@ -71,7 +71,6 @@ export const createDefaultOwner = (data: Partial<{
             ...data.es,
         },
         fs,
-        tags: [],
         ss,
         as: {
             ...createDefaultAbilitySheet(),

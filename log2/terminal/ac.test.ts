@@ -14,17 +14,6 @@ import { ostracizedGoblin } from '../../enemy/enemy'
 import { deriveFeatKey } from '../../feat2/registry'
 
 describe('ac (terminal)', () => {
-    test('owner.tags is not mutated', () => {
-        const owner = createDefaultOwner({
-            cs: { dex: 14 },
-            es: { armor: armors['banded mail'], offhand: heavyShield },
-            ss: { catsGrace: [inst(catsGrace)] },
-            fs: { dodge, shieldMastery },
-        })
-        assert.equal(owner.tags.length, 0)
-        ac(owner)
-        assert.equal(owner.tags.length, 0, 'owner.tags must not be mutated by ac()')
-    })
     test('armored: base 10 + capped dex 1 + armor 9', () => {
         const owner = createDefaultOwner({
             cs: { dex: 14 },

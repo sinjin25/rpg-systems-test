@@ -1,5 +1,5 @@
 import { describe, test, expect, assert } from 'vitest'
-import { hasAnyTag, hasAllTags, mutateOwnerTags } from './tags'
+import { hasAnyTag, hasAllTags } from './tags'
 import { Feat2 } from '../feat2/types'
 import { findNodeMatching, leaf } from '.'
 import attack from './terminal/attack'
@@ -26,21 +26,11 @@ describe('hasAllTags', () => {
     })
 })
 
-describe('mutateOwnerTags', () => {
-    test('Works & strips duplicates', () => {
-        const owner = createDefaultOwner({})
-        assert.equal(owner.tags.length, 0)
-
-        // @ts-expect-error
-        mutateOwnerTags(owner, 'standard attack', 'random tag', 'random tag', 'random tag')
-        assert.equal(owner.tags.length, 2)
-        expect(owner.tags).toEqual(expect.arrayContaining(['standard attack', 'random tag']))
-    })
-})
-
 describe('Integration: works with feats and broadContext', () => {
     const tagFeat: Feat2 = {
         displayName: 'test-feat',
+        hidden: false,
+        id: 'testFeat',
         broadContexts: {
             'attack-feat-mod': (o, opts) => hasAllTags(opts.tags ?? [], ['standard-attack']) ? leaf('test-feat', 1) : undefined
         }

@@ -14,7 +14,6 @@ export type OwnerMaximal = {
     fs: FeatSheet,
     ss: StatusSheet,
     es: EquipmentSheet,
-    tags: Tags[], // starts empty, a terminal tree should mutate it. Use the utility functions from tags.ts
     // not checked:
     as: AbilitySheet,
     experience: Experience, // remove soon

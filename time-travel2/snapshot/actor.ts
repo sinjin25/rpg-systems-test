@@ -10,7 +10,7 @@ type SnapshotStatusSheet = Record<string, FrozenStatus[]>
 type SnapshotExperience = Actor2['owner']['experience']
 
 type OwnerMaximalStableReferences = Pick<OwnerMaximal, 'es' | 'cs' | 'fs'>
-type OwnerMaximalUnstableReferences = Pick<OwnerMaximal, /* 'ss' |  */'as' | 'tags'> & {
+type OwnerMaximalUnstableReferences = Pick<OwnerMaximal, /* 'ss' |  */'as'> & {
     ss: SnapshotStatusSheet,
     experience: SnapshotExperience,
 }
@@ -85,7 +85,6 @@ const snapshotActor = (actor: Actor2): Actor2Snapshot => {
             ...actor.owner,
             // unstable
             as: cloneAbilitySheet(actor.owner.as),
-            tags: cloneTags(actor.owner.tags), // DO NOT TRUST DO NOT USE
             ss: cloneStatusSheet(actor.owner.ss),
             experience: cloneExperience(actor.owner.experience),
         },

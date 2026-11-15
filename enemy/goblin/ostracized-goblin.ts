@@ -27,7 +27,6 @@ const ostracizedGoblin: OwnerMaximal = {
     ss: {
     },
     as: createDefaultAbilitySheet(),
-    tags: [],
     experience: {
         breakpoints: [...experienceBreakpoints],
         currentXp: 0,

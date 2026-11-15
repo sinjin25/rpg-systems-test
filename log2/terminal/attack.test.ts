@@ -85,13 +85,3 @@ describe('attack (terminal)', () => {
         expect(findNodeMatching(node, /modded-str/i)).toBeTruthy()
     })
 })
-
-describe('owner is not mutated', () => {
-    test('owner.tags is unchanged after calling attack', () => {
-        const owner = finesseBuild()
-
-        assert.equal(owner.tags.length, 0)
-        attack(owner)
-        assert.equal(owner.tags.length, 0, 'owner.tags must not be mutated by attack()')
-    })
-})

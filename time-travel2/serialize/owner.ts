@@ -45,7 +45,6 @@ const snapshotOwner = (owner: OwnerMaximal, abilityCatalogFallback?: AbilityCata
     rewardId: owner.rewardId,
     // frozen independently of the live as (see comment above)
     as: deserializeAbilitySheet(serializeAbilitySheet(owner.as), abilityCatalogFallback),
-    tags: [...owner.tags],
     experience: { ...owner.experience },
     ss: snapshotStatusSheet(owner.ss),
 })

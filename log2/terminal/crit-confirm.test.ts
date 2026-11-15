@@ -44,12 +44,3 @@ describe('crit-confirm (terminal)', () => {
         expect(node.total()).toBe(childSum)
     })
 })
-
-describe('owner is not mutated (tags travel via opts)', () => {
-    test('owner.tags is unchanged after calling crit-confirm', () => {
-        const o = createDefaultOwner()
-        assert.equal(o.tags.length, 0)
-        critConfirm(o)
-        assert.equal(o.tags.length, 0, 'owner.tags must not be mutated by critConfirm()')
-    })
-})

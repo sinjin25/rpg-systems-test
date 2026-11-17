@@ -27,18 +27,24 @@ describe('terminal: dc', () => {
         const owner = createDefaultOwner({
             fs: {
                 'spell-feat': {
+                    id: 'spellFeat',
+                    hidden: false,
                     displayName: 'spell-feat',
                     broadContexts: {
                         'spell-dc-feat-mod': () => leaf('spell-feat', 2)
                     }
                 },
                 'swag-casting': {
+                    id: 'swagCasting',
+                    hidden: false,
                     displayName: 'swag-casting',
                     broadContexts: {
                         'spell-dc-feat-mod': (o, opts) => hasAllTags(opts.tags ?? [], ['ability', 'magic']) ? leaf('swag-casting', 2) : undefined
                     }
                 },
                 'ability-casting': {
+                    id: 'abilityCasting',
+                    hidden: false,
                     displayName: 'ability-casting',
                     broadContexts: {
                         'spell-dc-feat-mod': (o, opts) => hasAnyTag(opts.tags ?? [], ['ability'], ['magic']) ? leaf('ability-casting', 2) : undefined

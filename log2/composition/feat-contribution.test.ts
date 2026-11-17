@@ -18,12 +18,16 @@ describe('Works', () => {
         const owner = createDefaultOwner({
             fs: {
                 'improved-initiative': {
+                    id: 'improvedInitiative1',
+                    hidden: false,
                     displayName: 'improved-initiative1',
                     broadContexts: {
                         'initiative-feat-mod': () => leaf('improved-initiative1', 4)
                     }
                 },
                 'improved-initiative2': {
+                    id: 'improvedInitiative2',
+                    hidden: false,
                     displayName: 'improved-initiative2',
                     broadContexts: {
                         'initiative-feat-mod': () => leaf('improved-initiative2', 4)

@@ -41,6 +41,8 @@ describe('buildRollDamageModBroadContext', () => {
         const owner = createDefaultOwner({
             fs: {
                 damageSidesPlus: {
+                    id: 'damageSidesPlus',
+                    hidden: false,
                     displayName: 'damage-sides-plus',
                     broadContexts: {
                         "damage-sides-mod": () => leaf('damage-sides-plus', 2)
@@ -89,7 +91,7 @@ describe('collectRollDamageSources', () => {
             slot: 'mainhand',
             base: {
                 name: 'test weapon',
-                base: { displayName: 'test weapon', acceptableSlots: ['mainhand'], broadContexts: {} },
+                base: { displayName: 'test weapon' },
                 implicit: [{ kind: 'roll-damage', value: 6 }, { kind: 'attack', value: 3 }],
             },
             // mainhand affix roll-damage rank 1 is {min: 4, max: 10} — perfection 0 lands on min (4)

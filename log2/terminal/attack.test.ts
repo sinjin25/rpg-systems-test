@@ -40,6 +40,8 @@ const ringPlusOneFinesseAttack: BaseEquipment = {
 }
 
 const finesseWeaponFighting: Feat2 = {
+    id: 'finesseWeaponFighting',
+    hidden: false,
     displayName: 'finesse-weapon-fighting',
     broadContexts: {
         'attack-feat-mod': (o: OwnerLog2, opts: ModNodeOpts) => hasAllTags(opts.tags ?? [], ['melee']) ? leaf('finesse-weapon-fighting', 1) : undefined

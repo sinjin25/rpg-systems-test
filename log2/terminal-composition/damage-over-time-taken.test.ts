@@ -1,11 +1,6 @@
 import { describe, test, expect, assert } from 'vitest'
-import damageTaken from './damage-taken'
-import critDamage from '../terminal/crit-damage'
 import { createDefaultOwner, instantiateActor } from '../../actor2'
 import { OwnerMaximal } from '../../actor2/types'
-import { ObjectWithBroadContexts, OwnerLog2 } from '../types'
-import studiedTarget from '../../status-sheet2/status/studied-target'
-import defensiveRoll from '../../status-sheet2/status/defensive-roll'
 import { leaf, findNodeMatching } from '..'
 import modNodeToText from '../format'
 import damageOverTime from '../terminal/damage-over-time'
@@ -18,6 +13,8 @@ describe('damage-taken (terminal)', () => {
     const creator = createDefaultOwner({
         fs: {
             'dots-do-more': {
+                id: 'dotsDoMore',
+                hidden: false,
                 displayName: 'dots-do-more',
                 broadContexts: {
                     'damage-over-time-feat-mod': () => leaf('dots-do-more', 4)
@@ -28,6 +25,8 @@ describe('damage-taken (terminal)', () => {
     const receiver = createDefaultOwner({
         fs: {
             'decrease-dot': {
+                id: 'decreaseDot',
+                hidden: false,
                 displayName: 'decrease-dot',
                 broadContexts: {
                     'damage-over-time-taken-feat-mod': () => leaf('decrease-dot', -2)

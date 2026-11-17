@@ -1,7 +1,6 @@
 import { describe, test, expect, assert } from 'vitest'
 import critDamage from './crit-damage'
 import { createDefaultOwner } from '../../actor2'
-import { OwnerLog2, ObjectWithBroadContexts } from '../types'
 import { leaf, findNodeMatching } from '..'
 import modNodeToText from '../format'
 import roll from '../../roll'
@@ -22,15 +21,16 @@ const weapon = (dmg: number, crit?: number): BaseEquipment =>
 })
 
 
-const flatStatOwner = (fs: OwnerLog2['fs'] = {}) =>
-    createDefaultOwner({ cs: { str: 10, dex: 10 }, fs })
-
 const scalingFeat: Feat2 = ({
+    id: 'testScaler',
+    hidden: false,
     displayName: 'test-scaler',
     broadContexts: { 'crit-scalable-damage-feat-mod': () => leaf('test-scaler', 2) },
 })
 
 const flatFeat: Feat2 = {
+    id: 'testFlat',
+    hidden: false,
     displayName: 'test-flat',
     broadContexts: { 'flat-damage-feat-mod': () => leaf('test-flat', 2) },
 }

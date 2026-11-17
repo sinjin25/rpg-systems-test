@@ -23,6 +23,8 @@ describe('Final sides', () => {
         const owner = createDefaultOwner({
             fs: {
                 attackSidesPlus: {
+                    id: 'attackSidesPlus',
+                    hidden: false,
                     displayName: 'attack-sides-plus',
                     broadContexts: {
                         "attack-sides-mod": () => leaf('attack-sides-plus', 2)
@@ -59,6 +61,8 @@ describe('Final sides', () => {
         const owner = createDefaultOwner({
             fs: {
                 attackSidesPlus: {
+                    id: 'attackSidesPlus',
+                    hidden: false,
                     displayName: 'attack-sides-plus',
                     broadContexts: {
                         "attack-sides-mod": () => leaf('attack-sides-plus', 2)

@@ -1,7 +1,6 @@
 import { describe, test, expect, assert } from 'vitest'
 import critMultiplier from './crit-multiplier'
 import { createDefaultOwner } from '../../actor2'
-import { OwnerLog2, ObjectWithBroadContexts } from '../types'
 import { leaf, findNodeMatching } from '..'
 import { BaseEquipment } from '../../equipment-sheet2/types'
 import { SLOT_TYPE } from '../../equipment-sheet2/defaults'
@@ -54,7 +53,7 @@ describe('crit-multiplier', () => {
                 }
             },
         })
-    
+
         const node = critMultiplier(owner)
         expect(node.total()).toBe(4)
 

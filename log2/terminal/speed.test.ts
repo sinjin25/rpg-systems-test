@@ -21,6 +21,8 @@ describe('Speed works', () => {
     })
     test('Children are handled correctly', () => {
         const speedFeat: Feat2 = {
+            id: 'spf',
+            hidden: false,
             displayName: 'spf',
             broadContexts: {
                 'speed-feat-mod': () => leaf('spf', 4)

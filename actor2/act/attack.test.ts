@@ -47,6 +47,8 @@ const widenedOwner = () => createDefaultOwner({
     es: { mainhand: testWeapon('mainhand-weapon') },
     fs: {
         attackSidesPlus: {
+            id: 'attackSidesPlus',
+            hidden: false,
             displayName: 'attack-sides-plus',
             broadContexts: {
                 'attack-sides-mod': () => leaf('attack-sides-plus', 2)
@@ -164,6 +166,8 @@ describe('calculateCritConfirm', () => {
             fs: {
                 attackSidesPlus: {
                     displayName: 'attack-sides-plus',
+                    id: 'attackSidesPlus',
+                    hidden: false,
                     broadContexts: {
                         "attack-sides-mod": () => leaf('attack-sides-plus', 2)
                     }
@@ -174,7 +178,7 @@ describe('calculateCritConfirm', () => {
 
 
         const rolls = iterate(100, (seed, rollInstance) => {
-            return [seed, calculateCritConfirm(owner, { relevantSlot: owner.es.mainhand, rollInstance })]
+            return [seed, calculateCritConfirm(owner, { relevantSlot: owner.es.mainhand!, rollInstance })]
         })
 
         // @ts-expect-error
@@ -188,13 +192,15 @@ describe('calculateCritConfirm', () => {
             fs: {
                 attackSidesPlus: {
                     displayName: 'attack-sides-plus',
+                    id: 'attackSidesPlus',
+                    hidden: false,
                     broadContexts: {
                         "attack-sides-mod": () => leaf('attack-sides-plus', 2)
                     }
                 }
             },
         })
-        const result = calculateCritConfirm(owner, { relevantSlot: owner.es.mainhand, rollInstance: createRoll(SEED) })
+        const result = calculateCritConfirm(owner, { relevantSlot: owner.es.mainhand!, rollInstance: createRoll(SEED) })
 
         /* console.log('modnodetotext', modNodeToText(result)) */
         const maxRoll = findNodeMatching(result, /maximum-dice-sides/i)

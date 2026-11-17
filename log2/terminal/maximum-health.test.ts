@@ -2,7 +2,7 @@ import { describe, test, expect, assert } from 'vitest'
 import maximumHealth from './maximum-health'
 import { createDefaultOwner } from '../../actor2'
 import { leaf, findNodeMatching } from '..'
-import { ObjectWithBroadContexts } from '../types'
+import { Feat2 } from '../../feat2/types'
 import { fakeCharacterLevels } from '../../character-sheet'
 import modNodeToText from '../format'
 
@@ -24,7 +24,9 @@ describe('maximum-health (terminal)', () => {
     })
 
     test('flat health is added once, not per level', () => {
-        const toughness: ObjectWithBroadContexts = {
+        const toughness: Feat2 = {
+            id: 'toughness',
+            hidden: false,
             displayName: 'toughness',
             broadContexts: { 'health-feat-mod': () => leaf('toughness', 3) },
         }

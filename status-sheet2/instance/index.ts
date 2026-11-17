@@ -1,4 +1,5 @@
 import type { OwnerMaximal } from "../../actor2/types";
+import type { ObjectWithBroadContexts } from "../../log2/types";
 import type { StatusExpiration } from "../decay/types";
 import type {
     StatusEffect,
@@ -43,8 +44,12 @@ type MakeWrapperOpts = {
 
 // this return type works but it's a mess
 // revisit at some point
+
+// const D preserves literals (ex: 'bearEndurance') going in (registry preserves literals as of 11-17-2026)
+// broadContext restores the generic broadContext signature (owner, opts) => ModNode | undefined
+// ex: so that a broadContext with a literally typed contract of (owner) => ModNode | undefined doesn't freak it when called with opts
 export const makeWrapper = <const D extends StatusDefinition>(
-    statusEffect: D,
+    statusEffect: D & { broadContexts: ObjectWithBroadContexts['broadContexts'] },
     opts: MakeWrapperOpts = {}
 ) => {
     const pointer = { stack: { kind: 'highest' as const }, hidden: false, ...statusEffect }

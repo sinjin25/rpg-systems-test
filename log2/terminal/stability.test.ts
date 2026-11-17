@@ -19,6 +19,8 @@ describe('Assumption errors', () => {
             tags: ['finesse', 'melee']
         }
         const myFeat: Feat2 = {
+            id: 'finessething',
+            hidden: false,
             displayName: 'finessething',
             broadContexts: {
                 'attack-feat-mod': (o, opts) => {

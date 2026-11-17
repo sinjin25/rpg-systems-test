@@ -8,6 +8,8 @@ describe('heal-over-time-taken (terminal)', () => {
     const creator = createDefaultOwner({
         fs: {
             'regen-mastery': {
+                id: 'regenMastery',
+                hidden: false,
                 displayName: 'regen-mastery',
                 broadContexts: {
                     'heal-over-time-feat-mod': () => leaf('regen-mastery', 4)
@@ -18,6 +20,8 @@ describe('heal-over-time-taken (terminal)', () => {
     const receiver = createDefaultOwner({
         fs: {
             'fast-healer': {
+                id: 'fastHealer',
+                hidden: false,
                 displayName: 'fast-healer',
                 broadContexts: {
                     'heal-over-time-taken-feat-mod': () => leaf('fast-healer', 3)
@@ -57,6 +61,8 @@ describe('heal-over-time-taken (terminal)', () => {
         const receiverBlocked = createDefaultOwner({
             fs: {
                 'no-heals': {
+                    id: 'noHeals',
+                    hidden: false,
                     displayName: 'no-heals',
                     broadContexts: {
                         'heal-over-time-taken-feat-mod': () => leaf('no-heals', -100)

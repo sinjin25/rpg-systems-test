@@ -39,6 +39,8 @@ describe('roll works', () => {
         const owner = createDefaultOwner({
             fs: {
                 attackSidesPlus: {
+                    id: 'attackSidesPlus',
+                    hidden: false,
                     displayName: 'attack-sides-plus',
                     broadContexts: {
                         "attack-sides-mod": () => leaf('attack-sides-plus', 2)
@@ -78,6 +80,8 @@ describe('Integration: attack', () => {
             },
             fs: {
                 'attack': {
+                    id: 'attack',
+                    hidden: false,
                     displayName: 'attack-plus',
                     broadContexts: {
                         'attack-feat-mod': () => leaf('attack-plus', 2),

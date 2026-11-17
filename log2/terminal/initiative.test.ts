@@ -8,6 +8,8 @@ import { describe, test, assert, expect } from 'vitest'
 describe('initiative', () => {
     test('Feats and CS apply', () => {
         const init: Feat2 = {
+            id: 'initFeat',
+            hidden: false,
             displayName: 'init-feat',
             broadContexts: {
                 'initiative-feat-mod': (o: OwnerMaximal) => leaf('init-feat', 4)

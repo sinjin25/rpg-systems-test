@@ -28,6 +28,6 @@ describe('pre-fight-feat-applied', () => {
         assert.deepEqual(log.featsTriggered, ['rage'])
         assert.exists(log.source.owner.ss['rage'])
         assert.equal(log.source.owner.ss['rage'].length, 1)
-        assert.equal(log.source.owner.ss['rage'][0]!.displayName, 'Rage')
+        assert.equal(log.source.owner.ss['rage'][0]!.pointer.displayName, 'Rage')
     })
 })

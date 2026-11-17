@@ -2,7 +2,7 @@ import { addAbility, getAbilityKey } from '../ability-sheet2'
 import { resolveAbility } from '../ability-sheet2/abilities2'
 import ignite from '../ability-sheet2/abilities2/ignite'
 import { createDefaultOwner, instantiateActor } from '../actor2'
-import { applyResolutions } from '../actor2/act'
+import { actionIsAbility, applyResolutions } from '../actor2/act'
 import ability from './ability.ts'
 import { describe, test, assert } from 'vitest'
 import snapshotActor from './snapshot/actor.ts'
@@ -17,13 +17,17 @@ describe('Integration: works with ignite', () => {
         const caster = instantiateActor(owner, false, { rollInstance: ri })
         const receiver = instantiateActor(createDefaultOwner({ cs: { dex: -999 } }), false, { rollInstance: ri })
 
-        const ign = owner.as.standard.items[getAbilityKey(ignite)]
-        assert.exists(ign)
+        const lookup = owner.as.standard.items[getAbilityKey(ignite)]
+        assert.exists(lookup)
+        // since this is a A | B issue, we need to narrow first or resolveAbility won't accept it
+        // simulate2/index.ts handles this through ifs
+        if (!actionIsAbility(lookup)) throw Error('look up cant be narrowed to actionIsAbility')
+        actionIsAbility(lookup)
 
         const resolutions = resolveAbility(
             { enemy: [receiver], ally: [caster] },
             caster,
-            ign!.factory(),
+            lookup.factory(),
             { rollInstance: ri },
         )
         assert.equal(resolutions.length, 2)

@@ -1,7 +1,7 @@
 import { describe, test, expect, assert } from 'vitest'
 import critScalableDamage from './crit-scalable-damage'
 import { createDefaultOwner } from '../../actor2'
-import { ObjectWithBroadContexts } from '../types'
+import { Feat2 } from '../../feat2/types'
 import { leaf, findNodeMatching } from '..'
 import { BaseEquipment } from '../../equipment-sheet2/types'
 import { SLOT_TYPE } from '../../equipment-sheet2/defaults'
@@ -30,7 +30,9 @@ describe('crit-scalable-damage', () => {
     })
 
     test('includes crit-scalable feat mods', () => {
-        const scaler: ObjectWithBroadContexts = {
+        const scaler: Feat2 = {
+            id: 'testScaler',
+            hidden: false,
             displayName: 'test-scaler',
             broadContexts: { 'crit-scalable-damage-feat-mod': () => leaf('test-scaler', 3) },
         }

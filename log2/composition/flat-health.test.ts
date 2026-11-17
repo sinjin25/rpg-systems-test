@@ -1,12 +1,14 @@
 import { describe, test, expect, assert } from 'vitest'
 import flatHealth from './flat-health'
 import { createDefaultOwner } from '../../actor2'
-import { ObjectWithBroadContexts } from '../types'
+import { Feat2 } from '../../feat2/types'
 import { leaf, findNodeMatching } from '..'
 import { BaseEquipment } from '../../equipment-sheet2/types'
 import { SLOT_TYPE } from '../../equipment-sheet2/defaults'
 
-const toughness: ObjectWithBroadContexts = {
+const toughness: Feat2 = {
+    id: 'toughness',
+    hidden: false,
     displayName: 'toughness',
     broadContexts: { 'health-feat-mod': () => leaf('toughness', 3) },
 }

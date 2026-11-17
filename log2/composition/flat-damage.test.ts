@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vitest'
 import flatDamage from './flat-damage'
 import { createDefaultOwner } from '../../actor2'
-import { ObjectWithBroadContexts } from '../types'
+import { Feat2 } from '../../feat2/types'
 import { leaf, findNodeMatching } from '..'
 
 describe('flat-damage', () => {
@@ -10,7 +10,9 @@ describe('flat-damage', () => {
     })
 
     test('sums a flat feat mod', () => {
-        const powerAttack: ObjectWithBroadContexts = {
+        const powerAttack: Feat2 = {
+            id: 'powerAttack',
+            hidden: false,
             displayName: 'power-attack',
             broadContexts: { 'flat-damage-feat-mod': () => leaf('power-attack', 6) },
         }

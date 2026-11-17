@@ -11,6 +11,8 @@ describe('damage-over-time', () => {
         const owner = createDefaultOwner({
             fs: {
                 'dot-feat': {
+                    id: 'dotFeat',
+                    hidden: false,
                     displayName: 'dot-feat',
                     broadContexts: {
                         'damage-over-time-feat-mod': () => leaf('dot-feat', 4)
@@ -47,6 +49,8 @@ describe('damage-over-time', () => {
         const owner = createDefaultOwner({
             fs: {
                 'dot-feat': {
+                    id: 'dotFeat',
+                    hidden: false,
                     displayName: 'dot-feat',
                     broadContexts: {
                         'damage-over-time-feat-mod': () => leaf('live-feat-mod', 99)
@@ -60,6 +64,8 @@ describe('damage-over-time', () => {
         const snapshot = featContribution('damage-over-time-feat-mod')(createDefaultOwner({
             fs: {
                 'src-feat': {
+                    id: 'srcFeat',
+                    hidden: false,
                     displayName: 'src-feat',
                     broadContexts: {
                         'damage-over-time-feat-mod': () => leaf('src-feat', 3)

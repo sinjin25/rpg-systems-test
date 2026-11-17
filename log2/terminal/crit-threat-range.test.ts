@@ -60,6 +60,8 @@ describe('crit-threat-range (terminal)', () => {
             es: { mainhand: weaponWithNoCritRange },
             fs: {
                 attackSidesPlus: {
+                    id: 'attackSidesPlus',
+                    hidden: false,
                     displayName: 'attack-sides-plus',
                     broadContexts: {
                         "attack-sides-mod": () => leaf('attack-sides-plus', 2)

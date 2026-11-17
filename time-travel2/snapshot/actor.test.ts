@@ -15,7 +15,7 @@ const ownerActorUtil = () => {
 }
 
 describe('snapshotActor Stable References', () => {
-    test('Owner: All stable references point to the same reference and mutating them is bad', () => {
+    test('Owner: snapshot is value-equal at capture time but independent of later live mutation', () => {
         const owner = createDefaultOwner()
         const actor = instantiateActor(owner)
 
@@ -25,14 +25,16 @@ describe('snapshotActor Stable References', () => {
         // @ts-expect-error
         assert.notEqual(actor, ttSnapshot)
 
-        // make sure stable keys are the same
-        assert.equal(owner.cs, ttSnapshot.owner.cs)
-        assert.equal(owner.fs, ttSnapshot.owner.fs)
-        assert.equal(owner.es, ttSnapshot.owner.es)
+        // value-equal at capture time (cs/fs are rebuilt, es is reduced to its blueprint)
+        assert.deepEqual(ttSnapshot.owner.cs, owner.cs)
+        assert.deepEqual(ttSnapshot.owner.fs, owner.fs)
+        assert.equal(ttSnapshot.owner.es.mainhand, owner.es.mainhand!.blueprint)
 
+        // a replayer is built from the log, not a live reference, so mutating the live
+        // owner afterward must not retroactively change the snapshot
         owner.cs.con = 999
         assert.equal(owner.cs.con, 999)
-        assert.equal(ttSnapshot.owner.cs.con, 999)
+        assert.notEqual(ttSnapshot.owner.cs.con, 999)
     })
 
 })
@@ -110,12 +112,14 @@ describe('cloneStatusSheet', () => {
         // frozen sheet mirrors the key as an array, but is a distinct object graph
         assert.notEqual(owner.ss as unknown, tt0.owner.ss as unknown)
         assert.equal(tt0.owner.ss[key]!.length, 1)
-        assert.equal(tt0.owner.ss[key]![0]!.expiration!.remaining, 3)
+        const frozen0 = tt0.owner.ss[key]![0]!.expiration!
+        assert.equal(frozen0.kind === 'rounds-elapsed' && frozen0.remaining, 3)
 
         // decaying the live instance leaves the earlier snapshot untouched
         decayRoundsElapsed(actor.owner, 1)
         const live = owner.ss[key]![0]!.expiration!
         assert.equal(live.kind === 'rounds-elapsed' && live.remaining, 2)
-        assert.equal(tt0.owner.ss[key]![0]!.expiration!.remaining, 3)
+        const frozen1 = tt0.owner.ss[key]![0]!.expiration!
+        assert.equal(frozen1.kind === 'rounds-elapsed' && frozen1.remaining, 3)
     })
 })

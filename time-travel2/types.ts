@@ -5,7 +5,7 @@ import type { FeatIds } from "../feat2/types"
 import type { ModNode } from "../log2"
 import type { Saves } from "../log2/types"
 import type { StatusEffect, StatusEffectInstance } from "../status-sheet2"
-import type { Actor2Snapshot } from "./snapshot/actor"
+import { Actor2Snapshot } from "./serialize/types"
 
 export type FrozenModNode = {
     displayName: string

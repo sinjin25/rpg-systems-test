@@ -1,7 +1,7 @@
 import { setTimeout as delay } from 'node:timers/promises'
-import { Actor2Snapshot } from '../snapshot/actor'
 import { TimeTravelAugmenter, AnyAugmentedLog } from './types'
 import { TTLogKeys, FrozenModNode } from '../types'
+import { Actor2Snapshot } from '../serialize/types'
 
 const DELAY = 100
 const cc = {

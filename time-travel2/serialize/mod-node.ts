@@ -1,17 +1,19 @@
 import { ModNode } from "../../log2/index"
+import { FrozenModNode } from "../types"
 
-// ModNode.total is a closure over whatever aggregation fn (sumFunc, minFunc, ...) built it —
-// that fn isn't retrievable from the node itself, so we can't reconstruct a "live" total()
-// that recomputes from the cloned children. Trees are documented as not-to-be-mutated after
-// construction (see newModNode's comment), so caching the resolved value at snapshot time is
-// equivalent to the original for every real use.
-const snapshotModNode = (node: ModNode): ModNode => {
+const serializeModNode = (node: ModNode): FrozenModNode => {
     const cachedTotal = node.total()
     return {
         displayName: node.displayName,
-        children: node.children.map(snapshotModNode),
-        total: () => cachedTotal,
+        children: node.children.map(serializeModNode),
+        total: cachedTotal,
     }
 }
 
-export default snapshotModNode
+export const deserializeModNode = (node: FrozenModNode): ModNode => ({
+    displayName: node.displayName,
+    total: () => node.total,
+    children: node.children.map(deserializeModNode),
+})
+
+export default serializeModNode

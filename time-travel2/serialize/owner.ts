@@ -2,7 +2,7 @@ import type { OwnerMaximal } from "../../actor2/types"
 import { EquipmentSheet } from "../../equipment-sheet2/types"
 import { blueprintToBaseEquipment } from "../../equipment-sheet2/factory/broad-context-adapter"
 import { AbilityCatalog } from "../../ability-sheet2/types"
-import { snapshotStatusSheet } from "./status-effect-instance"
+import { snapshotStatusSheet, deserializeStatusSheet } from "./status-effect-instance"
 import { serializeFeatSheet, deserializeFeatSheet } from "./feat-sheet"
 import { serializeAbilitySheet, deserializeAbilitySheet } from "./ability-sheet"
 import type { FrozenEquipmentSheet, OwnerMaximalSnapshot } from "./types"
@@ -52,6 +52,7 @@ const snapshotOwner = (owner: OwnerMaximal, abilityCatalogFallback?: AbilityCata
 export const deserializeOwnerSnapshot = (snap: OwnerMaximalSnapshot): OwnerMaximal => ({
     ...snap,
     es: deserializeEquipmentSheet(snap.es),
+    ss: deserializeStatusSheet(snap.ss),
 })
 
 export default snapshotOwner

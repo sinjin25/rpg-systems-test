@@ -1,5 +1,5 @@
 import { Handlers } from "./types"
-import freezeModNodeRecursive from "./snapshot/mod-node"
+import serializeModNode from "./serialize/mod-node"
 import { FrozenStandardActionResult } from "./types"
 
 const teamVictory: Handlers['team-victory'] = (input) => {

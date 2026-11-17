@@ -1,5 +1,5 @@
 import { Handlers } from "./types"
-import freezeModNodeRecursive from "./snapshot/mod-node"
+import serializeModNode from "./serialize/mod-node"
 import { FrozenStandardActionResult } from "./types"
 
 const MOD_NODE_KEYS = ['attackResult', 'damageResult', 'threatResult',
@@ -13,7 +13,7 @@ const standardActionResult: Handlers['standard-action-result'] = (input) => {
 
     for (const key of MOD_NODE_KEYS) {
         const node = sar[key]
-        if (node) modNodes[key] = freezeModNodeRecursive(node)
+        if (node) modNodes[key] = serializeModNode(node)
     }
 
     return { source, to, kind: 'standard-action-result', modNodes }

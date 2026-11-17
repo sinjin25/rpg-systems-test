@@ -1,6 +1,6 @@
 import type { StatusEffect, StatusEffectInstance } from "../../status-sheet2"
 import type { FrozenExpiration, FrozenStatus } from "../types"
-import freezeModNodeRecursive from "./mod-node"
+import serializeModNode from "../serialize/mod-node"
 
 // we've left a lot of keys out which causes problems when you try to plug a snapshotted actor into anything wanting an Actor2
 // If we wanna do something about it we need the shapes to match better
@@ -29,7 +29,7 @@ const freezeStatus = (inst: StatusEffectInstance): FrozenStatus => {
             break;
         case 'save-succeeded':
             const { dc, saveType } = expiration
-            exp.dc = freezeModNodeRecursive(dc)
+            exp.dc = serializeModNode(dc)
             exp.saveType = saveType
             break;
         case 'actions-elapsed':

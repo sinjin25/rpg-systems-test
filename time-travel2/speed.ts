@@ -1,5 +1,5 @@
 import { Handlers, FrozenModNode } from "./types"
-import freezeModNodeRecursive from "./snapshot/mod-node"
+import serializeModNode from "./serialize/mod-node"
 import { roundOrderBySpeed } from "../actor2/round"
 import { Actor2Snapshot } from "./serialize/types"
 
@@ -10,7 +10,7 @@ const speed: Handlers['speed'] = (input) => {
 
     const frozenModNodes: Record<number, FrozenModNode> = {}
     for (const [id, node] of Object.entries(modNodes)) {
-        frozenModNodes[Number(id)] = freezeModNodeRecursive(node)
+        frozenModNodes[Number(id)] = serializeModNode(node)
     }
 
     return { kind: 'speed', actors: order, modNodes: frozenModNodes }

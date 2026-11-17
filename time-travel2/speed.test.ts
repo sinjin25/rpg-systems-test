@@ -2,7 +2,7 @@ import { createDefaultOwner, instantiateActor } from "../actor2"
 import { round } from "../actor2/round"
 import { describe, test, expect } from 'vitest'
 import speed from './speed'
-import snapshotActor from './snapshot/actor'
+import snapshotActor from './serialize/actor'
 import newTimeTravelLogReplayer from './replay/index'
 import ttrvTextAugmenter from './replay/text-visualizer'
 import { StoredLog } from './replay/types'

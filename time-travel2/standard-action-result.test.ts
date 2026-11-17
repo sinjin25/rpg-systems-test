@@ -5,7 +5,7 @@ import { OwnerLog2 } from '../log2/types.ts'
 import modNodeToText from '../log2/format.ts'
 import { createRoll } from '../roll/index.ts'
 import { RollInstance } from '../roll/types.ts'
-import snapshotActor from './snapshot/actor.ts'
+import snapshotActor from './serialize/actor.ts'
 import standardActionResult from './standard-action-result.ts'
 import { describe, test, assert } from 'vitest'
 

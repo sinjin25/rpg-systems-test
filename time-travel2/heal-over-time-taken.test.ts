@@ -5,7 +5,7 @@ import { applyHeal } from "../health/index.ts";
 import newModNode, { leaf, sumFunc } from "../log2/index.ts";
 import healOverTimeLog from './heal-over-time-taken.ts'
 import { describe, test, assert, expect } from 'vitest'
-import snapshotActor from "./snapshot/actor.ts";
+import snapshotActor from "./serialize/actor.ts";
 
 // regen has no dedicated status yet, so compose one inline the way ignite composes damage
 const regen = makeWrapper({

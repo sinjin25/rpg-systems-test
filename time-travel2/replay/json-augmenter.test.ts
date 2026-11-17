@@ -2,7 +2,7 @@ import { describe, test, assert } from 'vitest'
 import { StoredLog } from './types'
 import ttrvJsonAugmenter, { dropStatusInstanceSource } from './json-augmenter.ts'
 import { createDefaultOwner, instantiateActor } from '../../actor2/index.ts'
-import snapshotActor from '../snapshot/actor.ts'
+import snapshotActor from '../serialize/actor.ts'
 
 const aSARLog = (): StoredLog<'standard-action-result'> => ({
     kind: 'standard-action-result',

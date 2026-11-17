@@ -1,7 +1,6 @@
 import { createDefaultOwner, instantiateActor } from '../../actor2'
 import { DEFAULT_SPEED, round } from '../../actor2/round.ts'
 import applyDamage from '../../health/apply-damage.ts'
-import attack from '../../log2/terminal/attack.ts'
 import { addStatusToStatusSheet, getStatusKey } from '../../status-sheet2/add-status-to-status-sheet.ts'
 import { decayRoundsElapsed } from '../../status-sheet2/decay/decay-rounds-elapsed.ts'
 import { makeWrapper } from '../../status-sheet2/index.ts'

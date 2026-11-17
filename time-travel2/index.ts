@@ -10,7 +10,7 @@ import ability from "./ability";
 import actorDeath from "./actor-death";
 import preFightFeatApplied from "./pre-fight-feat-applied";
 import postFight from "./post-fight";
-export { default as snapshotActor } from './snapshot/actor'
+export { default as snapshotActor } from './serialize/actor'
 
 export const timeTravel: Handlers = {
     "fight-start": fightStart,

@@ -1,7 +1,7 @@
 import { createDefaultOwner, instantiateActor } from '../actor2/index.ts'
 import { round } from '../actor2/round.ts'
 import actStart from './act-start.ts'
-import snapshotActor from './snapshot/actor.ts'
+import snapshotActor from './serialize/actor.ts'
 import { describe, test, assert, expect } from 'vitest'
 
 describe('act-start', () => {

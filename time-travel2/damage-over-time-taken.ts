@@ -1,4 +1,4 @@
-import snapshotActor from "./snapshot/actor";
+import snapshotActor from "./serialize/actor";
 import freezeModNodeRecursive from "./snapshot/mod-node";
 import { freezeStatusDefinition } from "./snapshot/status";
 import { Handlers } from "./types";

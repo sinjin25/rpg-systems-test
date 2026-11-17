@@ -1,6 +1,6 @@
 import { createDefaultOwner, instantiateActor } from '../actor2/index.ts'
 import postFight from './post-fight.ts'
-import snapshotActor from './snapshot/actor.ts'
+import snapshotActor from './serialize/actor.ts'
 import { describe, test, assert } from 'vitest'
 
 describe('post-fight', () => {

@@ -4,7 +4,7 @@ import newTimeTravelLogReplayer from './index.ts'
 import ttrvTextAugmenter from './text-visualizer.ts'
 import { describe, test, assert } from 'vitest'
 import { createDefaultOwner, instantiateActor } from '../../actor2/index.ts'
-import snapshotActor from '../snapshot/actor.ts'
+import snapshotActor from '../serialize/actor.ts'
 
 // a minimal valid stored log (modNodes is a Partial, so {} is fine; context is a
 // throwaway) - contents don't matter here, these tests only exercise the

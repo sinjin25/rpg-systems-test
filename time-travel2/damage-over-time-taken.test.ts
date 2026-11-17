@@ -4,7 +4,7 @@ import { calculateDamageTicks } from "../status-sheet2/tick.ts";
 import { applyDamage } from "../health/index.ts";
 import damageOverTime from './damage-over-time-taken.ts'
 import { describe, test, assert, expect } from 'vitest'
-import snapshotActor from "./snapshot/actor.ts";
+import snapshotActor from "./serialize/actor.ts";
 
 describe('damage-over-time', () => {
     test('Snapshots after all ticks have ran', () => {

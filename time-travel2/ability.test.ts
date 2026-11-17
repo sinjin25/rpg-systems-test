@@ -5,7 +5,7 @@ import { createDefaultOwner, instantiateActor } from '../actor2'
 import { actionIsAbility, applyResolutions } from '../actor2/act'
 import ability from './ability.ts'
 import { describe, test, assert } from 'vitest'
-import snapshotActor from './snapshot/actor.ts'
+import snapshotActor from './serialize/actor.ts'
 import { createRoll } from '../roll/index.ts'
 
 describe('Integration: works with ignite', () => {

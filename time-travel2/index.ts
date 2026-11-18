@@ -6,7 +6,7 @@ import actStart from "./act-start";
 import teamVictory from "./team-victory";
 import damageOverTime from "./damage-over-time-taken";
 import healOverTime from "./heal-over-time-taken";
-import ability from "./ability";
+import ability from "./serialize/ability";
 import actorDeath from "./actor-death";
 import preFightFeatApplied from "./pre-fight-feat-applied";
 import postFight from "./post-fight";

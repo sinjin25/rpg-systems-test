@@ -215,13 +215,15 @@ export const simulateFight = (
                         ability,
                         opts,
                     )
-                    for (let { r, damageTaken } of applyResolutions(resolutions, opts)) {
-                        ttrAppendLog(timeTravel['ability']({
-                            source: snapshotActor(theActor),
-                            to: [snapshotActor(r.target)],
-                            resolution: r,
-                            damageTaken,
-                        }))
+                    const applied = applyResolutions(resolutions, opts)
+                    ttrAppendLog(timeTravel['ability']({
+                        source: snapshotActor(theActor),
+                        to: applied.map(({ r }) => snapshotActor(r.target)),
+                        abilityId: a.id,
+                        abilityName: a.displayName,
+                        resolutions: applied,
+                    }))
+                    for (let { r } of applied) {
                         if (handlePotentialDeath(activeActors, r.target, theActor.owner)) {
                             ttrAppendLog(timeTravel['actor-death']({ source: snapshotActor(r.target) }))
                             activeActors = activeActors.filter(isAlive)

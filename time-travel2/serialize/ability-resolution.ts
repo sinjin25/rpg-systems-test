@@ -1,12 +1,14 @@
 import { DiscreteTargetGroupPayloadResolution } from "../../ability-sheet2/abilities2/types";
 import { ModNode } from "../../log2";
 import { FrozenAbilityNode } from "../types";
-import serializeModNode from "../serialize/mod-node";
-import { freezeStatusDefinition } from "./status";
+import serializeModNode from "./mod-node";
+import snapshotActor from "./actor";
+import { freezeStatusDefinition } from "../snapshot/status";
 
-const freezeResolution = (r: DiscreteTargetGroupPayloadResolution, damageTaken?: ModNode[]): FrozenAbilityNode => {
+export const serializeAbilityResolution = (r: DiscreteTargetGroupPayloadResolution, damageTaken?: ModNode[]): FrozenAbilityNode => {
     return {
         type: r.type,
+        target: snapshotActor(r.target),
         dc: r.dc ? serializeModNode(r.dc) : undefined,
         save: r.save ? serializeModNode(r.save) : undefined,
         saveType: r.saveType,
@@ -20,4 +22,8 @@ const freezeResolution = (r: DiscreteTargetGroupPayloadResolution, damageTaken?:
     }
 }
 
-export default freezeResolution
+const serializeAbilityResolutions = (
+    resolutions: { r: DiscreteTargetGroupPayloadResolution, damageTaken?: ModNode[] }[]
+): FrozenAbilityNode[] => resolutions.map(({ r, damageTaken }) => serializeAbilityResolution(r, damageTaken))
+
+export default serializeAbilityResolutions

@@ -101,24 +101,26 @@ export const ttrvTextAugmenter: TimeTravelAugmenter<TextAugmentedLogMap> = {
     }),
     'ability': (log) => {
         const source = log.source
-        const to = log.to?.[0]!
         const logCalls: unknown[][] = []
-        if (log.dc && log.save) {
-            const saved = log.type === 'success'
-            const verb = saved ? 'saves against' : 'fails to save against'
-            logCalls.push([
-                `${displayActor(to, cc.BgRed)} ${verb} ${displayActor(source)} (${log.save.total} vs ${log.dc.total})`,
-            ])
-        }
-        const dmg = log.damageTaken?.reduce((sum, n) => sum + n.total, 0)
-        if (dmg) logCalls.push([`${displayActor(to, cc.BgRed)} takes ${dmg} damage`])
-        const heal = log.heal?.reduce((sum, n) => sum + n.total, 0)
-        if (heal) logCalls.push([`${displayActor(to, cc.BgGreen)} heals ${heal}`])
-        if (log.statusEffect?.length) {
-            logCalls.push([
-                `${displayActor(to, cc.BgRed)} gains`,
-                log.statusEffect.map(s => s.displayName).join(', '),
-            ])
+        for (const r of log.resolutions) {
+            const to = r.target
+            if (r.dc && r.save) {
+                const saved = r.type === 'success'
+                const verb = saved ? 'saves against' : 'fails to save against'
+                logCalls.push([
+                    `${displayActor(to, cc.BgRed)} ${verb} ${displayActor(source)}'s ${log.abilityName} (${r.save.total} vs ${r.dc.total})`,
+                ])
+            }
+            const dmg = r.damageTaken?.reduce((sum, n) => sum + n.total, 0)
+            if (dmg) logCalls.push([`${displayActor(to, cc.BgRed)} takes ${dmg} damage from ${log.abilityName}`])
+            const heal = r.heal?.reduce((sum, n) => sum + n.total, 0)
+            if (heal) logCalls.push([`${displayActor(to, cc.BgGreen)} heals ${heal}`])
+            if (r.statusEffect?.length) {
+                logCalls.push([
+                    `${displayActor(to, cc.BgRed)} gains`,
+                    r.statusEffect.map(s => s.displayName).join(', '),
+                ])
+            }
         }
         return {
             kind: 'ability',

@@ -36,6 +36,7 @@ export type FrozenStandardActionResult = Partial<{
 
 export type FrozenAbilityNode = {
     type: DiscreteTargetGroupPayloadResolution['type'],
+    target: Actor2Snapshot,
     dc?: FrozenModNode,
     save?: FrozenModNode,
     saveType?: DiscreteTargetGroupPayloadResolution['saveType'],
@@ -155,12 +156,16 @@ export interface TTLogMap {
     },
     'ability': {
         input: TimeTravelContext & {
-            resolution: DiscreteTargetGroupPayloadResolution,
-            damageTaken?: ModNode[],
+            abilityId: string,
+            abilityName: string,
+            resolutions: { r: DiscreteTargetGroupPayloadResolution, damageTaken?: ModNode[] }[],
         },
         output: TimeTravelContext & {
             kind: 'ability',
-        } & FrozenAbilityNode
+            abilityId: string,
+            abilityName: string,
+            resolutions: FrozenAbilityNode[],
+        }
     },
     'post-fight': {
         input: {

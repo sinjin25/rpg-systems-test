@@ -3,7 +3,7 @@ import { ModNode } from "../../log2";
 import { FrozenAbilityNode } from "../types";
 import serializeModNode from "./mod-node";
 import snapshotActor from "./actor";
-import { freezeStatusDefinition } from "../snapshot/status";
+import { serializeStatusEffect } from "./status-effect";
 
 export const serializeAbilityResolution = (r: DiscreteTargetGroupPayloadResolution, damageTaken?: ModNode[]): FrozenAbilityNode => {
     return {
@@ -18,7 +18,7 @@ export const serializeAbilityResolution = (r: DiscreteTargetGroupPayloadResoluti
         // no usage other than potential UI narration or something
         // a later TT event will have the status effect added to a sheet
         // just order of operations shit
-        statusEffect: r.statusEffect?.map(freezeStatusDefinition),
+        statusEffect: r.statusEffect?.map(serializeStatusEffect),
     }
 }
 

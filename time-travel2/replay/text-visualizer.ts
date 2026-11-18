@@ -2,6 +2,7 @@ import { setTimeout as delay } from 'node:timers/promises'
 import { TimeTravelAugmenter, AnyAugmentedLog } from './types'
 import { TTLogKeys, FrozenModNode } from '../types'
 import { Actor2Snapshot } from '../serialize/types'
+import { deserializeStatusEffect } from '../serialize'
 
 const DELAY = 100
 const cc = {
@@ -77,7 +78,7 @@ export const ttrvTextAugmenter: TimeTravelAugmenter<TextAugmentedLogMap> = {
             kind: 'damage-over-time-taken',
             logCalls: [[
                 `${displayActor(actor)} takes`, log.modNode.total,
-                `damage from ${log.statusSource.displayName}`,
+                `damage from ${deserializeStatusEffect(log.statusSource)?.displayName}`,
                 `health is now ${actor.health.curr}`, cc.reset
             ]],
             delayMs: DELAY,
@@ -89,7 +90,7 @@ export const ttrvTextAugmenter: TimeTravelAugmenter<TextAugmentedLogMap> = {
             kind: 'heal-over-time-taken',
             logCalls: [[
                 `${displayActor(actor, cc.BgGreen)} heals`, log.modNode.total,
-                `from ${log.statusSource.displayName}`,
+                `from ${deserializeStatusEffect(log.statusSource).displayName}`,
                 `health is now ${actor.health.curr}`, cc.reset
             ]],
             delayMs: DELAY,
@@ -118,7 +119,7 @@ export const ttrvTextAugmenter: TimeTravelAugmenter<TextAugmentedLogMap> = {
             if (r.statusEffect?.length) {
                 logCalls.push([
                     `${displayActor(to, cc.BgRed)} gains`,
-                    r.statusEffect.map(s => s.displayName).join(', '),
+                    r.statusEffect.map(s => deserializeStatusEffect(s).displayName).join(', '),
                 ])
             }
         }

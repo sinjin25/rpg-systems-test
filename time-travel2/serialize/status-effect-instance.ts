@@ -1,5 +1,6 @@
-import { ResolvedTick, ResolvedTickCalc, StatusEffectInstance, StatusExpiration } from "../../status-sheet2/index"
+import { ResolvedTick, ResolvedTickCalc, StatusEffect, StatusEffectInstance, StatusExpiration } from "../../status-sheet2/index"
 import serializeModNode, { deserializeModNode } from "./mod-node"
+import { serializeStatusEffect, deserializeStatusEffect } from "./status-effect"
 import type {
     FrozenResolvedTick,
     FrozenResolvedTickCalc,
@@ -7,9 +8,6 @@ import type {
     FrozenStatusEffectInstance,
 } from "./types"
 
-// `pointer` (the shared StatusEffect definition: displayName, onExpiration, broadContexts, ...)
-// is a static, shared reference — same object for every instance of that status — so it's
-// carried over as-is, same as a map-location entity's onEnter.
 const snapshotExpiration = (expiration: StatusExpiration): FrozenStatusExpiration => {
     switch (expiration.kind) {
         case 'save-succeeded':
@@ -73,14 +71,19 @@ export const snapshotStatusEffectInstance = (inst: StatusEffectInstance): Frozen
     // forever. Share it by reference, same treatment as cs/fs/es below.
     source: inst.source,
     expiration: inst.expiration ? snapshotExpiration(inst.expiration) : undefined,
-    pointer: inst.pointer,
+    pointer: serializeStatusEffect(inst.pointer),
     tick: inst.tick ? snapshotTick(inst.tick) : undefined,
 })
 
-export const deserializeStatusEffectInstance = (inst: FrozenStatusEffectInstance): StatusEffectInstance => ({
+// fallback is used for a consumer's own status catalog (ex rpg-content's statuses/registry)
+// whose live registry differs from the one here you should rarely need to do this
+export const deserializeStatusEffectInstance = (
+    inst: FrozenStatusEffectInstance,
+    fallback?: Record<string, StatusEffect>,
+): StatusEffectInstance => ({
     source: inst.source,
     expiration: inst.expiration ? deserializeExpiration(inst.expiration) : undefined,
-    pointer: inst.pointer,
+    pointer: deserializeStatusEffect(inst.pointer, fallback),
     tick: inst.tick ? deserializeTick(inst.tick) : undefined,
 })
 
@@ -92,10 +95,13 @@ export const snapshotStatusSheet = (ss: Record<string, StatusEffectInstance[]>):
     return clone
 }
 
-export const deserializeStatusSheet = (ss: Record<string, FrozenStatusEffectInstance[]>): Record<string, StatusEffectInstance[]> => {
+export const deserializeStatusSheet = (
+    ss: Record<string, FrozenStatusEffectInstance[]>,
+    fallback?: Record<string, StatusEffect>,
+): Record<string, StatusEffectInstance[]> => {
     const clone: Record<string, StatusEffectInstance[]> = {}
     for (const key in ss) {
-        clone[key] = ss[key]!.map(deserializeStatusEffectInstance)
+        clone[key] = ss[key]!.map(inst => deserializeStatusEffectInstance(inst, fallback))
     }
     return clone
 }

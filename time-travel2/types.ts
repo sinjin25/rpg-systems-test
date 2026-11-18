@@ -6,6 +6,7 @@ import type { ModNode } from "../log2"
 import type { Saves } from "../log2/types"
 import type { StatusEffect, StatusEffectInstance } from "../status-sheet2"
 import { Actor2Snapshot } from "./serialize/types"
+import type { FrozenStatusEffect } from "./serialize/status-effect"
 
 export type FrozenModNode = {
     displayName: string
@@ -43,7 +44,7 @@ export type FrozenAbilityNode = {
     damage?: FrozenModNode[],
     damageTaken?: FrozenModNode[],
     heal?: FrozenModNode[],
-    statusEffect?: FrozenStatus[],
+    statusEffect?: FrozenStatusEffect[],
 }
 
 export type TimeTravelContext = {
@@ -136,7 +137,7 @@ export interface TTLogMap {
         },
         output: {
             kind: 'damage-over-time-taken',
-            statusSource: FrozenStatus,
+            statusSource: FrozenStatusEffect,
             modNode: FrozenModNode,
             to: Actor2Snapshot[],
         },
@@ -149,7 +150,7 @@ export interface TTLogMap {
         },
         output: {
             kind: 'heal-over-time-taken',
-            statusSource: FrozenStatus,
+            statusSource: FrozenStatusEffect,
             modNode: FrozenModNode,
             to: Actor2Snapshot[],
         },

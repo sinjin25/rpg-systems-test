@@ -1,6 +1,5 @@
-import snapshotActor from "./serialize/actor";
 import serializeModNode from "./serialize/mod-node";
-import { freezeStatusDefinition } from "./snapshot/status";
+import { serializeStatusEffect } from "./serialize/status-effect";
 import { Handlers } from "./types";
 
 const damageOverTimeTaken: Handlers['damage-over-time-taken'] = (input) => {
@@ -8,7 +7,7 @@ const damageOverTimeTaken: Handlers['damage-over-time-taken'] = (input) => {
     return {
         kind: 'damage-over-time-taken',
         modNode: serializeModNode(modNode),
-        statusSource: freezeStatusDefinition(statusSource),
+        statusSource: serializeStatusEffect(statusSource),
         to,
     }
 }

@@ -7,6 +7,7 @@ import type {
     StatusEffectInstance,
 } from "../../status-sheet2"
 import type { FrozenModNode } from "../types"
+import type { FrozenStatusEffect } from "./status-effect"
 
 export type FrozenEquipmentSheet = { [K in EquipmentSlot]?: EquipmentBlueprint }
 
@@ -28,7 +29,8 @@ export type FrozenResolvedTick = {
     calculateHeal?: FrozenResolvedTickCalc
 }
 
-export type FrozenStatusEffectInstance = Omit<StatusEffectInstance, 'expiration' | 'tick'> & {
+export type FrozenStatusEffectInstance = Omit<StatusEffectInstance, 'expiration' | 'tick' | 'pointer'> & {
     expiration?: FrozenStatusExpiration
     tick?: FrozenResolvedTick
+    pointer: FrozenStatusEffect
 }

@@ -51,7 +51,6 @@ describe('damage-over-time', () => {
             to: [snapshotActor(actor)],
         })
 
-        r0.source.displayName = 'mutated-after-log'
-        assert.notEqual(record.statusSource.displayName, 'mutated-after-log')
+        assert.equal(record.statusSource, r0.source.id)
     })
 })
